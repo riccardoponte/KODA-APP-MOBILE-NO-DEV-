@@ -5785,6 +5785,10 @@
                 else if (isUserTool && currentUser.uid && tool.id.includes(currentUser.uid)) {
                     editIconHTML = `<div class="edit-icon" data-action="open-edit-app-modal" data-id="${tool.id}" title="${translations[currentLanguage].editUserTool}"> ${pencilIcon} </div>`;
                 }
+                // NUOVO: Mostra l'icona di rimozione per le app custom degli utenti non loggati
+                else if (!currentUser.uid && tool.id.startsWith('guest-')) {
+                    editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
+                }
 
                 return `<div class="tool-card-list" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div></div>${favoriteIconHTML}</div>`;
             };
@@ -7523,6 +7527,16 @@ if (includeLangToggle) {
                 });
             };
 
+                        // NEW FUNCTION: Handle guest app removal
+            const removeGuestTool = (toolId) => {
+                if (currentUser.uid) return; // Sicurezza: solo per ospiti
+                let guestUserTools = JSON.parse(localStorage.getItem('guest-userTools')) || [];
+                guestUserTools = guestUserTools.filter(tool => tool.id !== toolId);
+                localStorage.setItem('guest-userTools', JSON.stringify(guestUserTools));
+                currentUser.userTools = guestUserTools; // Aggiorna lo stato locale
+                showToast("App rimossa con successo!");
+                renderView(); // Ricarica la vista per mostrare la rimozione
+            };
             // NEW FUNCTION: Handle app update
             const handleUpdateApp = async (toolId) => {
                 console.log('handleUpdateApp called with toolId:', toolId);
@@ -8886,6 +8900,9 @@ if (includeLangToggle) {
                             } else {
                                 triggerAuthFlow();
                             }
+                            break;
+                                                    case 'remove-guest-tool':
+                            removeGuestTool(actionTarget.dataset.id);
                             break;
                         case 'toggle-user-featured': // Triggered by pencil on user featured apps in Library
                             // Allow any logged-in user to perform this action
