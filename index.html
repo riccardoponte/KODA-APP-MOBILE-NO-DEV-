@@ -1230,7 +1230,8 @@
             width: 100%;
             height: var(--bottom-nav-height);
             background: linear-gradient(to top, var(--spotify-bg) 80%, transparent);
-            z-index: 100;
+            z-index: 1001;
+            /* Z-index più alto dell'input per rimanere sempre visibile */
             border-top: 1px solid var(--spotify-card);
         }
 
@@ -1564,6 +1565,11 @@
             /* Applica l'animazione con durata 30s */
         }
 
+        /* NUOVO: Ferma l'animazione dello sfondo quando inizia la chat */
+        #chatbot-app-container.chat-started::before {
+            animation: none;
+        }
+
         /* NUOVO: Assicura che il contenuto della chat stia sempre sopra lo sfondo */
         #chatbot-app-container>* {
             position: relative;
@@ -1597,9 +1603,12 @@
         #chatbot-app-container main {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 16px 16px 0 16px;
+            /* Rimuovo padding bottom per evitare spazio extra */
             display: flex;
             flex-direction: column;
+            min-height: 0;
+            /* Importante per il corretto funzionamento del flex */
         }
 
         #welcome-screen {
@@ -1611,8 +1620,12 @@
             text-align: center;
             gap: 24px;
             padding: 20px;
-            padding-bottom: 5vh;
-            /* MODIFICATO: Spostato il contenuto verso il basso */
+            padding-bottom: calc(var(--bottom-nav-height) + 100px);
+            /* MODIFICATO: Spazio per nav bar + input + margini */
+            overflow-y: auto;
+            /* Rende scrollabile se necessario */
+            min-height: 0;
+            /* Importante per il corretto funzionamento del flex */
         }
 
         .welcome-logo {
@@ -1721,8 +1734,15 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding-top: 16px;
-            /* NUOVO: Aggiunge spazio per evitare che il primo messaggio sia coperto dall'header */
+            padding-top: 80px;
+            /* MODIFICATO: Aggiunto spazio per l'header sticky (circa 72px di altezza) */
+            padding-bottom: calc(var(--bottom-nav-height) + 80px);
+            /* Spazio per nav bar + input + margini */
+            flex: 1;
+            overflow-y: auto;
+            /* Rende scrollabile solo quest'area */
+            min-height: 0;
+            /* Importante per il corretto funzionamento del flex */
         }
 
         .chat-bubble {
@@ -1909,15 +1929,66 @@
             background-color: var(--spotify-card);
             border-radius: 28px;
             padding: 12px;
-            margin: 16px;
+            margin: 0;
+            /* Rimuovo il margin per evitare spazi indesiderati con position fixed */
             display: flex;
             align-items: flex-end;
             gap: 12px;
             border: 1px solid var(--spotify-bg-light);
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 16px);
+            /* Posizionato sopra la barra di navigazione con margine */
+            left: 16px;
+            right: 16px;
+            z-index: 1000;
+            /* Z-index alto per stare sopra tutto ma sotto la nav */
+            flex-shrink: 0;
+            /* Impedisce che si ridimensioni */
         }
 
         body.light-mode #chat-input-container {
             border: 1px solid #ddd;
+        }
+
+        /* NUOVO: Regole responsive per l'input fisso */
+        @media (max-width: 768px) {
+            #chat-input-container {
+                bottom: calc(var(--bottom-nav-height) + 8px);
+                left: 8px;
+                right: 8px;
+            }
+            
+            #chat-messages {
+                padding-top: 70px;
+                /* RIDOTTO: Spazio per l'header su tablet */
+                padding-bottom: calc(var(--bottom-nav-height) + 70px);
+                /* Spazio per nav + input con margini ridotti per mobile */
+            }
+            
+            #welcome-screen {
+                padding-bottom: calc(var(--bottom-nav-height) + 90px);
+                /* Spazio per nav + input con margini ridotti per mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #chat-input-container {
+                bottom: calc(var(--bottom-nav-height) + 4px);
+                left: 4px;
+                right: 4px;
+            }
+            
+            #chat-messages {
+                padding-top: 65px;
+                /* RIDOTTO: Spazio per l'header su mobile */
+                padding-bottom: calc(var(--bottom-nav-height) + 65px);
+                /* Spazio per nav + input con margini minimi per schermi piccoli */
+            }
+            
+            #welcome-screen {
+                padding-bottom: calc(var(--bottom-nav-height) + 85px);
+                /* Spazio per nav + input con margini minimi per schermi piccoli */
+            }
         }
 
         .input-icon-group {
@@ -5166,7 +5237,7 @@
             const hasStartedChat = messages.some(m => m.sender === MessageSender.USER);
 
             return (
-                <div id="chatbot-app-container">
+                <div id="chatbot-app-container" className={hasStartedChat ? 'chat-started' : ''}>
                     <main>
                         {!hasStartedChat ? (
                             <WelcomeScreen onSendMessage={handleSendMessage} lang={lang} />
