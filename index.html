@@ -5059,10 +5059,10 @@
                     {/* NUOVO: Contenitore per i pulsanti di azione */}
                     <div className="prompt-actions-container">
                         <button className="action-btn primary" data-action="navigate-to-optimizer">
-                            Ottimizza Prompt
+                            {lang === 'it' ? "Ottimizza Prompt" : "Optimize Prompt"}
                         </button>
                         <button className="action-btn tertiary" data-action="show-prompt-gallery">
-                            Prompt Salvati
+                            {lang === 'it' ? "Galleria Prompt" : "Prompt Gallery"}
                         </button>
                     </div>
                 </div>
@@ -8222,7 +8222,7 @@ if (includeLangToggle) {
                 <div id="prompt-gallery-modal" class="modal-overlay visible">
                     <div class="modal-content">
                         <button class="modal-close-btn" data-action="close-modal">×</button>
-                        <h2>Galleria Prompt</h2>
+                        <h2>${currentLanguage === 'it' ? 'Galleria Prompt' : 'Prompt Gallery'}</h2>
                         <div class="gallery-list">${promptsHTML}</div>
                     </div>
                 </div>
