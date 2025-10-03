@@ -5658,6 +5658,7 @@
 
             // --- DATABASE PERSONALIZZATO (CARICATO DA FIREBASE) ---
             let aiToolsData = []; // Questa variabile verrà popolata dinamicamente da Firestore
+let aiRankingsData = []; // NUOVO: Questa variabile conterrà i dati delle classifiche da Firestore
             // NUOVA FUNZIONE per caricare gli strumenti da Firestore
             const fetchToolsFromFirestore = async () => {
                 try {
@@ -5676,6 +5677,24 @@
                     return []; // Restituisce un array vuoto in caso di errore
                 }
             };
+            // NUOVA FUNZIONE per caricare le classifiche da Firestore
+const fetchRankingsFromFirestore = async () => {
+    try {
+        const rankingsCollectionRef = collection(db, "rankings");
+        const q = query(rankingsCollectionRef); // You can add orderBy here if you have an 'order' field
+        const querySnapshot = await getDocs(q);
+        const firestoreRankings = [];
+        querySnapshot.forEach((doc) => {
+            firestoreRankings.push({ ...doc.data(), id: doc.id });
+        });
+        console.log(`Successfully fetched ${firestoreRankings.length} rankings from Firestore.`);
+        return firestoreRankings;
+    } catch (error) {
+        console.error("Error fetching rankings from Firestore:", error);
+        showToast("Could not load AI rankings from the database.");
+        return [];
+    }
+};
             // Funzione globale accessibile anche dallo script React
             window.getLocalizedToolsData = (lang) => {
                 return aiToolsData.map(tool => ({ ...tool, description: tool.description[lang] || tool.description['en'] }));
@@ -6422,13 +6441,9 @@ if (includeLangToggle) {
 
                     contentHTML += `</div>`; // Close grid-container
 
-                    const rankings = [
-                        { titleKey: "rankingTextTitle", category: "Testo", toolIds: ['tool-044', 'tool-013', 'tool-001'] }, // Added Perplexity to Text ranking
-                        { titleKey: "rankingCodeTitle", category: "Codice", toolIds: ["tool-024", "tool-021", "tool-052"] },
-                        { titleKey: "rankingImagesTitle", category: "Immagini", toolIds: ["tool-014", "tool-001", "tool-033", "tool-005"] }
-                    ];
+                    
 
-                    const rankingCategoryIdentifiers = ["All", "Testo", "Codice", "Immagini"];
+                    const rankingCategoryIdentifiers = ["All", ...new Set(aiRankingsData.map(r => r.category))];
                     const filtersHTML = `<div class="filters-container" style="top: 64px; margin-bottom: 20px;">
                     <div class="filter-pills" id="ranking-filters">
                         ${rankingCategoryIdentifiers.map(id => `<button class="pill-btn ${rankingFilter === id ? 'active' : ''}" data-action="set-ranking-filter" data-filter="${id}">${id === 'All' ? t.filterAll : getTranslatedCategoryName(id)}</button>`).join('')}
@@ -6452,19 +6467,19 @@ if (includeLangToggle) {
                     };
 
                     const rankingsHTML = `
-                    <div class="section-title" style="margin-top: 40px;" data-translate="rankingsTitle">${t.rankingsTitle}</div>
-                    ${filtersHTML}
-                    <div class="ranking-section-container">
-                        ${rankings.map(ranking => `
-                            <div class="ranking-card" data-ranking-category="${ranking.category}">
-                                <h3>${t[ranking.titleKey]}</h3>
-                                <ol class="ranking-list">
-                                    ${ranking.toolIds.map((id, index) => createRankingItem(id, index + 1)).join('')}
-                                </ol>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+<div class="section-title" style="margin-top: 40px;" data-translate="rankingsTitle">${t.rankingsTitle}</div>
+${filtersHTML}
+<div class="ranking-section-container">
+    ${aiRankingsData.map(ranking => `
+        <div class="ranking-card" data-ranking-category="${ranking.category}">
+            <h3>${currentLanguage === 'it' ? ranking.title_it : ranking.title_en}</h3>
+            <ol class="ranking-list">
+                ${ranking.toolIds.map((id, index) => createRankingItem(id, index + 1)).join('')}
+            </ol>
+        </div>
+    `).join('')}
+</div>
+`;
 
                     contentHTML += rankingsHTML;
                     contentArea.innerHTML = contentHTML;
@@ -8672,7 +8687,10 @@ if (includeLangToggle) {
                     closeModal();
 
                     // Ricarica i dati e la vista per mostrare le modifiche
-                    aiToolsData = await fetchToolsFromFirestore();
+                    [aiToolsData, aiRankingsData] = await Promise.all([
+    fetchToolsFromFirestore(),
+    fetchRankingsFromFirestore()
+]);
                     renderView();
 
                 } catch (error) {
@@ -8719,7 +8737,10 @@ if (includeLangToggle) {
         closeModal();
 
         // Ricarica i dati e la vista per mostrare il nuovo strumento
-        aiToolsData = await fetchToolsFromFirestore();
+        [aiToolsData, aiRankingsData] = await Promise.all([
+    fetchToolsFromFirestore(),
+    fetchRankingsFromFirestore()
+]);
         renderView();
 
     } catch (error) {
@@ -9258,7 +9279,10 @@ if (includeLangToggle) {
                 }
                 // --- END OF INSERTION ---
                 // Carica gli strumenti da Firestore PRIMA di inizializzare l'app
-                aiToolsData = await fetchToolsFromFirestore();
+                [aiToolsData, aiRankingsData] = await Promise.all([
+    fetchToolsFromFirestore(),
+    fetchRankingsFromFirestore()
+]);
 
                 if (user) {
                     // L'utente è loggato, avvia l'app con i suoi dati.
