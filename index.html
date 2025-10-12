@@ -4815,6 +4815,102 @@
                 max-width: none;
             }
         }
+
+        /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
+        #video-catalog-modal.modal-overlay {
+            padding: 0 !important;
+            align-items: flex-start; /* Allinea in alto per il fullscreen */
+        }
+
+        #video-catalog-modal .modal-content {
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #video-catalog-modal .modal-header {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             margin-bottom: 16px;
+        }
+
+        .video-list-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin: -8px;
+            padding: 8px;
+        }
+
+        .video-card {
+            background-color: var(--spotify-bg-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        
+        .video-thumbnail {
+            width: 50%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            flex-shrink: 0;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: var(--spotify-card);
+        }
+
+        .video-info {
+            flex-grow: 1;
+        }
+
+        .video-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .video-info p {
+            font-size: 13px;
+            color: var(--spotify-text-secondary);
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .video-info .button {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: normal;
+            width: 100%; /* Occupa tutta la larghezza disponibile */
+        }
+        
+        .video-date {
+            font-size: 12px;
+            color: var(--spotify-text-secondary);
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .video-card {
+                flex-direction: column;
+            }
+
+            .video-thumbnail {
+                width: 100%;
+            }
+            
+            .video-info {
+                width: 100%;
+            }
+        }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
     <script type="importmap">
@@ -5451,6 +5547,9 @@ history: "Cronologia", newChat: "Nuova chat", deleteAll: "Elimina tutto", discov
                     editAIInDatabase: "Modifica AI nel Database",
                     documentIdLabel: "ID Documento (non modificabile)",
                     saveChanges: "Salva Modifiche",
+                    // NUOVE TRADUZIONI PER CATALOGO VIDEO (UTENTE)
+                    videoCatalogTitle: "Tutorials & Guide",
+                    watchVideo: "Guarda",
                 },
                 en: {
                     // Auth
@@ -5598,6 +5697,9 @@ history: "History", newChat: "New Chat", deleteAll: "Delete All", discoverMoreLi
                     editAIInDatabase: "Edit AI in Database",
                     documentIdLabel: "Document ID (not editable)",
                     saveChanges: "Save Changes",
+                    // NEW TRANSLATIONS FOR VIDEO CATALOG (USER)
+                    videoCatalogTitle: "Tutorials & Guides",
+                    watchVideo: "Watch",
                 }
             };
 
@@ -5644,7 +5746,8 @@ history: "History", newChat: "New Chat", deleteAll: "Delete All", discoverMoreLi
 
             // --- DATABASE PERSONALIZZATO (CARICATO DA FIREBASE) ---
             let aiToolsData = []; // Questa variabile verrà popolata dinamicamente da Firestore
-let aiRankingsData = []; // NUOVO: Questa variabile conterrà i dati delle classifiche da Firestore
+            let aiRankingsData = []; // NUOVO: Questa variabile conterrà i dati delle classifiche da Firestore
+            let youtubeVideosData = []; // NUOVO: Conterrà i video da Firebase
             // NUOVA FUNZIONE per caricare gli strumenti da Firestore
             const fetchToolsFromFirestore = async () => {
                 try {
@@ -5681,6 +5784,35 @@ const fetchRankingsFromFirestore = async () => {
         return [];
     }
 };
+
+            // NUOVA FUNZIONE per caricare i video da Firestore (ordinati per campo 'order' o data)
+            const fetchVideosFromFirestore = async () => {
+                try {
+                    const videosCollectionRef = collection(db, "videos");
+                    // Ordina per 'order' se esiste, altrimenti per data di creazione
+                    const q = query(videosCollectionRef, orderBy("order", "asc"), orderBy("createdAt", "desc"));
+                    const querySnapshot = await getDocs(q);
+                    const firestoreVideos = [];
+                    querySnapshot.forEach((doc) => {
+                        firestoreVideos.push({ ...doc.data(), id: doc.id });
+                    });
+                    console.log(`Successfully fetched ${firestoreVideos.length} videos from Firestore.`);
+                    return firestoreVideos;
+                } catch (error) {
+                    // Gestisce il caso in cui il campo 'order' non esista ancora su tutti i documenti
+                    if (error.code === 'failed-precondition') {
+                         console.warn("Composite index for videos not found, falling back to createdAt ordering. Please create the index in Firebase.");
+                         const videosCollectionRef = collection(db, "videos");
+                         const fallbackQuery = query(videosCollectionRef, orderBy("createdAt", "desc"));
+                         const querySnapshot = await getDocs(fallbackQuery);
+                         const firestoreVideos = [];
+                         querySnapshot.forEach((doc) => firestoreVideos.push({ ...doc.data(), id: doc.id }));
+                         return firestoreVideos;
+                    }
+                    console.error("Error fetching videos from Firestore:", error);
+                    return [];
+                }
+            };
             // Funzione globale accessibile anche dallo script React
             window.getLocalizedToolsData = (lang) => {
                 return aiToolsData.map(tool => ({ ...tool, description: tool.description[lang] || tool.description['en'] }));
@@ -6311,6 +6443,13 @@ if (currentUser.role === 'admin') {
         </button>
     `;
 }
+
+// NUOVO: Pulsante Catalogo Video
+otherControlsHTML += `
+    <button id="video-catalog-btn" class="global-btn" data-action="open-video-catalog" title="${translations[currentLanguage].videoCatalogTitle}" style="color: var(--spotify-accent);">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+    </button>
+`;
 
 otherControlsHTML += `
 <button id="theme-toggle-btn" class="global-btn" data-action="toggle-theme">${themeIcon}</button>
@@ -8351,6 +8490,48 @@ ${filtersHTML}
             };
 
 
+            // --- NUOVA FUNZIONE PER CATALOGO VIDEO (UTENTE) ---
+            const openVideoCatalogModal = () => {
+                const t = translations[currentLanguage];
+                
+                const videosHTML = youtubeVideosData.map((video, index) => {
+                    let videoId = '';
+                    try {
+                        const url = new URL(video.youtubeUrl);
+                        videoId = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                    } catch (e) {}
+                    
+                    const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                    const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+
+                    return `
+                        <div class="video-card" data-id="${video.id}">
+                            <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
+                            <div class="video-info">
+                                <h4>${index + 1}. ${video.title}</h4>
+                                <p>${video.description[currentLanguage] || video.description['en']}</p>
+                                <button class="button" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">${t.watchVideo}</button>
+                                ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const modalHTML = `
+                <div id="video-catalog-modal" class="modal-overlay visible">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>${t.videoCatalogTitle}</h2>
+                            <button class="modal-close-btn" data-action="close-modal" style="position: static;">×</button>
+                        </div>
+                        <div class="video-list-container">
+                            ${videosHTML.length > 0 ? videosHTML : `<div id="empty-state">Nessun video disponibile.</div>`}
+                        </div>
+                    </div>
+                </div>`;
+                el.modalContainer.innerHTML = modalHTML;
+            };
+
             // --- FUNZIONE PER OTTIMIZZARE I PROMPT ---
             const handlePromptOptimization = async () => {
                 const originalPromptTextarea = document.getElementById('optimizer-original-prompt');
@@ -8824,6 +9005,14 @@ ${filtersHTML}
                             // Aggiunta la nuova azione per chiamare la funzione di eliminazione
                             handleDeleteSavedPrompt(actionTarget.dataset.id);
                             break;
+                        // AZIONI CATALOGO VIDEO (UTENTE)
+                        case 'open-video-catalog':
+                            openVideoCatalogModal();
+                            break;
+                        case 'watch-youtube-video':
+                            const url = actionTarget.dataset.url;
+                            if (url) window.open(url, '_blank');
+                            break;
                         // NUOVO: Gestisce il click sull'icona della password
                         case 'toggle-password-visibility':
                             handlePasswordVisibilityToggle(actionTarget);
@@ -9256,11 +9445,12 @@ ${filtersHTML}
                     history.replaceState({ page: 'home' }, '', '#home');
                 }
                 // --- END OF INSERTION ---
-                // Carica gli strumenti da Firestore PRIMA di inizializzare l'app
-                [aiToolsData, aiRankingsData] = await Promise.all([
-    fetchToolsFromFirestore(),
-    fetchRankingsFromFirestore()
-]);
+                // Carica tutti i dati da Firestore PRIMA di inizializzare l'app
+                [aiToolsData, aiRankingsData, youtubeVideosData] = await Promise.all([
+                    fetchToolsFromFirestore(),
+                    fetchRankingsFromFirestore(),
+                    fetchVideosFromFirestore()
+                ]);
 
                 if (user) {
                     // L'utente è loggato, avvia l'app con i suoi dati.
