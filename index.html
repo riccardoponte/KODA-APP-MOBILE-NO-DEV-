@@ -4636,13 +4636,11 @@
 
         .gallery-search-bar {
             display: flex;
-            gap: 12px;
             margin-bottom: 12px;
         }
 
         .gallery-search-input {
-            flex: 1;
-            min-width: 0;
+            width: 100%;
             padding: 12px 16px;
             background-color: var(--spotify-bg-light);
             border: 1px solid rgba(128, 128, 128, 0.2);
@@ -4653,18 +4651,6 @@
 
         .gallery-search-input::placeholder {
             color: var(--spotify-text-secondary);
-        }
-
-        .gallery-sort-select {
-            flex: 1;
-            min-width: 0;
-            padding: 12px 16px;
-            background-color: var(--spotify-bg-light);
-            border: 1px solid rgba(128, 128, 128, 0.2);
-            border-radius: 8px;
-            color: var(--spotify-text);
-            font-size: 14px;
-            cursor: pointer;
         }
 
         #prompt-gallery-modal .gallery-list {
@@ -8575,10 +8561,6 @@ ${filtersHTML}
                                 <h2>Galleria Prompt</h2>
                                 <div class="gallery-search-bar">
                                     <input type="text" class="gallery-search-input" placeholder="Cerca" id="gallery-search-input">
-                                    <select class="gallery-sort-select" id="gallery-sort-select">
-                                        <option value="newest">Più recenti</option>
-                                        <option value="oldest">Più vecchi</option>
-                                    </select>
                                 </div>
                             </div>
                             <div class="gallery-list" id="gallery-list">
@@ -8602,8 +8584,8 @@ ${filtersHTML}
                 const generatePromptsHTML = (prompts) => {
                     if (prompts.length === 0) return `<div id="empty-state">Nessun prompt salvato.</div>`;
                     return prompts.map((p, index) => `
-                        <div class="prompt-gallery-item" data-prompt-id="${p.id}">
-                            <div class="prompt-gallery-item-header" data-action="toggle-prompt">
+                        <div class="prompt-gallery-item" data-prompt-id="${p.id}" data-action="open-prompt-fullscreen" data-original="${p.originalPrompt}" data-optimized="${p.optimizedPrompt}" data-timestamp="${formatDate(p.timestamp)}">
+                            <div class="prompt-gallery-item-header">
                                 <div class="prompt-gallery-item-title">
                                     <span class="prompt-gallery-item-number">#${index + 1}</span>
                                     <div class="prompt-gallery-item-info">
@@ -8613,28 +8595,9 @@ ${filtersHTML}
                                 </div>
                                 <div class="prompt-gallery-item-toggle">
                                     <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor">
-                                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                                        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
                                     </svg>
                                 </div>
-                            </div>
-                            <div class="prompt-gallery-item-content">
-                                <div class="prompt-gallery-header">
-                                    <label>${t.originalPromptLabel}</label>
-                                    <div class="prompt-gallery-actions">
-                                        <button class="prompt-gallery-copy-btn" data-action="copy-gallery-prompt" data-target-id="original-${p.id}">${t.copyButton}</button>
-                                    </div>
-                                </div>
-                                <div class="prompt-gallery-content" id="original-${p.id}">${p.originalPrompt}</div>
-                                <hr class="prompt-gallery-divider">
-                                <div class="prompt-gallery-header">
-                                    <label>${t.optimizedPromptLabel}</label>
-                                    <div class="prompt-gallery-actions">
-                                        <button class="prompt-gallery-delete-btn" title="Elimina prompt" data-action="delete-saved-prompt" data-id="${p.id}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="prompt-gallery-content optimized" id="optimized-${p.id}">${p.optimizedPrompt}</div>
                             </div>
                         </div>
                     `).join('');
@@ -8642,12 +8605,10 @@ ${filtersHTML}
 
                 // 3. Collega event listener
                 const searchInput = document.getElementById('gallery-search-input');
-                const sortSelect = document.getElementById('gallery-sort-select');
                 const galleryList = document.getElementById('gallery-list');
 
                 const filterAndSortPrompts = () => {
                     const searchTerm = searchInput.value.toLowerCase();
-                    const sortOrder = sortSelect.value;
                     let filtered = savedPrompts.filter(p => p.originalPrompt.toLowerCase().includes(searchTerm) || p.optimizedPrompt.toLowerCase().includes(searchTerm));
 
                     // Funzione helper per ottenere il timestamp in millisecondi
@@ -8656,16 +8617,13 @@ ${filtersHTML}
                         return timestamp.toMillis ? timestamp.toMillis() : timestamp;
                     };
 
-                    if (sortOrder === 'newest') {
-                        filtered.sort((a, b) => getTimestamp(b.timestamp) - getTimestamp(a.timestamp));
-                    } else {
-                        filtered.sort((a, b) => getTimestamp(a.timestamp) - getTimestamp(b.timestamp));
-                    }
+                    // Ordina sempre per più recenti
+                    filtered.sort((a, b) => getTimestamp(b.timestamp) - getTimestamp(a.timestamp));
+
                     if (galleryList) galleryList.innerHTML = generatePromptsHTML(filtered);
                 };
 
                 if (searchInput) searchInput.addEventListener('input', filterAndSortPrompts);
-                if (sortSelect) sortSelect.addEventListener('change', filterAndSortPrompts);
 
                 // 4. Popola il contenuto
                 filterAndSortPrompts();
@@ -9244,11 +9202,61 @@ ${filtersHTML}
                         case 'execute-delete-saved-prompt': // NUOVA AZIONE
                             executeDeleteSavedPrompt(actionTarget.dataset.id);
                             break;
-                        case 'toggle-prompt':
-                            // Toggle per aprire/chiudere i prompt
+                        case 'open-prompt-fullscreen':
+                            // Apri il prompt a tutto schermo
                             const promptItem = actionTarget.closest('.prompt-gallery-item');
                             if (promptItem) {
-                                promptItem.classList.toggle('collapsed');
+                                const originalPrompt = promptItem.dataset.original;
+                                const optimizedPrompt = promptItem.dataset.optimized;
+                                const timestamp = promptItem.dataset.timestamp;
+                                const promptId = promptItem.dataset.promptId;
+
+                                const fullscreenHTML = `
+                                    <div id="prompt-fullscreen-modal" class="modal-overlay visible">
+                                        <div class="modal-content" style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 0; display: flex; flex-direction: column; padding: 0;">
+                                            <div class="gallery-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                                                <button class="modal-close-btn" data-action="close-fullscreen-prompt" style="position: absolute; top: 20px; right: 24px;">×</button>
+                                                <h2 style="margin: 0; font-size: 24px;">Prompt Salvato</h2>
+                                                <p style="color: var(--spotify-text-secondary); font-size: 14px; margin-top: 8px;">${timestamp}</p>
+                                            </div>
+                                            <div style="flex: 1; overflow-y: auto; padding: 24px;">
+                                                <div style="margin-bottom: 32px;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                        <label style="font-weight: 600; font-size: 16px;">${translations[currentLanguage].originalPromptLabel}</label>
+                                                        <button class="prompt-gallery-copy-btn" data-action="copy-fullscreen-text" data-text="${originalPrompt.replace(/"/g, '&quot;')}">${translations[currentLanguage].copyButton}</button>
+                                                    </div>
+                                                    <div style="background-color: var(--spotify-bg-light); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap;">${originalPrompt}</div>
+                                                </div>
+                                                <hr style="border: none; border-top: 1px solid rgba(128, 128, 128, 0.2); margin: 24px 0;">
+                                                <div>
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                                        <label style="font-weight: 600; font-size: 16px;">${translations[currentLanguage].optimizedPromptLabel}</label>
+                                                        <div style="display: flex; gap: 8px;">
+                                                            <button class="prompt-gallery-copy-btn" data-action="copy-fullscreen-text" data-text="${optimizedPrompt.replace(/"/g, '&quot;')}">${translations[currentLanguage].copyButton}</button>
+                                                            <button class="prompt-gallery-delete-btn" title="Elimina prompt" data-action="delete-saved-prompt" data-id="${promptId}">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div style="background-color: var(--spotify-bg-light); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap;">${optimizedPrompt}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                el.modalContainer.innerHTML = fullscreenHTML;
+                            }
+                            break;
+                        case 'close-fullscreen-prompt':
+                            // Torna alla galleria
+                            openPromptGalleryModal();
+                            break;
+                        case 'copy-fullscreen-text':
+                            const textToCopy = actionTarget.dataset.text;
+                            if (textToCopy) {
+                                navigator.clipboard.writeText(textToCopy)
+                                    .then(() => showToast("Copiato!"))
+                                    .catch(err => console.error('Errore nella copia:', err));
                             }
                             break;
                         // AZIONI CATALOGO VIDEO (UTENTE)
