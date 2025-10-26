@@ -8571,6 +8571,9 @@ ${filtersHTML}
                 `;
                 el.modalContainer.innerHTML = modalShellHTML;
 
+                // Aggiungi stato alla history per gestire il pulsante indietro
+                history.pushState({ modal: 'prompt-gallery' }, '', '');
+
                 // 2. Recupera i dati
                 let savedPrompts = currentUser.uid ? await getSavedPromptsForUser(currentUser.uid) : getSavedPromptsFromLocalStorage();
 
@@ -9103,6 +9106,21 @@ ${filtersHTML}
                 }
             };
             window.addEventListener('popstate', (event) => {
+                // Gestisci il pulsante indietro per i modali
+                const modalOverlay = document.querySelector('.modal-overlay.visible');
+                if (modalOverlay) {
+                    // Se c'è un modale aperto, chiudilo
+                    const fullscreenModal = document.getElementById('prompt-fullscreen-modal');
+                    if (fullscreenModal) {
+                        // Torna alla galleria
+                        openPromptGalleryModal();
+                        return;
+                    }
+                    // Per altri modali, chiudili semplicemente
+                    el.modalContainer.innerHTML = '';
+                    return;
+                }
+
                 if (event.state && event.state.page) {
                     // If a state exists from a previous pushState, update the view
                     currentView = event.state.page;
@@ -9231,20 +9249,21 @@ ${filtersHTML}
                                                 <div>
                                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                                         <label style="font-weight: 600; font-size: 16px;">${translations[currentLanguage].optimizedPromptLabel}</label>
-                                                        <div style="display: flex; gap: 8px;">
-                                                            <button class="prompt-gallery-copy-btn" data-action="copy-fullscreen-text" data-text="${optimizedPrompt.replace(/"/g, '&quot;')}">${translations[currentLanguage].copyButton}</button>
-                                                            <button class="prompt-gallery-delete-btn" title="Elimina prompt" data-action="delete-saved-prompt" data-id="${promptId}">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                                            </button>
-                                                        </div>
+                                                        <button class="prompt-gallery-delete-btn" title="Elimina prompt" data-action="delete-saved-prompt" data-id="${promptId}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                        </button>
                                                     </div>
-                                                    <div style="background-color: var(--spotify-bg-light); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap;">${optimizedPrompt}</div>
+                                                    <div style="background: linear-gradient(135deg, rgba(29, 185, 84, 0.15) 0%, rgba(29, 185, 84, 0.05) 100%); border: 2px solid var(--spotify-accent); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap; color: var(--spotify-text);">${optimizedPrompt}</div>
+                                                    <button class="button" data-action="copy-fullscreen-text" data-text="${optimizedPrompt.replace(/"/g, '&quot;')}" style="width: 100%; margin-top: 16px; background-color: var(--spotify-accent); color: #000; font-weight: 600;">${translations[currentLanguage].copyButton}</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
                                 el.modalContainer.innerHTML = fullscreenHTML;
+
+                                // Aggiungi stato alla history per gestire il pulsante indietro
+                                history.pushState({ modal: 'prompt-fullscreen' }, '', '');
                             }
                             break;
                         case 'close-fullscreen-prompt':
