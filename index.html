@@ -8571,7 +8571,7 @@ ${filtersHTML}
                             <div class="gallery-header">
                                 <h2>Galleria Prompt</h2>
                                 <div class="gallery-search-bar">
-                                    <input type="text" class="gallery-search-input" placeholder="Cerca nei prompt..." id="gallery-search-input">
+                                    <input type="text" class="gallery-search-input" placeholder="Cerca" id="gallery-search-input">
                                     <select class="gallery-sort-select" id="gallery-sort-select">
                                         <option value="newest">Più recenti</option>
                                         <option value="oldest">Più vecchi</option>
@@ -8587,7 +8587,7 @@ ${filtersHTML}
                 el.modalContainer.innerHTML = modalShellHTML;
 
                 // 2. Recupera i dati
-                let savedPrompts = currentUser.uid ? await getSavedPromptsForUser(currentUser.uid) : [];
+                let savedPrompts = currentUser.uid ? await getSavedPromptsForUser(currentUser.uid) : getSavedPromptsFromLocalStorage();
 
                 // Funzioni helper
                 const formatDate = (timestamp) => {
@@ -8646,10 +8646,17 @@ ${filtersHTML}
                     const searchTerm = searchInput.value.toLowerCase();
                     const sortOrder = sortSelect.value;
                     let filtered = savedPrompts.filter(p => p.originalPrompt.toLowerCase().includes(searchTerm) || p.optimizedPrompt.toLowerCase().includes(searchTerm));
+                    
+                    // Funzione helper per ottenere il timestamp in millisecondi
+                    const getTimestamp = (timestamp) => {
+                        if (!timestamp) return 0;
+                        return timestamp.toMillis ? timestamp.toMillis() : timestamp;
+                    };
+                    
                     if (sortOrder === 'newest') {
-                        filtered.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
+                        filtered.sort((a, b) => getTimestamp(b.timestamp) - getTimestamp(a.timestamp));
                     } else {
-                        filtered.sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
+                        filtered.sort((a, b) => getTimestamp(a.timestamp) - getTimestamp(b.timestamp));
                     }
                     if (galleryList) galleryList.innerHTML = generatePromptsHTML(filtered);
                 };
@@ -8688,15 +8695,31 @@ ${filtersHTML}
             };
 
             const executeDeleteSavedPrompt = async (promptId) => {
-                if (!currentUser.uid || !promptId) return;
-                const promptRef = doc(db, "users", currentUser.uid, "savedPrompts", promptId);
-                try {
-                    await deleteDoc(promptRef);
-                    showToast("Prompt eliminato con successo!");
-                    await openPromptGalleryModal();
-                } catch (error) {
-                    console.error("Errore nell'eliminazione del prompt:", error);
-                    showToast("Impossibile eliminare il prompt.");
+                if (!promptId) return;
+                
+                if (currentUser.uid) {
+                    // Utente loggato: elimina da Firebase
+                    const promptRef = doc(db, "users", currentUser.uid, "savedPrompts", promptId);
+                    try {
+                        await deleteDoc(promptRef);
+                        showToast("Prompt eliminato con successo!");
+                        await openPromptGalleryModal();
+                    } catch (error) {
+                        console.error("Errore nell'eliminazione del prompt:", error);
+                        showToast("Impossibile eliminare il prompt.");
+                    }
+                } else {
+                    // Utente non loggato: elimina da localStorage
+                    try {
+                        let savedPrompts = JSON.parse(localStorage.getItem('guest-savedPrompts')) || [];
+                        savedPrompts = savedPrompts.filter(p => p.id !== promptId);
+                        localStorage.setItem('guest-savedPrompts', JSON.stringify(savedPrompts));
+                        showToast("Prompt eliminato con successo!");
+                        await openPromptGalleryModal();
+                    } catch (error) {
+                        console.error("Errore nell'eliminazione del prompt:", error);
+                        showToast("Impossibile eliminare il prompt.");
+                    }
                 }
             };
 
