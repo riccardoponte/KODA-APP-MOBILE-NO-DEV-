@@ -3121,6 +3121,171 @@
             }
         }
 
+        /* Stili per la modalità selezione multipla */
+        .selection-bar {
+            position: sticky;
+            top: 64px;
+            background: var(--spotify-accent);
+            color: #000;
+            padding: 12px 16px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .selection-bar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .selection-bar-content span {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .selection-bar-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .selection-bar-btn {
+            background: rgba(0, 0, 0, 0.2);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .selection-bar-btn:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        .selection-bar-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .selection-bar-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Checkbox per selezione multipla (grid view) */
+        .selection-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 28px;
+            height: 28px;
+            border: 2px solid white;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s;
+        }
+
+        .selection-checkbox svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .selection-checkbox.selected {
+            background: var(--spotify-accent);
+            border-color: var(--spotify-accent);
+        }
+
+        .selection-checkbox.selected svg {
+            opacity: 1;
+        }
+
+        .selection-checkbox:hover {
+            transform: scale(1.1);
+        }
+
+        /* Checkbox per selezione multipla (list view) */
+        .selection-checkbox-list {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--spotify-text-secondary);
+            border-radius: 6px;
+            background: var(--spotify-bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: auto;
+            transition: all 0.2s;
+        }
+
+        .selection-checkbox-list svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--spotify-text);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .selection-checkbox-list.selected {
+            background: var(--spotify-accent);
+            border-color: var(--spotify-accent);
+        }
+
+        .selection-checkbox-list.selected svg {
+            opacity: 1;
+            fill: #000;
+        }
+
+        .selection-checkbox-list:hover {
+            transform: scale(1.1);
+            border-color: var(--spotify-accent);
+        }
+
+        /* Disabilita il click sulla card in modalità selezione */
+        .tool-card-grid.selectable {
+            cursor: default;
+        }
+
+        @media (max-width: 480px) {
+            .selection-bar-content {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .selection-bar-actions {
+                justify-content: center;
+            }
+        }
+
         /* Styles for the Replace Featured Modal */
         #replace-featured-modal .modal-content {
             max-height: 80vh;
@@ -6546,7 +6711,7 @@
                     addedToCollection: "Aggiunto alla collezione!",
                     removedFromCollection: "Rimosso dalla collezione!",
                     emptyCollection: "Questa collezione è vuota. Aggiungi strumenti!",
-                    emptyCollections: "Nessuna collezione. Creane una!",
+                    emptyCollections: "",
                     confirmDeleteCollection: "Sei sicuro di voler eliminare questa collezione?",
                     toolsCount: "%d strumenti",
                     toolCount: "%d strumento",
@@ -6721,7 +6886,7 @@
                     addedToCollection: "Added to collection!",
                     removedFromCollection: "Removed from collection!",
                     emptyCollection: "This collection is empty. Add tools!",
-                    emptyCollections: "No collections. Create one!",
+                    emptyCollections: "",
                     confirmDeleteCollection: "Are you sure you want to delete this collection?",
                     toolsCount: "%d tools",
                     toolCount: "%d tool",
@@ -6925,6 +7090,8 @@
             let libraryViewMode = localStorage.getItem('libraryViewMode') || 'list'; // 'list' o 'grid'
             let collections = JSON.parse(localStorage.getItem('collections') || '[]'); // Array di collezioni
             let activeCollectionId = null; // ID della collezione attualmente visualizzata
+            let selectionMode = false; // Modalità selezione multipla
+            let selectedTools = new Set(); // Set di tool IDs selezionati
             let reactRoot = null;
             let conversations = {};
             let activeConversationId = null;
@@ -7085,6 +7252,72 @@
                 return collection ? collection.toolIds.includes(toolId) : false;
             };
 
+            // NUOVO: Funzioni per la selezione multipla
+            const toggleSelectionMode = () => {
+                selectionMode = !selectionMode;
+                selectedTools.clear();
+                renderView();
+            };
+
+            const toggleToolSelection = (toolId) => {
+                if (selectedTools.has(toolId)) {
+                    selectedTools.delete(toolId);
+                } else {
+                    selectedTools.add(toolId);
+                }
+                
+                // Aggiorna il contatore
+                const count = selectedTools.size;
+                const countText = currentLanguage === 'it' ? `${count} selezionati` : `${count} selected`;
+                const countElement = document.getElementById('selection-count');
+                if (countElement) {
+                    countElement.textContent = countText;
+                }
+                
+                // Aggiorna lo stato del pulsante Rimuovi
+                const removeBtn = document.querySelector('[data-action="remove-selected-from-collection"]');
+                if (removeBtn) {
+                    if (count === 0) {
+                        removeBtn.setAttribute('disabled', 'true');
+                    } else {
+                        removeBtn.removeAttribute('disabled');
+                    }
+                }
+                
+                // Aggiorna visivamente la checkbox
+                const checkboxes = document.querySelectorAll(`[data-action="toggle-tool-selection"][data-id="${toolId}"]`);
+                checkboxes.forEach(cb => cb.classList.toggle('selected'));
+            };
+
+            const removeSelectedFromCollection = async () => {
+                if (selectedTools.size === 0 || !activeCollectionId) return;
+                
+                const t = translations[currentLanguage];
+                const count = selectedTools.size;
+                const confirmed = await showConfirmModal({
+                    title: currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection',
+                    message: currentLanguage === 'it' 
+                        ? `Sei sicuro di voler rimuovere ${count} ${count === 1 ? 'elemento' : 'elementi'} da questa collezione?` 
+                        : `Are you sure you want to remove ${count} ${count === 1 ? 'item' : 'items'} from this collection?`,
+                    icon: '🗑️',
+                    confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
+                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                });
+
+                if (!confirmed) return;
+                
+                // Rimuovi tutti gli strumenti selezionati dalla collezione
+                selectedTools.forEach(toolId => {
+                    removeToolFromCollection(activeCollectionId, toolId);
+                });
+                
+                // Reset selezione
+                selectedTools.clear();
+                selectionMode = false;
+                
+                renderView();
+            };
+
             const getCollectionById = (collectionId) => {
                 return collections.find(c => c.id === collectionId);
             };
@@ -7093,12 +7326,25 @@
             const createGridCard = (tool, context, options = {}) => {
                 let editIconHTML = '';
                 let removeIconHTML = '';
+                let selectionCheckboxHTML = '';
                 const isUserTool = tool.id.startsWith('user-');
                 const t = translations[currentLanguage];
+
+                // NUOVO: Mostra checkbox in modalità selezione per collezioni
+                if (context === 'collection' && selectionMode) {
+                    const isSelected = selectedTools.has(tool.id);
+                    selectionCheckboxHTML = `<div class="selection-checkbox ${isSelected ? 'selected' : ''}" data-action="toggle-tool-selection" data-id="${tool.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>`;
+                }
 
                 // NUOVO: Mostra pulsante X per rimuovere dai preferiti
                 if (context === 'favorites') {
                     removeIconHTML = `<div class="remove-favorite-icon" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                }
+                // NUOVO: Mostra pulsante X per rimuovere dalla collezione (solo se non in modalità selezione)
+                else if (context === 'collection' && !selectionMode) {
+                    removeIconHTML = `<div class="remove-favorite-icon" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
                 }
 
                 // Mostra icona di modifica per app custom dell'utente
@@ -7132,7 +7378,8 @@
                     editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
                 }
 
-                return `<div class="tool-card-grid stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
+                const cardClass = selectionMode && context === 'collection' ? 'tool-card-grid stagger-item selectable' : 'tool-card-grid stagger-item';
+                return `<div class="${cardClass}" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
             };
 
             const createListCard = (tool, context) => {
@@ -7140,10 +7387,25 @@
                 const isFavorited = currentUser.favorites.includes(tool.id);
                 const t = translations[currentLanguage];
                 
+                // NUOVO: Mostra checkbox in modalità selezione per collezioni
+                let favoriteIconHTML = '';
+                if (context === 'collection' && selectionMode) {
+                    const isSelected = selectedTools.has(tool.id);
+                    favoriteIconHTML = `<div class="selection-checkbox-list ${isSelected ? 'selected' : ''}" data-action="toggle-tool-selection" data-id="${tool.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>`;
+                }
                 // NUOVO: Mostra X invece di cuore nei preferiti
-                const favoriteIconHTML = context === 'favorites' 
-                    ? `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`
-                    : `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
+                else if (context === 'favorites') {
+                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                }
+                // NUOVO: Mostra X per rimuovere dalla collezione
+                else if (context === 'collection') {
+                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
+                }
+                else {
+                    favoriteIconHTML = `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
+                }
 
                 let editIconHTML = '';
                 // NUOVO: Mostra l'icona di modifica globale se l'utente è admin
@@ -8281,15 +8543,41 @@ ${filtersHTML}
                         `;
 
                         const backButtonHTML = `
-                            <div style="padding: 16px;">
+                            <div style="padding: 16px; display: flex; align-items: center; gap: 12px;">
                                 <button class="pill-btn" data-action="back-to-collections" style="display: inline-flex; align-items: center; gap: 8px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                     ${t.backToSearch}
                                 </button>
+                                ${collection.toolIds.length > 0 ? `
+                                    <button class="pill-btn ${selectionMode ? 'active' : ''}" data-action="toggle-selection-mode" id="selection-mode-btn" style="display: inline-flex; align-items: center; gap: 8px; margin-left: auto;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        ${selectionMode ? (currentLanguage === 'it' ? 'Annulla selezione' : 'Cancel selection') : (currentLanguage === 'it' ? 'Seleziona' : 'Select')}
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
+                        
+                        // Barra azioni selezione multipla
+                        const selectedCount = selectedTools.size;
+                        const selectionCountText = currentLanguage === 'it' ? `${selectedCount} selezionati` : `${selectedCount} selected`;
+                        const selectionBarHTML = `
+                            <div id="selection-bar" class="selection-bar" style="display: ${selectionMode ? 'block' : 'none'};">
+                                <div class="selection-bar-content">
+                                    <span id="selection-count">${selectionCountText}</span>
+                                    <div class="selection-bar-actions">
+                                        <button class="selection-bar-btn" data-action="remove-selected-from-collection" ${selectedCount === 0 ? 'disabled' : ''}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                            ${currentLanguage === 'it' ? 'Rimuovi' : 'Remove'}
+                                        </button>
+                                        <button class="selection-bar-btn" data-action="cancel-selection">
+                                            ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         `;
 
-                        contentArea.innerHTML = backButtonHTML + headerHTML;
+                        contentArea.innerHTML = backButtonHTML + selectionBarHTML + headerHTML;
 
                         // Renderizza gli strumenti della collezione
                         const toolsContainer = document.createElement('div');
@@ -11003,7 +11291,30 @@ ${filtersHTML}
                             break;
                         case 'back-to-collections':
                             activeCollectionId = null;
+                            selectionMode = false;
+                            selectedTools.clear();
                             renderView();
+                            break;
+                        // NUOVO: Gestione selezione multipla
+                        case 'toggle-selection-mode':
+                            toggleSelectionMode();
+                            break;
+                        case 'toggle-tool-selection':
+                            toggleToolSelection(actionTarget.dataset.id);
+                            break;
+                        case 'remove-selected-from-collection':
+                            removeSelectedFromCollection();
+                            break;
+                        case 'cancel-selection':
+                            selectionMode = false;
+                            selectedTools.clear();
+                            renderView();
+                            break;
+                        case 'remove-from-collection':
+                            if (activeCollectionId) {
+                                removeToolFromCollection(activeCollectionId, actionTarget.dataset.id);
+                                renderView();
+                            }
                             break;
                         case 'submit-create-collection':
                             const nameInput = document.getElementById('new-collection-name');
