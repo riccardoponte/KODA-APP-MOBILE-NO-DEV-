@@ -531,6 +531,13 @@
             margin-bottom: 20px;
         }
 
+        .featured-disclaimer {
+            font-size: 11px;
+            color: var(--spotify-text-secondary);
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -654,6 +661,111 @@
             margin-left: auto;
             padding: 10px;
             cursor: pointer;
+        }
+
+        /* NUOVO: Stili per la selezione multipla */
+        .multi-select-toolbar {
+            position: sticky;
+            top: 64px;
+            background-color: var(--spotify-card);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            z-index: 8;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .multi-select-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .multi-select-count {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--spotify-text);
+        }
+
+        .multi-select-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .multi-select-btn {
+            background-color: var(--spotify-accent);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .multi-select-btn:hover {
+            background-color: #1ed760;
+            transform: scale(1.02);
+        }
+
+        .multi-select-btn.secondary {
+            background-color: transparent;
+            color: var(--spotify-text);
+            border: 1px solid var(--spotify-text-secondary);
+        }
+
+        .multi-select-btn.secondary:hover {
+            background-color: var(--spotify-bg-light);
+            border-color: var(--spotify-text);
+        }
+
+        .tool-card-list.multi-select-mode {
+            position: relative;
+            padding-left: 48px;
+        }
+
+        .tool-card-list .select-checkbox {
+            position: absolute;
+            left: 8px;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--spotify-text-secondary);
+            border-radius: 4px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tool-card-list.multi-select-mode .select-checkbox {
+            display: flex;
+        }
+
+        .tool-card-list.selected .select-checkbox {
+            background-color: var(--spotify-accent);
+            border-color: var(--spotify-accent);
+        }
+
+        .tool-card-list.selected .select-checkbox::after {
+            content: '✓';
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .tool-card-list.selected {
+            background-color: var(--spotify-bg-light);
+            border-radius: 8px;
+            padding: 8px;
+            margin: -8px;
         }
 
         /* NUOVO: Stili per il sistema di recensioni e valutazioni */
@@ -6088,6 +6200,41 @@
                 font-size: 24px;
             }
         }
+
+        /* Responsive styles for multi-select toolbar */
+        @media (max-width: 768px) {
+            .multi-select-toolbar {
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .multi-select-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .multi-select-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .multi-select-toolbar {
+                top: 56px;
+                padding: 10px;
+            }
+
+            .multi-select-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .multi-select-count {
+                font-size: 13px;
+            }
+        }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
     <script type="importmap">
@@ -6605,10 +6752,11 @@
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Cerca", navSearchUsers: "Utenti", navLibrary: "Libreria",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria",
-                    logout: "Logout", featured: "In evidenza", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
+                    logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Ogni AI è basata su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
+                    multiSelect: "Selezione multipla", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
-                    libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "Nessun preferito trovato. Aggiungine qualcuno!",
+                    libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "",
                     noResultsFor: "Nessun risultato per",
                     // Rankings
                     rankingTextTitle: "Classifica per il testo", rankingCodeTitle: "Classifica per il codice",
@@ -6780,10 +6928,11 @@
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Search", navSearchUsers: "Users", navLibrary: "Library",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Search", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Your Library",
-                    logout: "Logout", featured: "Featured", rankingsTitle: "TOP AI Rankings", filterAll: "All",
+                    logout: "Logout", featured: "Featured", featuredDisclaimer: "Each AI is based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
+                    multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
                     backToSearch: "‹ Back to search", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
-                    libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "No favorites found. Add some!",
+                    libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "",
                     noResultsFor: "No results for",
                     // Rankings
                     rankingTextTitle: "Ranking for Text", rankingCodeTitle: "Ranking for Code",
@@ -7087,6 +7236,8 @@
             let exploreFilter = { type: null, value: null }; // Filter for Explore page
             let rankingFilter = 'All'; // Filter for Top AI page
             let libraryTab = 'favorites'; // Variabile per la scheda attiva in Libreria
+            let exploreMultiSelectMode = false; // Modalità selezione multipla per explore
+            let exploreSelectedTools = []; // Array di ID degli strumenti selezionati in explore
             let libraryViewMode = localStorage.getItem('libraryViewMode') || 'list'; // 'list' o 'grid'
             let collections = JSON.parse(localStorage.getItem('collections') || '[]'); // Array di collezioni
             let activeCollectionId = null; // ID della collezione attualmente visualizzata
@@ -7823,6 +7974,343 @@
                 }
             };
 
+            // NUOVO: Funzioni per la selezione multipla
+            const updateMultiSelectUI = () => {
+                const t = translations[currentLanguage];
+                const toolbar = document.getElementById('multi-select-toolbar');
+                const listContainer = document.getElementById('filtered-tools-list');
+                
+                if (!toolbar || !listContainer) return;
+
+                if (exploreMultiSelectMode) {
+                    // Mostra la toolbar
+                    const selectedCount = exploreSelectedTools.length;
+                    const countText = t.itemsSelected.replace('%d', selectedCount);
+                    
+                    toolbar.style.display = 'block';
+                    toolbar.className = 'multi-select-toolbar';
+                    toolbar.innerHTML = `
+                        <div class="multi-select-info">
+                            <span class="multi-select-count">${countText}</span>
+                        </div>
+                        <div class="multi-select-actions">
+                            ${selectedCount > 0 ? `
+                                <button class="multi-select-btn" data-action="multi-select-favorites">
+                                    ❤️ ${t.addToFavorites}
+                                </button>
+                                <button class="multi-select-btn" data-action="multi-select-collection">
+                                    📁 ${t.addToCollection}
+                                </button>
+                            ` : ''}
+                            <button class="multi-select-btn secondary" data-action="cancel-multi-select">
+                                ${t.cancelSelection}
+                            </button>
+                        </div>
+                    `;
+
+                    // Aggiungi classe multi-select-mode alle card
+                    const cards = listContainer.querySelectorAll('.tool-card-list');
+                    cards.forEach(card => {
+                        card.classList.add('multi-select-mode');
+                        const toolId = card.dataset.id;
+                        
+                        // Aggiungi checkbox se non esiste
+                        if (!card.querySelector('.select-checkbox')) {
+                            const checkbox = document.createElement('div');
+                            checkbox.className = 'select-checkbox';
+                            checkbox.dataset.action = 'toggle-tool-selection';
+                            checkbox.dataset.toolId = toolId;
+                            card.insertBefore(checkbox, card.firstChild);
+                        }
+
+                        // Aggiorna stato selezionato
+                        if (exploreSelectedTools.includes(toolId)) {
+                            card.classList.add('selected');
+                        } else {
+                            card.classList.remove('selected');
+                        }
+                    });
+                } else {
+                    // Nascondi la toolbar
+                    toolbar.style.display = 'none';
+                    
+                    // Rimuovi classe multi-select-mode e checkbox
+                    const cards = listContainer.querySelectorAll('.tool-card-list');
+                    cards.forEach(card => {
+                        card.classList.remove('multi-select-mode', 'selected');
+                        const checkbox = card.querySelector('.select-checkbox');
+                        if (checkbox) checkbox.remove();
+                    });
+                }
+            };
+
+            const addSelectedToFavorites = async () => {
+                const t = translations[currentLanguage];
+                
+                if (exploreSelectedTools.length === 0) return;
+
+                // Logica per utenti LOGGATI
+                if (currentUser.uid) {
+                    const userDocRef = doc(db, "users", currentUser.uid);
+                    try {
+                        const favoritesToAdd = exploreSelectedTools.filter(id => !currentUser.favorites.includes(id));
+                        
+                        if (favoritesToAdd.length > 0) {
+                            const updatedFavorites = [...currentUser.favorites, ...favoritesToAdd];
+                            await updateDoc(userDocRef, { favorites: updatedFavorites });
+                            currentUser.favorites = updatedFavorites;
+                        }
+                        
+                        showToast(currentLanguage === 'it' 
+                            ? `${exploreSelectedTools.length} AI aggiunte ai preferiti!` 
+                            : `${exploreSelectedTools.length} AI added to favorites!`);
+                    } catch (error) {
+                        console.error("Error adding to favorites:", error);
+                        showToast("Error adding to favorites: " + error.message);
+                    }
+                }
+                // Logica per utenti OSPITI
+                else {
+                    let guestFavorites = JSON.parse(localStorage.getItem('guest-favorites')) || [];
+                    exploreSelectedTools.forEach(toolId => {
+                        if (!guestFavorites.includes(toolId)) {
+                            guestFavorites.push(toolId);
+                        }
+                    });
+                    localStorage.setItem('guest-favorites', JSON.stringify(guestFavorites));
+                    currentUser.favorites = guestFavorites;
+                    showToast(currentLanguage === 'it' 
+                        ? `${exploreSelectedTools.length} AI aggiunte ai preferiti!` 
+                        : `${exploreSelectedTools.length} AI added to favorites!`);
+                }
+
+                // Reset selezione
+                exploreMultiSelectMode = false;
+                exploreSelectedTools = [];
+                renderView();
+            };
+
+            const openCollectionSelectorForMultiSelect = () => {
+                const t = translations[currentLanguage];
+                
+                if (exploreSelectedTools.length === 0) return;
+
+                // Ottieni le collezioni da localStorage (disponibili per tutti gli utenti)
+                const userCollections = collections || [];
+
+                // Crea un modale per selezionare la collezione o crearne una nuova
+                const modal = document.createElement('div');
+                modal.className = 'review-modal visible';
+                modal.innerHTML = `
+                    <div class="review-modal-content">
+                        <div class="review-modal-header">
+                            <h3 class="review-modal-title">${t.addToCollection}</h3>
+                            <button class="review-modal-close" data-action="close-collection-selector">×</button>
+                        </div>
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            ${userCollections.length > 0 ? userCollections.map(collection => `
+                                <div class="user-profile-item" data-action="add-to-collection-multi" data-collection-id="${collection.id}" style="cursor: pointer;">
+                                    <span style="font-size: 24px;">📁</span>
+                                    <span>${collection.name}</span>
+                                </div>
+                            `).join('') : `
+                                <div style="text-align: center; padding: 24px; color: var(--spotify-text-secondary);">
+                                    ${currentLanguage === 'it' ? 'Nessuna collezione trovata' : 'No collections found'}
+                                </div>
+                            `}
+                        </div>
+                        <div style="padding: 16px 0 0 0; border-top: 1px solid rgba(128, 128, 128, 0.2); margin-top: 16px;">
+                            <button class="add-review-btn" data-action="create-new-collection-multi" style="width: 100%;">
+                                ➕ ${t.createCollection}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Gestisci chiusura e azioni
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal || e.target.dataset.action === 'close-collection-selector') {
+                        modal.remove();
+                    }
+                    if (e.target.dataset.action === 'add-to-collection-multi' || e.target.closest('[data-action="add-to-collection-multi"]')) {
+                        const collectionId = (e.target.dataset.collectionId || e.target.closest('[data-action="add-to-collection-multi"]').dataset.collectionId);
+                        addSelectedToCollection(collectionId);
+                        modal.remove();
+                    }
+                    if (e.target.dataset.action === 'create-new-collection-multi' || e.target.closest('[data-action="create-new-collection-multi"]')) {
+                        modal.remove();
+                        openCreateCollectionModalForMultiSelect();
+                    }
+                });
+            };
+
+            const openCreateCollectionModalForMultiSelect = async () => {
+                console.log('openCreateCollectionModalForMultiSelect called');
+                console.log('Selected tools:', exploreSelectedTools);
+                
+                const t = translations[currentLanguage];
+                
+                // Handler per il submit (definito prima per poterlo usare nell'onclick)
+                window.handleMultiCollectionSubmit = async () => {
+                    console.log('handleMultiCollectionSubmit called');
+                    
+                    const input = document.getElementById('multi-select-collection-name');
+                    const collectionName = input?.value.trim();
+                    
+                    console.log('Collection name:', collectionName);
+                    
+                    if (!collectionName) {
+                        showToast(currentLanguage === 'it' ? 'Inserisci un nome' : 'Enter a name');
+                        return;
+                    }
+
+                    console.log('Creating collection with tools:', exploreSelectedTools);
+
+                    try {
+                        // Crea la collezione usando la funzione esistente (localStorage)
+                        const newCollection = createCollection(collectionName);
+                        
+                        console.log('Collection created:', newCollection);
+                        
+                        // Aggiungi tutti gli strumenti selezionati alla collezione
+                        exploreSelectedTools.forEach(toolId => {
+                            addToolToCollection(newCollection.id, toolId);
+                        });
+                        
+                        console.log('Tools added to collection');
+
+                        // Aggiungi anche ai preferiti
+                        if (currentUser.uid) {
+                            // Utente loggato - usa Firestore
+                            const userDocRef = doc(db, "users", currentUser.uid);
+                            const favoritesToAdd = exploreSelectedTools.filter(id => !currentUser.favorites.includes(id));
+                            
+                            if (favoritesToAdd.length > 0) {
+                                const updatedFavorites = [...currentUser.favorites, ...favoritesToAdd];
+                                await updateDoc(userDocRef, { favorites: updatedFavorites });
+                                currentUser.favorites = updatedFavorites;
+                            }
+                        } else {
+                            // Utente ospite - usa localStorage
+                            let guestFavorites = JSON.parse(localStorage.getItem('guest-favorites')) || [];
+                            exploreSelectedTools.forEach(toolId => {
+                                if (!guestFavorites.includes(toolId)) {
+                                    guestFavorites.push(toolId);
+                                }
+                            });
+                            localStorage.setItem('guest-favorites', JSON.stringify(guestFavorites));
+                            currentUser.favorites = guestFavorites;
+                        }
+                        
+                        console.log('Favorites updated');
+
+                        showToast(currentLanguage === 'it' 
+                            ? `Collezione "${collectionName}" creata con ${exploreSelectedTools.length} AI!` 
+                            : `Collection "${collectionName}" created with ${exploreSelectedTools.length} AI!`);
+
+                        const modal = document.getElementById('multi-select-create-collection-modal');
+                        if (modal) modal.remove();
+                        
+                        // Reset selezione
+                        exploreMultiSelectMode = false;
+                        exploreSelectedTools = [];
+                        renderView();
+                    } catch (error) {
+                        console.error("Error creating collection:", error);
+                        showToast("Error: " + error.message);
+                    }
+                };
+                
+                const modal = document.createElement('div');
+                modal.className = 'review-modal visible';
+                modal.id = 'multi-select-create-collection-modal';
+                modal.innerHTML = `
+                    <div class="review-modal-content">
+                        <div class="review-modal-header">
+                            <h3 class="review-modal-title">${t.createCollection}</h3>
+                            <button class="review-modal-close" onclick="document.getElementById('multi-select-create-collection-modal').remove()">×</button>
+                        </div>
+                        <div style="padding: 16px 0;">
+                            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px;">
+                                ${t.collectionName}
+                            </label>
+                            <input 
+                                type="text" 
+                                id="multi-select-collection-name" 
+                                placeholder="${t.collectionNamePlaceholder}"
+                                style="width: 100%; padding: 12px; border: 1px solid rgba(128, 128, 128, 0.2); border-radius: 8px; background-color: var(--spotify-bg-light); color: var(--spotify-text); font-family: inherit; font-size: 14px;"
+                                onkeypress="if(event.key === 'Enter') window.handleMultiCollectionSubmit()"
+                            />
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                            <button class="review-cancel-btn" onclick="document.getElementById('multi-select-create-collection-modal').remove()">
+                                ${t.cancel}
+                            </button>
+                            <button class="review-submit-btn" onclick="window.handleMultiCollectionSubmit()">
+                                ${t.createCollectionButton}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Focus sull'input
+                setTimeout(() => {
+                    const input = document.getElementById('multi-select-collection-name');
+                    if (input) {
+                        input.focus();
+                        console.log('Input focused');
+                    }
+                }, 100);
+            };
+
+            const addSelectedToCollection = async (collectionId) => {
+                if (exploreSelectedTools.length === 0) return;
+                
+                try {
+                    // Aggiungi tutti gli strumenti selezionati alla collezione (localStorage)
+                    exploreSelectedTools.forEach(toolId => {
+                        addToolToCollection(collectionId, toolId);
+                    });
+
+                    // Aggiungi anche ai preferiti
+                    if (currentUser.uid) {
+                        // Utente loggato - usa Firestore
+                        const userDocRef = doc(db, "users", currentUser.uid);
+                        const favoritesToAdd = exploreSelectedTools.filter(id => !currentUser.favorites.includes(id));
+                        
+                        if (favoritesToAdd.length > 0) {
+                            const updatedFavorites = [...currentUser.favorites, ...favoritesToAdd];
+                            await updateDoc(userDocRef, { favorites: updatedFavorites });
+                            currentUser.favorites = updatedFavorites;
+                        }
+                    } else {
+                        // Utente ospite - usa localStorage
+                        let guestFavorites = JSON.parse(localStorage.getItem('guest-favorites')) || [];
+                        exploreSelectedTools.forEach(toolId => {
+                            if (!guestFavorites.includes(toolId)) {
+                                guestFavorites.push(toolId);
+                            }
+                        });
+                        localStorage.setItem('guest-favorites', JSON.stringify(guestFavorites));
+                        currentUser.favorites = guestFavorites;
+                    }
+
+                    showToast(currentLanguage === 'it' 
+                        ? `${exploreSelectedTools.length} AI aggiunte alla collezione!` 
+                        : `${exploreSelectedTools.length} AI added to collection!`);
+
+                    // Reset selezione
+                    exploreMultiSelectMode = false;
+                    exploreSelectedTools = [];
+                    renderView();
+                } catch (error) {
+                    console.error("Error adding to collection:", error);
+                    showToast("Error adding to collection: " + error.message);
+                }
+            };
+
 
 
             const unmountReactApp = () => {
@@ -8347,7 +8835,7 @@
 
                     // Limita a 4 le AI In evidenza
                     const featuredTools = staticTools.filter(t => t.isFeatured).slice(0, 4); // Solo 4 AI In evidenza
-                    let contentHTML = `<div class="section-title" data-translate="featured">${t.featured}</div><div class="grid-container">`;
+                    let contentHTML = `<div class="section-title"><span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container">`;
 
                     // Render static featured tools, potentially replaced by user tools
                     contentHTML += featuredTools.map(staticTool => {
@@ -8423,7 +8911,19 @@ ${filtersHTML}
                         const filteredTools = uniqueTools.filter(t => t[exploreFilter.type] === exploreFilter.value);
                         const title = exploreFilter.type === 'category' ? getTranslatedCategoryName(exploreFilter.value) : `${t.toolsFrom} ${exploreFilter.value}`;
 
-                        contentArea.innerHTML = `<div class="back-button" data-action="back-to-explore">${t.backToSearch}</div><h2 class="section-title">${title}</h2><div class="list-container">${filteredTools.map(tool => createListCard(tool, 'explore')).join('')}</div>`;
+                        contentArea.innerHTML = `
+                            <div class="back-button" data-action="back-to-explore">${t.backToSearch}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2 class="section-title" style="margin-bottom: 0;">${title}</h2>
+                                <button class="pill-btn" data-action="toggle-multi-select" style="font-size: 13px;">
+                                    ${t.multiSelect}
+                                </button>
+                            </div>
+                            <div id="multi-select-toolbar" style="display: none;"></div>
+                            <div class="list-container" id="filtered-tools-list">
+                                ${filteredTools.map(tool => createListCard(tool, 'explore')).join('')}
+                            </div>
+                        `;
 
                     } else {
                         const toolsByCategory = {};
@@ -11300,7 +11800,20 @@ ${filtersHTML}
                             toggleSelectionMode();
                             break;
                         case 'toggle-tool-selection':
-                            toggleToolSelection(actionTarget.dataset.id);
+                            const toolIdToToggle = actionTarget.dataset.toolId || actionTarget.dataset.id;
+                            if (exploreMultiSelectMode) {
+                                // Modalità selezione multipla per explore
+                                const index = exploreSelectedTools.indexOf(toolIdToToggle);
+                                if (index > -1) {
+                                    exploreSelectedTools.splice(index, 1);
+                                } else {
+                                    exploreSelectedTools.push(toolIdToToggle);
+                                }
+                                updateMultiSelectUI();
+                            } else if (typeof toggleToolSelection === 'function') {
+                                // Modalità selezione per collezioni (esistente)
+                                toggleToolSelection(toolIdToToggle);
+                            }
                             break;
                         case 'remove-selected-from-collection':
                             removeSelectedFromCollection();
@@ -11436,11 +11949,34 @@ ${filtersHTML}
                         case 'prompt-register': triggerAuthFlow('register-card'); break;
 
                         // Explore/Top AI Filters
-                        case 'back-to-explore': exploreFilter = { type: null, value: null }; renderView(); break;
+                        case 'back-to-explore': 
+                            exploreFilter = { type: null, value: null }; 
+                            exploreMultiSelectMode = false;
+                            exploreSelectedTools = [];
+                            renderView(); 
+                            break;
                         case 'set-explore-filter':
                             exploreFilter.type = actionTarget.dataset.filterType;
                             exploreFilter.value = actionTarget.dataset.filterValue;
+                            exploreMultiSelectMode = false;
+                            exploreSelectedTools = [];
                             renderView();
+                            break;
+                        case 'toggle-multi-select':
+                            exploreMultiSelectMode = !exploreMultiSelectMode;
+                            exploreSelectedTools = [];
+                            updateMultiSelectUI();
+                            break;
+                        case 'cancel-multi-select':
+                            exploreMultiSelectMode = false;
+                            exploreSelectedTools = [];
+                            updateMultiSelectUI();
+                            break;
+                        case 'multi-select-favorites':
+                            addSelectedToFavorites();
+                            break;
+                        case 'multi-select-collection':
+                            openCollectionSelectorForMultiSelect();
                             break;
                         case 'set-ranking-filter':
                             rankingFilter = actionTarget.dataset.filter;
@@ -11622,8 +12158,20 @@ ${filtersHTML}
 
                 // 5. Handle clicks on tool/ranking cards (excluding favorite icon and edit icon which have data-actions)
                 const toolCard = target.closest('.tool-card-grid, .tool-card-list, .ranking-item, .tool-item-horizontal, .tool-shelf-item');
-                if (toolCard && !target.closest('.favorite-icon') && !target.closest('.edit-icon')) {
-                    window.openDetailModal(toolCard.dataset.id);
+                if (toolCard && !target.closest('.favorite-icon') && !target.closest('.edit-icon') && !target.closest('.select-checkbox')) {
+                    // Se siamo in modalità multi-select, seleziona/deseleziona invece di aprire il modale
+                    if (exploreMultiSelectMode && toolCard.classList.contains('tool-card-list')) {
+                        const toolId = toolCard.dataset.id;
+                        const index = exploreSelectedTools.indexOf(toolId);
+                        if (index > -1) {
+                            exploreSelectedTools.splice(index, 1);
+                        } else {
+                            exploreSelectedTools.push(toolId);
+                        }
+                        updateMultiSelectUI();
+                    } else {
+                        window.openDetailModal(toolCard.dataset.id);
+                    }
                     return;
                 }
 
