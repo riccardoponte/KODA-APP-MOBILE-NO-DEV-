@@ -981,6 +981,7 @@
                 transform: scale(0.9) translateY(20px);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1) translateY(0);
                 opacity: 1;
@@ -4287,12 +4288,10 @@
             gap: 8px;
         }
 
-        .floating-action-btn {
-            position: fixed;
-            bottom: -2px;
-            /* 🔽 sporgente leggermente sotto lo schermo */
-            left: 50%;
-            transform: translateX(-50%);
+        /* Pulsante FAB centrale nella bottom nav */
+        .nav-btn-fab {
+            position: relative;
+            flex: 0 0 auto;
             width: 56px;
             height: 56px;
             background-color: var(--spotify-accent);
@@ -4302,19 +4301,43 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: 500;
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
-            /* ombra verso l'alto */
             cursor: pointer;
-            z-index: 1002;
-            transition: transform 0.2s ease, background-color 0.2s ease;
+            margin: 0 8px;
+            margin-top: -28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+            z-index: 10;
         }
 
-        .floating-action-btn:hover {
+        .nav-btn-fab:hover {
             background-color: #1ed760;
-            /* Colore leggermente più chiaro al passaggio del mouse */
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-btn-fab:active {
+            transform: scale(0.95);
+        }
+
+        .nav-btn-fab .fab-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .nav-btn-fab .fab-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 480px) {
+            .nav-btn-fab {
+                width: 52px;
+                height: 52px;
+                margin-top: -26px;
+            }
         }
 
         .chat-search-container {
@@ -5927,6 +5950,12 @@
                         <path d="M0 0h24v24H0z" fill="none" />
                         <path d="M5 9.2h3V19H5zM10.6 5h3v14h-3zm5.6 8H19v6h-2.8z" />
                     </svg></span><span data-translate="navTopAI">TOP AI</span></button>
+            
+            <!-- PULSANTE CENTRALE FAB -->
+            <button class="nav-btn-fab" id="bottom-nav-fab" data-action="" style="display: none;">
+                <span class="fab-icon"></span>
+            </button>
+            
             <button class="nav-btn" data-page="explore"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
                         height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
                         <path d="M0 0h24v24H0z" fill="none" />
@@ -7183,7 +7212,7 @@
             const showConfirmModal = (options) => {
                 return new Promise((resolve) => {
                     const { title, message, icon = '⚠️', confirmText, cancelText } = options;
-                    
+
                     const modalHTML = `
                         <div class="confirm-modal visible">
                             <div class="confirm-modal-content">
@@ -7197,13 +7226,13 @@
                             </div>
                         </div>
                     `;
-                    
+
                     const modalContainer = document.createElement('div');
                     modalContainer.innerHTML = modalHTML;
                     document.body.appendChild(modalContainer);
-                    
+
                     const modal = modalContainer.querySelector('.confirm-modal');
-                    
+
                     // Gestisci i click sui pulsanti
                     const handleClick = (confirmed) => {
                         modal.classList.remove('visible');
@@ -7212,10 +7241,10 @@
                             resolve(confirmed);
                         }, 300);
                     };
-                    
+
                     modal.querySelector('[data-action="confirm-ok"]').addEventListener('click', () => handleClick(true));
                     modal.querySelector('[data-action="confirm-cancel"]').addEventListener('click', () => handleClick(false));
-                    
+
                     // Chiudi con ESC
                     const handleEsc = (e) => {
                         if (e.key === 'Escape') {
@@ -7242,8 +7271,8 @@
                     if (isFavorited) {
                         const confirmed = await showConfirmModal({
                             title: currentLanguage === 'it' ? 'Rimuovi dai preferiti' : 'Remove from favorites',
-                            message: currentLanguage === 'it' 
-                                ? 'Sei sicuro di voler rimuovere questa AI dai preferiti?' 
+                            message: currentLanguage === 'it'
+                                ? 'Sei sicuro di voler rimuovere questa AI dai preferiti?'
                                 : 'Are you sure you want to remove this AI from favorites?',
                             icon: '💔',
                             confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
@@ -7278,8 +7307,8 @@
                     if (isFavorited) {
                         const confirmed = await showConfirmModal({
                             title: currentLanguage === 'it' ? 'Rimuovi dai preferiti' : 'Remove from favorites',
-                            message: currentLanguage === 'it' 
-                                ? 'Sei sicuro di voler rimuovere questa AI dai preferiti?' 
+                            message: currentLanguage === 'it'
+                                ? 'Sei sicuro di voler rimuovere questa AI dai preferiti?'
                                 : 'Are you sure you want to remove this AI from favorites?',
                             icon: '💔',
                             confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
@@ -7830,7 +7859,7 @@
 
             const handleDeleteCollection = async (collectionId) => {
                 const t = translations[currentLanguage];
-                
+
                 const confirmed = await showConfirmModal({
                     title: currentLanguage === 'it' ? 'Elimina collezione' : 'Delete collection',
                     message: t.confirmDeleteCollection,
@@ -7838,7 +7867,7 @@
                     confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
                     cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
                 });
-                
+
                 if (confirmed) {
                     deleteCollection(collectionId);
                     showToast(t.collectionDeleted);
@@ -7854,6 +7883,34 @@
             const openCollectionDetail = (collectionId) => {
                 activeCollectionId = collectionId;
                 renderView();
+            };
+
+            // NUOVO: Funzione per aggiornare il pulsante FAB nella bottom nav
+            const updateBottomNavFAB = (tab) => {
+                const fabBtn = document.getElementById('bottom-nav-fab');
+                if (!fabBtn) return;
+                
+                const t = translations[currentLanguage];
+                
+                // Mostra il FAB solo nella pagina Library
+                if (currentView === 'favorites') {
+                    fabBtn.style.display = 'flex';
+                    
+                    if (tab === 'collections') {
+                        // Icona per creare collezione
+                        fabBtn.dataset.action = 'create-collection';
+                        fabBtn.title = t.createCollection;
+                        fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
+                    } else {
+                        // Icona per aggiungere app custom
+                        fabBtn.dataset.action = 'open-add-app-modal';
+                        fabBtn.title = t.addCustomApp;
+                        fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path></svg>`;
+                    }
+                } else {
+                    // Nascondi il FAB nelle altre pagine
+                    fabBtn.style.display = 'none';
+                }
             };
 
             const renderView = () => {
@@ -8189,20 +8246,10 @@ ${filtersHTML}
 
                     const contentListHTML = `<div id="library-content-list" class="${libraryViewMode === 'grid' ? 'grid-view-container' : 'list-container'}" style="padding: 0 16px;"></div>`;
 
-                    // FAB dinamico: cambia icona e azione in base al tab
-                    const fabAction = libraryTab === 'collections' ? 'create-collection' : 'open-add-app-modal';
-                    const fabTitle = libraryTab === 'collections' ? t.createCollection : t.addCustomApp;
-                    const fabIcon = libraryTab === 'collections'
-                        ? `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`
-                        : `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path></svg>`;
-
-                    const actionButtonsHTML = `
-                        <button class="floating-action-btn" data-action="${fabAction}" title="${fabTitle}">
-                           ${fabIcon}
-                        </button>
-                    `;
-
-                    contentArea.innerHTML = filtersHTML + contentListHTML + actionButtonsHTML;
+                    contentArea.innerHTML = filtersHTML + contentListHTML;
+                    
+                    // NUOVO: Aggiorna il pulsante centrale della bottom nav in base al tab attivo
+                    updateBottomNavFAB(libraryTab);
 
                     // --- FUNZIONE PER RENDERIZZARE IL CONTENUTO DELLA SCHEDA ATTIVA ---
                     const renderLibraryContent = async (tab) => {
@@ -8298,6 +8345,9 @@ ${filtersHTML}
 
                 updateNavActiveState();
                 applyTranslations(currentLanguage); // Apply translations after rendering content
+                
+                // NUOVO: Aggiorna il pulsante FAB nella bottom nav
+                updateBottomNavFAB(libraryTab);
             };
 
             const updateNavActiveState = () => el.bottomNav.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.page === currentView));
