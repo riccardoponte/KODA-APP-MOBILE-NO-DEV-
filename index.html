@@ -942,6 +942,138 @@
             cursor: not-allowed;
         }
 
+        /* Confirmation Modal Styles */
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2500;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .confirm-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirm-modal-content {
+            background: var(--spotify-card);
+            padding: 32px 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            animation: confirmSlideIn 0.3s ease-out;
+        }
+
+        @keyframes confirmSlideIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .confirm-modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .confirm-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--spotify-text);
+        }
+
+        .confirm-modal-message {
+            font-size: 14px;
+            color: var(--spotify-text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .confirm-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .confirm-cancel-btn {
+            background: none;
+            border: 1px solid var(--spotify-text-secondary);
+            color: var(--spotify-text);
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .confirm-cancel-btn:hover {
+            background-color: var(--spotify-bg-light);
+            border-color: var(--spotify-text);
+        }
+
+        .confirm-ok-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .confirm-ok-btn:hover {
+            background-color: #ff5252;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 480px) {
+            .confirm-modal-content {
+                width: 95%;
+                padding: 24px 20px;
+            }
+
+            .confirm-modal-icon {
+                font-size: 40px;
+            }
+
+            .confirm-modal-title {
+                font-size: 18px;
+            }
+
+            .confirm-modal-actions {
+                flex-direction: column;
+            }
+
+            .confirm-cancel-btn,
+            .confirm-ok-btn {
+                max-width: 100%;
+            }
+        }
+
         /* Sent Reviews Modal Styles */
         .sent-reviews-modal {
             position: fixed;
@@ -1358,6 +1490,7 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
         /* Stili per il pulsante admin migliorato */
@@ -2513,14 +2646,14 @@
         #change-password-modal input,
         /* AGGIUNTO */
         #change-nickname-modal input,
-        /* AGGIUNTO */
-        #edit-app-modal input,
         #add-global-tool-modal input,
         #add-global-tool-modal textarea,
         #add-global-tool-modal select,
         #edit-global-tool-modal input,
         #edit-global-tool-modal textarea,
-        #edit-global-tool-modal select {
+        #edit-global-tool-modal select,
+        #create-collection-modal input,
+        #rename-collection-modal input {
             width: 100%;
             padding: 16px 18px;
             font-size: 16px;
@@ -2536,6 +2669,53 @@
         #add-app-modal textarea {
             min-height: 80px;
             resize: vertical;
+        }
+
+        /* Stili responsive per il modal Aggiungi App Custom */
+        #add-app-modal .modal-content {
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 768px) {
+            #add-app-modal .modal-content {
+                width: 95%;
+                max-height: 85vh;
+                padding: 20px;
+                margin: 10px auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #add-app-modal .modal-content {
+                width: 100%;
+                max-height: 100vh;
+                padding: 16px;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            #add-app-modal .input-group {
+                margin-bottom: 12px;
+            }
+
+            #add-app-modal label {
+                font-size: 13px;
+            }
+
+            #add-app-modal input:not([type="file"]),
+            #add-app-modal textarea {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            #add-app-modal .button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
         }
 
         /* Stili specifici per il modal Aggiungi AI */
@@ -4108,26 +4288,28 @@
         }
 
         .floating-action-btn {
-    position: fixed;
-    bottom: -2px; /* 🔽 sporgente leggermente sotto lo schermo */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 56px;
-    height: 56px;
-    background-color: var(--spotify-accent);
-    color: #000;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    font-weight: 500;
-    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3); /* ombra verso l'alto */
-    cursor: pointer;
-    z-index: 1002;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
+            position: fixed;
+            bottom: -2px;
+            /* 🔽 sporgente leggermente sotto lo schermo */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 56px;
+            height: 56px;
+            background-color: var(--spotify-accent);
+            color: #000;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 500;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
+            /* ombra verso l'alto */
+            cursor: pointer;
+            z-index: 1002;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
 
         .floating-action-btn:hover {
             background-color: #1ed760;
@@ -5070,13 +5252,14 @@
         /* ========================================
            ANIMAZIONI DI NAVIGAZIONE E TRANSIZIONI
            ======================================== */
-        
+
         /* Animazione di ingresso delle pagine: slide-up + fade-in */
         @keyframes pageSlideUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -5094,6 +5277,7 @@
                 opacity: 0;
                 transform: translateY(15px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -5106,29 +5290,90 @@
             animation: cardFadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        .stagger-item:nth-child(1) { animation-delay: 0.05s; }
-        .stagger-item:nth-child(2) { animation-delay: 0.1s; }
-        .stagger-item:nth-child(3) { animation-delay: 0.15s; }
-        .stagger-item:nth-child(4) { animation-delay: 0.2s; }
-        .stagger-item:nth-child(5) { animation-delay: 0.25s; }
-        .stagger-item:nth-child(6) { animation-delay: 0.3s; }
-        .stagger-item:nth-child(7) { animation-delay: 0.35s; }
-        .stagger-item:nth-child(8) { animation-delay: 0.4s; }
-        .stagger-item:nth-child(9) { animation-delay: 0.45s; }
-        .stagger-item:nth-child(10) { animation-delay: 0.5s; }
-        .stagger-item:nth-child(11) { animation-delay: 0.55s; }
-        .stagger-item:nth-child(12) { animation-delay: 0.6s; }
-        .stagger-item:nth-child(13) { animation-delay: 0.65s; }
-        .stagger-item:nth-child(14) { animation-delay: 0.7s; }
-        .stagger-item:nth-child(15) { animation-delay: 0.75s; }
-        .stagger-item:nth-child(16) { animation-delay: 0.8s; }
-        .stagger-item:nth-child(17) { animation-delay: 0.85s; }
-        .stagger-item:nth-child(18) { animation-delay: 0.9s; }
-        .stagger-item:nth-child(19) { animation-delay: 0.95s; }
-        .stagger-item:nth-child(20) { animation-delay: 1s; }
+        .stagger-item:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .stagger-item:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-item:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .stagger-item:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        .stagger-item:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .stagger-item:nth-child(6) {
+            animation-delay: 0.3s;
+        }
+
+        .stagger-item:nth-child(7) {
+            animation-delay: 0.35s;
+        }
+
+        .stagger-item:nth-child(8) {
+            animation-delay: 0.4s;
+        }
+
+        .stagger-item:nth-child(9) {
+            animation-delay: 0.45s;
+        }
+
+        .stagger-item:nth-child(10) {
+            animation-delay: 0.5s;
+        }
+
+        .stagger-item:nth-child(11) {
+            animation-delay: 0.55s;
+        }
+
+        .stagger-item:nth-child(12) {
+            animation-delay: 0.6s;
+        }
+
+        .stagger-item:nth-child(13) {
+            animation-delay: 0.65s;
+        }
+
+        .stagger-item:nth-child(14) {
+            animation-delay: 0.7s;
+        }
+
+        .stagger-item:nth-child(15) {
+            animation-delay: 0.75s;
+        }
+
+        .stagger-item:nth-child(16) {
+            animation-delay: 0.8s;
+        }
+
+        .stagger-item:nth-child(17) {
+            animation-delay: 0.85s;
+        }
+
+        .stagger-item:nth-child(18) {
+            animation-delay: 0.9s;
+        }
+
+        .stagger-item:nth-child(19) {
+            animation-delay: 0.95s;
+        }
+
+        .stagger-item:nth-child(20) {
+            animation-delay: 1s;
+        }
 
         /* Per card oltre la 20esima, usa un delay massimo */
-        .stagger-item:nth-child(n+21) { animation-delay: 1.05s; }
+        .stagger-item:nth-child(n+21) {
+            animation-delay: 1.05s;
+        }
 
         /* ========================================
            SISTEMA DI COLLEZIONI E LAYOUT A GRIGLIA
@@ -6757,7 +7002,7 @@
             const createGridCard = (tool, context, options = {}) => {
                 let editIconHTML = '';
                 const isUserTool = tool.id.startsWith('user-');
-                
+
                 // Mostra icona di modifica per app custom dell'utente
                 if (currentUser.uid) {
                     let action = '';
@@ -6913,8 +7158,8 @@
                                 ${userToolActionsHTML}
                                 ${currentUser.uid ? `<button class="button" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? t.detailModalRemoveFavorite : t.detailModalAddFavorite}</button>` : ''}
                                 <button class="button" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? t.detailModalRemoveFavorite : t.detailModalAddFavorite}</button>
-                                <button class="button" data-action="add-to-collection" data-tool-id="${tool.id}" style="background: var(--spotify-card); color: var(--spotify-text);">${t.addToCollection}</button>
-                                <a href="${tool.website}" target="_blank" class="button" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">${t.visitWebsite}</a>
+                                <button class="button" data-action="add-to-collection" data-tool-id="${tool.id}" style="background: white; color: #000;">${t.addToCollection}</button>
+                                <a href="${tool.website}" target="_blank" class="button" style="text-decoration: none; display: flex; justify-content: center; align-items: center; background: #8b5cf6; color: white;">${t.visitWebsite}</a>
                             </div>
                             ${recommendationHTML}
                         </div>
@@ -6922,8 +7167,11 @@
                 </div>`;
                 el.modalContainer.innerHTML = modalHTML;
 
-                // NUOVO: Carica le recensioni dopo aver renderizzato il modal
-                setTimeout(() => loadReviews(toolId), 100);
+                // NUOVO: Inizializza lo stato del pulsante "Aggiungi a collezione"
+                setTimeout(() => {
+                    updateAddToCollectionButton(toolId);
+                    loadReviews(toolId);
+                }, 100);
             };
 
             const closeModal = () => {
@@ -6931,13 +7179,82 @@
                 closeUserProfileDropdown();
             };
 
+            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Spotify
+            const showConfirmModal = (options) => {
+                return new Promise((resolve) => {
+                    const { title, message, icon = '⚠️', confirmText, cancelText } = options;
+                    
+                    const modalHTML = `
+                        <div class="confirm-modal visible">
+                            <div class="confirm-modal-content">
+                                <div class="confirm-modal-icon">${icon}</div>
+                                <h3 class="confirm-modal-title">${title}</h3>
+                                <p class="confirm-modal-message">${message}</p>
+                                <div class="confirm-modal-actions">
+                                    <button class="confirm-cancel-btn" data-action="confirm-cancel">${cancelText}</button>
+                                    <button class="confirm-ok-btn" data-action="confirm-ok">${confirmText}</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const modalContainer = document.createElement('div');
+                    modalContainer.innerHTML = modalHTML;
+                    document.body.appendChild(modalContainer);
+                    
+                    const modal = modalContainer.querySelector('.confirm-modal');
+                    
+                    // Gestisci i click sui pulsanti
+                    const handleClick = (confirmed) => {
+                        modal.classList.remove('visible');
+                        setTimeout(() => {
+                            modalContainer.remove();
+                            resolve(confirmed);
+                        }, 300);
+                    };
+                    
+                    modal.querySelector('[data-action="confirm-ok"]').addEventListener('click', () => handleClick(true));
+                    modal.querySelector('[data-action="confirm-cancel"]').addEventListener('click', () => handleClick(false));
+                    
+                    // Chiudi con ESC
+                    const handleEsc = (e) => {
+                        if (e.key === 'Escape') {
+                            handleClick(false);
+                            document.removeEventListener('keydown', handleEsc);
+                        }
+                    };
+                    document.addEventListener('keydown', handleEsc);
+                });
+            };
+
             // Variable to store pending favorite action
             let pendingFavoriteAction = null;
 
-            const toggleFavorite = async (toolId) => {                // Logica per utenti LOGGATI (usa Firestore)
+            const toggleFavorite = async (toolId) => {
+                const t = translations[currentLanguage];
+
+                // Logica per utenti LOGGATI (usa Firestore)
                 if (currentUser.uid) {
                     const userDocRef = doc(db, "users", currentUser.uid);
                     const isFavorited = currentUser.favorites.includes(toolId);
+
+                    // NUOVO: Chiedi conferma con modale custom prima di rimuovere dai preferiti
+                    if (isFavorited) {
+                        const confirmed = await showConfirmModal({
+                            title: currentLanguage === 'it' ? 'Rimuovi dai preferiti' : 'Remove from favorites',
+                            message: currentLanguage === 'it' 
+                                ? 'Sei sicuro di voler rimuovere questa AI dai preferiti?' 
+                                : 'Are you sure you want to remove this AI from favorites?',
+                            icon: '💔',
+                            confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
+                            cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                        });
+
+                        if (!confirmed) {
+                            return; // Annulla l'operazione
+                        }
+                    }
+
                     try {
                         if (isFavorited) {
                             await updateDoc(userDocRef, { favorites: arrayRemove(toolId) });
@@ -6954,11 +7271,25 @@
                 }
                 // Logica per utenti OSPITI (usa localStorage)
                 else {
-                    const t = translations[currentLanguage];
                     let guestFavorites = JSON.parse(localStorage.getItem('guest-favorites')) || [];
                     const isFavorited = guestFavorites.includes(toolId);
 
+                    // NUOVO: Chiedi conferma con modale custom prima di rimuovere dai preferiti
                     if (isFavorited) {
+                        const confirmed = await showConfirmModal({
+                            title: currentLanguage === 'it' ? 'Rimuovi dai preferiti' : 'Remove from favorites',
+                            message: currentLanguage === 'it' 
+                                ? 'Sei sicuro di voler rimuovere questa AI dai preferiti?' 
+                                : 'Are you sure you want to remove this AI from favorites?',
+                            icon: '💔',
+                            confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
+                            cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                        });
+
+                        if (!confirmed) {
+                            return; // Annulla l'operazione
+                        }
+
                         guestFavorites = guestFavorites.filter(id => id !== toolId);
                         showToast(t.favoriteRemoved); // Notifica di rimozione
                     } else {
@@ -7291,17 +7622,23 @@
             // FUNZIONI PER I MODAL DELLE COLLEZIONI
             // ========================================
 
+            // NUOVO: Variabile per tracciare il tool corrente nel modal
+            let currentToolIdInModal = null;
+
             const openAddToCollectionModal = (toolId) => {
                 const t = translations[currentLanguage];
-                
+
+                // NUOVO: Salva il toolId corrente
+                currentToolIdInModal = toolId;
+
                 const collectionsListHTML = collections.map(collection => {
                     const isInCollection = isToolInCollection(collection.id, toolId);
                     const count = collection.toolIds.length;
                     const countText = count === 1 ? t.toolCount.replace('%d', count) : t.toolsCount.replace('%d', count);
-                    const coverHTML = collection.coverImage 
-                        ? `<img src="${collection.coverImage}" alt="${collection.name}">` 
+                    const coverHTML = collection.coverImage
+                        ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                         : `<span style="font-size: 24px;">📁</span>`;
-                    
+
                     return `
                         <div class="collection-list-item ${isInCollection ? 'selected' : ''}" data-action="toggle-tool-in-collection" data-collection-id="${collection.id}" data-tool-id="${toolId}">
                             <div class="collection-list-item-cover">${coverHTML}</div>
@@ -7315,10 +7652,10 @@
                         </div>
                     `;
                 }).join('');
-                
+
                 // Mostra pulsante "Salva" solo se ci sono collezioni esistenti
                 const hasCollections = collections.length > 0;
-                const buttonsHTML = hasCollections 
+                const buttonsHTML = hasCollections
                     ? `
                         <div style="display: flex; gap: 12px; margin-top: 16px;">
                             <button class="create-new-collection-btn" data-action="create-collection-from-modal" style="flex: 1; background: var(--spotify-card); color: var(--spotify-text);">
@@ -7343,7 +7680,7 @@
                         </div>
                     </div>
                 `;
-                
+
                 el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
             };
 
@@ -7358,15 +7695,18 @@
             const toggleToolInCollection = (collectionId, toolId) => {
                 const t = translations[currentLanguage];
                 const isInCollection = isToolInCollection(collectionId, toolId);
-                
+
                 if (isInCollection) {
                     removeToolFromCollection(collectionId, toolId);
                     showToast(t.removedFromCollection);
                 } else {
                     addToolToCollection(collectionId, toolId);
                     showToast(t.addedToCollection);
+
+                    // NUOVO: Aggiorna il pulsante "Aggiungi a collezione" nel modal dei dettagli
+                    updateAddToCollectionButton(toolId);
                 }
-                
+
                 // Aggiorna il modal
                 const listItem = document.querySelector(`.collection-list-item[data-collection-id="${collectionId}"][data-tool-id="${toolId}"]`);
                 if (listItem) {
@@ -7374,16 +7714,43 @@
                 }
             };
 
+            // NUOVO: Funzione per aggiornare visivamente il pulsante "Aggiungi a collezione"
+            const updateAddToCollectionButton = (toolId) => {
+                const addButton = document.querySelector(`button[data-action="add-to-collection"][data-tool-id="${toolId}"]`);
+                if (addButton) {
+                    const t = translations[currentLanguage];
+                    const hasCollections = collections.some(col => col.toolIds.includes(toolId));
+
+                    if (hasCollections) {
+                        // Cambia il pulsante per mostrare che è stato aggiunto
+                        addButton.innerHTML = `✓ ${t.addedToCollection || (currentLanguage === 'it' ? 'Aggiunto' : 'Added')}`;
+                        addButton.style.background = 'var(--spotify-accent)';
+                        addButton.style.color = '#000';
+
+                        // Animazione di feedback
+                        addButton.style.transform = 'scale(1.05)';
+                        setTimeout(() => {
+                            addButton.style.transform = 'scale(1)';
+                        }, 200);
+                    } else {
+                        // Ripristina lo stato originale con colore bianco
+                        addButton.innerHTML = t.addToCollection;
+                        addButton.style.background = 'white';
+                        addButton.style.color = '#000';
+                    }
+                }
+            };
+
             let activeContextMenu = null;
 
             const openCollectionContextMenu = (collectionId, buttonElement) => {
                 const t = translations[currentLanguage];
-                
+
                 // Chiudi menu precedente se esiste
                 if (activeContextMenu) {
                     activeContextMenu.remove();
                 }
-                
+
                 const menuHTML = `
                     <div class="collection-context-menu visible" style="position: fixed;">
                         <div class="collection-context-menu-item" data-action="rename-collection" data-collection-id="${collectionId}">
@@ -7400,16 +7767,16 @@
                         </div>
                     </div>
                 `;
-                
+
                 document.body.insertAdjacentHTML('beforeend', menuHTML);
                 const menu = document.querySelector('.collection-context-menu');
                 activeContextMenu = menu;
-                
+
                 // Posiziona il menu vicino al pulsante
                 const rect = buttonElement.getBoundingClientRect();
                 menu.style.top = `${rect.bottom + 5}px`;
                 menu.style.right = `${window.innerWidth - rect.right}px`;
-                
+
                 // Chiudi menu quando si clicca fuori
                 setTimeout(() => {
                     document.addEventListener('click', function closeMenuOnClickOutside(e) {
@@ -7424,17 +7791,10 @@
             };
 
             const handleRenameCollection = (collectionId) => {
-                const t = translations[currentLanguage];
                 const collection = getCollectionById(collectionId);
                 if (!collection) return;
-                
-                const newName = prompt(t.collectionName, collection.name);
-                if (newName && newName.trim() && newName.trim() !== collection.name) {
-                    renameCollection(collectionId, newName.trim());
-                    showToast(t.collectionRenamed);
-                    renderView();
-                }
-                
+                openRenameCollectionModal(collectionId, collection.name);
+                // Chiude il menu contestuale dopo l'azione
                 if (activeContextMenu) {
                     activeContextMenu.remove();
                     activeContextMenu = null;
@@ -7446,7 +7806,7 @@
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = 'image/*';
-                
+
                 input.onchange = (e) => {
                     const file = e.target.files[0];
                     if (file) {
@@ -7459,23 +7819,32 @@
                         reader.readAsDataURL(file);
                     }
                 };
-                
+
                 input.click();
-                
+
                 if (activeContextMenu) {
                     activeContextMenu.remove();
                     activeContextMenu = null;
                 }
             };
 
-            const handleDeleteCollection = (collectionId) => {
+            const handleDeleteCollection = async (collectionId) => {
                 const t = translations[currentLanguage];
-                if (confirm(t.confirmDeleteCollection)) {
+                
+                const confirmed = await showConfirmModal({
+                    title: currentLanguage === 'it' ? 'Elimina collezione' : 'Delete collection',
+                    message: t.confirmDeleteCollection,
+                    icon: '🗑️',
+                    confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
+                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                });
+                
+                if (confirmed) {
                     deleteCollection(collectionId);
                     showToast(t.collectionDeleted);
                     renderView();
                 }
-                
+
                 if (activeContextMenu) {
                     activeContextMenu.remove();
                     activeContextMenu = null;
@@ -7746,13 +8115,13 @@ ${filtersHTML}
                             renderView();
                             return;
                         }
-                        
+
                         const count = collection.toolIds.length;
                         const countText = count === 1 ? t.toolCount.replace('%d', count) : t.toolsCount.replace('%d', count);
-                        const coverHTML = collection.coverImage 
-                            ? `<img src="${collection.coverImage}" alt="${collection.name}">` 
+                        const coverHTML = collection.coverImage
+                            ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                             : `<span style="font-size: 64px;">📁</span>`;
-                        
+
                         const headerHTML = `
                             <div class="collection-detail-header">
                                 <div class="collection-detail-cover">${coverHTML}</div>
@@ -7763,7 +8132,7 @@ ${filtersHTML}
                                 </div>
                             </div>
                         `;
-                        
+
                         const backButtonHTML = `
                             <div style="padding: 16px;">
                                 <button class="pill-btn" data-action="back-to-collections" style="display: inline-flex; align-items: center; gap: 8px;">
@@ -7772,20 +8141,20 @@ ${filtersHTML}
                                 </button>
                             </div>
                         `;
-                        
+
                         contentArea.innerHTML = backButtonHTML + headerHTML;
-                        
+
                         // Renderizza gli strumenti della collezione
                         const toolsContainer = document.createElement('div');
                         toolsContainer.className = libraryViewMode === 'grid' ? 'grid-view-container' : 'list-container';
                         toolsContainer.style.padding = '0 16px';
-                        
+
                         if (collection.toolIds.length > 0) {
                             const allTools = getAllToolsForCurrentUser();
                             const collectionTools = collection.toolIds
                                 .map(id => allTools.find(t => t.id === id))
                                 .filter(Boolean);
-                            
+
                             if (libraryViewMode === 'grid') {
                                 toolsContainer.innerHTML = collectionTools.map(tool => createGridCard(tool, 'collection')).join('');
                             } else {
@@ -7794,12 +8163,12 @@ ${filtersHTML}
                         } else {
                             toolsContainer.innerHTML = `<div id="empty-state">${t.emptyCollection}</div>`;
                         }
-                        
+
                         contentArea.appendChild(toolsContainer);
                         el.mainContent.appendChild(contentArea);
                         return;
                     }
-                    
+
                     // --- STRUTTURA LIBRERIA CON FILTRI E SELETTORE VISUALIZZAZIONE ---
                     const filtersHTML = `
                         <div id="library-filters-container" style="display: flex; align-items: center; gap: 12px;">
@@ -7823,10 +8192,10 @@ ${filtersHTML}
                     // FAB dinamico: cambia icona e azione in base al tab
                     const fabAction = libraryTab === 'collections' ? 'create-collection' : 'open-add-app-modal';
                     const fabTitle = libraryTab === 'collections' ? t.createCollection : t.addCustomApp;
-                    const fabIcon = libraryTab === 'collections' 
+                    const fabIcon = libraryTab === 'collections'
                         ? `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`
                         : `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path></svg>`;
-                    
+
                     const actionButtonsHTML = `
                         <button class="floating-action-btn" data-action="${fabAction}" title="${fabTitle}">
                            ${fabIcon}
@@ -7839,7 +8208,7 @@ ${filtersHTML}
                     const renderLibraryContent = async (tab) => {
                         const listContainer = document.getElementById('library-content-list');
                         if (!listContainer) return;
-                        
+
                         // Aggiorna la classe del container in base al view mode
                         listContainer.className = libraryViewMode === 'grid' ? 'grid-view-container' : 'list-container';
                         if (libraryViewMode === 'list') {
@@ -7847,7 +8216,7 @@ ${filtersHTML}
                         } else {
                             listContainer.style.padding = '0 16px';
                         }
-                        
+
                         listContainer.innerHTML = `<div class="chat-bubble loading" style="margin: 40px auto; background: transparent;"><span></span><span></span><span></span></div>`;
 
                         let contentHTML = '';
@@ -7876,7 +8245,7 @@ ${filtersHTML}
                                     return null;
                                 });
                                 const resolvedFavoriteTools = (await Promise.all(favoriteToolsPromises)).filter(Boolean);
-                                
+
                                 if (libraryViewMode === 'grid') {
                                     contentHTML = resolvedFavoriteTools.map(tool => createGridCard(tool, 'favorites')).join('');
                                 } else {
@@ -7891,10 +8260,10 @@ ${filtersHTML}
                                 const collectionsHTML = collections.map(collection => {
                                     const count = collection.toolIds.length;
                                     const countText = count === 1 ? t.toolCount.replace('%d', count) : t.toolsCount.replace('%d', count);
-                                    const coverHTML = collection.coverImage 
-                                        ? `<img src="${collection.coverImage}" alt="${collection.name}">` 
+                                    const coverHTML = collection.coverImage
+                                        ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                                         : `<span class="collection-cover-placeholder">📁</span>`;
-                                    
+
                                     return `
                                         <div class="collection-card stagger-item" data-collection-id="${collection.id}">
                                             <div class="collection-cover">
@@ -7910,7 +8279,7 @@ ${filtersHTML}
                                         </div>
                                     `;
                                 }).join('');
-                                
+
                                 contentHTML = collectionsHTML;
                             } else {
                                 contentHTML = `<div id="empty-state">${t.emptyCollections}</div>`;
@@ -8431,6 +8800,28 @@ ${filtersHTML}
                 }
             };
 
+            // NUOVA FUNZIONE: Apre il modale per creare una collezione
+            const openCreateCollectionModal = () => {
+                const t = translations[currentLanguage];
+                const modalHTML = `
+                <div id="create-collection-modal" class="modal-overlay visible">
+                    <div class="modal-content" style="text-align: left; max-width: 400px;">
+                        <button class="modal-close-btn" data-action="close-modal">×</button>
+                        <h2 style="font-size: 20px; margin-bottom: 24px;">${t.createCollection}</h2>
+                        <div class="input-group">
+                            <label for="new-collection-name">${t.collectionName}</label>
+                            <input type="text" id="new-collection-name" placeholder="${t.collectionNamePlaceholder}" style="margin-top: 8px;">
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                            <button class="pill-btn" data-action="close-modal">${t.cancel}</button>
+                            <button class="button" data-action="submit-create-collection">${t.createCollectionButton}</button>
+                        </div>
+                    </div>
+                </div>`;
+                el.modalContainer.innerHTML = modalHTML;
+                // Mette il focus sull'input field all'apertura del modale
+                document.getElementById('new-collection-name')?.focus();
+            };
             const handleLogout = async () => {
                 if (currentUser && currentUser.uid) {
                     try {
@@ -8447,6 +8838,27 @@ ${filtersHTML}
                         showToast("Errore durante il logout.");
                     }
                 }
+            };
+            // NUOVA FUNZIONE: Apre il modale per rinominare una collezione
+            const openRenameCollectionModal = (collectionId, currentName) => {
+                const t = translations[currentLanguage];
+                const modalHTML = `
+                <div id="rename-collection-modal" class="modal-overlay visible">
+                    <div class="modal-content" style="text-align: left; max-width: 400px;">
+                        <button class="modal-close-btn" data-action="close-modal">×</button>
+                        <h2 style="font-size: 20px; margin-bottom: 24px;">${t.renameCollection}</h2>
+                        <div class="input-group">
+                            <label for="rename-collection-name">${t.collectionName}</label>
+                            <input type="text" id="rename-collection-name" value="${currentName}" placeholder="${t.collectionNamePlaceholder}" style="margin-top: 8px;">
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                            <button class="pill-btn" data-action="close-modal">${t.cancel}</button>
+                            <button class="button" data-action="submit-rename-collection" data-collection-id="${collectionId}">${t.saveChanges}</button>
+                        </div>
+                    </div>
+                </div>`;
+                el.modalContainer.innerHTML = modalHTML;
+                document.getElementById('rename-collection-name')?.focus();
             };
 
             // NEW FUNCTION: Open Sent Reviews Modal
@@ -8823,7 +9235,7 @@ ${filtersHTML}
                     const userDocRef = doc(db, "users", currentUser.uid);
                     try {
                         // Aggiungi l'app e automaticamente ai preferiti
-                        await updateDoc(userDocRef, { 
+                        await updateDoc(userDocRef, {
                             userTools: arrayUnion(newTool),
                             favorites: arrayUnion(newTool.id)
                         });
@@ -8863,7 +9275,7 @@ ${filtersHTML}
                     guestUserTools.push(newTool);
                     localStorage.setItem('guest-userTools', JSON.stringify(guestUserTools));
                     currentUser.userTools = guestUserTools;
-                    
+
                     // Aggiungi automaticamente ai preferiti guest
                     let guestFavorites = JSON.parse(localStorage.getItem('guest-favorites')) || [];
                     if (!guestFavorites.includes(newTool.id)) {
@@ -8871,7 +9283,7 @@ ${filtersHTML}
                         localStorage.setItem('guest-favorites', JSON.stringify(guestFavorites));
                         currentUser.favorites = guestFavorites;
                     }
-                    
+
                     showToast(t.addAppSuccess);
                 }
 
@@ -10406,12 +10818,7 @@ ${filtersHTML}
                             break;
                         // NUOVO: Crea nuova collezione
                         case 'create-collection':
-                            const collectionName = prompt(translations[currentLanguage].collectionName, '');
-                            if (collectionName && collectionName.trim()) {
-                                createCollection(collectionName.trim());
-                                showToast(translations[currentLanguage].collectionCreated);
-                                renderView();
-                            }
+                            openCreateCollectionModal();
                             break;
                         // NUOVO: Apri menu contestuale collezione
                         case 'open-collection-menu':
@@ -10429,6 +10836,10 @@ ${filtersHTML}
                             if (collections.length > 0) {
                                 showToast(currentLanguage === 'it' ? 'Modifiche salvate!' : 'Changes saved!');
                             }
+                            // NUOVO: Aggiorna il pulsante quando si chiude il modal
+                            if (currentToolIdInModal) {
+                                updateAddToCollectionButton(currentToolIdInModal);
+                            }
                             closeAddToCollectionModal();
                             break;
                         case 'toggle-tool-in-collection':
@@ -10437,13 +10848,9 @@ ${filtersHTML}
                             toggleToolInCollection(collId, tId);
                             break;
                         case 'create-collection-from-modal':
-                            const collName = prompt(translations[currentLanguage].collectionName, '');
-                            if (collName && collName.trim()) {
-                                createCollection(collName.trim());
-                                showToast(translations[currentLanguage].collectionCreated);
-                                closeAddToCollectionModal();
-                                renderView();
-                            }
+                            // Chiude il modale "Aggiungi a" prima di aprirne un altro
+                            closeAddToCollectionModal();
+                            openCreateCollectionModal();
                             break;
                         case 'rename-collection':
                             handleRenameCollection(actionTarget.dataset.collectionId);
@@ -10457,6 +10864,34 @@ ${filtersHTML}
                         case 'back-to-collections':
                             activeCollectionId = null;
                             renderView();
+                            break;
+                        case 'submit-create-collection':
+                            const nameInput = document.getElementById('new-collection-name');
+                            if (nameInput) {
+                                const collectionName = nameInput.value.trim();
+                                if (collectionName) {
+                                    createCollection(collectionName);
+                                    showToast(translations[currentLanguage].collectionCreated);
+                                    closeModal();
+                                    renderView();
+                                }
+                            }
+                            break;
+                        case 'submit-rename-collection':
+                            const collectionIdToRename = actionTarget.dataset.collectionId;
+                            const renameInput = document.getElementById('rename-collection-name');
+                            if (renameInput && collectionIdToRename) {
+                                const newName = renameInput.value.trim();
+                                const collection = getCollectionById(collectionIdToRename);
+                                if (collection && newName && newName !== collection.name) {
+                                    renameCollection(collectionIdToRename, newName);
+                                    showToast(translations[currentLanguage].collectionRenamed);
+                                    closeModal();
+                                    renderView();
+                                } else {
+                                    closeModal(); // Chiude il modale anche se non ci sono modifiche
+                                }
+                            }
                             break;
                         // Global Controls
                         case 'toggle-theme':
