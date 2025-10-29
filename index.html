@@ -3059,6 +3059,68 @@
             fill: currentColor;
         }
 
+        /* Stili per il pulsante X di rimozione dai preferiti (grid view) */
+        .remove-favorite-icon {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background-color: rgba(255, 0, 0, 0.8);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .remove-favorite-icon:hover {
+            background-color: rgba(255, 0, 0, 1);
+            transform: scale(1.1);
+        }
+
+        .tool-card-grid:hover .remove-favorite-icon,
+        .logo-container:hover .remove-favorite-icon {
+            opacity: 1;
+        }
+
+        /* Stili per il pulsante X di rimozione dai preferiti (list view) */
+        .remove-favorite-icon-list {
+            font-size: 28px;
+            color: #ff4444;
+            cursor: pointer;
+            padding: 10px;
+            margin-left: auto;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .remove-favorite-icon-list:hover {
+            color: #ff0000;
+            transform: scale(1.2);
+        }
+
+        /* Su mobile e touch devices, mostra sempre l'icona di rimozione */
+        @media (max-width: 768px) {
+            .remove-favorite-icon {
+                opacity: 1;
+            }
+        }
+
+        @media (hover: none) {
+            .remove-favorite-icon {
+                opacity: 1;
+            }
+        }
+
         /* Styles for the Replace Featured Modal */
         #replace-featured-modal .modal-content {
             max-height: 80vh;
@@ -7030,7 +7092,14 @@
             // Modified createGridCard to optionally show an edit icon and specify its action
             const createGridCard = (tool, context, options = {}) => {
                 let editIconHTML = '';
+                let removeIconHTML = '';
                 const isUserTool = tool.id.startsWith('user-');
+                const t = translations[currentLanguage];
+
+                // NUOVO: Mostra pulsante X per rimuovere dai preferiti
+                if (context === 'favorites') {
+                    removeIconHTML = `<div class="remove-favorite-icon" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                }
 
                 // Mostra icona di modifica per app custom dell'utente
                 if (currentUser.uid) {
@@ -7041,12 +7110,12 @@
                     if (context === 'user-featured-section' && isUserTool) {
                         // Pencil on user tool in Featured by You section -> Toggle Featured status
                         action = 'toggle-user-featured';
-                        title = translations[currentLanguage].unmarkAsFeatured;
+                        title = t.unmarkAsFeatured;
                     }
                     // NUOVO: Mostra icona di modifica per app custom nei preferiti/collezioni
                     else if (isUserTool && tool.id.includes(currentUser.uid)) {
                         action = 'open-edit-app-modal';
-                        title = translations[currentLanguage].editUserTool;
+                        title = t.editUserTool;
                     }
                     // NUOVO: Mostra icona di modifica per admin
                     else if (currentUser.role === 'admin') {
@@ -7063,13 +7132,18 @@
                     editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
                 }
 
-                return `<div class="tool-card-grid stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
+                return `<div class="tool-card-grid stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
             };
 
             const createListCard = (tool, context) => {
                 const isUserTool = tool.id.startsWith('user-');
                 const isFavorited = currentUser.favorites.includes(tool.id);
-                const favoriteIconHTML = `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
+                const t = translations[currentLanguage];
+                
+                // NUOVO: Mostra X invece di cuore nei preferiti
+                const favoriteIconHTML = context === 'favorites' 
+                    ? `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`
+                    : `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
 
                 let editIconHTML = '';
                 // NUOVO: Mostra l'icona di modifica globale se l'utente è admin
@@ -7078,7 +7152,7 @@
                 }
                 // Manteniamo la logica per gli utenti normali che modificano le proprie app custom
                 else if (isUserTool && currentUser.uid && tool.id.includes(currentUser.uid)) {
-                    editIconHTML = `<div class="edit-icon" data-action="open-edit-app-modal" data-id="${tool.id}" title="${translations[currentLanguage].editUserTool}"> ${pencilIcon} </div>`;
+                    editIconHTML = `<div class="edit-icon" data-action="open-edit-app-modal" data-id="${tool.id}" title="${t.editUserTool}"> ${pencilIcon} </div>`;
                 }
                 // NUOVO: Mostra l'icona di rimozione per le app custom degli utenti non loggati
                 else if (!currentUser.uid && tool.id.startsWith('guest-')) {
@@ -7420,8 +7494,24 @@
                     return;
                 }
 
-                const userDocRef = doc(db, "users", currentUser.uid);
                 const t = translations[currentLanguage];
+                
+                // NUOVO: Mostra modale di conferma prima di eliminare
+                const confirmed = await showConfirmModal({
+                    title: currentLanguage === 'it' ? 'Elimina app custom' : 'Delete custom app',
+                    message: currentLanguage === 'it' 
+                        ? 'Sei sicuro di voler eliminare questa app? Questa azione non può essere annullata.' 
+                        : 'Are you sure you want to delete this app? This action cannot be undone.',
+                    icon: '🗑️',
+                    confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
+                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                });
+
+                if (!confirmed) {
+                    return; // Annulla l'operazione
+                }
+
+                const userDocRef = doc(db, "users", currentUser.uid);
 
                 try {
                     // 1. Leggi lo stato attuale del documento utente da Firestore
