@@ -5047,6 +5047,69 @@
                 width: 100%;
             }
         }
+
+        /* ========================================
+           ANIMAZIONI DI NAVIGAZIONE E TRANSIZIONI
+           ======================================== */
+        
+        /* Animazione di ingresso delle pagine: slide-up + fade-in */
+        @keyframes pageSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Classe per applicare l'animazione di ingresso pagina */
+        .page-transition {
+            animation: pageSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Animazione per il caricamento a cascata (staggered) delle card */
+        @keyframes cardFadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Classi per l'effetto staggered - ogni card ha un delay diverso */
+        .stagger-item {
+            opacity: 0;
+            animation: cardFadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .stagger-item:nth-child(1) { animation-delay: 0.05s; }
+        .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+        .stagger-item:nth-child(3) { animation-delay: 0.15s; }
+        .stagger-item:nth-child(4) { animation-delay: 0.2s; }
+        .stagger-item:nth-child(5) { animation-delay: 0.25s; }
+        .stagger-item:nth-child(6) { animation-delay: 0.3s; }
+        .stagger-item:nth-child(7) { animation-delay: 0.35s; }
+        .stagger-item:nth-child(8) { animation-delay: 0.4s; }
+        .stagger-item:nth-child(9) { animation-delay: 0.45s; }
+        .stagger-item:nth-child(10) { animation-delay: 0.5s; }
+        .stagger-item:nth-child(11) { animation-delay: 0.55s; }
+        .stagger-item:nth-child(12) { animation-delay: 0.6s; }
+        .stagger-item:nth-child(13) { animation-delay: 0.65s; }
+        .stagger-item:nth-child(14) { animation-delay: 0.7s; }
+        .stagger-item:nth-child(15) { animation-delay: 0.75s; }
+        .stagger-item:nth-child(16) { animation-delay: 0.8s; }
+        .stagger-item:nth-child(17) { animation-delay: 0.85s; }
+        .stagger-item:nth-child(18) { animation-delay: 0.9s; }
+        .stagger-item:nth-child(19) { animation-delay: 0.95s; }
+        .stagger-item:nth-child(20) { animation-delay: 1s; }
+
+        /* Per card oltre la 20esima, usa un delay massimo */
+        .stagger-item:nth-child(n+21) { animation-delay: 1.05s; }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
     <script type="importmap">
@@ -6117,7 +6180,7 @@
                     }
                 }
 
-                return `<div class="tool-card-grid" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
+                return `<div class="tool-card-grid stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
             };
 
             const createListCard = (tool, context) => {
@@ -6139,16 +6202,16 @@
                     editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
                 }
 
-                return `<div class="tool-card-list" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div></div>${favoriteIconHTML}</div>`;
+                return `<div class="tool-card-list stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div></div>${favoriteIconHTML}</div>`;
             };
 
             const createCategoryCard = (category) => {
                 const currentTools = window.getLocalizedToolsData(currentLanguage);
                 const toolForLogo = currentTools.find(t => t.category === category.id) || { logoUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAFVBMVEX///+ZmZkZGRlZWVmRkZEAAABGRkb6Me63AAAAHElEQVR4AWMYUCBkwKyIxHVNYAsZVFyEIwcSAADWIQrDIppSoAAAAABJRU5ErkJggg==' }; // Fallback per logo
                 // Usa category.id per il filtro e category.name per la visualizzazione
-                return `<div class="category-card" style="background-color: ${category.color};" data-action="set-explore-filter" data-filter-type="category" data-filter-value="${category.id}"><h3>${category.name[currentLanguage]}</h3><div class="logo-container"><img src="${toolForLogo.logoUrl}" class="tool-logo" loading="lazy"></div></div>`;
+                return `<div class="category-card stagger-item" style="background-color: ${category.color};" data-action="set-explore-filter" data-filter-type="category" data-filter-value="${category.id}"><h3>${category.name[currentLanguage]}</h3><div class="logo-container"><img src="${toolForLogo.logoUrl}" class="tool-logo" loading="lazy"></div></div>`;
             };
-            const createCountryCard = (country) => `<div class="category-card" style="background-color: #333;" data-action="set-explore-filter" data-filter-type="country" data-filter-value="${country.name}"><h3 style="font-size: 24px;">${country.flag} ${country.name}</h3></div>`;
+            const createCountryCard = (country) => `<div class="category-card stagger-item" style="background-color: #333;" data-action="set-explore-filter" data-filter-type="country" data-filter-value="${country.name}"><h3 style="font-size: 24px;">${country.flag} ${country.name}</h3></div>`;
 
             window.openDetailModal = async (toolId) => {
                 // Mostra un caricamento immediato per una migliore UX
@@ -6653,6 +6716,8 @@
 
                 const contentArea = document.createElement('div');
                 contentArea.id = 'content-area';
+                // Aggiungi animazione di transizione pagina
+                contentArea.classList.add('page-transition');
 
                 if (currentView === 'home') {
                     // Add the same header structure as other pages for consistency
@@ -6721,7 +6786,7 @@
                         const tool = staticTools.find(t => t.id === toolId) || (currentUser.userTools || []).find(t => t.id === toolId);
                         if (!tool) return '';
                         return `
-                        <li class="ranking-item" data-id="${tool.id}">
+                        <li class="ranking-item stagger-item" data-id="${tool.id}">
                             <span class="ranking-item-rank">${rank}</span>
                             <img src="${tool.logoUrl}" alt="${tool.name}" class="ranking-item-logo" loading="lazy">
                             <div class="ranking-item-info">
@@ -6802,7 +6867,7 @@ ${filtersHTML}
                                     </div>
                                     <div class="horizontal-scroll-container">
                                         ${tools.map(tool => `
-                                            <div class="tool-item-horizontal" data-id="${tool.id}">
+                                            <div class="tool-item-horizontal stagger-item" data-id="${tool.id}">
                                                 <div class="tool-item-logo-container">
                                                     <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">
                                                 </div>
@@ -8275,7 +8340,7 @@ ${filtersHTML}
                     }
 
                     const usersHTML = limitedUsers.map(user => `
-                    <div class="user-search-result" data-uid="${user.uid}">
+                    <div class="user-search-result stagger-item" data-uid="${user.uid}">
                         <div class="user-info">
                             <div class="user-nickname">${user.nickname}</div>
                             <div class="user-email">${user.email}</div>
@@ -9646,7 +9711,7 @@ ${filtersHTML}
                             </div>
                             <div class="horizontal-scroll-container">
                                 ${tools.map(tool => `
-                                    <div class="tool-item-horizontal" data-id="${tool.id}">
+                                    <div class="tool-item-horizontal stagger-item" data-id="${tool.id}">
                                         <div class="tool-item-logo-container">
                                             <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">
                                         </div>
