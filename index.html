@@ -5666,6 +5666,10 @@
                     saveButton: "Salva",
                     optimizerHelperText: "Il Prompt Optimizer applicherà le <strong>migliori pratiche</strong> al tuo prompt.",
                     cancel: "Annulla",
+                    confirmDeletePromptTitle: "Conferma Eliminazione",
+                    confirmDeletePromptMessage: "Sei sicuro di voler eliminare questo prompt? L'azione è irreversibile.",
+                    promptGalleryTitle: "Galleria Prompt",
+                    searchPlaceholderGallery: "Cerca",
 
                     // Admin translations
                     addAI: "Aggiungi AI",
@@ -5817,6 +5821,10 @@
                     saveButton: "Save",
                     optimizerHelperText: "Prompt Optimizer will apply <strong>best practices</strong> to your prompt.",
                     cancel: "Cancel",
+                    confirmDeletePromptTitle: "Confirm Deletion",
+                    confirmDeletePromptMessage: "Are you sure you want to delete this prompt? This action is irreversible.",
+                    promptGalleryTitle: "Prompt Gallery",
+                    searchPlaceholderGallery: "Search",
                     // Admin translations
                     addAI: "Add AI",
                     addAIToDatabase: "Add AI to Database",
@@ -8558,9 +8566,9 @@ ${filtersHTML}
                         <div class="modal-content">
                             <button class="modal-close-btn" data-action="close-modal">×</button>
                             <div class="gallery-header">
-                                <h2>Galleria Prompt</h2>
+                                <h2>${t.promptGalleryTitle}</h2>
                                 <div class="gallery-search-bar">
-                                    <input type="text" class="gallery-search-input" placeholder="Cerca" id="gallery-search-input">
+                                    <input type="text" class="gallery-search-input" placeholder="${t.searchPlaceholderGallery}" id="gallery-search-input">
                                 </div>
                             </div>
                             <div class="gallery-list" id="gallery-list">
@@ -8647,8 +8655,8 @@ ${filtersHTML}
                 const modalHTML = `
                 <div id="confirm-delete-prompt-modal" class="modal-overlay visible">
                     <div class="modal-content" style="text-align: left; max-width: 400px;">
-                        <h2 style="font-size: 20px; margin-bottom: 16px;">Conferma Eliminazione</h2>
-                        <p style="color: var(--spotify-text-secondary); line-height: 1.5; margin-bottom: 24px;">Sei sicuro di voler eliminare questo prompt? L'azione è irreversibile.</p>
+                        <h2 style="font-size: 20px; margin-bottom: 16px;">${t.confirmDeletePromptTitle}</h2>
+                        <p style="color: var(--spotify-text-secondary); line-height: 1.5; margin-bottom: 24px;">${t.confirmDeletePromptMessage}</p>
                         <div style="display: flex; gap: 12px; justify-content: flex-end;">
                             <button class="pill-btn" data-action="close-modal">${t.cancel}</button>
                             <button class="button" data-action="execute-delete-saved-prompt" data-id="${promptId}" style="background-color: #ff6b6b; color: white;">${t.deleteButton}</button>
