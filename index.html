@@ -664,67 +664,7 @@
         }
 
         /* NUOVO: Stili per la selezione multipla */
-        .multi-select-toolbar {
-            position: sticky;
-            top: 64px;
-            background-color: var(--spotify-card);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            z-index: 8;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
 
-        .multi-select-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .multi-select-count {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--spotify-text);
-        }
-
-        .multi-select-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .multi-select-btn {
-            background-color: var(--spotify-accent);
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .multi-select-btn:hover {
-            background-color: #1ed760;
-            transform: scale(1.02);
-        }
-
-        .multi-select-btn.secondary {
-            background-color: transparent;
-            color: var(--spotify-text);
-            border: 1px solid var(--spotify-text-secondary);
-        }
-
-        .multi-select-btn.secondary:hover {
-            background-color: var(--spotify-bg-light);
-            border-color: var(--spotify-text);
-        }
 
         .tool-card-list.multi-select-mode {
             position: relative;
@@ -762,10 +702,8 @@
         }
 
         .tool-card-list.selected {
-            background-color: var(--spotify-bg-light);
+            border: 2px solid var(--spotify-accent);
             border-radius: 8px;
-            padding: 8px;
-            margin: -8px;
         }
 
         /* NUOVO: Stili per il sistema di recensioni e valutazioni */
@@ -3250,6 +3188,7 @@
                 transform: translateY(-100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -6201,40 +6140,7 @@
             }
         }
 
-        /* Responsive styles for multi-select toolbar */
-        @media (max-width: 768px) {
-            .multi-select-toolbar {
-                flex-direction: column;
-                gap: 8px;
-                padding: 12px;
-            }
 
-            .multi-select-actions {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .multi-select-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .multi-select-toolbar {
-                top: 56px;
-                padding: 10px;
-            }
-
-            .multi-select-btn {
-                font-size: 12px;
-                padding: 6px 12px;
-            }
-
-            .multi-select-count {
-                font-size: 13px;
-            }
-        }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
     <script type="importmap">
@@ -6324,12 +6230,12 @@
                         <path d="M0 0h24v24H0z" fill="none" />
                         <path d="M5 9.2h3V19H5zM10.6 5h3v14h-3zm5.6 8H19v6h-2.8z" />
                     </svg></span><span data-translate="navTopAI">TOP AI</span></button>
-            
+
             <!-- PULSANTE CENTRALE FAB -->
             <button class="nav-btn-fab" id="bottom-nav-fab" data-action="" style="display: none;">
                 <span class="fab-icon"></span>
             </button>
-            
+
             <button class="nav-btn" data-page="explore"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
                         height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
                         <path d="M0 0h24v24H0z" fill="none" />
@@ -6526,7 +6432,7 @@
 
         const WelcomeScreen = ({ onSendMessage, lang }) => {
             const suggestions = {
-                it: ["Consigliami un'AI per programmare", "Consigliami un'AI per creare immagini", "Quali sono le alternative a ChatGPT?"],
+                it: ["Consigliami AI per programmare", "Consigliami AI per creare immagini", "Quali sono le alternative a ChatGPT?"],
                 en: ["Suggest an AI for programming", "Suggest an AI for creating images", "What are ChatGPT's alternatives?"]
             };
 
@@ -6754,7 +6660,7 @@
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria",
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Ogni AI è basata su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
-                    multiSelect: "Selezione multipla", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
+                    multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
                     libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "",
                     noResultsFor: "Nessun risultato per",
@@ -7416,7 +7322,7 @@
                 } else {
                     selectedTools.add(toolId);
                 }
-                
+
                 // Aggiorna il contatore
                 const count = selectedTools.size;
                 const countText = currentLanguage === 'it' ? `${count} selezionati` : `${count} selected`;
@@ -7424,7 +7330,7 @@
                 if (countElement) {
                     countElement.textContent = countText;
                 }
-                
+
                 // Aggiorna lo stato del pulsante Rimuovi
                 const removeBtn = document.querySelector('[data-action="remove-selected-from-collection"]');
                 if (removeBtn) {
@@ -7434,7 +7340,7 @@
                         removeBtn.removeAttribute('disabled');
                     }
                 }
-                
+
                 // Aggiorna visivamente la checkbox
                 const checkboxes = document.querySelectorAll(`[data-action="toggle-tool-selection"][data-id="${toolId}"]`);
                 checkboxes.forEach(cb => cb.classList.toggle('selected'));
@@ -7442,13 +7348,13 @@
 
             const removeSelectedFromCollection = async () => {
                 if (selectedTools.size === 0 || !activeCollectionId) return;
-                
+
                 const t = translations[currentLanguage];
                 const count = selectedTools.size;
                 const confirmed = await showConfirmModal({
                     title: currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection',
-                    message: currentLanguage === 'it' 
-                        ? `Sei sicuro di voler rimuovere ${count} ${count === 1 ? 'elemento' : 'elementi'} da questa collezione?` 
+                    message: currentLanguage === 'it'
+                        ? `Sei sicuro di voler rimuovere ${count} ${count === 1 ? 'elemento' : 'elementi'} da questa collezione?`
                         : `Are you sure you want to remove ${count} ${count === 1 ? 'item' : 'items'} from this collection?`,
                     icon: '🗑️',
                     confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
@@ -7456,16 +7362,16 @@
                 });
 
                 if (!confirmed) return;
-                
+
                 // Rimuovi tutti gli strumenti selezionati dalla collezione
                 selectedTools.forEach(toolId => {
                     removeToolFromCollection(activeCollectionId, toolId);
                 });
-                
+
                 // Reset selezione
                 selectedTools.clear();
                 selectionMode = false;
-                
+
                 renderView();
             };
 
@@ -7537,7 +7443,7 @@
                 const isUserTool = tool.id.startsWith('user-');
                 const isFavorited = currentUser.favorites.includes(tool.id);
                 const t = translations[currentLanguage];
-                
+
                 // NUOVO: Mostra checkbox in modalità selezione per collezioni
                 let favoriteIconHTML = '';
                 if (context === 'collection' && selectionMode) {
@@ -7908,12 +7814,12 @@
                 }
 
                 const t = translations[currentLanguage];
-                
+
                 // NUOVO: Mostra modale di conferma prima di eliminare
                 const confirmed = await showConfirmModal({
                     title: currentLanguage === 'it' ? 'Elimina app custom' : 'Delete custom app',
-                    message: currentLanguage === 'it' 
-                        ? 'Sei sicuro di voler eliminare questa app? Questa azione non può essere annullata.' 
+                    message: currentLanguage === 'it'
+                        ? 'Sei sicuro di voler eliminare questa app? Questa azione non può essere annullata.'
                         : 'Are you sure you want to delete this app? This action cannot be undone.',
                     icon: '🗑️',
                     confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
@@ -7979,33 +7885,29 @@
                 const t = translations[currentLanguage];
                 const toolbar = document.getElementById('multi-select-toolbar');
                 const listContainer = document.getElementById('filtered-tools-list');
-                
+
                 if (!toolbar || !listContainer) return;
 
                 if (exploreMultiSelectMode) {
                     // Mostra la toolbar
                     const selectedCount = exploreSelectedTools.length;
                     const countText = t.itemsSelected.replace('%d', selectedCount);
-                    
-                    toolbar.style.display = 'block';
-                    toolbar.className = 'multi-select-toolbar';
+
+                    toolbar.style.display = 'flex';
+                    toolbar.style.alignItems = 'center';
+                    toolbar.style.gap = '8px';
                     toolbar.innerHTML = `
-                        <div class="multi-select-info">
-                            <span class="multi-select-count">${countText}</span>
-                        </div>
-                        <div class="multi-select-actions">
-                            ${selectedCount > 0 ? `
-                                <button class="multi-select-btn" data-action="multi-select-favorites">
-                                    ❤️ ${t.addToFavorites}
-                                </button>
-                                <button class="multi-select-btn" data-action="multi-select-collection">
-                                    📁 ${t.addToCollection}
-                                </button>
-                            ` : ''}
-                            <button class="multi-select-btn secondary" data-action="cancel-multi-select">
-                                ${t.cancelSelection}
+                        <button class="pill-btn active" data-action="toggle-multi-select" style="font-size: 13px;">
+                            ${t.multiSelect} ${selectedCount > 0 ? `(${selectedCount})` : ''}
+                        </button>
+                        ${selectedCount > 0 ? `
+                            <button class="pill-btn" data-action="multi-select-favorites" title="${t.addToFavorites}" style="font-size: 16px; padding: 8px 12px;">
+                                ❤️
                             </button>
-                        </div>
+                            <button class="pill-btn" data-action="multi-select-collection" title="${t.addToCollection}" style="font-size: 16px; padding: 8px 12px;">
+                                📁
+                            </button>
+                        ` : ''}
                     `;
 
                     // Aggiungi classe multi-select-mode alle card
@@ -8013,7 +7915,7 @@
                     cards.forEach(card => {
                         card.classList.add('multi-select-mode');
                         const toolId = card.dataset.id;
-                        
+
                         // Aggiungi checkbox se non esiste
                         if (!card.querySelector('.select-checkbox')) {
                             const checkbox = document.createElement('div');
@@ -8031,9 +7933,16 @@
                         }
                     });
                 } else {
-                    // Nascondi la toolbar
-                    toolbar.style.display = 'none';
-                    
+                    // Mostra solo il pulsante di attivazione
+                    toolbar.style.display = 'flex';
+                    toolbar.style.alignItems = 'center';
+                    toolbar.style.gap = '8px';
+                    toolbar.innerHTML = `
+                        <button class="pill-btn" data-action="toggle-multi-select" style="font-size: 13px;">
+                            ${t.multiSelect}
+                        </button>
+                    `;
+
                     // Rimuovi classe multi-select-mode e checkbox
                     const cards = listContainer.querySelectorAll('.tool-card-list');
                     cards.forEach(card => {
@@ -8046,7 +7955,7 @@
 
             const addSelectedToFavorites = async () => {
                 const t = translations[currentLanguage];
-                
+
                 if (exploreSelectedTools.length === 0) return;
 
                 // Logica per utenti LOGGATI
@@ -8054,15 +7963,15 @@
                     const userDocRef = doc(db, "users", currentUser.uid);
                     try {
                         const favoritesToAdd = exploreSelectedTools.filter(id => !currentUser.favorites.includes(id));
-                        
+
                         if (favoritesToAdd.length > 0) {
                             const updatedFavorites = [...currentUser.favorites, ...favoritesToAdd];
                             await updateDoc(userDocRef, { favorites: updatedFavorites });
                             currentUser.favorites = updatedFavorites;
                         }
-                        
-                        showToast(currentLanguage === 'it' 
-                            ? `${exploreSelectedTools.length} AI aggiunte ai preferiti!` 
+
+                        showToast(currentLanguage === 'it'
+                            ? `${exploreSelectedTools.length} AI aggiunte ai preferiti!`
                             : `${exploreSelectedTools.length} AI added to favorites!`);
                     } catch (error) {
                         console.error("Error adding to favorites:", error);
@@ -8079,8 +7988,8 @@
                     });
                     localStorage.setItem('guest-favorites', JSON.stringify(guestFavorites));
                     currentUser.favorites = guestFavorites;
-                    showToast(currentLanguage === 'it' 
-                        ? `${exploreSelectedTools.length} AI aggiunte ai preferiti!` 
+                    showToast(currentLanguage === 'it'
+                        ? `${exploreSelectedTools.length} AI aggiunte ai preferiti!`
                         : `${exploreSelectedTools.length} AI added to favorites!`);
                 }
 
@@ -8092,7 +8001,7 @@
 
             const openCollectionSelectorForMultiSelect = () => {
                 const t = translations[currentLanguage];
-                
+
                 if (exploreSelectedTools.length === 0) return;
 
                 // Ottieni le collezioni da localStorage (disponibili per tutti gli utenti)
@@ -8148,18 +8057,18 @@
             const openCreateCollectionModalForMultiSelect = async () => {
                 console.log('openCreateCollectionModalForMultiSelect called');
                 console.log('Selected tools:', exploreSelectedTools);
-                
+
                 const t = translations[currentLanguage];
-                
+
                 // Handler per il submit (definito prima per poterlo usare nell'onclick)
                 window.handleMultiCollectionSubmit = async () => {
                     console.log('handleMultiCollectionSubmit called');
-                    
+
                     const input = document.getElementById('multi-select-collection-name');
                     const collectionName = input?.value.trim();
-                    
+
                     console.log('Collection name:', collectionName);
-                    
+
                     if (!collectionName) {
                         showToast(currentLanguage === 'it' ? 'Inserisci un nome' : 'Enter a name');
                         return;
@@ -8170,14 +8079,14 @@
                     try {
                         // Crea la collezione usando la funzione esistente (localStorage)
                         const newCollection = createCollection(collectionName);
-                        
+
                         console.log('Collection created:', newCollection);
-                        
+
                         // Aggiungi tutti gli strumenti selezionati alla collezione
                         exploreSelectedTools.forEach(toolId => {
                             addToolToCollection(newCollection.id, toolId);
                         });
-                        
+
                         console.log('Tools added to collection');
 
                         // Aggiungi anche ai preferiti
@@ -8185,7 +8094,7 @@
                             // Utente loggato - usa Firestore
                             const userDocRef = doc(db, "users", currentUser.uid);
                             const favoritesToAdd = exploreSelectedTools.filter(id => !currentUser.favorites.includes(id));
-                            
+
                             if (favoritesToAdd.length > 0) {
                                 const updatedFavorites = [...currentUser.favorites, ...favoritesToAdd];
                                 await updateDoc(userDocRef, { favorites: updatedFavorites });
@@ -8202,16 +8111,16 @@
                             localStorage.setItem('guest-favorites', JSON.stringify(guestFavorites));
                             currentUser.favorites = guestFavorites;
                         }
-                        
+
                         console.log('Favorites updated');
 
-                        showToast(currentLanguage === 'it' 
-                            ? `Collezione "${collectionName}" creata con ${exploreSelectedTools.length} AI!` 
+                        showToast(currentLanguage === 'it'
+                            ? `Collezione "${collectionName}" creata con ${exploreSelectedTools.length} AI!`
                             : `Collection "${collectionName}" created with ${exploreSelectedTools.length} AI!`);
 
                         const modal = document.getElementById('multi-select-create-collection-modal');
                         if (modal) modal.remove();
-                        
+
                         // Reset selezione
                         exploreMultiSelectMode = false;
                         exploreSelectedTools = [];
@@ -8221,7 +8130,7 @@
                         showToast("Error: " + error.message);
                     }
                 };
-                
+
                 const modal = document.createElement('div');
                 modal.className = 'review-modal visible';
                 modal.id = 'multi-select-create-collection-modal';
@@ -8267,7 +8176,7 @@
 
             const addSelectedToCollection = async (collectionId) => {
                 if (exploreSelectedTools.length === 0) return;
-                
+
                 try {
                     // Aggiungi tutti gli strumenti selezionati alla collezione (localStorage)
                     exploreSelectedTools.forEach(toolId => {
@@ -8279,7 +8188,7 @@
                         // Utente loggato - usa Firestore
                         const userDocRef = doc(db, "users", currentUser.uid);
                         const favoritesToAdd = exploreSelectedTools.filter(id => !currentUser.favorites.includes(id));
-                        
+
                         if (favoritesToAdd.length > 0) {
                             const updatedFavorites = [...currentUser.favorites, ...favoritesToAdd];
                             await updateDoc(userDocRef, { favorites: updatedFavorites });
@@ -8297,8 +8206,8 @@
                         currentUser.favorites = guestFavorites;
                     }
 
-                    showToast(currentLanguage === 'it' 
-                        ? `${exploreSelectedTools.length} AI aggiunte alla collezione!` 
+                    showToast(currentLanguage === 'it'
+                        ? `${exploreSelectedTools.length} AI aggiunte alla collezione!`
                         : `${exploreSelectedTools.length} AI added to collection!`);
 
                     // Reset selezione
@@ -8729,13 +8638,13 @@
             const updateBottomNavFAB = (tab) => {
                 const fabBtn = document.getElementById('bottom-nav-fab');
                 if (!fabBtn) return;
-                
+
                 const t = translations[currentLanguage];
-                
+
                 // Mostra il FAB solo nella pagina Library
                 if (currentView === 'favorites') {
                     fabBtn.style.display = 'flex';
-                    
+
                     if (tab === 'collections') {
                         // Icona per creare collezione
                         fabBtn.dataset.action = 'create-collection';
@@ -8913,13 +8822,14 @@ ${filtersHTML}
 
                         contentArea.innerHTML = `
                             <div class="back-button" data-action="back-to-explore">${t.backToSearch}</div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 8px;">
                                 <h2 class="section-title" style="margin-bottom: 0;">${title}</h2>
-                                <button class="pill-btn" data-action="toggle-multi-select" style="font-size: 13px;">
-                                    ${t.multiSelect}
-                                </button>
+                                <div id="multi-select-toolbar" style="display: flex; align-items: center; gap: 8px;">
+                                    <button class="pill-btn" data-action="toggle-multi-select" style="font-size: 13px;">
+                                        ${t.multiSelect}
+                                    </button>
+                                </div>
                             </div>
-                            <div id="multi-select-toolbar" style="display: none;"></div>
                             <div class="list-container" id="filtered-tools-list">
                                 ${filteredTools.map(tool => createListCard(tool, 'explore')).join('')}
                             </div>
@@ -9056,7 +8966,7 @@ ${filtersHTML}
                                 ` : ''}
                             </div>
                         `;
-                        
+
                         // Barra azioni selezione multipla
                         const selectedCount = selectedTools.size;
                         const selectionCountText = currentLanguage === 'it' ? `${selectedCount} selezionati` : `${selectedCount} selected`;
@@ -9125,7 +9035,7 @@ ${filtersHTML}
                     const contentListHTML = `<div id="library-content-list" class="${libraryViewMode === 'grid' ? 'grid-view-container' : 'list-container'}" style="padding: 0 16px;"></div>`;
 
                     contentArea.innerHTML = filtersHTML + contentListHTML;
-                    
+
                     // NUOVO: Aggiorna il pulsante centrale della bottom nav in base al tab attivo
                     updateBottomNavFAB(libraryTab);
 
@@ -9223,7 +9133,7 @@ ${filtersHTML}
 
                 updateNavActiveState();
                 applyTranslations(currentLanguage); // Apply translations after rendering content
-                
+
                 // NUOVO: Aggiorna il pulsante FAB nella bottom nav
                 updateBottomNavFAB(libraryTab);
             };
@@ -11949,11 +11859,11 @@ ${filtersHTML}
                         case 'prompt-register': triggerAuthFlow('register-card'); break;
 
                         // Explore/Top AI Filters
-                        case 'back-to-explore': 
-                            exploreFilter = { type: null, value: null }; 
+                        case 'back-to-explore':
+                            exploreFilter = { type: null, value: null };
                             exploreMultiSelectMode = false;
                             exploreSelectedTools = [];
-                            renderView(); 
+                            renderView();
                             break;
                         case 'set-explore-filter':
                             exploreFilter.type = actionTarget.dataset.filterType;
