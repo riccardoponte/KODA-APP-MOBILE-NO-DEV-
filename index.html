@@ -5677,116 +5677,8 @@
         }
 
         /* ========================================
-   NUOVI STILI PER COMPARATORE DI STRUMENTI
-   ======================================== */
-.comparison-checkbox {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    transform: translateY(-50%) scale(0); /* Nascosto di default */
-    width: 24px;
-    height: 24px;
-    background: rgba(0,0,0,0.5);
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-}
-.tool-card-list:hover .comparison-checkbox, .tool-card-grid:hover .comparison-checkbox {
-    transform: translateY(-50%) scale(1); /* Appare all'hover */
-}
-.tool-card-grid .comparison-checkbox {
-    left: 8px;
-    top: 8px;
-    transform: scale(0); /* Sovrascrive per la grid view */
-}
-.tool-card-grid:hover .comparison-checkbox {
-    transform: scale(1); /* Appare all'hover per la grid view */
-}
-.comparison-checkbox svg {
-    width: 16px;
-    height: 16px;
-    fill: #000;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-.comparison-checkbox.selected {
-    transform: translateY(-50%) scale(1.1); /* Effetto per la list view */
-    background: var(--spotify-accent);
-    border-color: var(--spotify-accent);
-}
-.tool-card-grid .comparison-checkbox.selected {
-    transform: scale(1.1); /* Effetto per la grid view */
-}
-.comparison-checkbox.selected svg {
-    opacity: 1;
-}
-#comparison-bar {
-    position: fixed;
-    bottom: calc(var(--bottom-nav-height) + 16px);
-    left: 50%;
-    transform: translateX(-50%) scale(0.95);
-    background-color: var(--spotify-card);
-    border-radius: 12px;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    z-index: 1002;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    transition: all 0.3s ease;
-    opacity: 0;
-    visibility: hidden;
-}
-#comparison-bar.visible {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-    visibility: visible;
-}
-#comparison-bar .selected-tool-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-    object-fit: cover;
-}
-#comparison-bar .button {
-    padding: 8px 16px;
-    font-size: 14px;
-    text-transform: none;
-    letter-spacing: 0;
-}
-.comparison-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 14px;
-}
-.comparison-table th, .comparison-table td {
-    padding: 12px;
-    border: 1px solid var(--spotify-card);
-    text-align: left;
-    vertical-align: top;
-}
-.comparison-table th:first-child {
-    background-color: var(--spotify-bg-light);
-    font-weight: 600;
-    width: 150px;
-}
-.comparison-table ul {
-    margin: 0;
-    padding-left: 18px;
-}
-.comparison-table li {
-    margin-bottom: 4px;
-}
-
-/* ========================================
-   SISTEMA DI COLLEZIONI E LAYOUT A GRIGLIA
-   ======================================== */
+           SISTEMA DI COLLEZIONI E LAYOUT A GRIGLIA
+           ======================================== */
 
         /* Selettore di visualizzazione Lista/Griglia */
         .view-toggle-container {
@@ -6358,8 +6250,7 @@
         </nav>
     </div>
 
-    <div id="comparison-bar"></div>
-<div id="modal-container"></div>
+    <div id="modal-container"></div>
 
     <!-- SCRIPT DEL CHATBOT MIGLIORATO -->
     <script type="text/babel" data-type="module" id="chatbot-script">
@@ -7557,8 +7448,6 @@ ${knowledgeBaseFormatter(tools)}
             let currentLanguage = localStorage.getItem('koda-lang') || 'it';
             let currentTheme = localStorage.getItem('koda-theme') || 'dark';
             let searchTimeout = null; // For debouncing user search
-let toolsToCompare = []; // Array di ID degli strumenti da confrontare
-const MAX_COMPARE = 3; // Limite massimo di strumenti confrontabili
 
             // State for K button click counter (still local)
             let kButtonClickCount = 0;
@@ -7803,106 +7692,105 @@ const MAX_COMPARE = 3; // Limite massimo di strumenti confrontabili
 
             // Modified createGridCard to optionally show an edit icon and specify its action
             const createGridCard = (tool, context, options = {}) => {
-    let editIconHTML = '';
-    let removeIconHTML = '';
-    let selectionCheckboxHTML = '';
-    const isUserTool = tool.id.startsWith('user-');
-    const t = translations[currentLanguage];
+                let editIconHTML = '';
+                let removeIconHTML = '';
+                let selectionCheckboxHTML = '';
+                const isUserTool = tool.id.startsWith('user-');
+                const t = translations[currentLanguage];
 
-    // NUOVO: Checkbox per il comparatore
-    const isSelectedForCompare = toolsToCompare.includes(tool.id);
-    const compareCheckboxHTML = `
-        <div class="comparison-checkbox ${isSelectedForCompare ? 'selected' : ''}" data-action="toggle-comparison" data-id="${tool.id}">
-            <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-        </div>
-    `;
+                // NUOVO: Mostra checkbox in modalità selezione per collezioni
+                if (context === 'collection' && selectionMode) {
+                    const isSelected = selectedTools.has(tool.id);
+                    selectionCheckboxHTML = `<div class="selection-checkbox ${isSelected ? 'selected' : ''}" data-action="toggle-tool-selection" data-id="${tool.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>`;
+                }
 
-    if (context === 'collection' && selectionMode) {
-        const isSelected = selectedTools.has(tool.id);
-        selectionCheckboxHTML = `<div class="selection-checkbox ${isSelected ? 'selected' : ''}" data-action="toggle-tool-selection" data-id="${tool.id}">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        </div>`;
-    }
+                // NUOVO: Mostra pulsante X per rimuovere dai preferiti
+                if (context === 'favorites') {
+                    removeIconHTML = `<div class="remove-favorite-icon" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                }
+                // NUOVO: Mostra pulsante X per rimuovere dalla collezione (solo se non in modalità selezione)
+                else if (context === 'collection' && !selectionMode) {
+                    removeIconHTML = `<div class="remove-favorite-icon" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
+                }
 
-    if (context === 'favorites') {
-        removeIconHTML = `<div class="remove-favorite-icon" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
-    } else if (context === 'collection' && !selectionMode) {
-        removeIconHTML = `<div class="remove-favorite-icon" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
-    }
+                // Mostra icona di modifica per app custom dell'utente
+                if (currentUser.uid) {
+                    let action = '';
+                    let title = '';
+                    let dataId = tool.id;
 
-    if (currentUser.uid) {
-        let action = ''; let title = ''; let dataId = tool.id;
-        if (context === 'user-featured-section' && isUserTool) {
-            action = 'toggle-user-featured'; title = t.unmarkAsFeatured;
-        } else if (isUserTool && tool.id.includes(currentUser.uid)) {
-            action = 'open-edit-app-modal'; title = t.editUserTool;
-        } else if (currentUser.role === 'admin') {
-            action = 'open-edit-global-tool-modal'; title = 'Modifica AI (Admin)';
-        }
-        if (action && dataId) {
-            editIconHTML = `<div class="edit-icon" data-action="${action}" data-id="${dataId}" title="${title}"> ${pencilIcon} </div>`;
-        }
-    } else if (!currentUser.uid && tool.id.startsWith('guest-')) {
-        editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
-    }
+                    if (context === 'user-featured-section' && isUserTool) {
+                        // Pencil on user tool in Featured by You section -> Toggle Featured status
+                        action = 'toggle-user-featured';
+                        title = t.unmarkAsFeatured;
+                    }
+                    // NUOVO: Mostra icona di modifica per app custom nei preferiti/collezioni
+                    else if (isUserTool && tool.id.includes(currentUser.uid)) {
+                        action = 'open-edit-app-modal';
+                        title = t.editUserTool;
+                    }
+                    // NUOVO: Mostra icona di modifica per admin
+                    else if (currentUser.role === 'admin') {
+                        action = 'open-edit-global-tool-modal';
+                        title = 'Modifica AI (Admin)';
+                    }
 
-    const cardClass = selectionMode && context === 'collection' ? 'tool-card-grid stagger-item selectable' : 'tool-card-grid stagger-item';
-    return `<div class="${cardClass}" data-id="${tool.id}">
-                <div class="logo-container">
-                    ${compareCheckboxHTML}
-                    <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">
-                    ${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}
-                </div>
-                <div class="tool-name">${tool.name}</div>
-            </div>`;
-};
+                    if (action && dataId) {
+                        editIconHTML = `<div class="edit-icon" data-action="${action}" data-id="${dataId}" title="${title}"> ${pencilIcon} </div>`;
+                    }
+                }
+                // NUOVO: Mostra icona di rimozione per guest users
+                else if (!currentUser.uid && tool.id.startsWith('guest-')) {
+                    editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
+                }
+
+                const cardClass = selectionMode && context === 'collection' ? 'tool-card-grid stagger-item selectable' : 'tool-card-grid stagger-item';
+                return `<div class="${cardClass}" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
+            };
 
             const createListCard = (tool, context) => {
-    const isUserTool = tool.id.startsWith('user-');
-    const isFavorited = currentUser.uid && currentUser.favorites.includes(tool.id);
-    const t = translations[currentLanguage];
-    let favoriteIconHTML = '';
+                const isUserTool = tool.id.startsWith('user-');
+                const isFavorited = currentUser.favorites.includes(tool.id);
+                const t = translations[currentLanguage];
 
-    if (context === 'collection' && selectionMode) {
-        const isSelected = selectedTools.has(tool.id);
-        favoriteIconHTML = `<div class="selection-checkbox-list ${isSelected ? 'selected' : ''}" data-action="toggle-tool-selection" data-id="${tool.id}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>`;
-    } else if (context === 'favorites') {
-        favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
-    } else if (context === 'collection') {
-        favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
-    } else {
-        favoriteIconHTML = `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
-    }
+                // NUOVO: Mostra checkbox in modalità selezione per collezioni
+                let favoriteIconHTML = '';
+                if (context === 'collection' && selectionMode) {
+                    const isSelected = selectedTools.has(tool.id);
+                    favoriteIconHTML = `<div class="selection-checkbox-list ${isSelected ? 'selected' : ''}" data-action="toggle-tool-selection" data-id="${tool.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    </div>`;
+                }
+                // NUOVO: Mostra X invece di cuore nei preferiti
+                else if (context === 'favorites') {
+                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                }
+                // NUOVO: Mostra X per rimuovere dalla collezione
+                else if (context === 'collection') {
+                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
+                }
+                else {
+                    favoriteIconHTML = `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
+                }
 
-    let editIconHTML = '';
-    if (currentUser.role === 'admin') {
-        editIconHTML = `<div class="edit-icon" data-action="open-edit-global-tool-modal" data-id="${tool.id}" title="Modifica AI (Admin)"> ${pencilIcon} </div>`;
-    } else if (isUserTool && currentUser.uid && tool.id.includes(currentUser.uid)) {
-        editIconHTML = `<div class="edit-icon" data-action="open-edit-app-modal" data-id="${tool.id}" title="${t.editUserTool}"> ${pencilIcon} </div>`;
-    } else if (!currentUser.uid && tool.id.startsWith('guest-')) {
-        editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
-    }
+                let editIconHTML = '';
+                // NUOVO: Mostra l'icona di modifica globale se l'utente è admin
+                if (currentUser.role === 'admin') {
+                    editIconHTML = `<div class="edit-icon" data-action="open-edit-global-tool-modal" data-id="${tool.id}" title="Modifica AI (Admin)"> ${pencilIcon} </div>`;
+                }
+                // Manteniamo la logica per gli utenti normali che modificano le proprie app custom
+                else if (isUserTool && currentUser.uid && tool.id.includes(currentUser.uid)) {
+                    editIconHTML = `<div class="edit-icon" data-action="open-edit-app-modal" data-id="${tool.id}" title="${t.editUserTool}"> ${pencilIcon} </div>`;
+                }
+                // NUOVO: Mostra l'icona di rimozione per le app custom degli utenti non loggati
+                else if (!currentUser.uid && tool.id.startsWith('guest-')) {
+                    editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
+                }
 
-    // NUOVA LOGICA: Checkbox per il comparatore
-    const isSelectedForCompare = toolsToCompare.includes(tool.id);
-    const compareCheckboxHTML = `
-        <div class="comparison-checkbox ${isSelectedForCompare ? 'selected' : ''}" data-action="toggle-comparison" data-id="${tool.id}">
-            <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-        </div>
-    `;
-
-    return `<div class="tool-card-list stagger-item" data-id="${tool.id}" style="position: relative; padding-left: 40px;">
-                ${compareCheckboxHTML}
-                <div class="logo-container">
-                    <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}
-                </div>
-                <div class="info">
-                    <div class="tool-name">${tool.name}</div>
-                    <div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div>
-                </div>
-                ${favoriteIconHTML}
-            </div>`;
-};
+                return `<div class="tool-card-list stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div></div>${favoriteIconHTML}</div>`;
+            };
 
             const createCategoryCard = (category) => {
                 const currentTools = window.getLocalizedToolsData(currentLanguage);
@@ -10111,103 +9999,22 @@ ${filtersHTML}
                 document.getElementById('new-collection-name')?.focus();
             };
             const handleLogout = async () => {
-    if (currentUser && currentUser.uid) {
-        try {
-            // 1. Imposta lo stato a 'offline' su Firebase e attende il completamento
-            await updateUserOnlineStatus(currentUser.uid, false);
+                if (currentUser && currentUser.uid) {
+                    try {
+                        // 1. Imposta lo stato a 'offline' su Firebase e attende il completamento
+                        await updateUserOnlineStatus(currentUser.uid, false);
 
-            // 2. Solo dopo, esegue il logout da Firebase Auth
-            await signOut(auth);
+                        // 2. Solo dopo, esegue il logout da Firebase Auth
+                        await signOut(auth);
 
-            // 3. Mostra un messaggio di successo
-            showToast(translations[currentLanguage].logout + " effettuato.");
-        } catch (error) {
-            console.error("Logout Error:", error);
-            showToast("Errore durante il logout.");
-        }
-    }
-};
-
-// --- FUNZIONI PER IL COMPARATORE DI STRUMENTI ---
-
-function updateComparisonBar() {
-    const bar = document.getElementById('comparison-bar');
-    if (!bar) return;
-
-    if (toolsToCompare.length === 0) {
-        bar.classList.remove('visible');
-        return;
-    }
-    
-    const allTools = getAllToolsForCurrentUser();
-    const logosHTML = toolsToCompare.map(id => {
-        const tool = allTools.find(t => t.id === id);
-        return tool ? `<img src="${tool.logoUrl}" class="selected-tool-logo" title="${tool.name}">` : '';
-    }).join('');
-
-    const buttonDisabled = toolsToCompare.length < 2 ? 'disabled' : '';
-    const buttonText = `Confronta (${toolsToCompare.length})`;
-
-    bar.innerHTML = `
-        ${logosHTML}
-        <button class="button" data-action="open-comparison-modal" ${buttonDisabled}>${buttonText}</button>
-        <button class="modal-close-btn" data-action="clear-comparison" style="position: static; font-size: 20px;">×</button>
-    `;
-    bar.classList.add('visible');
-}
-
-function openComparisonModal() {
-    const t = translations[currentLanguage];
-    const allTools = getAllToolsForCurrentUser();
-    const selectedToolsData = toolsToCompare.map(id => allTools.find(t => t.id === id)).filter(Boolean);
-
-    if (selectedToolsData.length < 2) return;
-
-    const headersHTML = selectedToolsData.map(tool => `<th>${tool.name}</th>`).join('');
-    
-    const features = [
-        { label: 'Categoria', key: 'category', translate: true },
-        { label: 'Modello di Prezzo', key: 'pricingModel' },
-        { label: 'Ideale Per', key: 'bestFor' },
-        { label: 'Caratteristiche', key: 'keyFeatures' }
-    ];
-
-    const featuresHTML = features.map(feature => {
-        const cellsHTML = selectedToolsData.map(tool => {
-            let cellData = tool[feature.key];
-            if (feature.translate && feature.key === 'category') {
-                cellData = getTranslatedCategoryName(cellData);
-            }
-            if (Array.isArray(cellData)) {
-                cellData = `<ul>${cellData.map(item => `<li>${item}</li>`).join('')}</ul>`;
-            }
-            return `<td>${cellData || 'N/D'}</td>`;
-        }).join('');
-        return `<tr><th>${feature.label}</th>${cellsHTML}</tr>`;
-    }).join('');
-
-    const modalHTML = `
-    <div class="modal-overlay visible" id="comparison-modal">
-        <div class="modal-content" style="max-width: 90%; width: 800px; text-align: left;">
-            <button class="modal-close-btn" data-action="close-modal">×</button>
-            <h2>Confronto AI</h2>
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Caratteristica</th>
-                            ${headersHTML}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${featuresHTML}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>`;
-    el.modalContainer.innerHTML = modalHTML;
-}
+                        // 3. Mostra un messaggio di successo
+                        showToast(translations[currentLanguage].logout + " effettuato.");
+                    } catch (error) {
+                        console.error("Logout Error:", error);
+                        showToast("Errore durante il logout.");
+                    }
+                }
+            };
             // NUOVA FUNZIONE: Apre il modale per rinominare una collezione
             const openRenameCollectionModal = (collectionId, currentName) => {
                 const t = translations[currentLanguage];
@@ -12044,33 +11851,6 @@ function openComparisonModal() {
                     const action = actionTarget.dataset.action;
 
                     switch (action) {
-    case 'toggle-comparison':
-        const toolId = actionTarget.dataset.id;
-        const checkbox = actionTarget;
-        
-        if (toolsToCompare.includes(toolId)) {
-            toolsToCompare = toolsToCompare.filter(id => id !== toolId);
-            checkbox.classList.remove('selected');
-        } else {
-            if (toolsToCompare.length < MAX_COMPARE) {
-                toolsToCompare.push(toolId);
-                checkbox.classList.add('selected');
-            } else {
-                showToast(`Puoi confrontare al massimo ${MAX_COMPARE} strumenti.`);
-            }
-        }
-        updateComparisonBar();
-        break;
-
-    case 'clear-comparison':
-        toolsToCompare = [];
-        document.querySelectorAll('.comparison-checkbox.selected').forEach(cb => cb.classList.remove('selected'));
-        updateComparisonBar();
-        break;
-        
-    case 'open-comparison-modal':
-        openComparisonModal();
-        break;
                         // NUOVE AZIONI ADMIN
                         case 'open-add-global-tool-modal':
                             openAddGlobalToolModal();
