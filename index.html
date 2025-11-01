@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!-- 
+  Koda.AI - Enhanced Chatbot
+  © 2025 Riccardo Giorgio Ponte & Davide Narracci. Tutti i diritti riservati.
+  
+  Quest'opera dell'ingegno è protetta dalla Legge sul Diritto d'Autore (L. 633/1941).
+  È vietata qualsiasi forma di riproduzione, modifica, distribuzione, 
+  o decompilazione, anche parziale, senza l'esplicita autorizzazione scritta dell'autore.
+-->
 <html lang="it">
 
 <head>
@@ -6,31 +14,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Koda.AI - Enhanced Chatbot</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        @font-face {
+            font-family: 'Inter';
+            src: url('./fonts/Inter-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
 
-        /* --- STILE CSS ISPIRATO A SPOTIFY (Completo e Funzionante) --- */
+        @font-face {
+            font-family: 'Inter';
+            src: url('./fonts/Inter-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            src: url('./fonts/Inter-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        /* --- STILE CSS ISPIRATO A Koda (Completo e Funzionante) --- */
         :root {
-            --spotify-bg: #121212;
-            --spotify-bg-light: #181818;
-            --spotify-card: #282828;
-            --spotify-ai-bubble-bg: #3e3e3e;
+            --Koda-bg: #121212;
+            --Koda-bg-light: #181818;
+            --Koda-card: #282828;
+            --Koda-ai-bubble-bg: #3e3e3e;
             /* NUOVO: Colore distinto per le bolle di testo dell'AI in dark mode */
-            --spotify-text: #ffffff;
-            --spotify-text-secondary: #b3b3b3;
-            --spotify-accent: #1db954;
+            --Koda-text: #ffffff;
+            --Koda-text-secondary: #b3b3b3;
+            --Koda-accent: #1db954;
             --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             --bottom-nav-height: 70px;
         }
 
         /* NUOVO: Stili per la modalità Giorno (Light Mode) */
         body.light-mode {
-            --spotify-bg: #ffffff;
-            --spotify-bg-light: #f5f5f5;
-            --spotify-card: #e9e9e9;
-            --spotify-ai-bubble-bg: #e9e9e9;
+            --Koda-bg: #ffffff;
+            --Koda-bg-light: #f5f5f5;
+            --Koda-card: #e9e9e9;
+            --Koda-ai-bubble-bg: #e9e9e9;
             /* NUOVO: In light mode, le bolle AI usano un grigio chiaro */
-            --spotify-text: #121212;
-            --spotify-text-secondary: #535353;
+            --Koda-text: #121212;
+            --Koda-text-secondary: #535353;
         }
 
         * {
@@ -42,8 +69,8 @@
         html,
         body {
             font-family: var(--font-family);
-            background-color: var(--spotify-bg);
-            color: var(--spotify-text);
+            background-color: var(--Koda-bg);
+            color: var(--Koda-text);
             height: 100%;
             overflow: hidden;
             transition: background-color 0.3s, color 0.3s;
@@ -56,8 +83,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--spotify-bg);
-            display: none;
+            background: var(--Koda-bg);
+            display: none !important;
+            /* Force hide auth overlay - app is guest-only */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -75,11 +103,11 @@
             width: 80px;
             height: 80px;
             margin-bottom: 24px;
-            fill: var(--spotify-accent);
+            fill: var(--Koda-accent);
         }
 
         .auth-card {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             padding: 32px 24px;
             border-radius: 16px;
             width: 100%;
@@ -94,7 +122,7 @@
             left: 12px;
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 28px;
             cursor: pointer;
             line-height: 1;
@@ -121,10 +149,10 @@
             width: 100%;
             padding: 14px 16px;
             font-size: 16px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .auth-card input::placeholder {
@@ -142,7 +170,7 @@
 
         .auth-switch-link,
         .forgot-password-link {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             text-decoration: none;
             cursor: pointer;
             font-size: 14px;
@@ -151,7 +179,7 @@
 
         .auth-switch-link:hover,
         .forgot-password-link:hover {
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             text-decoration: underline;
         }
 
@@ -188,7 +216,7 @@
             gap: 8px;
             position: sticky;
             top: 0;
-            background: linear-gradient(to bottom, var(--spotify-bg) 70%, transparent);
+            background: linear-gradient(to bottom, var(--Koda-bg) 70%, transparent);
             z-index: 10;
             width: 100%;
         }
@@ -197,7 +225,7 @@
             font-size: 22px;
             font-weight: 700;
             flex-grow: 1;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             margin: 0;
         }
 
@@ -212,7 +240,7 @@
         .global-btn {
             background: none;
             border: none;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 24px;
             cursor: pointer;
             padding: 4px;
@@ -223,27 +251,27 @@
         }
 
         .global-btn:hover {
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
         }
 
         #lang-toggle-btn {
             font-size: 14px;
             font-weight: bold;
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             border-radius: 50px;
             padding: 6px 10px;
             transition: background-color 0.2s ease;
         }
 
         #lang-toggle-btn:hover {
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
         }
 
         .user-avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -271,7 +299,7 @@
             top: 100%;
             right: 0;
             margin-top: 8px;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             min-width: 200px;
@@ -299,7 +327,7 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -312,13 +340,13 @@
         .user-profile-name {
             font-size: 16px;
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             margin-bottom: 4px;
         }
 
         .user-profile-email {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .user-profile-menu {
@@ -330,7 +358,7 @@
             align-items: center;
             gap: 12px;
             padding: 12px 16px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             text-decoration: none;
             font-size: 14px;
             cursor: pointer;
@@ -338,7 +366,7 @@
         }
 
         .user-profile-item:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .user-profile-item svg {
@@ -455,7 +483,7 @@
             padding: 8px 16px;
             position: sticky;
             top: 64px;
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
             z-index: 9;
         }
 
@@ -472,8 +500,8 @@
         }
 
         .pill-btn {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 50px;
             padding: 8px 16px;
@@ -485,13 +513,13 @@
         }
 
         .pill-btn.active {
-            background-color: var(--spotify-text);
-            color: var(--spotify-bg);
+            background-color: var(--Koda-text);
+            color: var(--Koda-bg);
             font-weight: bold;
         }
 
         body.light-mode .pill-btn.active {
-            color: var(--spotify-bg);
+            color: var(--Koda-bg);
             background-color: #333;
         }
 
@@ -508,7 +536,7 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 4px;
             display: flex;
             align-items: center;
@@ -533,7 +561,7 @@
 
         .featured-disclaimer {
             font-size: 11px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-weight: 400;
             margin-left: 8px;
         }
@@ -553,7 +581,7 @@
             width: 100%;
             aspect-ratio: 1 / 1;
             border-radius: 8px;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -587,25 +615,25 @@
             justify-content: center;
             aspect-ratio: 1 / 1;
             border-radius: 8px;
-            border: 2px dashed var(--spotify-text-secondary);
+            border: 2px dashed var(--Koda-text-secondary);
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .add-app-card:hover {
-            border-color: var(--spotify-accent);
-            background-color: var(--spotify-card);
+            border-color: var(--Koda-accent);
+            background-color: var(--Koda-card);
         }
 
         .add-app-card svg {
             width: 40px;
             height: 40px;
-            fill: var(--spotify-text-secondary);
+            fill: var(--Koda-text-secondary);
             transition: all 0.2s ease;
         }
 
         .add-app-card:hover svg {
-            fill: var(--spotify-accent);
+            fill: var(--Koda-accent);
             transform: scale(1.1);
         }
 
@@ -626,7 +654,7 @@
             width: 56px;
             height: 56px;
             flex-shrink: 0;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -652,12 +680,12 @@
 
         .tool-card-list .tool-subtext {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .tool-card-list .favorite-icon {
             font-size: 22px;
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
             margin-left: auto;
             padding: 10px;
             cursor: pointer;
@@ -676,7 +704,7 @@
             left: 8px;
             width: 24px;
             height: 24px;
-            border: 2px solid var(--spotify-text-secondary);
+            border: 2px solid var(--Koda-text-secondary);
             border-radius: 4px;
             display: none;
             align-items: center;
@@ -690,8 +718,8 @@
         }
 
         .tool-card-list.selected .select-checkbox {
-            background-color: var(--spotify-accent);
-            border-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
+            border-color: var(--Koda-accent);
         }
 
         .tool-card-list.selected .select-checkbox::after {
@@ -702,7 +730,7 @@
         }
 
         .tool-card-list.selected {
-            border: 2px solid var(--spotify-accent);
+            border: 2px solid var(--Koda-accent);
             border-radius: 8px;
         }
 
@@ -725,12 +753,12 @@
         }
 
         .star.empty {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .rating-text {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .reviews-section {
@@ -752,7 +780,7 @@
         }
 
         .add-review-btn {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 8px 16px;
@@ -768,12 +796,12 @@
         }
 
         .add-review-btn:disabled {
-            background-color: var(--spotify-text-secondary);
+            background-color: var(--Koda-text-secondary);
             cursor: not-allowed;
         }
 
         .review-item {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
@@ -797,7 +825,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -818,7 +846,7 @@
 
         .review-date {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .review-rating {
@@ -829,12 +857,12 @@
         .review-text {
             font-size: 14px;
             line-height: 1.5;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .no-reviews {
             text-align: center;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 24px;
             font-style: italic;
         }
@@ -863,7 +891,7 @@
         }
 
         .review-modal-content {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             padding: 24px;
             border-radius: 16px;
             width: 90%;
@@ -886,7 +914,7 @@
         .review-modal-close {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 24px;
             cursor: pointer;
             padding: 4px;
@@ -911,7 +939,7 @@
 
         .star-input {
             font-size: 24px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             cursor: pointer;
             transition: color 0.2s;
         }
@@ -938,15 +966,15 @@
             padding: 12px;
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
-            background-color: var(--spotify-bg-light);
-            color: var(--spotify-text);
+            background-color: var(--Koda-bg-light);
+            color: var(--Koda-text);
             font-family: inherit;
             font-size: 14px;
             resize: vertical;
         }
 
         .review-text-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .review-modal-actions {
@@ -957,8 +985,8 @@
 
         .review-cancel-btn {
             background: none;
-            border: 1px solid var(--spotify-text-secondary);
-            color: var(--spotify-text);
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text);
             padding: 12px 24px;
             border-radius: 20px;
             font-size: 14px;
@@ -968,11 +996,11 @@
         }
 
         .review-cancel-btn:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .review-submit-btn {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 12px 24px;
@@ -988,7 +1016,7 @@
         }
 
         .review-submit-btn:disabled {
-            background-color: var(--spotify-text-secondary);
+            background-color: var(--Koda-text-secondary);
             cursor: not-allowed;
         }
 
@@ -1016,7 +1044,7 @@
         }
 
         .confirm-modal-content {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             padding: 32px 24px;
             border-radius: 16px;
             width: 90%;
@@ -1047,12 +1075,12 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 12px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .confirm-modal-message {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-bottom: 24px;
             line-height: 1.5;
         }
@@ -1065,8 +1093,8 @@
 
         .confirm-cancel-btn {
             background: none;
-            border: 1px solid var(--spotify-text-secondary);
-            color: var(--spotify-text);
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text);
             padding: 12px 32px;
             border-radius: 24px;
             font-size: 14px;
@@ -1078,8 +1106,8 @@
         }
 
         .confirm-cancel-btn:hover {
-            background-color: var(--spotify-bg-light);
-            border-color: var(--spotify-text);
+            background-color: var(--Koda-bg-light);
+            border-color: var(--Koda-text);
         }
 
         .confirm-ok-btn {
@@ -1149,7 +1177,7 @@
         }
 
         .sent-reviews-modal-content {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             padding: 24px;
             border-radius: 16px;
             width: 90%;
@@ -1176,14 +1204,14 @@
         .sent-reviews-modal-close {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 24px;
             cursor: pointer;
             padding: 4px;
         }
 
         .sent-review-item {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 16px;
@@ -1208,7 +1236,7 @@
             height: 40px;
             border-radius: 8px;
             object-fit: cover;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .sent-review-tool-name {
@@ -1224,8 +1252,8 @@
         .sent-review-edit-btn,
         .sent-review-delete-btn {
             background: none;
-            border: 1px solid var(--spotify-text-secondary);
-            color: var(--spotify-text);
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text);
             padding: 6px 12px;
             border-radius: 16px;
             font-size: 12px;
@@ -1234,8 +1262,8 @@
         }
 
         .sent-review-edit-btn:hover {
-            background-color: var(--spotify-accent);
-            border-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
+            border-color: var(--Koda-accent);
             color: #000;
         }
 
@@ -1254,18 +1282,18 @@
         .sent-review-text {
             font-size: 14px;
             line-height: 1.5;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .sent-review-date {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-top: 8px;
         }
 
         .no-sent-reviews {
             text-align: center;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 40px 20px;
             font-style: italic;
         }
@@ -1275,7 +1303,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -1380,28 +1408,28 @@
             width: 100%;
             padding: 14px 16px;
             font-size: 16px;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border: none;
             border-radius: 8px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         #search-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         body.light-mode #search-input {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
         }
 
         body.light-mode #search-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         #empty-state {
             text-align: center;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 40px;
         }
 
@@ -1412,10 +1440,10 @@
             left: 0;
             width: 100%;
             height: var(--bottom-nav-height);
-            background: linear-gradient(to top, var(--spotify-bg) 80%, transparent);
+            background: linear-gradient(to top, var(--Koda-bg) 80%, transparent);
             z-index: 1001;
             /* Z-index più alto dell'input per rimanere sempre visibile */
-            border-top: 1px solid var(--spotify-card);
+            border-top: 1px solid var(--Koda-card);
         }
 
         .nav-btn {
@@ -1426,7 +1454,7 @@
             align-items: center;
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 12px;
             font-weight: 500;
             cursor: pointer;
@@ -1439,7 +1467,7 @@
         }
 
         .nav-btn.active {
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
         }
 
         /* Badge di notifica per messaggi non letti */
@@ -1457,7 +1485,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            border: 2px solid var(--spotify-bg);
+            border: 2px solid var(--Koda-bg);
         }
 
         .nav-btn .icon {
@@ -1510,7 +1538,7 @@
         }
 
         .modal-content {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             padding: 24px;
             border-radius: 16px;
             width: 90%;
@@ -1525,13 +1553,13 @@
             right: 15px;
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 28px;
             cursor: pointer;
         }
 
         .button {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 15px 30px;
@@ -1594,7 +1622,7 @@
         }
 
         #detail-content p {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-bottom: 24px;
             line-height: 1.5;
         }
@@ -1608,7 +1636,7 @@
         }
 
         #detail-content .tag {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -1623,14 +1651,14 @@
         .back-button {
             font-size: 16px;
             font-weight: bold;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             cursor: pointer;
             margin-bottom: 20px;
         }
 
         .recommendation-box {
             margin-top: 24px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             padding: 12px;
             border-radius: 8px;
             display: flex;
@@ -1642,7 +1670,7 @@
         }
 
         .recommendation-box:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .recommendation-logo {
@@ -1655,17 +1683,17 @@
 
         .recommendation-text {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             text-align: left;
         }
 
         .recommendation-text strong {
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             display: block;
         }
 
         .auth-prompt-card {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 12px;
             padding: 24px;
             text-align: center;
@@ -1679,7 +1707,7 @@
         }
 
         .auth-prompt-card p {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-bottom: 24px;
             line-height: 1.5;
         }
@@ -1697,7 +1725,7 @@
 
         .auth-prompt-actions .pill-btn {
             background-color: transparent;
-            border: 1px solid var(--spotify-text-secondary);
+            border: 1px solid var(--Koda-text-secondary);
             width: 100%;
             padding: 14px;
         }
@@ -1728,7 +1756,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
             flex-grow: 1;
             position: relative;
             /* Necessario per posizionare lo sfondo animato */
@@ -1772,13 +1800,13 @@
             z-index: 10;
             position: sticky;
             top: 0;
-            background: linear-gradient(to bottom, var(--spotify-bg) 70%, transparent);
+            background: linear-gradient(to bottom, var(--Koda-bg) 70%, transparent);
         }
 
         .chat-header-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 24px;
             cursor: pointer;
             padding: 8px;
@@ -1843,8 +1871,8 @@
         }
 
         .prompt-starter-btn {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
             padding: 12px 16px;
@@ -1857,7 +1885,7 @@
         }
 
         .prompt-starter-btn:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         /* NUOVI STILI PER I PULSANTI DI AZIONE */
@@ -1883,7 +1911,7 @@
         }
 
         .action-btn.primary {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
         }
 
@@ -1894,20 +1922,20 @@
         }
 
         .action-btn.secondary {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             border: 1px solid rgba(128, 128, 128, 0.2);
         }
 
         .action-btn.secondary:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         /* NUOVO STILE PER IL PULSANTE VIOLA */
         .action-btn.tertiary {
             background-color: #8D49F2;
             /* Viola vibrante, in linea con lo stile */
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             border: none;
         }
 
@@ -1942,13 +1970,13 @@
         }
 
         .chat-bubble.ai {
-            background-color: var(--spotify-ai-bubble-bg);
+            background-color: var(--Koda-ai-bubble-bg);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
 
         .chat-bubble.user {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
@@ -1956,7 +1984,7 @@
 
         .chat-bubble.system {
             background-color: transparent;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             align-self: center;
             text-align: center;
             font-style: normal;
@@ -1968,20 +1996,20 @@
 
         .chat-bubble.error {
             background-color: #8c1a1a;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
 
         .chat-bubble.loading {
             align-self: flex-start;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             padding: 14px 16px;
         }
 
         .chat-bubble.loading span {
             display: inline-block;
-            background-color: var(--spotify-text-secondary);
+            background-color: var(--Koda-text-secondary);
             width: 8px;
             height: 8px;
             border-radius: 50%;
@@ -2022,7 +2050,7 @@
         }
 
         .chat-bubble.ai a {
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
             text-decoration: none;
             border-radius: 4px;
             padding: 2px 4px;
@@ -2036,7 +2064,7 @@
 
         .chat-bubble.ai strong {
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .chat-bubble.ai p {
@@ -2063,7 +2091,7 @@
         .chat-tool-card {
             display: flex;
             gap: 12px;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 12px;
             padding: 12px;
             border: 1px solid rgba(128, 128, 128, 0.1);
@@ -2097,14 +2125,14 @@
 
         .chat-tool-card .tool-desc {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin: 2px 0 8px;
             line-height: 1.4;
         }
 
         .chat-tool-card .details-btn {
-            background: var(--spotify-bg-light);
-            color: var(--spotify-text);
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text);
             border: none;
             padding: 6px 12px;
             font-size: 12px;
@@ -2114,7 +2142,7 @@
         }
 
         #chat-input-container {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 28px;
             padding: 12px;
             margin: 0;
@@ -2122,7 +2150,7 @@
             display: flex;
             align-items: flex-end;
             gap: 12px;
-            border: 1px solid var(--spotify-bg-light);
+            border: 1px solid var(--Koda-bg-light);
             position: fixed;
             bottom: calc(var(--bottom-nav-height) + 16px);
             /* Posizionato sopra la barra di navigazione con margine */
@@ -2186,12 +2214,12 @@
         }
 
         .input-icon-btn {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border: none;
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2202,7 +2230,7 @@
             flex-grow: 1;
             background-color: transparent;
             border: none;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 16px;
             resize: none;
             padding: 6px 0;
@@ -2214,11 +2242,11 @@
         }
 
         #chat-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         #chat-send-btn {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border: none;
             border-radius: 50%;
             width: 40px;
@@ -2227,7 +2255,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 20px;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.2s;
@@ -2235,9 +2263,9 @@
         }
 
         #chat-send-btn:disabled {
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
             cursor: not-allowed;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         #chat-send-btn:not(:disabled):active {
@@ -2274,7 +2302,7 @@
             width: 80%;
             max-width: 320px;
             height: 100%;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             z-index: 1501;
             transform: translateX(-100%);
             transition: transform 0.3s ease-out;
@@ -2293,7 +2321,7 @@
             align-items: center;
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 1px solid var(--spotify-card);
+            border-bottom: 1px solid var(--Koda-card);
         }
 
         .menu-header h3 {
@@ -2301,8 +2329,8 @@
         }
 
         .new-chat-btn {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             border: none;
             border-radius: 8px;
             padding: 10px 14px;
@@ -2327,7 +2355,7 @@
         .conversation-item {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             text-align: left;
             padding: 12px;
             border-radius: 8px;
@@ -2341,21 +2369,21 @@
 
         .conversation-item.active,
         .conversation-item:hover {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
         }
 
         .menu-footer {
             margin-top: auto;
             padding-top: 16px;
-            border-top: 1px solid var(--spotify-card);
+            border-top: 1px solid var(--Koda-card);
         }
 
         #delete-all-btn {
             width: 100%;
             background: none;
-            border: 1px solid var(--spotify-text-secondary);
-            color: var(--spotify-text-secondary);
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 12px;
             border-radius: 8px;
             cursor: pointer;
@@ -2364,9 +2392,9 @@
         }
 
         #delete-all-btn:hover {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
-            border-color: var(--spotify-card);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
+            border-color: var(--Koda-card);
         }
 
         /* --- STILI PER I GROUP CHATS --- */
@@ -2375,14 +2403,14 @@
             align-items: center;
             gap: 12px;
             padding: 16px;
-            border-bottom: 1px solid var(--spotify-card);
+            border-bottom: 1px solid var(--Koda-card);
         }
 
         .group-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--spotify-accent), #1ed760);
+            background: linear-gradient(135deg, var(--Koda-accent), #1ed760);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2399,7 +2427,7 @@
 
         .group-members-count {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .group-actions {
@@ -2411,7 +2439,7 @@
         .group-action-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 18px;
             cursor: pointer;
             padding: 8px;
@@ -2420,12 +2448,12 @@
         }
 
         .group-action-btn:hover {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
         }
 
         .create-group-btn {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 12px 20px;
@@ -2453,11 +2481,11 @@
         }
 
         .group-chat-item:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .group-chat-item.active {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .group-member-item {
@@ -2471,7 +2499,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2491,7 +2519,7 @@
 
         .member-role {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .permission-badge {
@@ -2513,8 +2541,8 @@
         }
 
         .permission-badge.member {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text-secondary);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text-secondary);
         }
 
         .group-settings-modal .modal-content {
@@ -2526,7 +2554,7 @@
         .group-settings-section {
             margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 1px solid var(--spotify-card);
+            border-bottom: 1px solid var(--Koda-card);
         }
 
         .group-settings-section:last-child {
@@ -2546,8 +2574,8 @@
 
         .member-action-btn {
             background: none;
-            border: 1px solid var(--spotify-text-secondary);
-            color: var(--spotify-text-secondary);
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 11px;
@@ -2556,8 +2584,8 @@
         }
 
         .member-action-btn:hover {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
         }
 
         .member-action-btn.danger:hover {
@@ -2574,7 +2602,7 @@
         }
 
         .ranking-card {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 12px;
             padding: 12px;
             /* Reduced padding */
@@ -2621,14 +2649,14 @@
         }
 
         .ranking-item:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .ranking-item-rank {
             font-size: 14px;
             /* Reduced font size */
             font-weight: 700;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             width: 20px;
             text-align: center;
         }
@@ -2657,7 +2685,7 @@
         .ranking-item-info .tool-subtext {
             font-size: 12px;
             /* Reduced font size */
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         /* --- STILI PER MODALE IMPOSTAZIONI (AGGIUNTI) --- */
@@ -2687,7 +2715,7 @@
             font-weight: 600;
             margin-bottom: 10px;
             font-size: 15px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         #settings-modal input,
@@ -2708,10 +2736,10 @@
             width: 100%;
             padding: 16px 18px;
             font-size: 16px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 12px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             box-sizing: border-box;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
             font-family: var(--font-family);
@@ -2878,7 +2906,7 @@
         #edit-global-tool-modal textarea:focus,
         #edit-global-tool-modal select:focus {
             outline: none;
-            border-color: var(--spotify-accent);
+            border-color: var(--Koda-accent);
             box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
         }
 
@@ -2909,14 +2937,14 @@
             align-items: center;
             gap: 12px;
             padding: 16px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 12px;
             border: 1px solid rgba(128, 128, 128, 0.2);
             transition: background-color 0.2s ease;
         }
 
         .checkbox-wrapper:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .checkbox-wrapper input[type="checkbox"] {
@@ -2924,7 +2952,7 @@
             height: 20px;
             margin: 0;
             cursor: pointer;
-            accent-color: var(--spotify-accent);
+            accent-color: var(--Koda-accent);
         }
 
         .checkbox-wrapper label {
@@ -2945,13 +2973,13 @@
             border: none;
             /* File input border is handled by the container */
             border-radius: 0;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             box-sizing: border-box;
         }
 
         #add-app-modal input[type="file"]::file-selector-button {
-            background-color: var(--spotify-bg-light);
-            color: var(--spotify-text);
+            background-color: var(--Koda-bg-light);
+            color: var(--Koda-text);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
             padding: 8px 12px;
@@ -2961,7 +2989,7 @@
         }
 
         #add-app-modal input[type="file"]::file-selector-button:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         /* Style for logo preview */
@@ -2974,7 +3002,7 @@
             border-radius: 8px;
             object-fit: cover;
             border: 1px solid rgba(128, 128, 128, 0.2);
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             /* Placeholder background */
         }
 
@@ -2989,7 +3017,7 @@
 
         hr.modal-divider {
             border: none;
-            border-top: 1px solid var(--spotify-card);
+            border-top: 1px solid var(--Koda-card);
             margin: 24px 0;
         }
 
@@ -2998,7 +3026,7 @@
             bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: black;
             padding: 12px 20px;
             border-radius: 25px;
@@ -3175,7 +3203,7 @@
         .selection-bar {
             position: sticky;
             top: 64px;
-            background: var(--spotify-accent);
+            background: var(--Koda-accent);
             color: #000;
             padding: 12px 16px;
             z-index: 100;
@@ -3270,8 +3298,8 @@
         }
 
         .selection-checkbox.selected {
-            background: var(--spotify-accent);
-            border-color: var(--spotify-accent);
+            background: var(--Koda-accent);
+            border-color: var(--Koda-accent);
         }
 
         .selection-checkbox.selected svg {
@@ -3286,9 +3314,9 @@
         .selection-checkbox-list {
             width: 32px;
             height: 32px;
-            border: 2px solid var(--spotify-text-secondary);
+            border: 2px solid var(--Koda-text-secondary);
             border-radius: 6px;
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -3300,14 +3328,14 @@
         .selection-checkbox-list svg {
             width: 20px;
             height: 20px;
-            fill: var(--spotify-text);
+            fill: var(--Koda-text);
             opacity: 0;
             transition: opacity 0.2s;
         }
 
         .selection-checkbox-list.selected {
-            background: var(--spotify-accent);
-            border-color: var(--spotify-accent);
+            background: var(--Koda-accent);
+            border-color: var(--Koda-accent);
         }
 
         .selection-checkbox-list.selected svg {
@@ -3317,7 +3345,7 @@
 
         .selection-checkbox-list:hover {
             transform: scale(1.1);
-            border-color: var(--spotify-accent);
+            border-color: var(--Koda-accent);
         }
 
         /* Disabilita il click sulla card in modalità selezione */
@@ -3350,7 +3378,7 @@
             align-items: center;
             gap: 12px;
             padding: 10px;
-            border-bottom: 1px solid var(--spotify-bg-light);
+            border-bottom: 1px solid var(--Koda-bg-light);
             cursor: pointer;
             text-align: left;
         }
@@ -3360,7 +3388,7 @@
         }
 
         #replace-featured-modal .tool-list-item:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         #replace-featured-modal .tool-list-item img {
@@ -3382,7 +3410,7 @@
 
         #replace-featured-modal .tool-list-item .tool-subtext {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         /* Styles for AI Suggestions and User Search */
@@ -3390,7 +3418,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 8px;
@@ -3403,19 +3431,19 @@
 
         .suggestion-text {
             font-size: 14px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             margin-bottom: 4px;
         }
 
         .suggestion-date {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .remove-suggestion-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 18px;
             cursor: pointer;
             padding: 4px 8px;
@@ -3431,7 +3459,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 8px;
@@ -3445,17 +3473,17 @@
         .user-nickname {
             font-size: 16px;
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             margin-bottom: 4px;
         }
 
         .user-suggestions-count {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .view-suggestions-btn {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 8px 16px;
@@ -3476,7 +3504,7 @@
         }
 
         .suggestion-item {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 8px;
@@ -3487,11 +3515,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--spotify-card-bg);
+            background: var(--Koda-card-bg);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 8px;
-            border: 1px solid var(--spotify-border);
+            border: 1px solid var(--Koda-border);
         }
 
         .user-info {
@@ -3500,17 +3528,17 @@
 
         .user-nickname {
             font-weight: 600;
-            color: var(--spotify-text-primary);
+            color: var(--Koda-text-primary);
             margin-bottom: 4px;
         }
 
         .user-suggestions-count {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .view-suggestions-btn {
-            background: var(--spotify-green);
+            background: var(--Koda-green);
             color: white;
             border: none;
             border-radius: 6px;
@@ -3521,7 +3549,7 @@
         }
 
         .view-suggestions-btn:hover {
-            background: var(--spotify-green-hover);
+            background: var(--Koda-green-hover);
         }
 
         /* New Search Users Page Styles */
@@ -3538,20 +3566,20 @@
         }
 
         .search-users-icon {
-            color: var(--spotify-green);
+            color: var(--Koda-green);
             margin-bottom: 16px;
         }
 
         .search-users-title {
             font-size: 28px;
             font-weight: 700;
-            color: var(--spotify-text-primary);
+            color: var(--Koda-text-primary);
             margin: 0 0 8px 0;
         }
 
         .search-users-subtitle {
             font-size: 16px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin: 0;
             line-height: 1.5;
         }
@@ -3571,7 +3599,7 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             pointer-events: none;
         }
 
@@ -3580,8 +3608,8 @@
             padding: 16px 16px 16px 48px;
             border: 2px solid #1db954;
             border-radius: 12px;
-            background: var(--spotify-card-bg);
-            color: var(--spotify-text-primary);
+            background: var(--Koda-card-bg);
+            color: var(--Koda-text-primary);
             font-size: 16px;
             transition: all 0.3s ease;
             box-sizing: border-box;
@@ -3589,12 +3617,12 @@
 
         .search-users-input:focus {
             outline: none;
-            border-color: var(--spotify-green);
+            border-color: var(--Koda-green);
             box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.1);
         }
 
         .search-users-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .search-results-container {
@@ -3605,11 +3633,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--spotify-card-bg);
+            background: var(--Koda-card-bg);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
-            border: 1px solid var(--spotify-border);
+            border: 1px solid var(--Koda-border);
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
@@ -3617,7 +3645,7 @@
         .user-search-result:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            border-color: var(--spotify-green);
+            border-color: var(--Koda-green);
         }
 
         .user-info {
@@ -3627,20 +3655,20 @@
 
         .user-nickname {
             font-weight: 600;
-            color: var(--spotify-text-primary);
+            color: var(--Koda-text-primary);
             margin-bottom: 4px;
             font-size: 16px;
         }
 
         .user-email {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-bottom: 4px;
         }
 
         .user-suggestions-count {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             display: flex;
             align-items: center;
             gap: 4px;
@@ -3652,7 +3680,7 @@
         }
 
         .view-suggestions-btn {
-            background: var(--spotify-green);
+            background: var(--Koda-green);
             color: white;
             border: none;
             border-radius: 8px;
@@ -3665,18 +3693,18 @@
         }
 
         .view-suggestions-btn:hover {
-            background: var(--spotify-green-hover);
+            background: var(--Koda-green-hover);
             transform: scale(1.05);
         }
 
         #empty-state {
             text-align: center;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 16px;
             padding: 40px 20px;
-            background: var(--spotify-card-bg);
+            background: var(--Koda-card-bg);
             border-radius: 12px;
-            border: 2px dashed var(--spotify-border);
+            border: 2px dashed var(--Koda-border);
         }
 
         /* AI Suggestions Grid and Cards */
@@ -3688,10 +3716,10 @@
         }
 
         .suggestion-item.new-format {
-            background: var(--spotify-card-bg);
+            background: var(--Koda-card-bg);
             border-radius: 12px;
             padding: 20px;
-            border: 1px solid var(--spotify-border);
+            border: 1px solid var(--Koda-border);
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
@@ -3699,7 +3727,7 @@
         .suggestion-item.new-format:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            border-color: var(--spotify-green);
+            border-color: var(--Koda-green);
         }
 
         .suggestion-header {
@@ -3709,7 +3737,7 @@
         .suggestion-app-name {
             font-size: 18px;
             font-weight: 600;
-            color: var(--spotify-text-primary);
+            color: var(--Koda-text-primary);
             margin: 0 0 8px 0;
         }
 
@@ -3721,7 +3749,7 @@
 
         .suggestion-category,
         .suggestion-country {
-            background: var(--spotify-green);
+            background: var(--Koda-green);
             color: white;
             padding: 4px 8px;
             border-radius: 12px;
@@ -3730,7 +3758,7 @@
         }
 
         .suggestion-description {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 14px;
             line-height: 1.5;
             margin-bottom: 16px;
@@ -3745,7 +3773,7 @@
         }
 
         .suggestion-website-btn {
-            background: var(--spotify-green);
+            background: var(--Koda-green);
             color: white;
             text-decoration: none;
             padding: 6px 12px;
@@ -3756,13 +3784,13 @@
         }
 
         .suggestion-website-btn:hover {
-            background: var(--spotify-green-hover);
+            background: var(--Koda-green-hover);
             transform: scale(1.05);
         }
 
         .suggestion-date {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .remove-suggestion-btn {
@@ -3790,7 +3818,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 14px;
         }
 
@@ -3801,8 +3829,8 @@
             padding: 14px 16px;
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
-            background: var(--spotify-bg-light);
-            color: var(--spotify-text);
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text);
             font-size: 16px;
             transition: all 0.3s ease;
             box-sizing: border-box;
@@ -3813,9 +3841,9 @@
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--spotify-accent);
+            border-color: var(--Koda-accent);
             box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
-            background: var(--spotify-card);
+            background: var(--Koda-card);
         }
 
         .form-group textarea {
@@ -3839,8 +3867,8 @@
         }
 
         .button.secondary {
-            background: var(--spotify-card);
-            color: var(--spotify-text);
+            background: var(--Koda-card);
+            color: var(--Koda-text);
             border: 1px solid rgba(128, 128, 128, 0.2);
             padding: 12px 24px;
             border-radius: 50px;
@@ -3851,7 +3879,7 @@
         }
 
         .button.primary {
-            background: var(--spotify-accent);
+            background: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 12px 24px;
@@ -3865,7 +3893,7 @@
         }
 
         .button.secondary:hover {
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
             transform: translateY(-1px);
         }
 
@@ -3902,7 +3930,7 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 24px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             text-align: center;
         }
 
@@ -3973,13 +4001,13 @@
             flex-direction: column;
             height: 100vh;
             /* Modificato a 100vh per occupare l'intera altezza dello schermo */
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
         }
 
         .user-chat-header {
             padding: 16px;
-            background: var(--spotify-bg-light);
-            border-bottom: 1px solid var(--spotify-card);
+            background: var(--Koda-bg-light);
+            border-bottom: 1px solid var(--Koda-card);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -3994,7 +4022,7 @@
         .user-chat-back-btn {
             background: none;
             border: none;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 24px;
             cursor: pointer;
             padding: 8px;
@@ -4003,14 +4031,14 @@
         }
 
         .user-chat-back-btn:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .user-chat-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -4028,7 +4056,7 @@
             height: 12px;
             background-color: #4CAF50;
             border-radius: 50%;
-            border: 2px solid var(--spotify-bg-light);
+            border: 2px solid var(--Koda-bg-light);
         }
 
         .user-chat-info h3 {
@@ -4039,8 +4067,251 @@
 
         .user-chat-info p {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin: 0;
+        }
+
+        /* Privacy Link Styles */
+        .privacy-link {
+            font-size: 16px;
+            color: var(--Koda-accent);
+            text-decoration: underline;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .privacy-link:hover {
+            color: #1ed760;
+        }
+
+        /* Privacy Modal Styles */
+        .privacy-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            padding: 20px;
+        }
+
+        .privacy-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .privacy-modal-content {
+            background: var(--Koda-card);
+            padding: 32px 24px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .privacy-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            position: sticky;
+            top: 0;
+            background: var(--Koda-card);
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+        }
+
+        .privacy-modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .privacy-modal-close {
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .privacy-modal-close:hover {
+            color: var(--Koda-text);
+        }
+
+        .privacy-modal-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--Koda-text);
+        }
+
+        .privacy-modal-body h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .privacy-modal-body p {
+            margin-bottom: 16px;
+        }
+
+        .privacy-modal-body strong {
+            font-weight: 600;
+        }
+
+        /* Privacy Reminder Modal Styles */
+        .privacy-reminder-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3500;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            padding: 20px;
+        }
+
+        .privacy-reminder-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .privacy-reminder-content {
+            background: var(--Koda-card);
+            padding: 32px 24px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .privacy-reminder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .privacy-reminder-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .privacy-reminder-message {
+            font-size: 14px;
+            color: var(--Koda-text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .privacy-reminder-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .privacy-reminder-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .privacy-reminder-checkbox label {
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .privacy-reminder-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .privacy-read-btn {
+            background-color: var(--Koda-accent);
+            color: #000;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .privacy-read-btn:hover {
+            background-color: #1ed760;
+            transform: scale(1.02);
+        }
+
+        .privacy-continue-btn {
+            background: none;
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text);
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .privacy-continue-btn:hover {
+            background-color: var(--Koda-bg-light);
+            border-color: var(--Koda-text);
+        }
+
+        @media (max-width: 480px) {
+            .privacy-modal-content {
+                padding: 24px 20px;
+                max-height: 90vh;
+            }
+
+            .privacy-modal-title {
+                font-size: 20px;
+            }
+
+            .privacy-modal-body {
+                font-size: 13px;
+            }
+
+            .privacy-reminder-content {
+                padding: 24px 20px;
+            }
+
+            .privacy-reminder-title {
+                font-size: 20px;
+            }
+
+            .privacy-reminder-actions {
+                flex-direction: column;
+            }
+
+            .privacy-read-btn,
+            .privacy-continue-btn {
+                width: 100%;
+            }
         }
 
         .user-chat-messages {
@@ -4061,15 +4332,15 @@
         }
 
         .user-chat-message.sent {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: black;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
 
         .user-chat-message.received {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
@@ -4116,7 +4387,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: var(--spotify-text-secondary);
+            background-color: var(--Koda-text-secondary);
             animation: typing-pulse 1.4s infinite ease-in-out;
         }
 
@@ -4149,8 +4420,8 @@
 
         .user-chat-input-container {
             padding: 16px;
-            background: var(--spotify-bg-light);
-            border-top: 1px solid var(--spotify-card);
+            background: var(--Koda-bg-light);
+            border-top: 1px solid var(--Koda-card);
             display: flex;
             gap: 12px;
             align-items: flex-end;
@@ -4160,10 +4431,10 @@
             width: 100%;
             flex: 1 1 auto;
             padding: 12px 16px;
-            border: 1px solid var(--spotify-card);
+            border: 1px solid var(--Koda-card);
             border-radius: 20px;
-            background: var(--spotify-card);
-            color: var(--spotify-text);
+            background: var(--Koda-card);
+            color: var(--Koda-text);
             font-size: 16px;
             resize: none;
             max-height: 120px;
@@ -4173,11 +4444,11 @@
 
         .user-chat-input:focus {
             outline: none;
-            border-color: var(--spotify-accent);
+            border-color: var(--Koda-accent);
         }
 
         .user-chat-send-btn {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: black;
             border: none;
             border-radius: 50%;
@@ -4197,8 +4468,8 @@
         }
 
         .user-chat-send-btn:disabled {
-            background-color: var(--spotify-card);
-            color: var(--spotify-text-secondary);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text-secondary);
             cursor: not-allowed;
             transform: none;
         }
@@ -4219,7 +4490,7 @@
         }
 
         .user-chat-item:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .user-chat-item.unread {
@@ -4230,7 +4501,7 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -4253,7 +4524,7 @@
 
         .user-chat-item-preview {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -4269,7 +4540,7 @@
 
         .user-chat-item-time {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         /* --- STILI PER IL PANNELLO COMANDI (SLASH COMMANDS) --- */
@@ -4281,10 +4552,10 @@
             right: 0;
             margin: 0 16px 8px 16px;
             /* Allineato con l'input container */
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 8px;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--spotify-bg-light);
+            border: 1px solid var(--Koda-bg-light);
             max-height: 250px;
             /* Altezza massima, per quando ci saranno più comandi */
             overflow-y: auto;
@@ -4295,9 +4566,9 @@
             padding: 8px 12px;
             font-size: 12px;
             font-weight: 600;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             text-transform: uppercase;
-            border-bottom: 1px solid var(--spotify-bg-light);
+            border-bottom: 1px solid var(--Koda-bg-light);
         }
 
         .command-palette-item {
@@ -4310,20 +4581,20 @@
         }
 
         .command-palette-item:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .command-palette-icon {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             font-weight: 500;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             flex-shrink: 0;
         }
 
@@ -4334,12 +4605,12 @@
         .command-palette-name {
             font-size: 15px;
             font-weight: 500;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .command-palette-desc {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -4348,7 +4619,7 @@
         n {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             cursor: pointer;
             padding: 4px;
             border-radius: 50%;
@@ -4367,10 +4638,10 @@
             left: 0;
             right: 0;
             margin: 0 16px 8px 16px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--spotify-card);
+            border: 1px solid var(--Koda-card);
             overflow: hidden;
             z-index: 10;
         }
@@ -4385,18 +4656,18 @@
         }
 
         .link-preview-item:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .link-preview-command {
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 15px;
         }
 
         .link-preview-desc {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         /* --- STILI PER MODALE E MESSAGGIO /LINK --- */
@@ -4415,7 +4686,7 @@
         }
 
         .ai-link-modal-content {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 12px;
             width: 90%;
             max-width: 400px;
@@ -4428,16 +4699,16 @@
 
         .ai-link-modal-header {
             padding: 16px;
-            border-bottom: 1px solid var(--spotify-bg-light);
+            border-bottom: 1px solid var(--Koda-bg-light);
         }
 
         .ai-link-search-input {
             width: 100%;
             padding: 12px 16px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border: none;
             border-radius: 8px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 16px;
         }
 
@@ -4458,7 +4729,7 @@
         }
 
         .ai-link-tool-item:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .ai-link-tool-item img {
@@ -4483,13 +4754,13 @@
         }
 
         .ai-link-message-content {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 12px;
             padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            border: 1px solid var(--spotify-bg-light);
+            border: 1px solid var(--Koda-bg-light);
         }
 
         .ai-link-message-header {
@@ -4510,13 +4781,13 @@
 
         .ai-link-message-description {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             line-height: 1.4;
         }
 
         .ai-link-details-btn {
-            background: var(--spotify-bg-light);
-            color: var(--spotify-text);
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text);
             border: none;
             padding: 6px 12px;
             font-size: 12px;
@@ -4530,12 +4801,12 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             margin-left: 8px;
         }
 
         .chat-button {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: black;
             border: none;
             padding: 8px 16px;
@@ -4572,7 +4843,7 @@
             flex: 0 0 auto;
             width: 56px;
             height: 56px;
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border-radius: 50%;
             border: none;
@@ -4621,22 +4892,22 @@
         .chat-search-container {
             padding: 16px;
             /* MODIFICATO: Aggiunto padding verticale per dare più spazio */
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
         }
 
         .chat-search-input {
             width: 100%;
             padding: 14px 16px;
             font-size: 16px;
-            background-color: var(--spotify-card);
-            border: 1px solid var(--spotify-card);
+            background-color: var(--Koda-card);
+            border: 1px solid var(--Koda-card);
             border-radius: 8px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             box-sizing: border-box;
         }
 
         .chat-search-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .chat-filters-container {
@@ -4647,7 +4918,7 @@
 
         .simple-chat-search-item {
             padding: 12px 16px;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 8px;
             margin-bottom: 8px;
             cursor: pointer;
@@ -4657,7 +4928,7 @@
         }
 
         .simple-chat-search-item:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         .chat-search-results {
@@ -4749,17 +5020,17 @@
         .suggestion-initial {
             font-size: 48px;
             font-weight: 700;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             line-height: 1;
         }
 
-        /* --- NUOVI STILI PER LA LIBRERIA (STILE SPOTIFY) --- */
+        /* --- NUOVI STILI PER LA LIBRERIA (STILE Koda) --- */
         #library-filters-container {
             padding: 8px 16px 16px 16px;
             position: sticky;
             top: 64px;
             /* Altezza della top-bar */
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
             z-index: 9;
         }
 
@@ -4770,12 +5041,12 @@
         }
 
         #library-content-list .tool-card-list:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         /* Stile per la card dei suggerimenti nella nuova lista verticale */
         .suggestion-list-item {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 12px;
@@ -4796,14 +5067,14 @@
 
         .suggestion-list-desc {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             line-height: 1.4;
         }
 
         .suggestion-list-actions .remove-suggestion-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 20px;
             cursor: pointer;
             padding: 8px;
@@ -4822,7 +5093,7 @@
             text-align: center;
             font-size: 15px;
             font-weight: 500;
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
             line-height: 1.6;
         }
 
@@ -4845,14 +5116,14 @@
         .feed-section-title {
             font-size: 22px;
             font-weight: 700;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             margin: 0;
         }
 
         .see-all-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -4862,7 +5133,7 @@
         }
 
         .see-all-btn:hover {
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
         }
 
         .horizontal-scroll-container {
@@ -4899,7 +5170,7 @@
         }
 
         .tool-item-horizontal:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             /* Feedback visivo standard al hover */
         }
 
@@ -4907,7 +5178,7 @@
             width: 100%;
             aspect-ratio: 1 / 1;
             border-radius: 8px;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             margin-bottom: 12px;
             overflow: hidden;
             display: flex;
@@ -4924,7 +5195,7 @@
         .tool-item-name {
             font-size: 14px;
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             line-height: 1.3;
             /* Gestisce il testo su massimo 2 righe con troncamento */
             overflow: hidden;
@@ -4941,14 +5212,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
             z-index: 2500;
             display: none;
             /* Nascosto di default */
             flex-direction: column;
             padding: 24px;
             font-family: var(--font-family);
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
@@ -4982,21 +5253,21 @@
         .optimizer-controls .button {
             padding: 8px 16px;
             font-size: 14px;
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             text-transform: none;
             letter-spacing: normal;
         }
 
         .optimizer-controls .button.primary {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
         }
 
         .optimizer-controls .close-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 28px;
             cursor: pointer;
             padding: 0;
@@ -5019,7 +5290,7 @@
 
         .optimizer-panel label {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-bottom: 12px;
         }
 
@@ -5027,11 +5298,11 @@
             width: 100%;
             height: 100%;
             resize: none;
-            background-color: var(--spotify-card);
-            border: 1px solid var(--spotify-bg-light);
+            background-color: var(--Koda-card);
+            border: 1px solid var(--Koda-bg-light);
             border-radius: 12px;
             padding: 16px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 16px;
             line-height: 1.5;
             font-family: var(--font-family);
@@ -5039,7 +5310,7 @@
 
         .optimizer-panel textarea:focus {
             outline: none;
-            border-color: var(--spotify-accent);
+            border-color: var(--Koda-accent);
         }
 
         .optimizer-footer {
@@ -5063,7 +5334,7 @@
             flex-grow: 1;
             background: transparent;
             border: none;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             padding: 8px;
             font-size: 14px;
         }
@@ -5080,11 +5351,11 @@
 
         .optimizer-helper-text {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .optimizer-helper-text strong {
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         @media (max-width: 768px) {
@@ -5144,15 +5415,15 @@
         .gallery-search-input {
             width: 100%;
             padding: 12px 16px;
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             font-size: 14px;
         }
 
         .gallery-search-input::placeholder {
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         #prompt-gallery-modal .gallery-list {
@@ -5165,9 +5436,9 @@
         }
 
         .prompt-gallery-item {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 12px;
-            border: 1px solid var(--spotify-card);
+            border: 1px solid var(--Koda-card);
             overflow: hidden;
         }
 
@@ -5181,7 +5452,7 @@
         }
 
         .prompt-gallery-item-header:hover {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .prompt-gallery-item-title {
@@ -5194,7 +5465,7 @@
         .prompt-gallery-item-number {
             font-size: 18px;
             font-weight: 700;
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
             min-width: 40px;
         }
 
@@ -5214,7 +5485,7 @@
 
         .prompt-gallery-item-date {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-weight: 500;
         }
 
@@ -5222,7 +5493,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .prompt-gallery-item-toggle svg {
@@ -5255,7 +5526,7 @@
         .prompt-gallery-header label {
             font-size: 14px;
             font-weight: 600;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
         }
 
         .prompt-gallery-actions {
@@ -5265,7 +5536,7 @@
         }
 
         .prompt-gallery-copy-btn {
-            background-color: var(--spotify-accent);
+            background-color: var(--Koda-accent);
             color: #000;
             border: none;
             padding: 6px 12px;
@@ -5282,8 +5553,8 @@
 
         .prompt-gallery-delete-btn {
             background: none;
-            border: 1px solid var(--spotify-text-secondary);
-            color: var(--spotify-text-secondary);
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text-secondary);
             padding: 6px 8px;
             border-radius: 50%;
             cursor: pointer;
@@ -5300,12 +5571,12 @@
         }
 
         .prompt-gallery-content {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             padding: 16px;
             border-radius: 8px;
             font-size: 14px;
             line-height: 1.6;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             white-space: pre-wrap;
             word-wrap: break-word;
         }
@@ -5341,17 +5612,17 @@
         .suggestion-initial {
             font-size: 48px;
             font-weight: 700;
-            color: var(--spotify-text);
+            color: var(--Koda-text);
             line-height: 1;
         }
 
-        /* --- NUOVI STILI PER LA LIBRERIA (STILE SPOTIFY) --- */
+        /* --- NUOVI STILI PER LA LIBRERIA (STILE Koda) --- */
         #library-filters-container {
             padding: 8px 16px 16px 16px;
             position: sticky;
             top: 64px;
             /* Altezza della top-bar */
-            background-color: var(--spotify-bg);
+            background-color: var(--Koda-bg);
             z-index: 9;
         }
 
@@ -5362,12 +5633,12 @@
         }
 
         #library-content-list .tool-card-list:hover {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
         }
 
         /* Stile per la card dei suggerimenti nella nuova lista verticale */
         .suggestion-list-item {
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 12px;
@@ -5388,14 +5659,14 @@
 
         .suggestion-list-desc {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             line-height: 1.4;
         }
 
         .suggestion-list-actions .remove-suggestion-btn {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 20px;
             cursor: pointer;
             padding: 8px;
@@ -5414,7 +5685,7 @@
             text-align: center;
             font-size: 15px;
             font-weight: 500;
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
             line-height: 1.6;
         }
 
@@ -5423,8 +5694,8 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: var(--spotify-card);
-            color: var(--spotify-text);
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
             padding: 16px 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -5434,7 +5705,7 @@
             transition: all 0.3s ease;
             max-width: 300px;
             word-wrap: break-word;
-            border-left: 4px solid var(--spotify-accent);
+            border-left: 4px solid var(--Koda-accent);
         }
 
         .toast-message.show {
@@ -5484,7 +5755,7 @@
         }
 
         .video-card {
-            background-color: var(--spotify-bg-light);
+            background-color: var(--Koda-bg-light);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
@@ -5500,7 +5771,7 @@
             flex-shrink: 0;
             border-radius: 8px;
             object-fit: cover;
-            background-color: var(--spotify-card);
+            background-color: var(--Koda-card);
         }
 
         .video-info {
@@ -5515,7 +5786,7 @@
 
         .video-info p {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             line-height: 1.4;
             margin-bottom: 12px;
         }
@@ -5532,7 +5803,7 @@
 
         .video-date {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-top: 8px;
         }
 
@@ -5689,7 +5960,7 @@
         }
 
         .view-toggle-btn {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 8px;
             padding: 8px;
@@ -5703,16 +5974,16 @@
         .view-toggle-btn svg {
             width: 20px;
             height: 20px;
-            fill: var(--spotify-text-secondary);
+            fill: var(--Koda-text-secondary);
         }
 
         .view-toggle-btn.active {
-            background: var(--spotify-text);
-            border-color: var(--spotify-text);
+            background: var(--Koda-text);
+            border-color: var(--Koda-text);
         }
 
         .view-toggle-btn.active svg {
-            fill: var(--spotify-bg);
+            fill: var(--Koda-bg);
         }
 
         body.light-mode .view-toggle-btn.active svg {
@@ -5720,7 +5991,7 @@
         }
 
         .view-toggle-btn:hover:not(.active) {
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
         }
 
         /* Layout a griglia per le card */
@@ -5745,7 +6016,7 @@
 
         /* Card collezione */
         .collection-card {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
@@ -5754,7 +6025,7 @@
         }
 
         .collection-card:hover {
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
             transform: scale(1.02);
         }
 
@@ -5837,13 +6108,13 @@
 
         .collection-count {
             font-size: 13px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         /* Card per creare nuova collezione */
         .create-collection-card {
-            background: var(--spotify-card);
-            border: 2px dashed var(--spotify-text-secondary);
+            background: var(--Koda-card);
+            border: 2px dashed var(--Koda-text-secondary);
             border-radius: 8px;
             aspect-ratio: 1 / 1;
             display: flex;
@@ -5856,36 +6127,36 @@
         }
 
         .create-collection-card:hover {
-            border-color: var(--spotify-accent);
-            background: var(--spotify-bg-light);
+            border-color: var(--Koda-accent);
+            background: var(--Koda-bg-light);
         }
 
         .create-collection-card svg {
             width: 48px;
             height: 48px;
-            fill: var(--spotify-text-secondary);
+            fill: var(--Koda-text-secondary);
             transition: all 0.2s ease;
         }
 
         .create-collection-card:hover svg {
-            fill: var(--spotify-accent);
+            fill: var(--Koda-accent);
             transform: scale(1.1);
         }
 
         .create-collection-text {
             font-size: 14px;
             font-weight: 600;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .create-collection-card:hover .create-collection-text {
-            color: var(--spotify-accent);
+            color: var(--Koda-accent);
         }
 
         /* Menu contestuale collezione */
         .collection-context-menu {
             position: absolute;
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             min-width: 180px;
@@ -5914,7 +6185,7 @@
         }
 
         .collection-context-menu-item:hover {
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
         }
 
         .collection-context-menu-item:first-child {
@@ -5959,7 +6230,7 @@
         }
 
         .add-to-collection-content {
-            background: var(--spotify-card);
+            background: var(--Koda-card);
             padding: 24px;
             border-radius: 16px;
             width: 90%;
@@ -5983,7 +6254,7 @@
         .add-to-collection-close {
             background: none;
             border: none;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             font-size: 24px;
             cursor: pointer;
             padding: 4px;
@@ -6001,7 +6272,7 @@
         }
 
         .collection-list-item:hover {
-            background: var(--spotify-bg-light);
+            background: var(--Koda-bg-light);
         }
 
         .collection-list-item-cover {
@@ -6033,22 +6304,22 @@
 
         .collection-list-item-count {
             font-size: 12px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         .collection-list-item-check {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border: 2px solid var(--spotify-text-secondary);
+            border: 2px solid var(--Koda-text-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .collection-list-item.selected .collection-list-item-check {
-            background: var(--spotify-accent);
-            border-color: var(--spotify-accent);
+            background: var(--Koda-accent);
+            border-color: var(--Koda-accent);
         }
 
         .collection-list-item-check svg {
@@ -6065,7 +6336,7 @@
         .create-new-collection-btn {
             width: 100%;
             padding: 12px;
-            background: var(--spotify-accent);
+            background: var(--Koda-accent);
             color: #000;
             border: none;
             border-radius: 20px;
@@ -6114,7 +6385,7 @@
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
             margin-bottom: 8px;
         }
 
@@ -6126,7 +6397,7 @@
 
         .collection-detail-count {
             font-size: 14px;
-            color: var(--spotify-text-secondary);
+            color: var(--Koda-text-secondary);
         }
 
         @media (max-width: 480px) {
@@ -6201,7 +6472,7 @@
             </div>
             <div class="menu-footer" style="text-align: center; padding-bottom: 10px;">
                 <a href="https://mega.nz/file/ohYS0CYB#oLZnprvBFxWQpDqPDiqWzqHo6yTA_P1a34Qk_VAgqxA" target="_blank"
-                    style="color: var(--spotify-accent); font-weight: bold; text-decoration: underline; display: block; margin-bottom: 12px;"
+                    style="color: var(--Koda-accent); font-weight: bold; text-decoration: underline; display: block; margin-bottom: 12px;"
                     data-translate="discoverMoreLink">Clicca per scoprire di piu'</a>
                 <button id="delete-all-btn" data-action="delete-all-chats" data-translate="deleteAll">Elimina
                     tutto</button>
@@ -6210,7 +6481,7 @@
     </div>
 
     <div id="initial-loader"
-        style="display: flex; justify-content: center; align-items: center; height: 100vh; position: fixed; top: 0; left: 0; width: 100vw; z-index: 9999; background-color: var(--spotify-bg);">
+        style="display: flex; justify-content: center; align-items: center; height: 100vh; position: fixed; top: 0; left: 0; width: 100vw; z-index: 9999; background-color: var(--Koda-bg);">
         <div class="chat-bubble loading" style="align-self: center;"><span></span><span></span><span></span></div>
     </div>
     <div id="app-container">
@@ -6556,18 +6827,18 @@ ${knowledgeBaseFormatter(tools)}
 
         const createChatSession = (lang) => {
             const systemInstruction = getSystemInstruction(lang);
-            return ai.chats.create({ 
-                model: modelName, 
-                config: { 
+            return ai.chats.create({
+                model: modelName,
+                config: {
                     systemInstruction,
                     maxOutputTokens: 8192,
                     temperature: 0.9,
                     topP: 0.95,
                     topK: 40
-                } 
+                }
             });
         };
-        async function* sendMessageStream(chat, message) { 
+        async function* sendMessageStream(chat, message) {
             // Usa sendMessage diretto invece di streaming per evitare risposte troncate
             try {
                 const response = await chat.sendMessage({ message });
@@ -6723,7 +6994,7 @@ ${knowledgeBaseFormatter(tools)}
             return (
                 <div id="welcome-screen">
                     <div className="welcome-logo">
-                        <span style={{ color: 'var(--spotify-text)' }}>Koda</span><span style={{ color: 'var(--spotify-accent)' }}>.AI</span>
+                        <span style={{ color: 'var(--Koda-text)' }}>Koda</span><span style={{ color: 'var(--Koda-accent)' }}>.AI</span>
                     </div>
                     <div className="prompt-starter-container">
                         {suggestions[lang].map((text, i) => (
@@ -6819,7 +7090,7 @@ ${knowledgeBaseFormatter(tools)}
                         });
                     }
                     console.log(`Streaming completed. Chunks received: ${chunkCount}, Total length: ${accumulatedResponse.length}`);
-                    
+
                     // Se la risposta è troppo corta (meno di 5 caratteri), potrebbe essere un errore
                     if (accumulatedResponse.length < 5) {
                         console.warn("Response too short, possible streaming issue");
@@ -6880,7 +7151,6 @@ ${knowledgeBaseFormatter(tools)}
     <script type="module">
         // --- FIREBASE IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, addDoc, serverTimestamp, onSnapshot, orderBy, limit, writeBatch, deleteDoc, collectionGroup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -6897,7 +7167,6 @@ ${knowledgeBaseFormatter(tools)}
 
         // --- FIREBASE INITIALIZATION ---
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
@@ -6932,7 +7201,7 @@ ${knowledgeBaseFormatter(tools)}
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- LOGICA DI TRADUZIONE ---
-            const translations = {
+            const translations = window.translations = {
                 it: {
                     // Auth
                     createAccount: "Crea il tuo account", registerEmailLabel: "Email", registerEmailPlaceholder: "nome@esempio.com",
@@ -7108,6 +7377,52 @@ ${knowledgeBaseFormatter(tools)}
                     // NUOVE TRADUZIONI PER CATALOGO VIDEO (UTENTE)
                     videoCatalogTitle: "Tutorials & Guide",
                     watchVideo: "Guarda",
+                    // Privacy
+                    privacy: "Privacy",
+                    privacyPolicyTitle: "Privacy Policy di Koda.AI",
+                    privacyLastUpdate: "Ultimo aggiornamento: 1 Novembre 2025",
+                    privacyIntro: "Questa applicazione (\"Koda.AI\") è fornita da Riccardo Giorgio Ponte e Davide Narracci.",
+                    privacyDataControllerTitle: "Titolare del Trattamento dei Dati",
+                    privacyDataController: "Riccardo Giorgio Ponte & Davide Narracci",
+                    privacyContactEmail: "Indirizzo email di contatto del Titolare: [redscorpionluna@gmail.com]",
+                    privacyDataTypesTitle: "Tipi di Dati Trattati",
+                    privacyDataTypesIntro: "Questa Applicazione non raccoglie dati personali identificativi come nome o email, né utilizza cookie di profilazione o strumenti di analisi statistica.",
+                    privacyDataTypesNote: "Tuttavia, per fornire il suo servizio principale (il chatbot), l'applicazione interagisce con servizi di terze parti.",
+                    privacyNavigationData: "Dati di Navigazione:",
+                    privacyNavigationDataDesc: "Durante il normale funzionamento, i sistemi informatici acquisiscono alcuni dati la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di Internet. In questa categoria di dati rientra l'indirizzo IP dell'utente. Questo dato viene tecnicamente trasmesso per poter ricevere una risposta dal chatbot.",
+                    privacyUserData: "Dati forniti volontariamente dall'utente:",
+                    privacyUserDataDesc: "I messaggi, le domande o i testi che l'utente scrive volontariamente all'interno del chatbot.",
+                    privacyLocalStorageTitle: "Archiviazione Locale dei Dati (Local Storage)",
+                    privacyLocalStorageIntro: "L'applicazione utilizza il Local Storage del browser per salvare alcune informazioni direttamente sul dispositivo dell'utente. Il Local Storage è una tecnologia che permette ai siti web di memorizzare dati nel browser, simile ai cookie ma con maggiore capacità di archiviazione.",
+                    privacyLocalStorageWhatTitle: "Cosa viene salvato nel Local Storage:",
+                    privacyLocalStoragePreferences: "• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.",
+                    privacyLocalStorageHistory: "• Cronologia delle conversazioni: i messaggi scambiati con il chatbot vengono salvati localmente per permetterti di ritrovare le tue conversazioni precedenti.",
+                    privacyLocalStorageCollections: "• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.",
+                    privacyLocalStorageState: "• Stato dell'applicazione: informazioni tecniche necessarie per il corretto funzionamento dell'app (es. se hai già visto il messaggio di benvenuto).",
+                    privacyLocalStorageImportantTitle: "Importante da sapere:",
+                    privacyLocalStoragePoint1: "• Tutti questi dati rimangono solo sul tuo dispositivo e non vengono mai inviati ai nostri server.",
+                    privacyLocalStoragePoint2: "• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser (solitamente nella sezione \"Privacy\" o \"Cancella dati di navigazione\").",
+                    privacyLocalStoragePoint3: "• Se cancelli i dati del Local Storage, perderai le tue preferenze, la cronologia delle chat e le collezioni salvate.",
+                    privacyLocalStoragePoint4: "• Questi dati sono accessibili solo da questa applicazione e solo sul browser e dispositivo che stai utilizzando.",
+                    privacyPurposeTitle: "Finalità del Trattamento",
+                    privacyPurposeDesc: "I dati sopra menzionati sono trattati per l'unica finalità di permettere il funzionamento del chatbot e fornire una risposta all'utente. L'indirizzo IP è necessario per stabilire la comunicazione tra il browser dell'utente e il servizio di Intelligenza Artificiale. I testi inseriti dall'utente sono necessari per generare una risposta pertinente.",
+                    privacyPurposeNote: "Noi, in qualità di titolari, non conserviamo né archiviamo le conversazioni o gli indirizzi IP degli utenti.",
+                    privacyThirdPartiesTitle: "Destinatari dei Dati (Terze Parti)",
+                    privacyThirdPartiesIntro: "Per poter funzionare, il chatbot invia i dati di navigazione (indirizzo IP) e i testi inseriti dall'utente al seguente fornitore di servizi di Intelligenza Artificiale:",
+                    privacyThirdPartiesGoogle: "Google LLC (Google GenAI API)",
+                    privacyThirdPartiesGoogleDesc: "Il servizio è soggetto alle politiche sulla privacy di Google. Per maggiori informazioni, si prega di consultare la loro documentazione.",
+                    privacyThirdPartiesLocation: "Luogo del trattamento: Stati Uniti – Privacy Policy di Google.",
+                    privacyRightsTitle: "Diritti dell'Interessato",
+                    privacyRightsIntro: "Ai sensi del Regolamento Europeo 679/2016 (GDPR), l'utente ha diritto di:",
+                    privacyRightsList: "• Chiedere al titolare del trattamento l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione del trattamento.\n• Opporsi al trattamento.\n• Proporre reclamo a un'autorità di controllo.",
+                    privacyRightsNote: "Dato che non conserviamo dati personali, l'esercizio di tali diritti può essere rivolto principalmente verso le terze parti menzionate. Per qualsiasi domanda, è possibile contattarci all'indirizzo email sopra indicato.",
+                    privacyChangesTitle: "Modifiche a questa privacy policy",
+                    privacyChangesDesc: "Il Titolare del Trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli Utenti su questa pagina.",
+                    privacyReminderTitle: "Benvenuto in Koda.AI",
+                    privacyReminderMessage: "Prima di iniziare, ti invitiamo a leggere la nostra Privacy Policy per comprendere come trattiamo i tuoi dati.",
+                    privacyReminderDontShow: "Non mostrare più questo messaggio",
+                    privacyReminderReadBtn: "Leggi Privacy Policy",
+                    privacyReminderContinueBtn: "Continua",
                 },
                 en: {
                     // Auth
@@ -7283,6 +7598,52 @@ ${knowledgeBaseFormatter(tools)}
                     // NEW TRANSLATIONS FOR VIDEO CATALOG (USER)
                     videoCatalogTitle: "Tutorials & Guides",
                     watchVideo: "Watch",
+                    // Privacy
+                    privacy: "Privacy",
+                    privacyPolicyTitle: "Koda.AI Privacy Policy",
+                    privacyLastUpdate: "Last updated: November 1, 2025",
+                    privacyIntro: "This application (\"Koda.AI\") is provided by Riccardo Giorgio Ponte and Davide Narracci.",
+                    privacyDataControllerTitle: "Data Controller",
+                    privacyDataController: "Riccardo Giorgio Ponte & Davide Narracci",
+                    privacyContactEmail: "Controller contact email: [redscorpionluna@gmail.com]",
+                    privacyDataTypesTitle: "Types of Data Processed",
+                    privacyDataTypesIntro: "This Application does not collect personally identifiable information such as name or email, nor does it use profiling cookies or statistical analysis tools.",
+                    privacyDataTypesNote: "However, to provide its main service (the chatbot), the application interacts with third-party services.",
+                    privacyNavigationData: "Navigation Data:",
+                    privacyNavigationDataDesc: "During normal operation, computer systems acquire some data whose transmission is implicit in the use of Internet communication protocols. This category of data includes the user's IP address. This data is technically transmitted to receive a response from the chatbot.",
+                    privacyUserData: "Data voluntarily provided by the user:",
+                    privacyUserDataDesc: "Messages, questions, or texts that the user voluntarily writes within the chatbot.",
+                    privacyLocalStorageTitle: "Local Data Storage (Local Storage)",
+                    privacyLocalStorageIntro: "The application uses the browser's Local Storage to save some information directly on the user's device. Local Storage is a technology that allows websites to store data in the browser, similar to cookies but with greater storage capacity.",
+                    privacyLocalStorageWhatTitle: "What is saved in Local Storage:",
+                    privacyLocalStoragePreferences: "• User preferences: such as selected language, theme (light/dark mode), and other customization settings.",
+                    privacyLocalStorageHistory: "• Conversation history: messages exchanged with the chatbot are saved locally to allow you to find your previous conversations.",
+                    privacyLocalStorageCollections: "• Collections and favorites: your AI tool collections and favorites are stored on your device.",
+                    privacyLocalStorageState: "• Application state: technical information necessary for the proper functioning of the app (e.g., whether you have already seen the welcome message).",
+                    privacyLocalStorageImportantTitle: "Important to know:",
+                    privacyLocalStoragePoint1: "• All this data remains only on your device and is never sent to our servers.",
+                    privacyLocalStoragePoint2: "• You can delete this data at any time through your browser settings (usually in the \"Privacy\" or \"Clear browsing data\" section).",
+                    privacyLocalStoragePoint3: "• If you delete Local Storage data, you will lose your preferences, chat history, and saved collections.",
+                    privacyLocalStoragePoint4: "• This data is accessible only by this application and only on the browser and device you are using.",
+                    privacyPurposeTitle: "Purpose of Processing",
+                    privacyPurposeDesc: "The data mentioned above is processed for the sole purpose of allowing the chatbot to function and provide a response to the user. The IP address is necessary to establish communication between the user's browser and the Artificial Intelligence service. The texts entered by the user are necessary to generate a relevant response.",
+                    privacyPurposeNote: "We, as data controllers, do not store or archive users' conversations or IP addresses.",
+                    privacyThirdPartiesTitle: "Data Recipients (Third Parties)",
+                    privacyThirdPartiesIntro: "To function, the chatbot sends navigation data (IP address) and texts entered by the user to the following Artificial Intelligence service provider:",
+                    privacyThirdPartiesGoogle: "Google LLC (Google GenAI API)",
+                    privacyThirdPartiesGoogleDesc: "The service is subject to Google's privacy policies. For more information, please consult their documentation.",
+                    privacyThirdPartiesLocation: "Place of processing: United States – Google Privacy Policy.",
+                    privacyRightsTitle: "Data Subject Rights",
+                    privacyRightsIntro: "Under the European Regulation 679/2016 (GDPR), the user has the right to:",
+                    privacyRightsList: "• Request access to personal data, rectification, deletion, or limitation of processing from the data controller.\n• Object to processing.\n• Lodge a complaint with a supervisory authority.",
+                    privacyRightsNote: "Since we do not store personal data, the exercise of these rights can be addressed primarily to the third parties mentioned. For any questions, you can contact us at the email address indicated above.",
+                    privacyChangesTitle: "Changes to this privacy policy",
+                    privacyChangesDesc: "The Data Controller reserves the right to make changes to this privacy policy at any time, giving notice to Users on this page.",
+                    privacyReminderTitle: "Welcome to Koda.AI",
+                    privacyReminderMessage: "Before you begin, we invite you to read our Privacy Policy to understand how we handle your data.",
+                    privacyReminderDontShow: "Don't show this message again",
+                    privacyReminderReadBtn: "Read Privacy Policy",
+                    privacyReminderContinueBtn: "Continue",
                 }
             };
 
@@ -7912,7 +8273,7 @@ ${knowledgeBaseFormatter(tools)}
                 closeUserProfileDropdown();
             };
 
-            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Spotify
+            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda
             const showConfirmModal = (options) => {
                 return new Promise((resolve) => {
                     const { title, message, icon = '⚠️', confirmText, cancelText } = options;
@@ -8213,12 +8574,12 @@ ${knowledgeBaseFormatter(tools)}
                         </button>
                         ${selectedCount > 0 ? `
                             <button class="pill-btn" data-action="multi-select-favorites" title="${t.addToFavorites}" style="padding: 8px 12px;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--spotify-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
                             </button>
                             <button class="pill-btn" data-action="multi-select-collection" title="${t.addToCollection}" style="padding: 8px 12px;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--spotify-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                 </svg>
                             </button>
@@ -8334,13 +8695,13 @@ ${knowledgeBaseFormatter(tools)}
                         <div style="max-height: 400px; overflow-y: auto;">
                             ${userCollections.length > 0 ? userCollections.map(collection => `
                                 <div class="user-profile-item" data-action="add-to-collection-multi" data-collection-id="${collection.id}" style="cursor: pointer;">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--spotify-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                     </svg>
                                     <span>${collection.name}</span>
                                 </div>
                             `).join('') : `
-                                <div style="text-align: center; padding: 24px; color: var(--spotify-text-secondary);">
+                                <div style="text-align: center; padding: 24px; color: var(--Koda-text-secondary);">
                                     ${currentLanguage === 'it' ? 'Nessuna collezione trovata' : 'No collections found'}
                                 </div>
                             `}
@@ -8465,7 +8826,7 @@ ${knowledgeBaseFormatter(tools)}
                                 type="text" 
                                 id="multi-select-collection-name" 
                                 placeholder="${t.collectionNamePlaceholder}"
-                                style="width: 100%; padding: 12px; border: 1px solid rgba(128, 128, 128, 0.2); border-radius: 8px; background-color: var(--spotify-bg-light); color: var(--spotify-text); font-family: inherit; font-size: 14px;"
+                                style="width: 100%; padding: 12px; border: 1px solid rgba(128, 128, 128, 0.2); border-radius: 8px; background-color: var(--Koda-bg-light); color: var(--Koda-text); font-family: inherit; font-size: 14px;"
                                 onkeypress="if(event.key === 'Enter') window.handleMultiCollectionSubmit()"
                             />
                         </div>
@@ -8694,7 +9055,7 @@ ${knowledgeBaseFormatter(tools)}
 
                 // NUOVO: Pulsante Catalogo Video
                 otherControlsHTML += `
-    <button id="video-catalog-btn" class="global-btn" data-action="open-video-catalog" title="${translations[currentLanguage].videoCatalogTitle}" style="color: var(--spotify-accent);">
+    <button id="video-catalog-btn" class="global-btn" data-action="open-video-catalog" title="${translations[currentLanguage].videoCatalogTitle}" style="color: var(--Koda-accent);">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
     </button>
 `;
@@ -8733,7 +9094,7 @@ ${knowledgeBaseFormatter(tools)}
                     const coverHTML = collection.coverImage
                         ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                         : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--spotify-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                             </svg>
                         </div>`;
@@ -8757,7 +9118,7 @@ ${knowledgeBaseFormatter(tools)}
                 const buttonsHTML = hasCollections
                     ? `
                         <div style="display: flex; gap: 12px; margin-top: 16px;">
-                            <button class="create-new-collection-btn" data-action="create-collection-from-modal" style="flex: 1; background: var(--spotify-card); color: var(--spotify-text);">
+                            <button class="create-new-collection-btn" data-action="create-collection-from-modal" style="flex: 1; background: var(--Koda-card); color: var(--Koda-text);">
                                 ${t.createCollection}
                             </button>
                             <button class="create-new-collection-btn" data-action="close-add-to-collection-modal" style="flex: 1;">
@@ -8774,7 +9135,7 @@ ${knowledgeBaseFormatter(tools)}
                                 <h3 class="add-to-collection-title">${t.addToCollection}</h3>
                                 <button class="add-to-collection-close" data-action="close-add-to-collection-modal">×</button>
                             </div>
-                            ${hasCollections ? `<div class="collections-list">${collectionsListHTML}</div>` : `<p style="text-align: center; color: var(--spotify-text-secondary); padding: 20px;">${t.emptyCollections}</p>`}
+                            ${hasCollections ? `<div class="collections-list">${collectionsListHTML}</div>` : `<p style="text-align: center; color: var(--Koda-text-secondary); padding: 20px;">${t.emptyCollections}</p>`}
                             ${buttonsHTML}
                         </div>
                     </div>
@@ -8827,7 +9188,7 @@ ${knowledgeBaseFormatter(tools)}
                     if (hasCollections) {
                         // Cambia il pulsante per mostrare che è stato aggiunto
                         addButton.innerHTML = `✓ ${t.addedToCollection || (currentLanguage === 'it' ? 'Aggiunto' : 'Added')}`;
-                        addButton.style.background = 'var(--spotify-accent)';
+                        addButton.style.background = 'var(--Koda-accent)';
                         addButton.style.color = '#000';
 
                         // Animazione di feedback
@@ -9016,9 +9377,10 @@ ${knowledgeBaseFormatter(tools)}
                     const globalControls = getGlobalControlsHTML();
                     const pageTitle = pageTitles[currentView] || currentView;
                     // MODIFICATO: Usa la stessa struttura e classi della barra della chat per coerenza
+                    const t = translations[currentLanguage];
                     const topBarHTML = `<div class="user-chat-header">
                     <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
-                    <div class="user-chat-info" style="flex-grow: 1;"><h3>${pageTitle}</h3></div>
+                    <div class="user-chat-info" style="flex-grow: 1;"><a href="#" class="privacy-link" id="privacy-link-top">${t.privacy}</a></div>
                     <div id="global-controls">${globalControls.otherControls}</div>
                 </div>`;
                     el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
@@ -9038,7 +9400,7 @@ ${knowledgeBaseFormatter(tools)}
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
                     </button>
                     <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
-                    <div class="user-chat-info" style="flex-grow: 1;"><h3>${pageTitle}</h3></div>
+                    <div class="user-chat-info" style="flex-grow: 1;"><a href="#" class="privacy-link" id="privacy-link-chat">${t.privacy}</a></div>
                     <div id="global-controls">${globalControls.otherControls}</div>
                 </div>`;
                     el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
@@ -9208,7 +9570,8 @@ ${filtersHTML}
 
                     el.mainContent.appendChild(contentArea);
                 } else if (currentView === 'search-users') {
-                    if (isGuest) {
+                    // Guest-only mode: Always show content, no auth prompt
+                    if (false) { // Disabled auth prompt
                         contentArea.innerHTML = `
                         <div class="auth-prompt-card">
                             <h3 data-translate="libraryPromptTitle">${t.libraryPromptTitle}</h3>
@@ -9250,7 +9613,7 @@ ${filtersHTML}
                     }
                     el.mainContent.appendChild(contentArea);
                     // Sezione 'user-chats' rimossa
-                } else if (currentView === 'favorites') { // NUOVO: Vista Libreria stile Spotify
+                } else if (currentView === 'favorites') { // NUOVO: Vista Libreria stile Koda
                     // Se stiamo visualizzando una collezione specifica
                     if (activeCollectionId) {
                         const collection = getCollectionById(activeCollectionId);
@@ -9265,7 +9628,7 @@ ${filtersHTML}
                         const coverHTML = collection.coverImage
                             ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                             : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--spotify-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                 </svg>
                             </div>`;
@@ -9427,7 +9790,7 @@ ${filtersHTML}
                                     const coverHTML = collection.coverImage
                                         ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                                         : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--spotify-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                                             </svg>
                                         </div>`;
@@ -9514,7 +9877,7 @@ ${filtersHTML}
                 <button class="auth-close-btn" data-action="close-auth">×</button>
                 <svg class="auth-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="4" fill="none"/><text x="50" y="62" font-size="40" font-weight="bold" text-anchor="middle" fill="currentColor">AI</text></svg>
                 <h2 data-translate="resetPasswordTitle">${t.resetPasswordTitle}</h2>
-                <p style="color: var(--spotify-text-secondary); font-size: 14px; margin-bottom: 20px;" data-translate="resetPasswordInfo">${t.resetPasswordInfo}</p>
+                <p style="color: var(--Koda-text-secondary); font-size: 14px; margin-bottom: 20px;" data-translate="resetPasswordInfo">${t.resetPasswordInfo}</p>
                 <div class="input-group"><label for="forgot-email" data-translate="registerEmailLabel">${t.registerEmailLabel}</label><input type="email" id="forgot-email" placeholder="${t.registerEmailPlaceholder}"></div>
                 <button id="forgot-btn" class="button" data-translate="sendLinkButton">${t.sendLinkButton}</button>
                 <div class="auth-links"><a class="auth-switch-link" data-action="show-login" data-translate="backToLogin">${t.backToLogin}</a></div>
@@ -9631,7 +9994,7 @@ ${filtersHTML}
                         <button class="modal-close-btn" data-action="close-modal">×</button>
                         <h2 data-translate="settingsTitle">${t.settingsTitle}</h2>
                         
-                        <p style="font-size: 16px; color: var(--spotify-text-secondary); margin-top: 16px; margin-bottom: 24px;">${currentUser.name}</p>
+                        <p style="font-size: 16px; color: var(--Koda-text-secondary); margin-top: 16px; margin-bottom: 24px;">${currentUser.name}</p>
                         
                         <hr class="modal-divider">
 
@@ -9664,7 +10027,7 @@ ${filtersHTML}
                          <hr class="modal-divider">
                          
                          <h4>${currentLanguage === 'it' ? 'Chiave API Gemini' : 'Gemini API Key'}</h4>
-                         <p style="font-size: 13px; color: var(--spotify-text-secondary); margin: 8px 0 16px 0;">
+                         <p style="font-size: 13px; color: var(--Koda-text-secondary); margin: 8px 0 16px 0;">
                             ${currentLanguage === 'it' ? 'Configura la tua chiave API personale per utilizzare Gemini AI' : 'Configure your personal API key to use Gemini AI'}
                          </p>
                          <div class="input-group">
@@ -9672,8 +10035,8 @@ ${filtersHTML}
                             <input type="password" id="gemini-api-key" placeholder="${currentLanguage === 'it' ? 'Inserisci la tua chiave API' : 'Enter your API key'}" value="${localStorage.getItem('gemini-api-key') || ''}">
                          </div>
                          <button class="button" id="save-api-key-btn">${currentLanguage === 'it' ? 'Salva Chiave API' : 'Save API Key'}</button>
-                         <p style="font-size: 12px; color: var(--spotify-text-secondary); margin-top: 8px;">
-                            ${currentLanguage === 'it' ? 'Ottieni la tua chiave gratuita su' : 'Get your free key at'} <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--spotify-accent);">Google AI Studio</a>
+                         <p style="font-size: 12px; color: var(--Koda-text-secondary); margin-top: 8px;">
+                            ${currentLanguage === 'it' ? 'Ottieni la tua chiave gratuita su' : 'Get your free key at'} <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--Koda-accent);">Google AI Studio</a>
                          </p>
 
                          <hr class="modal-divider">
@@ -9779,13 +10142,13 @@ ${filtersHTML}
                     // Guest user: File input with improved UI
                     logoInputHTML = `
                         <label data-translate="appLogoLabel">${t.appLogoLabel}</label>
-                        <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 20px; background: var(--spotify-bg-light); border-radius: 8px; border: 2px dashed var(--spotify-text-secondary);">
+                        <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 20px; background: var(--Koda-bg-light); border-radius: 8px; border: 2px dashed var(--Koda-text-secondary);">
                             <img id="add-app-logo-preview" src="" alt="Logo Preview" style="display: none; width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
-                            <div id="add-app-logo-placeholder" style="width: 120px; height: 120px; background: var(--spotify-card); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px;">
+                            <div id="add-app-logo-placeholder" style="width: 120px; height: 120px; background: var(--Koda-card); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px;">
                                 🖼️
                             </div>
                             <input type="file" id="add-app-logo" accept="image/*" style="display: none;">
-                            <button type="button" class="button" onclick="document.getElementById('add-app-logo').click()" style="background: var(--spotify-accent); color: #000; padding: 10px 20px; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                            <button type="button" class="button" onclick="document.getElementById('add-app-logo').click()" style="background: var(--Koda-accent); color: #000; padding: 10px 20px; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-content: center;">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                     <polyline points="17 8 12 3 7 8"></polyline>
@@ -9793,7 +10156,7 @@ ${filtersHTML}
                                 </svg>
                                 <span>${currentLanguage === 'it' ? 'Carica Immagine' : 'Upload Image'}</span>
                             </button>
-                            <p style="font-size: 12px; color: var(--spotify-text-secondary); text-align: center; margin: 0;">
+                            <p style="font-size: 12px; color: var(--Koda-text-secondary); text-align: center; margin: 0;">
                                 ${currentLanguage === 'it' ? 'PNG, JPG o GIF (max 5MB)' : 'PNG, JPG or GIF (max 5MB)'}
                             </p>
                         </div>
@@ -9823,7 +10186,7 @@ ${filtersHTML}
                          </div>
                          <div class="input-group">
                              <label for="add-app-category" data-translate="category">${t.category}</label>
-                             <select id="add-app-category" style="width: 100%; padding: 14px 16px; font-size: 16px; background-color: var(--spotify-bg-light); border: 1px solid rgba(128,128,128,0.2); border-radius: 8px; color: var(--spotify-text);">
+                             <select id="add-app-category" style="width: 100%; padding: 14px 16px; font-size: 16px; background-color: var(--Koda-bg-light); border: 1px solid rgba(128,128,128,0.2); border-radius: 8px; color: var(--Koda-text);">
                                  ${categoryOptions}
                              </select>
                          </div>
@@ -10370,7 +10733,7 @@ ${filtersHTML}
                      <div class="modal-content">
                          <button class="modal-close-btn" data-action="close-modal">×</button>
                          <h2 data-translate="replaceFeaturedTitle">${t.replaceFeaturedTitle}</h2>
-                         <p style="color: var(--spotify-text-secondary); font-size: 14px; margin-bottom: 20px;" data-translate="selectAppToFeature">${t.selectAppToFeature}</p>
+                         <p style="color: var(--Koda-text-secondary); font-size: 14px; margin-bottom: 20px;" data-translate="selectAppToFeature">${t.selectAppToFeature}</p>
                          <div class="list-container">
                              ${toolListHTML}
                          </div>
@@ -10494,13 +10857,13 @@ ${filtersHTML}
                          </div>
                          <div class="input-group">
                              <label>${currentLanguage === 'it' ? 'Logo App' : 'App Logo'}</label>
-                             <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 20px; background: var(--spotify-bg-light); border-radius: 8px; border: 2px dashed var(--spotify-text-secondary);">
+                             <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 20px; background: var(--Koda-bg-light); border-radius: 8px; border: 2px dashed var(--Koda-text-secondary);">
                                  <img id="edit-app-logo-preview" src="${tool.logoUrl}" alt="Logo Preview" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
                                  <input type="file" id="edit-app-logo" accept="image/*" style="display: none;">
-                                 <button type="button" class="button" onclick="document.getElementById('edit-app-logo').click()" style="background: var(--spotify-accent); color: #000; padding: 10px 20px; font-size: 14px;">
+                                 <button type="button" class="button" onclick="document.getElementById('edit-app-logo').click()" style="background: var(--Koda-accent); color: #000; padding: 10px 20px; font-size: 14px;">
                                      ${currentLanguage === 'it' ? '🔄 Cambia Immagine' : '🔄 Change Image'}
                                  </button>
-                                 <p style="font-size: 12px; color: var(--spotify-text-secondary); text-align: center; margin: 0;">
+                                 <p style="font-size: 12px; color: var(--Koda-text-secondary); text-align: center; margin: 0;">
                                      ${currentLanguage === 'it' ? 'PNG, JPG o GIF (max 5MB)' : 'PNG, JPG or GIF (max 5MB)'}
                                  </p>
                              </div>
@@ -10974,7 +11337,7 @@ ${filtersHTML}
                 `).join('');
 
                     // Add message if there are more results
-                    const moreResultsMessage = users.length > 10 ? `<div style="text-align: center; color: var(--spotify-text-secondary); font-size: 12px; margin-top: 8px;">Mostrando i primi 10 risultati di ${users.length}</div>` : '';
+                    const moreResultsMessage = users.length > 10 ? `<div style="text-align: center; color: var(--Koda-text-secondary); font-size: 12px; margin-top: 8px;">Mostrando i primi 10 risultati di ${users.length}</div>` : '';
 
                     searchResults.innerHTML = usersHTML + moreResultsMessage;
                 } catch (error) {
@@ -11199,7 +11562,7 @@ ${filtersHTML}
                     saveButton.disabled = true;
                     saveButton.style.opacity = '0.6';
                     saveButton.innerHTML = '✓ Salvato!';
-                    saveButton.style.backgroundColor = 'var(--spotify-accent)';
+                    saveButton.style.backgroundColor = 'var(--Koda-accent)';
                     saveButton.style.color = '#000';
                 }
 
@@ -11333,7 +11696,7 @@ ${filtersHTML}
                 <div id="confirm-delete-prompt-modal" class="modal-overlay visible">
                     <div class="modal-content" style="text-align: left; max-width: 400px;">
                         <h2 style="font-size: 20px; margin-bottom: 16px;">${t.confirmDeletePromptTitle}</h2>
-                        <p style="color: var(--spotify-text-secondary); line-height: 1.5; margin-bottom: 24px;">${t.confirmDeletePromptMessage}</p>
+                        <p style="color: var(--Koda-text-secondary); line-height: 1.5; margin-bottom: 24px;">${t.confirmDeletePromptMessage}</p>
                         <div style="display: flex; gap: 12px; justify-content: flex-end;">
                             <button class="pill-btn" data-action="close-modal">${t.cancel}</button>
                             <button class="button" data-action="execute-delete-saved-prompt" data-id="${promptId}" style="background-color: #ff6b6b; color: white;">${t.deleteButton}</button>
@@ -11551,7 +11914,7 @@ ${filtersHTML}
                 <div id="confirm-delete-modal" class="modal-overlay visible">
                     <div class="modal-content" style="text-align: left; max-width: 400px;">
                         <h2 style="font-size: 20px; margin-bottom: 16px;">${t.deleteAll}</h2>
-                        <p style="color: var(--spotify-text-secondary); line-height: 1.5; margin-bottom: 24px;">${t.confirmDeleteAll}</p>
+                        <p style="color: var(--Koda-text-secondary); line-height: 1.5; margin-bottom: 24px;">${t.confirmDeleteAll}</p>
                         <div style="display: flex; gap: 12px; justify-content: flex-end;">
                             <button class="pill-btn" data-action="close-modal">${t.cancel || 'Annulla'}</button>
                             <button class="button" data-action="confirm-delete-all-chats" style="background-color: #ff4444; color: white;">${t.deleteAll}</button>
@@ -11639,7 +12002,7 @@ ${filtersHTML}
                         <div class="add-ai-form">
                             <div class="input-group">
                                 <label>${t.documentIdLabel}</label>
-                                <input type="text" value="${toolToEdit.id}" disabled style="background-color: var(--spotify-bg);">
+                                <input type="text" value="${toolToEdit.id}" disabled style="background-color: var(--Koda-bg);">
                             </div>
 
                             <div class="input-group">
@@ -11920,7 +12283,7 @@ ${filtersHTML}
                                             <div class="gallery-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
                                                 <button class="modal-close-btn" data-action="close-fullscreen-prompt" style="position: absolute; top: 20px; right: 24px;">×</button>
                                                 <h2 style="margin: 0; font-size: 24px;">Prompt Salvato</h2>
-                                                <p style="color: var(--spotify-text-secondary); font-size: 14px; margin-top: 8px;">${timestamp}</p>
+                                                <p style="color: var(--Koda-text-secondary); font-size: 14px; margin-top: 8px;">${timestamp}</p>
                                             </div>
                                             <div style="flex: 1; overflow-y: auto; padding: 24px;">
                                                 <div style="margin-bottom: 32px;">
@@ -11928,7 +12291,7 @@ ${filtersHTML}
                                                         <label style="font-weight: 600; font-size: 16px;">${translations[currentLanguage].originalPromptLabel}</label>
                                                         <button class="prompt-gallery-copy-btn" data-action="copy-fullscreen-text" data-text="${originalPrompt.replace(/"/g, '&quot;')}">${translations[currentLanguage].copyButton}</button>
                                                     </div>
-                                                    <div style="background-color: var(--spotify-bg-light); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap;">${originalPrompt}</div>
+                                                    <div style="background-color: var(--Koda-bg-light); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap;">${originalPrompt}</div>
                                                 </div>
                                                 <hr style="border: none; border-top: 1px solid rgba(128, 128, 128, 0.2); margin: 24px 0;">
                                                 <div>
@@ -11938,8 +12301,8 @@ ${filtersHTML}
                                                             <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                                                         </button>
                                                     </div>
-                                                    <div style="background: linear-gradient(135deg, rgba(29, 185, 84, 0.15) 0%, rgba(29, 185, 84, 0.05) 100%); border: 2px solid var(--spotify-accent); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap; color: var(--spotify-text);">${optimizedPrompt}</div>
-                                                    <button class="button" data-action="copy-fullscreen-text" data-text="${optimizedPrompt.replace(/"/g, '&quot;')}" style="width: 100%; margin-top: 16px; background-color: var(--spotify-accent); color: #000; font-weight: 600;">${translations[currentLanguage].copyButton}</button>
+                                                    <div style="background: linear-gradient(135deg, rgba(29, 185, 84, 0.15) 0%, rgba(29, 185, 84, 0.05) 100%); border: 2px solid var(--Koda-accent); padding: 16px; border-radius: 8px; line-height: 1.6; white-space: pre-wrap; color: var(--Koda-text);">${optimizedPrompt}</div>
+                                                    <button class="button" data-action="copy-fullscreen-text" data-text="${optimizedPrompt.replace(/"/g, '&quot;')}" style="width: 100%; margin-top: 16px; background-color: var(--Koda-accent); color: #000; font-weight: 600;">${translations[currentLanguage].copyButton}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -12124,6 +12487,7 @@ ${filtersHTML}
                             // Cambia la lingua a livello globale
                             currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
                             localStorage.setItem('koda-lang', currentLanguage);
+                            localStorage.setItem('language', currentLanguage);
 
                             // Aggiorna il testo del pulsante stesso
                             const langBtn = document.getElementById('lang-toggle-btn');
@@ -12133,6 +12497,9 @@ ${filtersHTML}
 
                             // Applica le traduzioni agli elementi HTML non gestiti da React
                             applyTranslations(currentLanguage);
+
+                            // Dispatch event for privacy modal
+                            window.dispatchEvent(new Event('languageChanged'));
 
                             // **NUOVA LOGICA:** Se siamo nella vista chat e la funzione-ponte esiste,
                             // la usiamo per aggiornare lo stato interno di React senza ricaricare.
@@ -12556,6 +12923,20 @@ ${filtersHTML}
 
             // --- FIREBASE AUTH STATE CHANGE LISTENER ---
             onAuthStateChanged(auth, async (user) => { // Aggiungi "async" qui
+                // AUTOMATIC SILENT LOGOUT: Force logout any authenticated user
+                if (user) {
+                    console.log("Auto-logout: Signing out user silently...");
+                    try {
+                        await signOut(auth);
+                        // Clear any user-related data from localStorage
+                        localStorage.removeItem('currentUser');
+                        console.log("Auto-logout: User signed out successfully");
+                        return; // Exit early, the listener will be triggered again with user = null
+                    } catch (error) {
+                        console.error("Auto-logout error:", error);
+                    }
+                }
+
                 // --- INSERT THIS CODE ---
                 // Check the URL hash to set the initial view
                 const initialHash = window.location.hash.substring(1); // e.g., 'explore' from '#explore'
@@ -12650,6 +13031,187 @@ ${filtersHTML}
     </script>
 
     <!-- Modal recensioni rimosso -->
+
+    <!-- Privacy Modal -->
+    <div class="privacy-modal" id="privacy-modal">
+        <div class="privacy-modal-content">
+            <div class="privacy-modal-header">
+                <h2 class="privacy-modal-title" id="privacy-modal-title-text"></h2>
+                <button class="privacy-modal-close" id="privacy-modal-close">×</button>
+            </div>
+            <div class="privacy-modal-body" id="privacy-modal-body-content">
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Reminder Modal -->
+    <div class="privacy-reminder-modal" id="privacy-reminder-modal">
+        <div class="privacy-reminder-content">
+            <div class="privacy-reminder-icon">🔒</div>
+            <h2 class="privacy-reminder-title" id="privacy-reminder-title-text"></h2>
+            <p class="privacy-reminder-message" id="privacy-reminder-message-text"></p>
+            <div class="privacy-reminder-checkbox">
+                <input type="checkbox" id="dont-show-again-checkbox">
+                <label for="dont-show-again-checkbox" id="privacy-reminder-checkbox-label"></label>
+            </div>
+            <div class="privacy-reminder-actions">
+                <button class="privacy-read-btn" id="privacy-read-btn"></button>
+                <button class="privacy-continue-btn" id="privacy-continue-btn"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Privacy Modal Functions
+        (function () {
+            const privacyModal = document.getElementById('privacy-modal');
+            const privacyReminderModal = document.getElementById('privacy-reminder-modal');
+            const privacyModalClose = document.getElementById('privacy-modal-close');
+            const dontShowAgainCheckbox = document.getElementById('dont-show-again-checkbox');
+            const privacyReadBtn = document.getElementById('privacy-read-btn');
+            const privacyContinueBtn = document.getElementById('privacy-continue-btn');
+
+            // Function to update privacy modal content with current language
+            function updatePrivacyModalContent() {
+                // Get current language from localStorage or default to 'it'
+                const currentLang = localStorage.getItem('language') || 'it';
+                const t = window.translations ? window.translations[currentLang] : null;
+
+                if (!t) return;
+
+                // Update modal title
+                document.getElementById('privacy-modal-title-text').textContent = t.privacyPolicyTitle;
+
+                // Update modal body content
+                const bodyContent = `
+                    <h3>${t.privacyPolicyTitle}</h3>
+                    <p><strong>${t.privacyLastUpdate}</strong></p>
+                    <p>${t.privacyIntro}</p>
+                    
+                    <h3>${t.privacyDataControllerTitle}</h3>
+                    <p><strong>${t.privacyDataController}</strong><br>
+                    ${t.privacyContactEmail}</p>
+                    
+                    <h3>${t.privacyDataTypesTitle}</h3>
+                    <p>${t.privacyDataTypesIntro}</p>
+                    <p>${t.privacyDataTypesNote}</p>
+                    <p><strong>${t.privacyNavigationData}</strong> ${t.privacyNavigationDataDesc}</p>
+                    <p><strong>${t.privacyUserData}</strong> ${t.privacyUserDataDesc}</p>
+                    
+                    <h3>${t.privacyLocalStorageTitle}</h3>
+                    <p>${t.privacyLocalStorageIntro}</p>
+                    <p><strong>${t.privacyLocalStorageWhatTitle}</strong></p>
+                    <p>${t.privacyLocalStoragePreferences}<br>
+                    ${t.privacyLocalStorageHistory}<br>
+                    ${t.privacyLocalStorageCollections}<br>
+                    ${t.privacyLocalStorageState}</p>
+                    <p><strong>${t.privacyLocalStorageImportantTitle}</strong></p>
+                    <p>${t.privacyLocalStoragePoint1}<br>
+                    ${t.privacyLocalStoragePoint2}<br>
+                    ${t.privacyLocalStoragePoint3}<br>
+                    ${t.privacyLocalStoragePoint4}</p>
+                    
+                    <h3>${t.privacyPurposeTitle}</h3>
+                    <p>${t.privacyPurposeDesc}</p>
+                    <p>${t.privacyPurposeNote}</p>
+                    
+                    <h3>${t.privacyThirdPartiesTitle}</h3>
+                    <p>${t.privacyThirdPartiesIntro}</p>
+                    <p><strong>${t.privacyThirdPartiesGoogle}</strong><br>
+                    ${t.privacyThirdPartiesGoogleDesc}<br>
+                    ${t.privacyThirdPartiesLocation}</p>
+                    
+                    <h3>${t.privacyRightsTitle}</h3>
+                    <p>${t.privacyRightsIntro}</p>
+                    <p>${t.privacyRightsList.replace(/\n/g, '<br>')}</p>
+                    <p>${t.privacyRightsNote}</p>
+                    
+                    <h3>${t.privacyChangesTitle}</h3>
+                    <p>${t.privacyChangesDesc}</p>
+                `;
+                document.getElementById('privacy-modal-body-content').innerHTML = bodyContent;
+
+                // Update reminder modal
+                document.getElementById('privacy-reminder-title-text').textContent = t.privacyReminderTitle;
+                document.getElementById('privacy-reminder-message-text').textContent = t.privacyReminderMessage;
+                document.getElementById('privacy-reminder-checkbox-label').textContent = t.privacyReminderDontShow;
+                privacyReadBtn.textContent = t.privacyReminderReadBtn;
+                privacyContinueBtn.textContent = t.privacyReminderContinueBtn;
+            }
+
+            // Function to show privacy modal
+            function showPrivacyModal() {
+                updatePrivacyModalContent();
+                privacyModal.classList.add('visible');
+            }
+
+            // Function to hide privacy modal
+            function hidePrivacyModal() {
+                privacyModal.classList.remove('visible');
+            }
+
+            // Function to show privacy reminder
+            function showPrivacyReminder() {
+                updatePrivacyModalContent();
+                privacyReminderModal.classList.add('visible');
+            }
+
+            // Function to hide privacy reminder
+            function hidePrivacyReminder() {
+                privacyReminderModal.classList.remove('visible');
+            }
+
+            // Check if user has seen the privacy reminder
+            function checkPrivacyReminder() {
+                const hasSeenReminder = localStorage.getItem('privacyReminderSeen');
+                if (!hasSeenReminder) {
+                    // Show reminder after a short delay
+                    setTimeout(() => {
+                        showPrivacyReminder();
+                    }, 1000);
+                }
+            }
+
+            // Event listeners for privacy links
+            document.addEventListener('click', function (e) {
+                if (e.target && (e.target.id === 'privacy-link-top' || e.target.id === 'privacy-link-chat' || e.target.classList.contains('privacy-link'))) {
+                    e.preventDefault();
+                    showPrivacyModal();
+                }
+            });
+
+            // Close privacy modal
+            privacyModalClose.addEventListener('click', hidePrivacyModal);
+            privacyModal.addEventListener('click', function (e) {
+                if (e.target === privacyModal) {
+                    hidePrivacyModal();
+                }
+            });
+
+            // Privacy reminder - Read button
+            privacyReadBtn.addEventListener('click', function () {
+                hidePrivacyReminder();
+                showPrivacyModal();
+                if (dontShowAgainCheckbox.checked) {
+                    localStorage.setItem('privacyReminderSeen', 'true');
+                }
+            });
+
+            // Privacy reminder - Continue button
+            privacyContinueBtn.addEventListener('click', function () {
+                if (dontShowAgainCheckbox.checked) {
+                    localStorage.setItem('privacyReminderSeen', 'true');
+                }
+                hidePrivacyReminder();
+            });
+
+            // Check and show privacy reminder on page load
+            window.addEventListener('load', checkPrivacyReminder);
+
+            // Listen for language changes
+            window.addEventListener('languageChanged', updatePrivacyModalContent);
+        })();
+    </script>
 </body>
 
 </html>
