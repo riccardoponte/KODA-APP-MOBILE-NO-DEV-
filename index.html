@@ -567,10 +567,17 @@
         }
 
         .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* NUOVO: Layout per la griglia AI in evidenza su schermi grandi */
+@media (min-width: 992px) {
+    .featured-ai-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
 
         .tool-card-grid {
             background: none;
@@ -9431,7 +9438,7 @@ ${knowledgeBaseFormatter(tools)}
 
                     // Limita a 4 le AI In evidenza
                     const featuredTools = staticTools.filter(t => t.isFeatured).slice(0, 4); // Solo 4 AI In evidenza
-                    let contentHTML = `<div class="section-title"><span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container">`;
+                    let contentHTML = `<div class="section-title"><span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container featured-ai-grid">`;
 
                     // Render static featured tools, potentially replaced by user tools
                     contentHTML += featuredTools.map(staticTool => {
