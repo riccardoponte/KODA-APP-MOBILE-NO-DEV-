@@ -6830,7 +6830,7 @@ ${knowledgeBaseFormatter(tools)}
         // --- Gemini Service ---
         const API_KEY = localStorage.getItem('gemini-api-key') || "AIzaSyC2YZLTrptuc_7SlKblSpH53TnTj2Uk200";
         const ai = new GoogleGenAI({ apiKey: API_KEY });
-        const modelName = 'gemini-2.0-flash';
+        const modelName = 'gemini-2.5-flash';
 
         const createChatSession = (lang) => {
             const systemInstruction = getSystemInstruction(lang);
@@ -11825,7 +11825,7 @@ ${filtersHTML}
                     // Utilizziamo le stesse utility del chatbot principale
                     const optimizerAi = new window.GoogleGenAI({ apiKey: "AIzaSyCncR2My7lkE73UwdndvIqkasIw0iasdP0" });
                     const optimizerChat = optimizerAi.chats.create({
-                        model: 'gemini-2.0-flash',
+                        model: 'gemini-2.5-flash',
                         config: { systemInstruction: instructions[lang] }
                     });
 
