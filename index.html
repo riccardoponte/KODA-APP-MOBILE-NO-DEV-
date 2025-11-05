@@ -66,6 +66,14 @@
             padding: 0;
         }
 
+        html {
+            /* Impedisce che le impostazioni di zoom del testo del sistema influenzino le dimensioni */
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
         html,
         body {
             font-family: var(--font-family);
@@ -1843,9 +1851,9 @@
             text-align: center;
             gap: 12px;
             padding: 20px;
-            margin-top: 15vh;
+            padding-top: calc(var(--bottom-nav-height) + 100px);
             padding-bottom: calc(var(--bottom-nav-height) + 100px);
-            /* MODIFICATO: Spazio per nav bar + input + margini */
+            /* MODIFICATO: Spazio simmetrico sopra e sotto per centrare il contenuto */
             overflow-y: auto;
             /* Rende scrollabile se necessario */
             min-height: 0;
@@ -1867,6 +1875,32 @@
         .welcome-logo svg {
             width: 50px;
             height: 50px;
+        }
+
+        /* NUOVO: Contenitore per il pulsante principale */
+        .main-action-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .main-action-btn {
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+
+        .main-action-btn:hover {
+            background-color: var(--Koda-bg-light);
         }
 
         .prompt-starter-container {
@@ -4133,9 +4167,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            position: sticky;
-            top: 0;
-            background: var(--Koda-card);
             padding-bottom: 16px;
             border-bottom: 1px solid rgba(128, 128, 128, 0.2);
         }
@@ -7007,6 +7038,12 @@ ${knowledgeBaseFormatter(tools)}
                     <div className="welcome-logo">
                         <span style={{ color: 'var(--Koda-text)' }}>Koda</span><span style={{ color: 'var(--Koda-accent)' }}>.AI</span>
                     </div>
+                    {/* NUOVO: Pulsante principale per suggerimenti AI di programmazione */}
+                    <div className="main-action-container">
+                        <button className="main-action-btn" onClick={() => onSendMessage(lang === 'it' ? 'Consigliami AI per programmare' : 'Suggest AI tools for coding')}>
+                            {lang === 'it' ? 'Consigliami AI per programmare' : 'Suggest AI tools for coding'}
+                        </button>
+                    </div>
                     <div className="prompt-starter-container">
                         {suggestions[lang].map((text, i) => (
                             <button key={i} className="prompt-starter-btn" onClick={() => onSendMessage(text)}>
@@ -7391,21 +7428,22 @@ ${knowledgeBaseFormatter(tools)}
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Privacy Policy di Koda.AI",
+                    privacySubtitle: "Termini di servizio",
                     privacyLastUpdate: "Ultimo aggiornamento: 1 Novembre 2025",
                     privacyIntro: "Questa applicazione (\"Koda.AI\") è fornita da Riccardo Giorgio Ponte e Davide Narracci.",
-                    privacyDataControllerTitle: "Titolare del Trattamento dei Dati",
+                    privacyDataControllerTitle: "Titolare del trattamento dei dati",
                     privacyDataController: "Riccardo Giorgio Ponte & Davide Narracci",
-                    privacyContactEmail: "Indirizzo email di contatto del Titolare: [redscorpionluna@gmail.com]",
-                    privacyDataTypesTitle: "Tipi di Dati Trattati",
-                    privacyDataTypesIntro: "Questa Applicazione non raccoglie dati personali identificativi come nome o email, né utilizza cookie di profilazione o strumenti di analisi statistica.",
+                    privacyContactEmail: "Indirizzo email di contatto del titolare: [pontuz12346@gmail.com]",
+                    privacyDataTypesTitle: "Tipi di dati trattati",
+                    privacyDataTypesIntro: "Questa applicazione non raccoglie dati personali identificativi come nome o email, né utilizza cookie di profilazione o strumenti di analisi statistica.",
                     privacyDataTypesNote: "Tuttavia, per fornire il suo servizio principale (il chatbot), l'applicazione interagisce con servizi di terze parti.",
-                    privacyNavigationData: "Dati di Navigazione:",
-                    privacyNavigationDataDesc: "Durante il normale funzionamento, i sistemi informatici acquisiscono alcuni dati la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di Internet. In questa categoria di dati rientra l'indirizzo IP dell'utente. Questo dato viene tecnicamente trasmesso per poter ricevere una risposta dal chatbot.",
+                    privacyNavigationData: "Dati di navigazione:",
+                    privacyNavigationDataDesc: "Durante il normale funzionamento, i sistemi informatici acquisiscono alcuni dati la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di internet. In questa categoria di dati rientra l'indirizzo IP dell'utente. Questo dato viene tecnicamente trasmesso per poter ricevere una risposta dal chatbot.",
                     privacyUserData: "Dati forniti volontariamente dall'utente:",
                     privacyUserDataDesc: "I messaggi, le domande o i testi che l'utente scrive volontariamente all'interno del chatbot.",
-                    privacyLocalStorageTitle: "Archiviazione Locale dei Dati (Local Storage)",
-                    privacyLocalStorageIntro: "L'applicazione utilizza il Local Storage del browser per salvare alcune informazioni direttamente sul dispositivo dell'utente. Il Local Storage è una tecnologia che permette ai siti web di memorizzare dati nel browser, simile ai cookie ma con maggiore capacità di archiviazione.",
-                    privacyLocalStorageWhatTitle: "Cosa viene salvato nel Local Storage:",
+                    privacyLocalStorageTitle: "Archiviazione locale dei dati (Local Storage)",
+                    privacyLocalStorageIntro: "L'applicazione utilizza il local storage del browser per salvare alcune informazioni direttamente sul dispositivo dell'utente. Il local storage è una tecnologia che permette ai siti web di memorizzare dati nel browser, simile ai cookie ma con maggiore capacità di archiviazione.",
+                    privacyLocalStorageWhatTitle: "Cosa viene salvato nel local storage:",
                     privacyLocalStoragePreferences: "• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.",
                     privacyLocalStorageHistory: "• Cronologia delle conversazioni: i messaggi scambiati con il chatbot vengono salvati localmente per permetterti di ritrovare le tue conversazioni precedenti.",
                     privacyLocalStorageCollections: "• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.",
@@ -7413,24 +7451,24 @@ ${knowledgeBaseFormatter(tools)}
                     privacyLocalStorageImportantTitle: "Importante da sapere:",
                     privacyLocalStoragePoint1: "• Tutti questi dati rimangono solo sul tuo dispositivo e non vengono mai inviati ai nostri server.",
                     privacyLocalStoragePoint2: "• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser (solitamente nella sezione \"Privacy\" o \"Cancella dati di navigazione\").",
-                    privacyLocalStoragePoint3: "• Se cancelli i dati del Local Storage, perderai le tue preferenze, la cronologia delle chat e le collezioni salvate.",
+                    privacyLocalStoragePoint3: "• Se cancelli i dati del local storage, perderai le tue preferenze, la cronologia delle chat e le collezioni salvate.",
                     privacyLocalStoragePoint4: "• Questi dati sono accessibili solo da questa applicazione e solo sul browser e dispositivo che stai utilizzando.",
-                    privacyPurposeTitle: "Finalità del Trattamento",
-                    privacyPurposeDesc: "I dati sopra menzionati sono trattati per l'unica finalità di permettere il funzionamento del chatbot e fornire una risposta all'utente. L'indirizzo IP è necessario per stabilire la comunicazione tra il browser dell'utente e il servizio di Intelligenza Artificiale. I testi inseriti dall'utente sono necessari per generare una risposta pertinente.",
+                    privacyPurposeTitle: "Finalità del trattamento",
+                    privacyPurposeDesc: "I dati sopra menzionati sono trattati per l'unica finalità di permettere il funzionamento del chatbot e fornire una risposta all'utente. L'indirizzo IP è necessario per stabilire la comunicazione tra il browser dell'utente e il servizio di intelligenza artificiale. I testi inseriti dall'utente sono necessari per generare una risposta pertinente.",
                     privacyPurposeNote: "Noi, in qualità di titolari, non conserviamo né archiviamo le conversazioni o gli indirizzi IP degli utenti.",
-                    privacyThirdPartiesTitle: "Destinatari dei Dati (Terze Parti)",
-                    privacyThirdPartiesIntro: "Per poter funzionare, il chatbot invia i dati di navigazione (indirizzo IP) e i testi inseriti dall'utente al seguente fornitore di servizi di Intelligenza Artificiale:",
+                    privacyThirdPartiesTitle: "Destinatari dei dati (terze parti)",
+                    privacyThirdPartiesIntro: "Per poter funzionare, il chatbot invia i dati di navigazione (indirizzo IP) e i testi inseriti dall'utente al seguente fornitore di servizi di intelligenza artificiale:",
                     privacyThirdPartiesGoogle: "Google LLC (Google GenAI API)",
                     privacyThirdPartiesGoogleDesc: "Il servizio è soggetto alle politiche sulla privacy di Google. Per maggiori informazioni, si prega di consultare la loro documentazione.",
-                    privacyThirdPartiesLocation: "Luogo del trattamento: Stati Uniti – Privacy Policy di Google.",
-                    privacyRightsTitle: "Diritti dell'Interessato",
-                    privacyRightsIntro: "Ai sensi del Regolamento Europeo 679/2016 (GDPR), l'utente ha diritto di:",
+                    privacyThirdPartiesLocation: "Luogo del trattamento: Stati Uniti – privacy policy di Google.",
+                    privacyRightsTitle: "Diritti dell'interessato",
+                    privacyRightsIntro: "Ai sensi del regolamento europeo 679/2016 (GDPR), l'utente ha diritto di:",
                     privacyRightsList: "• Chiedere al titolare del trattamento l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione del trattamento.\n• Opporsi al trattamento.\n• Proporre reclamo a un'autorità di controllo.",
                     privacyRightsNote: "Dato che non conserviamo dati personali, l'esercizio di tali diritti può essere rivolto principalmente verso le terze parti menzionate. Per qualsiasi domanda, è possibile contattarci all'indirizzo email sopra indicato.",
                     privacyChangesTitle: "Modifiche a questa privacy policy",
-                    privacyChangesDesc: "Il Titolare del Trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli Utenti su questa pagina.",
+                    privacyChangesDesc: "Il titolare del trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli utenti su questa pagina.",
                     privacyReminderTitle: "Benvenuto in Koda.AI",
-                    privacyReminderMessage: "Prima di iniziare, ti invitiamo a leggere la nostra Privacy Policy per comprendere come trattiamo i tuoi dati.",
+                    privacyReminderMessage: "Prima di iniziare, ti invitiamo a leggere la nostra privacy policy per comprendere come trattiamo i tuoi dati.",
                     privacyReminderDontShow: "Non mostrare più questo messaggio",
                     privacyReminderReadBtn: "Leggi Privacy Policy",
                     privacyReminderContinueBtn: "Continua",
@@ -7612,21 +7650,22 @@ ${knowledgeBaseFormatter(tools)}
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Koda.AI Privacy Policy",
+                    privacySubtitle: "Terms of Service",
                     privacyLastUpdate: "Last updated: November 1, 2025",
                     privacyIntro: "This application (\"Koda.AI\") is provided by Riccardo Giorgio Ponte and Davide Narracci.",
-                    privacyDataControllerTitle: "Data Controller",
+                    privacyDataControllerTitle: "Data controller",
                     privacyDataController: "Riccardo Giorgio Ponte & Davide Narracci",
-                    privacyContactEmail: "Controller contact email: [redscorpionluna@gmail.com]",
-                    privacyDataTypesTitle: "Types of Data Processed",
-                    privacyDataTypesIntro: "This Application does not collect personally identifiable information such as name or email, nor does it use profiling cookies or statistical analysis tools.",
+                    privacyContactEmail: "Controller contact email: [pontuz12346@gmail.com]",
+                    privacyDataTypesTitle: "Types of data processed",
+                    privacyDataTypesIntro: "This application does not collect personally identifiable information such as name or email, nor does it use profiling cookies or statistical analysis tools.",
                     privacyDataTypesNote: "However, to provide its main service (the chatbot), the application interacts with third-party services.",
-                    privacyNavigationData: "Navigation Data:",
-                    privacyNavigationDataDesc: "During normal operation, computer systems acquire some data whose transmission is implicit in the use of Internet communication protocols. This category of data includes the user's IP address. This data is technically transmitted to receive a response from the chatbot.",
+                    privacyNavigationData: "Navigation data:",
+                    privacyNavigationDataDesc: "During normal operation, computer systems acquire some data whose transmission is implicit in the use of internet communication protocols. This category of data includes the user's IP address. This data is technically transmitted to receive a response from the chatbot.",
                     privacyUserData: "Data voluntarily provided by the user:",
                     privacyUserDataDesc: "Messages, questions, or texts that the user voluntarily writes within the chatbot.",
-                    privacyLocalStorageTitle: "Local Data Storage (Local Storage)",
-                    privacyLocalStorageIntro: "The application uses the browser's Local Storage to save some information directly on the user's device. Local Storage is a technology that allows websites to store data in the browser, similar to cookies but with greater storage capacity.",
-                    privacyLocalStorageWhatTitle: "What is saved in Local Storage:",
+                    privacyLocalStorageTitle: "Local data storage (Local Storage)",
+                    privacyLocalStorageIntro: "The application uses the browser's local storage to save some information directly on the user's device. Local storage is a technology that allows websites to store data in the browser, similar to cookies but with greater storage capacity.",
+                    privacyLocalStorageWhatTitle: "What is saved in local storage:",
                     privacyLocalStoragePreferences: "• User preferences: such as selected language, theme (light/dark mode), and other customization settings.",
                     privacyLocalStorageHistory: "• Conversation history: messages exchanged with the chatbot are saved locally to allow you to find your previous conversations.",
                     privacyLocalStorageCollections: "• Collections and favorites: your AI tool collections and favorites are stored on your device.",
@@ -7634,24 +7673,24 @@ ${knowledgeBaseFormatter(tools)}
                     privacyLocalStorageImportantTitle: "Important to know:",
                     privacyLocalStoragePoint1: "• All this data remains only on your device and is never sent to our servers.",
                     privacyLocalStoragePoint2: "• You can delete this data at any time through your browser settings (usually in the \"Privacy\" or \"Clear browsing data\" section).",
-                    privacyLocalStoragePoint3: "• If you delete Local Storage data, you will lose your preferences, chat history, and saved collections.",
+                    privacyLocalStoragePoint3: "• If you delete local storage data, you will lose your preferences, chat history, and saved collections.",
                     privacyLocalStoragePoint4: "• This data is accessible only by this application and only on the browser and device you are using.",
-                    privacyPurposeTitle: "Purpose of Processing",
-                    privacyPurposeDesc: "The data mentioned above is processed for the sole purpose of allowing the chatbot to function and provide a response to the user. The IP address is necessary to establish communication between the user's browser and the Artificial Intelligence service. The texts entered by the user are necessary to generate a relevant response.",
+                    privacyPurposeTitle: "Purpose of processing",
+                    privacyPurposeDesc: "The data mentioned above is processed for the sole purpose of allowing the chatbot to function and provide a response to the user. The IP address is necessary to establish communication between the user's browser and the artificial intelligence service. The texts entered by the user are necessary to generate a relevant response.",
                     privacyPurposeNote: "We, as data controllers, do not store or archive users' conversations or IP addresses.",
-                    privacyThirdPartiesTitle: "Data Recipients (Third Parties)",
-                    privacyThirdPartiesIntro: "To function, the chatbot sends navigation data (IP address) and texts entered by the user to the following Artificial Intelligence service provider:",
+                    privacyThirdPartiesTitle: "Data recipients (third parties)",
+                    privacyThirdPartiesIntro: "To function, the chatbot sends navigation data (IP address) and texts entered by the user to the following artificial intelligence service provider:",
                     privacyThirdPartiesGoogle: "Google LLC (Google GenAI API)",
                     privacyThirdPartiesGoogleDesc: "The service is subject to Google's privacy policies. For more information, please consult their documentation.",
-                    privacyThirdPartiesLocation: "Place of processing: United States – Google Privacy Policy.",
-                    privacyRightsTitle: "Data Subject Rights",
-                    privacyRightsIntro: "Under the European Regulation 679/2016 (GDPR), the user has the right to:",
+                    privacyThirdPartiesLocation: "Place of processing: United States – Google privacy policy.",
+                    privacyRightsTitle: "Data subject rights",
+                    privacyRightsIntro: "Under the European regulation 679/2016 (GDPR), the user has the right to:",
                     privacyRightsList: "• Request access to personal data, rectification, deletion, or limitation of processing from the data controller.\n• Object to processing.\n• Lodge a complaint with a supervisory authority.",
                     privacyRightsNote: "Since we do not store personal data, the exercise of these rights can be addressed primarily to the third parties mentioned. For any questions, you can contact us at the email address indicated above.",
                     privacyChangesTitle: "Changes to this privacy policy",
-                    privacyChangesDesc: "The Data Controller reserves the right to make changes to this privacy policy at any time, giving notice to Users on this page.",
+                    privacyChangesDesc: "The data controller reserves the right to make changes to this privacy policy at any time, giving notice to users on this page.",
                     privacyReminderTitle: "Welcome to Koda.AI",
-                    privacyReminderMessage: "Before you begin, we invite you to read our Privacy Policy to understand how we handle your data.",
+                    privacyReminderMessage: "Before you begin, we invite you to read our privacy policy to understand how we handle your data.",
                     privacyReminderDontShow: "Don't show this message again",
                     privacyReminderReadBtn: "Read Privacy Policy",
                     privacyReminderContinueBtn: "Continue",
@@ -9011,8 +9050,11 @@ ${knowledgeBaseFormatter(tools)}
                 const userInitial = isGuest ? '?' : (currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : 'U');
 
                 // Logica condizionale per il contenuto dell'avatar
+                const avatarImageUrl = currentTheme === 'light' 
+                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' 
+                    : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
                 const avatarContentHTML = isGuest
-                    ? `<img src="https://i.postimg.cc/vHF3Wnt3/logo-1.jpg" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+                    ? `<img src="${avatarImageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
                     : userInitial;
 
                 // The avatar is now always rendered in the top-bar, but its click action depends on login status
@@ -12484,6 +12526,18 @@ ${filtersHTML}
                             if (themeBtn) {
                                 themeBtn.innerHTML = currentTheme === 'dark' ? sunIcon : moonIcon;
                             }
+
+                            // Aggiorna l'immagine del profilo in base al tema
+                            const isGuest = !currentUser.uid;
+                            if (isGuest) {
+                                const avatarImageUrl = currentTheme === 'light' 
+                                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' 
+                                    : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                                const avatarImages = document.querySelectorAll('.user-avatar img, .user-profile-avatar img');
+                                avatarImages.forEach(img => {
+                                    img.src = avatarImageUrl;
+                                });
+                            }
                             break;
                         case 'toggle-lang':
                             // Cambia la lingua a livello globale
@@ -13086,7 +13140,7 @@ ${filtersHTML}
 
                 // Update modal body content
                 const bodyContent = `
-                    <h3>${t.privacyPolicyTitle}</h3>
+                    <h3>${t.privacySubtitle}</h3>
                     <p><strong>${t.privacyLastUpdate}</strong></p>
                     <p>${t.privacyIntro}</p>
                     
