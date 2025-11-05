@@ -1,6 +1,5 @@
 name: Deploy to GitHub Pages
 
-# Esegui questa azione ogni volta che fai un push sul branch 'main'
 on:
   push:
     branches:
@@ -17,7 +16,7 @@ jobs:
       # 2. Sostituisci il placeholder con il secret
       - name: Replace API Key
         run: |
-          sed -i 's|__GEMINI_API_KEY__|${{ secrets.GEMINI_API_KEY }}|g' V1.HTML
+          sed -i 's|__GEMINI_API_KEY__|${{ secrets.GEMINI_API_KEY }}|g' index.html
 
       # 3. Pubblica il file modificato su un branch chiamato 'gh-pages'
       - name: Deploy
