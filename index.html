@@ -567,17 +567,17 @@
         }
 
         .grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
 
-/* NUOVO: Layout per la griglia AI in evidenza su schermi grandi */
-@media (min-width: 992px) {
-    .featured-ai-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
+        /* NUOVO: Layout per la griglia AI in evidenza su schermi grandi */
+        @media (min-width: 992px) {
+            .featured-ai-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
 
         .tool-card-grid {
             background: none;
@@ -6830,8 +6830,10 @@ ${knowledgeBaseFormatter(tools)}
 
         // --- Gemini Service ---
         const API_KEY = localStorage.getItem('gemini-api-key') || "AIzaSyC2YZLTrptuc_7SlKblSpH53TnTj2Uk200";
-        const ai = new GoogleGenAI({ apiKey: API_KEY });
-        const modelName = 'gemini-2.5-flash';
+        window.ai = new GoogleGenAI({ apiKey: API_KEY });
+        window.modelName = 'gemini-2.5-flash';
+        const ai = window.ai;
+        const modelName = window.modelName;
 
         const createChatSession = (lang) => {
             const systemInstruction = getSystemInstruction(lang);
@@ -6846,7 +6848,7 @@ ${knowledgeBaseFormatter(tools)}
                 }
             });
         };
-        async function* sendMessageStream(chat, message) {
+        window.sendMessageStream = async function* (chat, message) {
             // Usa sendMessage diretto invece di streaming per evitare risposte troncate
             try {
                 const response = await chat.sendMessage({ message });
@@ -6866,7 +6868,8 @@ ${knowledgeBaseFormatter(tools)}
                 console.error("Send message error:", error);
                 throw error;
             }
-        }
+        };
+        const sendMessageStream = window.sendMessageStream;
 
         // --- Funzioni per la formattazione del testo ---
         const formatMessageContent = (text) => {
@@ -6995,8 +6998,8 @@ ${knowledgeBaseFormatter(tools)}
 
         const WelcomeScreen = ({ onSendMessage, lang }) => {
             const suggestions = {
-                it: ["Consigliami AI per programmare", "Consigliami AI per creare immagini", "Quali sono le alternative a ChatGPT?"],
-                en: ["Suggest an AI for programming", "Suggest an AI for creating images", "What are ChatGPT's alternatives?"]
+                it: ["Consigliami AI per creare immagini", "Quali sono le alternative a ChatGPT?"],
+                en: ["Suggest an AI for creating images", "What are ChatGPT's alternatives?"]
             };
 
             return (
@@ -11804,36 +11807,27 @@ ${filtersHTML}
 
                 const lang = currentLanguage;
                 const instructions = {
-                    it: `Sei un esperto di ingegneria dei prompt. Il tuo compito è riscrivere il prompt dell'utente per renderlo più efficace per un modello linguistico avanzato come GPT-5.
-                Obiettivi:
-                1.  **Chiarezza e Specificità:** Rendi il prompt inequivocabile. Aggiungi dettagli mancanti se necessario per evitare ambiguità.
-                2.  **Contesto:** Fornisci un contesto adeguato. Specifica il ruolo che l'AI deve assumere (es. "Agisci come un esperto di marketing...").
-                3.  **Formato di Output:** Definisci chiaramente il formato di output desiderato (es. "rispondi in formato JSON", "crea una tabella markdown", "usa un elenco puntato").
-                4.  **Vincoli:** Aggiungi vincoli per guidare la risposta (es. "la risposta non deve superare le 200 parole", "usa un tono formale").
-                5.  **Migliori Pratiche:** Applica tecniche come il "Chain of Thought" o fornisci esempi "few-shot" se appropriato.
-                IMPORTANTE: Mantieni l'intento originale del prompt dell'utente, ma migliorane la struttura e la formulazione per massimizzare la qualità della risposta dell'AI. Rispondi SOLO con il prompt ottimizzato, senza alcun testo introduttivo o di chiusura.`,
-                    en: `You are an expert prompt engineer. Your task is to rewrite the user's prompt to make it more effective for an advanced language model like GPT-5.
-                Objectives:
-                1.  **Clarity and Specificity:** Make the prompt unambiguous. Add missing details if necessary to avoid ambiguity.
-                2.  **Context:** Provide adequate context. Specify the role the AI should assume (e.g., "Act as a marketing expert...").
-                3.  **Output Format:** Clearly define the desired output format (e.g., "respond in JSON format," "create a markdown table," "use a bulleted list").
-                4.  **Constraints:** Add constraints to guide the response (e.g., "the response must not exceed 200 words," "use a formal tone").
-                5.  **Best Practices:** Apply techniques like "Chain of Thought" or provide "few-shot" examples if appropriate.
-                IMPORTANT: Maintain the original intent of the user's prompt, but improve its structure and wording to maximize the quality of the AI's response. Respond ONLY with the optimized prompt, without any introductory or closing text.`
+                    it: `Sei un esperto di prompt engineering. Migliora il prompt dell'utente rendendolo più chiaro, specifico ed efficace. Mantieni l'intento originale ma ottimizza la formulazione. Rispondi SOLO con il prompt migliorato, senza testo aggiuntivo.`,
+                    en: `You are a prompt engineering expert. Improve the user's prompt by making it clearer, more specific, and more effective. Maintain the original intent but optimize the wording. Respond ONLY with the improved prompt, without any additional text.`
                 };
 
                 try {
                     // Utilizziamo le stesse utility del chatbot principale
-                    const optimizerAi = new window.GoogleGenAI({ apiKey: "AIzaSyCncR2My7lkE73UwdndvIqkasIw0iasdP0" });
-                    const optimizerChat = optimizerAi.chats.create({
-                        model: 'gemini-2.5-flash',
-                        config: { systemInstruction: instructions[lang] }
+                    const optimizerChat = window.ai.chats.create({
+                        model: window.modelName,
+                        config: {
+                            systemInstruction: instructions[lang],
+                            maxOutputTokens: 8192,
+                            temperature: 0.9,
+                            topP: 0.95,
+                            topK: 40
+                        }
                     });
 
-                    const result = await optimizerChat.sendMessageStream({ message: originalPrompt });
+                    const stream = window.sendMessageStream(optimizerChat, originalPrompt);
 
-                    for await (const chunk of result) {
-                        optimizedPromptTextarea.value += chunk.text;
+                    for await (const chunk of stream) {
+                        optimizedPromptTextarea.value += chunk;
                     }
 
                 } catch (error) {
