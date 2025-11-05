@@ -6860,8 +6860,9 @@ ${knowledgeBaseFormatter(tools)}
 
 
         // --- Gemini Service ---
-        const API_KEY = localStorage.getItem('gemini-api-key') || "AIzaSyC2YZLTrptuc_7SlKblSpH53TnTj2Uk200";
-        window.ai = new GoogleGenAI({ apiKey: API_KEY });
+// Il placeholder __GEMINI_API_KEY__ verrà sostituito da GitHub Actions durante il deploy.
+const API_KEY = localStorage.getItem('gemini-api-key') || "__GEMINI_API_KEY__"; 
+window.ai = new GoogleGenAI({ apiKey: API_KEY });
         window.modelName = 'gemini-2.5-flash';
         const ai = window.ai;
         const modelName = window.modelName;
