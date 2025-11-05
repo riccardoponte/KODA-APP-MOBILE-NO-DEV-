@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 
-  Koda.AI 
+  Koda.AI - Enhanced Chatbot
   © 2025 Riccardo Giorgio Ponte & Davide Narracci. Tutti i diritti riservati.
   
   Quest'opera dell'ingegno è protetta dalla Legge sul Diritto d'Autore (L. 633/1941).
@@ -6860,9 +6860,8 @@ ${knowledgeBaseFormatter(tools)}
 
 
         // --- Gemini Service ---
-// Il placeholder AIzaSyDoFJ5PSSSfbDht_tvAA_znysAP-W9Fq3Y verrà sostituito da GitHub Actions durante il deploy.
-const API_KEY = localStorage.getItem('gemini-api-key') || "AIzaSyDoFJ5PSSSfbDht_tvAA_znysAP-W9Fq3Y"; 
-window.ai = new GoogleGenAI({ apiKey: API_KEY });
+        const API_KEY = localStorage.getItem('gemini-api-key') || "AIzaSyDoFJ5PSSSfbDht_tvAA_znysAP-W9Fq3Y";
+        window.ai = new GoogleGenAI({ apiKey: API_KEY });
         window.modelName = 'gemini-2.5-flash';
         const ai = window.ai;
         const modelName = window.modelName;
