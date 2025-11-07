@@ -776,6 +776,34 @@
             color: var(--Koda-text-secondary);
         }
 
+        /* NUOVO: Stili per i badge di prezzo */
+        .pricing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .pricing-badge.free {
+            background-color: rgba(29, 185, 84, 0.15);
+            color: #1db954;
+        }
+
+        .pricing-badge.freemium {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        }
+
+        .pricing-badge.paid {
+            background-color: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+        }
+
         .reviews-section {
             margin-top: 24px;
             padding-top: 24px;
@@ -7272,6 +7300,7 @@ ${knowledgeBaseFormatter(tools)}
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
+                    pricingFree: "Gratuito", pricingFreemium: "Freemium", pricingPaid: "A Pagamento",
                     libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "",
                     noResultsFor: "Nessun risultato per",
                     // Rankings
@@ -7495,6 +7524,7 @@ ${knowledgeBaseFormatter(tools)}
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
                     backToSearch: "‹ Back to search", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
+                    pricingFree: "Free", pricingFreemium: "Freemium", pricingPaid: "Paid",
                     libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "",
                     noResultsFor: "No results for",
                     // Rankings
@@ -8101,6 +8131,23 @@ ${knowledgeBaseFormatter(tools)}
                 return collections.find(c => c.id === collectionId);
             };
 
+            // Helper function to generate pricing badge HTML
+            const getPricingBadgeHTML = (pricing) => {
+                if (!pricing) return '';
+                const t = translations[currentLanguage];
+                const icons = {
+                    free: '✅',
+                    freemium: '💰',
+                    paid: '💵'
+                };
+                const labels = {
+                    free: t.pricingFree,
+                    freemium: t.pricingFreemium,
+                    paid: t.pricingPaid
+                };
+                return `<span class="pricing-badge ${pricing}">${icons[pricing]} ${labels[pricing]}</span>`;
+            };
+
             // Modified createGridCard to optionally show an edit icon and specify its action
             const createGridCard = (tool, context, options = {}) => {
                 let editIconHTML = '';
@@ -8158,7 +8205,8 @@ ${knowledgeBaseFormatter(tools)}
                 }
 
                 const cardClass = selectionMode && context === 'collection' ? 'tool-card-grid stagger-item selectable' : 'tool-card-grid stagger-item';
-                return `<div class="${cardClass}" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div></div>`;
+                const pricingHTML = getPricingBadgeHTML(tool.pricing);
+                return `<div class="${cardClass}" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div>${pricingHTML}</div>`;
             };
 
             const createListCard = (tool, context) => {
@@ -8200,7 +8248,8 @@ ${knowledgeBaseFormatter(tools)}
                     editIconHTML = `<div class="edit-icon" data-action="remove-guest-tool" data-id="${tool.id}" title="Rimuovi">&times;</div>`;
                 }
 
-                return `<div class="tool-card-list stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div></div>${favoriteIconHTML}</div>`;
+                const pricingHTML = getPricingBadgeHTML(tool.pricing);
+                return `<div class="tool-card-list stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div>${pricingHTML}</div></div>${favoriteIconHTML}</div>`;
             };
 
             const createCategoryCard = (category) => {
@@ -9050,8 +9099,8 @@ ${knowledgeBaseFormatter(tools)}
                 const userInitial = isGuest ? '?' : (currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : 'U');
 
                 // Logica condizionale per il contenuto dell'avatar
-                const avatarImageUrl = currentTheme === 'light' 
-                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' 
+                const avatarImageUrl = currentTheme === 'light'
+                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                     : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
                 const avatarContentHTML = isGuest
                     ? `<img src="${avatarImageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
@@ -12530,8 +12579,8 @@ ${filtersHTML}
                             // Aggiorna l'immagine del profilo in base al tema
                             const isGuest = !currentUser.uid;
                             if (isGuest) {
-                                const avatarImageUrl = currentTheme === 'light' 
-                                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' 
+                                const avatarImageUrl = currentTheme === 'light'
+                                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                                     : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
                                 const avatarImages = document.querySelectorAll('.user-avatar img, .user-profile-avatar img');
                                 avatarImages.forEach(img => {
