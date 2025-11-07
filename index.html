@@ -1674,6 +1674,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            align-items: center;
             gap: 8px;
             margin-bottom: 24px;
         }
@@ -1683,6 +1684,10 @@
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
+        }
+
+        #detail-content .pricing-badge {
+            margin-top: 0;
         }
 
         #detail-content .detail-actions {
@@ -6607,6 +6612,10 @@
             const tools = window.getAllToolsForCurrentUser ? window.getAllToolsForCurrentUser() : window.getLocalizedToolsData(lang);
             const knowledgeBaseFormatter = (tools) => tools.map(tool => {
                 let toolInfo = `• **${tool.name}**: ${tool.description} (Website: ${tool.website})`;
+                if (tool.pricing) {
+                    const pricingLabels = { free: 'Free', freemium: 'Freemium', paid: 'Paid' };
+                    toolInfo += ` [Pricing: ${pricingLabels[tool.pricing] || tool.pricing}]`;
+                }
                 if (tool.alternatives && tool.alternatives.length > 0) {
                     toolInfo += ` [Alternatives: ${tool.alternatives.join(', ')}]`;
                 }
@@ -6730,7 +6739,35 @@ Analizza l'intento e rispondi in modo ULTRA SINTETICO:
   * "Meglio un'AI 'inutile' che un umano maleducato. 🤷 Cosa vuoi?"
 - Follow-up: Se l'utente risponde "sfogarmi", "voglio sfogarmi", "solo sfogarti", rispondi: "Okay, fatti un pippotto allora. 😤"
 
-**Azione 10: Fuori Tema / Fuori Conoscenza**
+**Azione 10: Richieste Basate sul Prezzo**
+- Quando: L'utente chiede strumenti gratuiti, freemium o a pagamento (es. "AI gratis", "strumenti free", "freemium", "a pagamento", "paid")
+- IMPORTANTE: Usa il campo [Pricing] nella knowledge_base per filtrare gli strumenti.
+- Tipi di prezzo:
+  * **Free (Gratuito)**: Completamente gratuito, nessun costo.
+  * **Freemium**: Versione base gratuita + funzioni premium a pagamento.
+  * **Paid (A Pagamento)**: Richiede abbonamento o pagamento.
+- Risposta: Fornisci 3-5 strumenti con il prezzo richiesto.
+- Formato:
+  * Prima riga: Frase ultra breve (max 10 parole) con emoji.
+  * Seconda riga: Elenco puntato degli strumenti con [Pricing] indicato.
+- Esempi:
+  "Ecco le AI gratuite! 💚
+  • **ChatGPT**: Chatbot AI per conversazioni. [Free]
+  • **Gemini**: AI di Google multimodale. [Free]"
+  
+  "Ecco le freemium! 💰
+  • **Midjourney**: Genera immagini artistiche. [Freemium]
+  • **Canva**: Design grafico con AI. [Freemium]"
+
+**Azione 11: Spiegazione Prezzi**
+- Quando: L'utente chiede "cosa significa freemium?", "differenza tra free e freemium", "cos'è paid?"
+- Risposta: Spiega brevemente il tipo di prezzo richiesto (max 2 frasi).
+- Esempi:
+  * "**Free** = Completamente gratuito. 💚"
+  * "**Freemium** = Base gratis, funzioni avanzate a pagamento. 💰"
+  * "**Paid** = Richiede abbonamento o pagamento. 💵"
+
+**Azione 12: Fuori Tema / Fuori Conoscenza**
 - Quando: Domande non correlate agli strumenti AI o strumenti non presenti nella knowledge_base
 - Risposta: "Scusami, ma cambia domanda. 😅"
 - Esempi di domande fuori tema: "chi è Messi?", "che tempo fa?", "ricetta della pizza"
@@ -6863,7 +6900,35 @@ Analyze intent and respond ULTRA CONCISELY:
   * "Better a 'useless' AI than a rude human. 🤷 What do you want?"
 - Follow-up: If user responds "venting", "just venting", "to vent", reply: "Okay, go ahead then. 😤"
 
-**Action 10: Off-Topic / Out of Knowledge**
+**Action 10: Pricing-Based Requests**
+- When: User asks for free, freemium, or paid tools (e.g., "free AI", "freemium tools", "paid", "gratis")
+- IMPORTANT: Use the [Pricing] field in the knowledge_base to filter tools.
+- Pricing types:
+  * **Free**: Completely free, no cost.
+  * **Freemium**: Free basic version + paid premium features.
+  * **Paid**: Requires subscription or payment.
+- Response: Provide 3-5 tools with the requested pricing.
+- Format:
+  * First line: Ultra brief phrase (max 10 words) with emoji.
+  * Second line: Bulleted list of tools with [Pricing] indicated.
+- Examples:
+  "Here are free AIs! 💚
+  • **ChatGPT**: AI chatbot for conversations. [Free]
+  • **Gemini**: Google's multimodal AI. [Free]"
+  
+  "Here are freemium ones! 💰
+  • **Midjourney**: Generates artistic images. [Freemium]
+  • **Canva**: Graphic design with AI. [Freemium]"
+
+**Action 11: Pricing Explanation**
+- When: User asks "what is freemium?", "difference between free and freemium", "what's paid?"
+- Response: Briefly explain the requested pricing type (max 2 sentences).
+- Examples:
+  * "**Free** = Completely free. 💚"
+  * "**Freemium** = Free basics, paid advanced features. 💰"
+  * "**Paid** = Requires subscription or payment. 💵"
+
+**Action 12: Off-Topic / Out of Knowledge**
 - When: Questions not related to AI tools or tools not in the knowledge_base
 - Response: "Sorry, but change the question. 😅"
 - Examples of off-topic questions: "who is Messi?", "what's the weather?", "pizza recipe"
@@ -8346,6 +8411,7 @@ ${knowledgeBaseFormatter(tools)}
                             <div class="detail-tags">
                                 <span class="tag">🌍 ${tool.country || 'N/A'}</span>
                                 <span class="tag">${getTranslatedCategoryName(tool.category || 'N/A')}</span>
+                                ${tool.pricing ? getPricingBadgeHTML(tool.pricing) : ''}
                             </div>
                             <div class="detail-actions">
                                 ${userToolActionsHTML}
