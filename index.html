@@ -1075,7 +1075,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2500;
+            z-index: 3500;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
@@ -5812,6 +5812,18 @@
             flex-direction: column;
         }
 
+        /* MODIFICA: La top bar usa le stesse classi dell'app principale */
+        #video-catalog-modal .user-chat-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        #video-catalog-modal .privacy-link {
+            pointer-events: none;
+            cursor: default;
+        }
+
         #video-catalog-modal .modal-header {
             display: flex;
             justify-content: space-between;
@@ -5819,13 +5831,504 @@
             margin-bottom: 16px;
         }
 
+        /* MODIFICA: Vista lista per i video */
+        .video-list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .video-card-list {
+            background-color: var(--Koda-bg-light);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .video-card-list:hover {
+            background-color: var(--Koda-card);
+        }
+
+        .video-card-list .video-thumbnail {
+            width: 160px;
+            min-width: 160px;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+        }
+
+        .video-card-list .video-info {
+            flex: 1;
+            padding: 0;
+        }
+
+        .video-card-list .video-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            overflow: visible;
+            text-overflow: initial;
+            display: block;
+            -webkit-line-clamp: initial;
+            -webkit-box-orient: initial;
+        }
+
+        .video-card-list .video-info .video-description {
+            font-size: 13px;
+            color: var(--Koda-text-secondary);
+            line-height: 1.4;
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .video-card-list .video-favorite-btn,
+        .video-card-list .video-options-btn {
+            position: absolute;
+            top: 8px;
+        }
+
+        .video-card-list .video-options-btn {
+            left: 8px;
+        }
+
+        .video-card-list .video-favorite-btn {
+            right: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .video-card-list .video-thumbnail {
+                width: 120px;
+                min-width: 120px;
+            }
+
+            .video-card-list .video-info h4 {
+                font-size: 14px;
+            }
+        }
+
+        /* MODIFICA 1: Barra di navigazione inferiore dedicata al catalogo video */
+        .video-catalog-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--Koda-bg-light);
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .video-catalog-nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.2s;
+        }
+
+        .video-catalog-nav-btn.active {
+            color: var(--Koda-accent);
+        }
+
+        .video-catalog-nav-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .video-catalog-nav-btn span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* MODIFICA 2: Container per le sezioni con padding per la nav inferiore */
         .video-list-container {
             flex-grow: 1;
             overflow-y: auto;
             margin: -8px;
-            padding: 8px;
+            padding: 8px 8px 80px 8px;
+            /* Padding bottom per la nav */
         }
 
+        /* MODIFICA 2: Barra di ricerca nella sezione Home */
+        .video-search-bar {
+            position: sticky;
+            top: 0;
+            background: var(--Koda-bg);
+            padding: 12px 0;
+            margin-bottom: 16px;
+            z-index: 10;
+        }
+
+        .video-search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--Koda-bg-light);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 24px;
+            color: var(--Koda-text);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .video-search-input::placeholder {
+            color: var(--Koda-text-secondary);
+        }
+
+        /* MODIFICA 2: Griglia stile YouTube per i video */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            }
+        }
+
+        .video-card-grid {
+            background-color: var(--Koda-bg-light);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .video-card-grid:hover {
+            transform: translateY(-4px);
+        }
+
+        .video-card-grid .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            background-color: var(--Koda-card);
+        }
+
+        .video-card-grid .video-info {
+            padding: 12px;
+        }
+
+        .video-card-grid .video-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .video-card-grid .video-date {
+            font-size: 11px;
+            color: var(--Koda-text-secondary);
+            margin-top: 4px;
+        }
+
+        /* MODIFICA 3: Icona cuore per i preferiti */
+        .video-favorite-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: transform 0.2s;
+        }
+
+        .video-favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .video-favorite-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        .video-favorite-btn.favorited svg {
+            fill: var(--Koda-accent);
+            stroke: var(--Koda-accent);
+        }
+
+        /* MODIFICA 4: Menu opzioni per aggiungere a playlist */
+        .video-options-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .video-options-menu {
+            position: absolute;
+            top: 48px;
+            left: 8px;
+            background: var(--Koda-card);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            min-width: 180px;
+            z-index: 3;
+            display: none;
+        }
+
+        .video-options-menu.visible {
+            display: block;
+        }
+
+        .video-options-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .video-options-item:hover {
+            background-color: var(--Koda-bg-light);
+        }
+
+        /* MODIFICA 4: Sezione Playlist */
+        .playlist-section {
+            display: none;
+        }
+
+        .playlist-section.active {
+            display: block;
+        }
+
+        /* NUOVO: Bottom nav dedicata per Cinema */
+        .cinema-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--Koda-bg-light);
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .cinema-nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.2s;
+            font-family: inherit;
+        }
+
+        .cinema-nav-btn.active {
+            color: var(--Koda-accent);
+        }
+
+        .cinema-nav-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .cinema-nav-btn span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Pulsante normale per i modal */
+        .create-playlist-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--Koda-accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.2s;
+        }
+
+        .create-playlist-btn:hover {
+            background-color: #1ed760;
+        }
+
+        .playlist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .playlist-item {
+            background-color: var(--Koda-bg-light);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .playlist-item:hover {
+            background-color: var(--Koda-card);
+        }
+
+        .playlist-item h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .playlist-item p {
+            font-size: 13px;
+            color: var(--Koda-text-secondary);
+        }
+
+        /* Modal per creare/selezionare playlist */
+        .playlist-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .playlist-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .playlist-modal-content {
+            background: var(--Koda-card);
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .playlist-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .playlist-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .playlist-modal-close {
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .playlist-modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .playlist-modal-item {
+            padding: 12px;
+            background-color: var(--Koda-bg-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .playlist-modal-item:hover {
+            background-color: var(--Koda-bg);
+        }
+
+        .playlist-input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--Koda-bg-light);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 8px;
+            color: var(--Koda-text);
+            font-size: 14px;
+            font-family: inherit;
+            margin-bottom: 12px;
+        }
+
+        /* Sezioni nascoste per default */
+        .video-section {
+            display: none;
+        }
+
+        .video-section.active {
+            display: block;
+        }
+
+        /* Vecchi stili per compatibilità */
         .video-card {
             background-color: var(--Koda-bg-light);
             border-radius: 12px;
@@ -5870,7 +6373,6 @@
             text-transform: none;
             letter-spacing: normal;
             width: 100%;
-            /* Occupa tutta la larghezza disponibile */
         }
 
         .video-date {
@@ -7360,7 +7862,7 @@ ${knowledgeBaseFormatter(tools)}
                     fullNameRequired: "Il nome completo è obbligatorio.",
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Cerca", navSearchUsers: "Utenti", navLibrary: "Libreria",
-                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria",
+                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema",
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Ogni AI è basata su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
@@ -7517,8 +8019,9 @@ ${knowledgeBaseFormatter(tools)}
                     documentIdLabel: "ID Documento (non modificabile)",
                     saveChanges: "Salva Modifiche",
                     // NUOVE TRADUZIONI PER CATALOGO VIDEO (UTENTE)
-                    videoCatalogTitle: "Tutorials & Guide",
+                    videoCatalogTitle: "Cinema",
                     watchVideo: "Guarda",
+                    backToApp: "Torna all'app",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Privacy Policy di Koda.AI",
@@ -7584,7 +8087,7 @@ ${knowledgeBaseFormatter(tools)}
                     fullNameRequired: "Full name is required.",
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Search", navSearchUsers: "Users", navLibrary: "Library",
-                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Search", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Your Library",
+                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Search", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Your Library", pageTitleCinema: "Cinema",
                     logout: "Logout", featured: "Featured", featuredDisclaimer: "Each AI is based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
@@ -7740,8 +8243,9 @@ ${knowledgeBaseFormatter(tools)}
                     documentIdLabel: "Document ID (not editable)",
                     saveChanges: "Save Changes",
                     // NEW TRANSLATIONS FOR VIDEO CATALOG (USER)
-                    videoCatalogTitle: "Tutorials & Guides",
+                    videoCatalogTitle: "Cinema",
                     watchVideo: "Watch",
+                    backToApp: "Back to app",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Koda.AI Privacy Policy",
@@ -9523,9 +10027,14 @@ ${knowledgeBaseFormatter(tools)}
                 }
 
                 // GESTIONE VISIBILITÀ BARRA DI NAVIGAZIONE E PADDING
-                // La visibilità della nav bar nella sezione chat è ora gestita dal componente React UserChatApp.
-                el.bottomNav.style.display = 'flex';
-                el.mainContent.style.paddingBottom = `var(--bottom-nav-height)`;
+                // Nascondi la bottom nav se siamo nel cinema
+                if (currentView === 'cinema') {
+                    el.bottomNav.style.display = 'none';
+                    el.mainContent.style.paddingBottom = '0';
+                } else {
+                    el.bottomNav.style.display = 'flex';
+                    el.mainContent.style.paddingBottom = `var(--bottom-nav-height)`;
+                }
 
                 // Close any open dropdowns when navigating
                 closeUserProfileDropdown();
@@ -9538,20 +10047,39 @@ ${knowledgeBaseFormatter(tools)}
                 const isGuest = !currentUser.uid;
                 // Check privileged status loaded from Firestore
                 const isPrivileged = currentUser.uid && currentUser.isPrivileged;
-                const pageTitles = { home: t.pageTitleHome, 'top-ai': t.pageTitleTopAI, search: t.pageTitleSearch, 'search-users': t.pageTitleSearchUsers, 'user-chats': t.pageTitleUserChats, favorites: t.pageTitleLibrary };
+                const pageTitles = { home: t.pageTitleHome, 'top-ai': t.pageTitleTopAI, search: t.pageTitleSearch, 'search-users': t.pageTitleSearchUsers, 'user-chats': t.pageTitleUserChats, favorites: t.pageTitleLibrary, cinema: t.pageTitleCinema };
 
                 // Top bar is only rendered for non-home views
                 if (currentView !== 'home') {
                     const globalControls = getGlobalControlsHTML();
                     const pageTitle = pageTitles[currentView] || currentView;
-                    // MODIFICATO: Usa la stessa struttura e classi della barra della chat per coerenza
                     const t = translations[currentLanguage];
-                    const topBarHTML = `<div class="user-chat-header">
-                    <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
-                    <div class="user-chat-info" style="flex-grow: 1;"><a href="#" class="privacy-link" id="privacy-link-top">${t.privacy}</a></div>
-                    <div id="global-controls">${globalControls.otherControls}</div>
-                </div>`;
-                    el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
+
+                    // Top bar speciale per Cinema con pulsante di uscita
+                    if (currentView === 'cinema') {
+                        const topBarHTML = `<div class="user-chat-header">
+                        <button class="chat-header-btn" data-action="exit-cinema" title="${t.backToApp || 'Torna all\'app'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            </svg>
+                        </button>
+                        <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
+                        <div class="user-chat-info" style="flex-grow: 1;">
+                            <a href="#" class="cinema-policy-link" id="cinema-link" data-action="open-cinema-policy" style="color: var(--Koda-accent); text-decoration: underline; font-weight: 500;">${pageTitle}</a>
+                        </div>
+                        <div id="global-controls">${globalControls.otherControls.replace(/<button id="video-catalog-btn"[^>]*>[\s\S]*?<\/button>/g, '')}</div>
+                    </div>`;
+                        el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
+                    } else {
+                        // Top bar normale per altre pagine
+                        const topBarHTML = `<div class="user-chat-header">
+                        <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
+                        <div class="user-chat-info" style="flex-grow: 1;"><a href="#" class="privacy-link" id="privacy-link-top">${t.privacy}</a></div>
+                        <div id="global-controls">${globalControls.otherControls}</div>
+                    </div>`;
+                        el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
+                    }
                 }
 
                 const contentArea = document.createElement('div');
@@ -9664,6 +10192,37 @@ ${filtersHTML}
                             card.classList.remove('hidden'); // Ensure it's visible if filter matches or is 'All'
                         }
                     });
+
+                } else if (currentView === 'cinema') {
+                    // NUOVA PAGINA CINEMA - Stile identico a top-ai
+                    renderCinemaPage(contentArea, t);
+                    el.mainContent.appendChild(contentArea);
+
+                    // Aggiungi la bottom nav del Cinema direttamente al body
+                    const cinemaNavHTML = `
+                        <nav class="cinema-bottom-nav">
+                            <button class="cinema-nav-btn active" data-action="set-cinema-tab" data-tab="videos">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M0 0h24v24H0V0z" fill="none"/>
+                                    <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                </svg>
+                                <span>${t.navCinemaVideos || (currentLanguage === 'it' ? 'Video' : 'Videos')}</span>
+                            </button>
+                            <button class="cinema-nav-btn" data-action="set-cinema-tab" data-tab="favorites">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                <span>${t.navCinemaFavorites || (currentLanguage === 'it' ? 'Preferiti' : 'Favorites')}</span>
+                            </button>
+                            <button class="cinema-nav-btn" data-action="set-cinema-tab" data-tab="playlists">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+                                </svg>
+                                <span>${t.navCinemaPlaylists || (currentLanguage === 'it' ? 'Playlist' : 'Playlists')}</span>
+                            </button>
+                        </nav>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', cinemaNavHTML);
 
                 } else if (currentView === 'explore') {
                     el.mainContent.insertAdjacentHTML('beforeend', `<div class="search-bar-container"><input type="text" id="search-input" placeholder="${t.searchPlaceholder}"></div>`);
@@ -11905,10 +12464,369 @@ ${filtersHTML}
 
 
             // --- NUOVA FUNZIONE PER CATALOGO VIDEO (UTENTE) ---
-            const openVideoCatalogModal = () => {
+            // FUNZIONE: Modale custom per modificare nome playlist
+            const openEditPlaylistModal = (playlistId) => {
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === playlistId);
+                
+                if (!playlist) return;
+                
+                const modalHTML = `
+                    <div class="playlist-modal visible">
+                        <div class="playlist-modal-content">
+                            <div class="playlist-modal-header">
+                                <h3 class="playlist-modal-title">${currentLanguage === 'it' ? 'Modifica playlist' : 'Edit playlist'}</h3>
+                                <button class="playlist-modal-close" data-action="close-playlist-modal">×</button>
+                            </div>
+                            <input type="text" class="playlist-input" id="edit-playlist-name" value="${playlist.name}" placeholder="${currentLanguage === 'it' ? 'Nome playlist' : 'Playlist name'}">
+                            <button class="create-playlist-btn" data-action="save-playlist-name" data-playlist-id="${playlistId}">
+                                ${currentLanguage === 'it' ? 'Salva' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                setTimeout(() => {
+                    const input = document.getElementById('edit-playlist-name');
+                    if (input) {
+                        input.focus();
+                        input.select();
+                    }
+                }, 100);
+            };
+
+            // FUNZIONE: Apre il modale della policy Cinema (YouTube)
+            const openCinemaPolicyModal = () => {
                 const t = translations[currentLanguage];
 
-                const videosHTML = youtubeVideosData.map((video, index) => {
+                const policyContent = currentLanguage === 'it' ? `
+                    <h3 style="margin-bottom: 16px;">Informativa sull'uso di Video YouTube</h3>
+                    <p style="margin-bottom: 12px; line-height: 1.6;">
+                        La sezione <strong>Cinema</strong> di questa applicazione utilizza video pubblici di YouTube 
+                        incorporati tramite l'API ufficiale di YouTube.
+                    </p>
+                    <h4 style="margin: 16px 0 8px 0;">Come funziona:</h4>
+                    <ul style="margin-bottom: 12px; padding-left: 20px; line-height: 1.6;">
+                        <li>Tutti i video sono <strong>pubblici</strong> e disponibili su YouTube</li>
+                        <li>I video vengono incorporati utilizzando l'<strong>API ufficiale di YouTube</strong></li>
+                        <li>Cliccando su un video, verrai reindirizzato a YouTube per la visualizzazione</li>
+                        <li>Non scarichiamo né ospitiamo alcun contenuto video</li>
+                    </ul>
+                    <h4 style="margin: 16px 0 8px 0;">Diritti d'autore:</h4>
+                    <p style="margin-bottom: 12px; line-height: 1.6;">
+                        Tutti i video appartengono ai rispettivi creatori su YouTube. 
+                        Rispettiamo i <strong>Termini di Servizio di YouTube</strong> e le leggi sul copyright.
+                    </p>
+                    <h4 style="margin: 16px 0 8px 0;">Privacy:</h4>
+                    <p style="margin-bottom: 12px; line-height: 1.6;">
+                        Le tue playlist e preferiti sono salvati <strong>localmente</strong> sul tuo dispositivo 
+                        e non vengono condivisi con terze parti.
+                    </p>
+                    <p style="margin-top: 16px; font-size: 13px; color: var(--Koda-text-secondary);">
+                        Per maggiori informazioni, consulta i 
+                        <a href="https://www.youtube.com/t/terms" target="_blank" style="color: var(--Koda-accent);">Termini di Servizio di YouTube</a>.
+                    </p>
+                ` : `
+                    <h3 style="margin-bottom: 16px;">YouTube Video Usage Policy</h3>
+                    <p style="margin-bottom: 12px; line-height: 1.6;">
+                        The <strong>Cinema</strong> section of this application uses public YouTube videos 
+                        embedded through the official YouTube API.
+                    </p>
+                    <h4 style="margin: 16px 0 8px 0;">How it works:</h4>
+                    <ul style="margin-bottom: 12px; padding-left: 20px; line-height: 1.6;">
+                        <li>All videos are <strong>public</strong> and available on YouTube</li>
+                        <li>Videos are embedded using the <strong>official YouTube API</strong></li>
+                        <li>Clicking on a video will redirect you to YouTube for viewing</li>
+                        <li>We do not download or host any video content</li>
+                    </ul>
+                    <h4 style="margin: 16px 0 8px 0;">Copyright:</h4>
+                    <p style="margin-bottom: 12px; line-height: 1.6;">
+                        All videos belong to their respective creators on YouTube. 
+                        We respect <strong>YouTube's Terms of Service</strong> and copyright laws.
+                    </p>
+                    <h4 style="margin: 16px 0 8px 0;">Privacy:</h4>
+                    <p style="margin-bottom: 12px; line-height: 1.6;">
+                        Your playlists and favorites are saved <strong>locally</strong> on your device 
+                        and are not shared with third parties.
+                    </p>
+                    <p style="margin-top: 16px; font-size: 13px; color: var(--Koda-text-secondary);">
+                        For more information, please see 
+                        <a href="https://www.youtube.com/t/terms" target="_blank" style="color: var(--Koda-accent);">YouTube's Terms of Service</a>.
+                    </p>
+                `;
+
+                const modalHTML = `
+                    <div class="review-modal visible">
+                        <div class="review-modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                            <div class="review-modal-header">
+                                <h3 class="review-modal-title">${currentLanguage === 'it' ? 'Policy Cinema' : 'Cinema Policy'}</h3>
+                                <button class="review-modal-close" data-action="close-cinema-policy">×</button>
+                            </div>
+                            <div style="text-align: left;">
+                                ${policyContent}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            };
+
+            // FUNZIONE: Gestisce il cambio tab nella pagina Cinema
+            const handleCinemaTabChange = (tab) => {
+                const t = translations[currentLanguage];
+                const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+                const videoPlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const videoViewMode = localStorage.getItem('videoViewMode') || 'grid';
+
+                // Aggiorna anche la variabile globale
+                window.currentVideoViewMode = videoViewMode;
+
+                // Aggiorna i pulsanti attivi nella bottom nav
+                document.querySelectorAll('.cinema-nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.tab === tab) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                // Funzione per generare card (copia dalla renderCinemaPage)
+                const generateVideoCard = (video, index, viewMode = 'grid') => {
+                    let videoId = '';
+                    try {
+                        const url = new URL(video.youtubeUrl);
+                        videoId = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                    } catch (e) { }
+
+                    const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : '';
+                    const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+                    const isFavorited = videoFavorites.includes(video.id);
+                    const description = video.description[currentLanguage] || video.description['en'] || '';
+
+                    if (viewMode === 'list') {
+                        return `
+                            <div class="video-card-list" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                                <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
+                                <div class="video-options-menu" id="options-menu-${video.id}">
+                                    <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
+                                </div>
+                                <button class="video-favorite-btn ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-video-id="${video.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <div class="video-info">
+                                    <h4>${video.title}</h4>
+                                    ${description ? `<div class="video-description">${description}</div>` : ''}
+                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="video-card-grid" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                                <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
+                                <div class="video-options-menu" id="options-menu-${video.id}">
+                                    <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
+                                </div>
+                                <button class="video-favorite-btn ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-video-id="${video.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <div class="video-info">
+                                    <h4>${video.title}</h4>
+                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                };
+
+                const contentArea = document.getElementById('cinema-content-area');
+
+                if (tab === 'videos' || tab === 'home') {
+                    // Mostra tutti i video
+                    const allVideosHTML = youtubeVideosData.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+                    contentArea.innerHTML = `
+                        <div class="video-search-bar">
+                            <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
+                        </div>
+                        <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
+                            <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                            </button>
+                            <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                            </button>
+                        </div>
+                        <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home" style="padding-bottom: 20px;">
+                            ${allVideosHTML}
+                        </div>
+                    `;
+
+                    // Riattiva la ricerca
+                    setTimeout(() => {
+                        const searchInput = document.getElementById('video-search-input');
+                        if (searchInput) {
+                            searchInput.addEventListener('input', (e) => {
+                                const query = e.target.value.toLowerCase();
+                                const videoCards = document.querySelectorAll('#video-grid-home .video-card-grid, #video-grid-home .video-card-list');
+                                videoCards.forEach(card => {
+                                    const title = card.dataset.title.toLowerCase();
+                                    card.style.display = title.includes(query) ? '' : 'none';
+                                });
+                            });
+                        }
+                    }, 100);
+
+                } else if (tab === 'favorites') {
+                    // Mostra solo i preferiti
+                    const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
+                    const favoritesHTML = favoriteVideos.length > 0
+                        ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
+                        : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video preferito.' : 'No favorite videos.'}</div>`;
+
+                    contentArea.innerHTML = `
+                        <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
+                            <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                            </button>
+                            <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                            </button>
+                        </div>
+                        <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" style="padding-bottom: 20px;">
+                            ${favoritesHTML}
+                        </div>
+                    `;
+
+                } else if (tab === 'playlists') {
+                    // Genera le playlist in base alla modalità di visualizzazione
+                    const generateCinemaPlaylistCard = (playlist, mode) => {
+                        const coverImage = playlist.coverImage || 'https://via.placeholder.com/300x200?text=Playlist';
+                        
+                        if (mode === 'grid') {
+                            return `
+                                <div class="video-card" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer;">
+                                    <img src="${coverImage}" class="video-thumbnail" alt="${playlist.name}">
+                                    <div class="video-info">
+                                        <h4>${playlist.name}</h4>
+                                        <p style="color: var(--Koda-text-secondary); font-size: 14px; margin: 4px 0 0 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+                                    </div>
+                                    <div class="video-options-container" style="position: absolute; top: 8px; right: 8px;">
+                                        <button class="video-options-btn" data-action="toggle-playlist-options" data-playlist-id="${playlist.id}" style="background: rgba(0,0,0,0.7);">⋮</button>
+                                        <div class="video-options-menu">
+                                            <button data-action="edit-playlist" data-playlist-id="${playlist.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                                ${currentLanguage === 'it' ? 'Modifica' : 'Edit'}
+                                            </button>
+                                            <button data-action="delete-playlist" data-playlist-id="${playlist.id}" style="color: #ff6b6b;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                ${currentLanguage === 'it' ? 'Elimina' : 'Delete'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            return `
+                                <div class="playlist-item" data-action="open-playlist" data-playlist-id="${playlist.id}" style="position: relative;">
+                                    <div class="select-checkbox" data-playlist-id="${playlist.id}"></div>
+                                    <div style="flex: 1;">
+                                        <h4>${playlist.name}</h4>
+                                        <p>${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; margin-left: auto;">
+                                        <button class="global-btn" data-action="edit-playlist" data-playlist-id="${playlist.id}" title="${currentLanguage === 'it' ? 'Modifica' : 'Edit'}" style="padding: 8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor">
+                                                <path d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="global-btn" data-action="delete-playlist" data-playlist-id="${playlist.id}" title="${currentLanguage === 'it' ? 'Elimina' : 'Delete'}" style="padding: 8px; color: #ff6b6b;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor">
+                                                <path d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    };
+
+                    const playlistsHTML = videoPlaylists.length > 0
+                        ? videoPlaylists.map(p => generateCinemaPlaylistCard(p, videoViewMode)).join('')
+                        : '';
+
+                    contentArea.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button class="pill-btn" id="playlist-multi-select-btn" data-action="toggle-playlist-multi-select" style="font-size: 13px; display: ${videoPlaylists.length > 0 && videoViewMode === 'list' ? 'inline-block' : 'none'};">
+                                    ${currentLanguage === 'it' ? 'Seleziona' : 'Select'}
+                                </button>
+                                <button class="pill-btn" id="playlist-delete-selected-btn" data-action="delete-selected-playlists" style="font-size: 13px; background-color: #ff6b6b; color: white; display: none;">
+                                    ${currentLanguage === 'it' ? 'Elimina' : 'Delete'}
+                                </button>
+                            </div>
+                            <div class="view-toggle-container">
+                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                </button>
+                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
+                            ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna playlist creata.' : 'No playlists created.'}</div>`}
+                        </div>
+                        <button class="create-playlist-btn" data-action="create-playlist" style="position: fixed; bottom: 80px; left: 16px; right: 16px; margin: 0; z-index: 10;">
+                            ${currentLanguage === 'it' ? '+ Crea nuova playlist' : '+ Create new playlist'}
+                        </button>
+                    `;
+                }
+            };
+
+            // NUOVA FUNZIONE: Renderizza la pagina Cinema (non più modale)
+            const renderCinemaPage = (contentArea, t) => {
+                console.log('renderCinemaPage called');
+                console.log('youtubeVideosData:', youtubeVideosData);
+
+                // Carica i dati da localStorage
+                const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+                const videoPlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+
+                // Stato per la visualizzazione (lista o griglia)
+                let videoViewMode = localStorage.getItem('videoViewMode') || 'grid';
+
+                // Sezione corrente (home, favorites, playlists)
+                let currentVideoSection = 'home';
+
+                // Verifica che ci siano video
+                if (!youtubeVideosData || youtubeVideosData.length === 0) {
+                    console.warn('No videos available');
+                    contentArea.innerHTML = `
+                        <div class="filters-container" style="top: 64px; margin-bottom: 20px;">
+                            <div class="filter-pills" id="cinema-filters">
+                                <button class="pill-btn active" data-action="set-cinema-tab" data-tab="home">${currentLanguage === 'it' ? 'Tutti' : 'All'}</button>
+                                <button class="pill-btn" data-action="set-cinema-tab" data-tab="favorites">${currentLanguage === 'it' ? 'Preferiti' : 'Favorites'}</button>
+                                <button class="pill-btn" data-action="set-cinema-tab" data-tab="playlists">${currentLanguage === 'it' ? 'Playlist' : 'Playlists'}</button>
+                            </div>
+                        </div>
+                        <div id="cinema-content-area">
+                            <div id="empty-state">${currentLanguage === 'it' ? 'Nessun video disponibile. Carica alcuni video nel database Firebase.' : 'No videos available. Please add some videos to the Firebase database.'}</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Funzione per generare una card video
+                const generateVideoCard = (video, index, viewMode = 'grid') => {
                     let videoId = '';
                     try {
                         const url = new URL(video.youtubeUrl);
@@ -11917,34 +12835,755 @@ ${filtersHTML}
 
                     const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                     const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+                    const isFavorited = videoFavorites.includes(video.id);
+                    const description = video.description[currentLanguage] || video.description['en'] || '';
+
+                    if (viewMode === 'list') {
+                        return `
+                            <div class="video-card-list" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                                <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
+                                <div class="video-options-menu" id="options-menu-${video.id}">
+                                    <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
+                                </div>
+                                <button class="video-favorite-btn ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-video-id="${video.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <div class="video-info">
+                                    <h4>${video.title}</h4>
+                                    ${description ? `<div class="video-description">${description}</div>` : ''}
+                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="video-card-grid" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                                <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
+                                <div class="video-options-menu" id="options-menu-${video.id}">
+                                    <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
+                                </div>
+                                <button class="video-favorite-btn ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-video-id="${video.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <div class="video-info">
+                                    <h4>${video.title}</h4>
+                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                };
+
+                // Sezione Home/Tutti
+                const allVideosHTML = youtubeVideosData.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+
+                // Sezione Preferiti
+                const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
+                const favoritesHTML = favoriteVideos.length > 0
+                    ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
+                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video preferito.' : 'No favorite videos.'}</div>`;
+
+                // Sezione Playlist (come le collezioni)
+                const playlistsHTML = videoPlaylists.length > 0
+                    ? videoPlaylists.map(playlist => `
+                        <div class="playlist-item" data-action="open-playlist" data-playlist-id="${playlist.id}">
+                            <h4>${playlist.name}</h4>
+                            <p>${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+                        </div>
+                    `).join('')
+                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna playlist creata.' : 'No playlists created.'}</div>`;
+
+                // Contenuto iniziale (sezione Video) - senza tab in alto
+                let contentHTML = '';
+                contentHTML += `
+                    <div id="cinema-content-area" style="padding-bottom: 80px;">
+                        <div class="video-search-bar">
+                            <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
+                        </div>
+                        <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
+                            <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                            </button>
+                            <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                            </button>
+                        </div>
+                        <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home">
+                            ${allVideosHTML.length > 0 ? allVideosHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video disponibile.' : 'No videos available.'}</div>`}
+                        </div>
+                    </div>
+                `;
+
+                contentArea.innerHTML = contentHTML;
+
+                // Gestione ricerca video in tempo reale
+                setTimeout(() => {
+                    const searchInput = document.getElementById('video-search-input');
+                    if (searchInput) {
+                        searchInput.addEventListener('input', (e) => {
+                            const query = e.target.value.toLowerCase();
+                            const videoCards = document.querySelectorAll('#video-grid-home .video-card-grid, #video-grid-home .video-card-list');
+                            videoCards.forEach(card => {
+                                const title = card.dataset.title.toLowerCase();
+                                card.style.display = title.includes(query) ? '' : 'none';
+                            });
+                        });
+                    }
+                }, 100);
+
+                // Salva lo stato della modalità vista
+                window.currentVideoViewMode = videoViewMode;
+            };
+
+            // MODIFICA 1-4: Funzione completamente rinnovata per il catalogo video con nav dedicata
+            const openVideoCatalogModal = () => {
+                const t = translations[currentLanguage];
+
+                // Carica i dati da localStorage
+                const favorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+
+                // Stato per la visualizzazione (lista o griglia)
+                let videoViewMode = localStorage.getItem('videoViewMode') || 'grid'; // 'list' o 'grid'
+
+                // MODIFICA 2: Genera i controlli globali senza l'icona video
+                const globalControls = getGlobalControlsHTML();
+                // Rimuovi il pulsante video dai controlli
+                const otherControlsWithoutVideo = globalControls.otherControls.replace(/<button id="video-catalog-btn"[^>]*>[\s\S]*?<\/button>/g, '');
+
+                // Funzione per generare una card video in formato griglia o lista
+                const generateVideoCard = (video, index, viewMode = 'grid') => {
+                    let videoId = '';
+                    try {
+                        const url = new URL(video.youtubeUrl);
+                        videoId = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                    } catch (e) { }
+
+                    const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                    const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+                    const isFavorited = favorites.includes(video.id);
+                    const description = video.description[currentLanguage] || video.description['en'] || '';
+
+                    if (viewMode === 'list') {
+                        return `
+                            <div class="video-card-list" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                                <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
+                                <div class="video-options-menu" id="options-menu-${video.id}">
+                                    <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
+                                </div>
+                                <button class="video-favorite-btn ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-video-id="${video.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <div class="video-info">
+                                    <h4>${video.title}</h4>
+                                    ${description ? `<div class="video-description">${description}</div>` : ''}
+                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="video-card-grid" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                                <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
+                                <div class="video-options-menu" id="options-menu-${video.id}">
+                                    <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
+                                </div>
+                                <button class="video-favorite-btn ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-video-id="${video.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </button>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <div class="video-info">
+                                    <h4>${video.title}</h4>
+                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                };
+
+                // Sezione Home/Tutti
+                const allVideosHTML = youtubeVideosData.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+
+                // Sezione Preferiti
+                const favoriteVideos = youtubeVideosData.filter(v => favorites.includes(v.id));
+                const favoritesHTML = favoriteVideos.length > 0
+                    ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
+                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video preferito.' : 'No favorite videos.'}</div>`;
+
+                // Sezione Playlist - supporta sia lista che griglia
+                const generatePlaylistCard = (playlist, mode) => {
+                    const coverImage = playlist.coverImage || 'https://via.placeholder.com/300x200?text=Playlist';
+                    
+                    if (mode === 'grid') {
+                        return `
+                            <div class="video-card" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer;">
+                                <img src="${coverImage}" class="video-thumbnail" alt="${playlist.name}">
+                                <div class="video-info">
+                                    <h4>${playlist.name}</h4>
+                                    <p style="color: var(--Koda-text-secondary); font-size: 14px; margin: 4px 0 0 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+                                </div>
+                                <div class="video-options-container" style="position: absolute; top: 8px; right: 8px;">
+                                    <button class="video-options-btn" data-action="toggle-playlist-options" data-playlist-id="${playlist.id}" style="background: rgba(0,0,0,0.7);">⋮</button>
+                                    <div class="video-options-menu">
+                                        <button data-action="edit-playlist" data-playlist-id="${playlist.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                            ${currentLanguage === 'it' ? 'Modifica' : 'Edit'}
+                                        </button>
+                                        <button data-action="delete-playlist" data-playlist-id="${playlist.id}" style="color: #ff6b6b;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                            ${currentLanguage === 'it' ? 'Elimina' : 'Delete'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="playlist-item" data-action="open-playlist" data-playlist-id="${playlist.id}">
+                                <h4>${playlist.name}</h4>
+                                <p>${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+                            </div>
+                        `;
+                    }
+                };
+
+                const playlistsHTML = playlists.length > 0
+                    ? playlists.map(p => generatePlaylistCard(p, videoViewMode)).join('')
+                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna playlist creata.' : 'No playlists created.'}</div>`;
+
+                const modalHTML = `
+                <div id="video-catalog-modal" class="modal-overlay visible">
+                    <div class="modal-content">
+                        <!-- Top Bar identica a quella dell'app principale -->
+                        <div class="user-chat-header">
+                            <button class="chat-header-btn" data-action="close-modal" title="${t.backToApp || 'Torna all\'app'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                                </svg>
+                            </button>
+                            <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
+                            <div class="user-chat-info" style="flex-grow: 1;">
+                                <a href="#" class="privacy-link" id="privacy-link-video" data-translate="videoCatalogTitle">${t.videoCatalogTitle}</a>
+                            </div>
+                            <div id="global-controls">${otherControlsWithoutVideo}</div>
+                        </div>
+                        
+                        <div class="video-list-container">
+                            <!-- Sezione Home/Tutti -->
+                            <div class="video-section active" id="video-section-home">
+                                <div class="video-search-bar">
+                                    <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
+                                </div>
+                                <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
+                                    <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                    </button>
+                                    <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                    </button>
+                                </div>
+                                <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home">
+                                    ${allVideosHTML.length > 0 ? allVideosHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video disponibile.' : 'No videos available.'}</div>`}
+                                </div>
+                            </div>
+
+                            <!-- Sezione Preferiti -->
+                            <div class="video-section" id="video-section-favorites">
+                                <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-favorites">
+                                    ${favoritesHTML}
+                                </div>
+                            </div>
+
+                            <!-- Sezione Playlist -->
+                            <div class="video-section" id="video-section-playlists">
+                                <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
+                                    <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                    </button>
+                                    <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                    </button>
+                                </div>
+                                <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list">
+                                    ${playlistsHTML}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MODIFICA 5: FAB per creare playlist (visibile solo nella sezione playlist) -->
+                        <button class="create-playlist-fab hidden" id="create-playlist-fab" data-action="create-playlist" title="${currentLanguage === 'it' ? 'Crea nuova playlist' : 'Create new playlist'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                        </button>
+
+                        <!-- Barra di navigazione inferiore dedicata -->
+                        <div class="video-catalog-bottom-nav">
+                            <button class="video-catalog-nav-btn active" data-action="switch-video-section" data-section="home">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                <span>${currentLanguage === 'it' ? 'Tutti' : 'Home'}</span>
+                            </button>
+                            <button class="video-catalog-nav-btn" data-action="switch-video-section" data-section="favorites">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                <span>${currentLanguage === 'it' ? 'Preferiti' : 'Favorites'}</span>
+                            </button>
+                            <button class="video-catalog-nav-btn" data-action="switch-video-section" data-section="playlists">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+                                </svg>
+                                <span>${currentLanguage === 'it' ? 'Playlist' : 'Playlists'}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+
+                el.modalContainer.innerHTML = modalHTML;
+
+                // MODIFICA 2: Gestione ricerca video in tempo reale
+                const searchInput = document.getElementById('video-search-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        const query = e.target.value.toLowerCase();
+                        const videoCards = document.querySelectorAll('#video-grid-home .video-card-grid, #video-grid-home .video-card-list');
+                        videoCards.forEach(card => {
+                            const title = card.dataset.title.toLowerCase();
+                            card.style.display = title.includes(query) ? '' : 'none';
+                        });
+                    });
+                }
+
+                // MODIFICA: Gestione cambio visualizzazione lista/griglia
+                window.currentVideoViewMode = videoViewMode;
+            };
+
+            // MODIFICA 4: Funzioni per gestire le playlist video
+            const openAddToPlaylistModal = (videoId) => {
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const video = youtubeVideosData.find(v => v.id === videoId);
+
+                const playlistsHTML = playlists.map(playlist => `
+                    <div class="playlist-modal-item" data-action="add-video-to-playlist" data-playlist-id="${playlist.id}" data-video-id="${videoId}">
+                        ${playlist.name} (${playlist.videos.length} video)
+                    </div>
+                `).join('');
+
+                const modalHTML = `
+                    <div class="playlist-modal visible">
+                        <div class="playlist-modal-content">
+                            <div class="playlist-modal-header">
+                                <h3 class="playlist-modal-title">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</h3>
+                                <button class="playlist-modal-close" data-action="close-playlist-modal">×</button>
+                            </div>
+                            <div class="playlist-modal-list" style="margin-bottom: 16px;">
+                                ${playlists.length > 0 ? playlistsHTML : `<p style="text-align: center; color: var(--Koda-text-secondary); padding: 16px 0;">${currentLanguage === 'it' ? 'Nessuna playlist disponibile' : 'No playlists available'}</p>`}
+                            </div>
+                            <button class="create-playlist-btn" data-action="create-playlist-from-modal" data-video-id="${videoId}" style="margin-top: 8px;">
+                                ${currentLanguage === 'it' ? '+ Crea nuova playlist' : '+ Create new playlist'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            };
+
+            const openCreatePlaylistModal = (videoIdToAdd = null) => {
+                const modalHTML = `
+                    <div class="playlist-modal visible">
+                        <div class="playlist-modal-content">
+                            <div class="playlist-modal-header">
+                                <h3 class="playlist-modal-title">${currentLanguage === 'it' ? 'Crea nuova playlist' : 'Create new playlist'}</h3>
+                                <button class="playlist-modal-close" data-action="close-playlist-modal">×</button>
+                            </div>
+                            <input type="text" class="playlist-input" id="new-playlist-name" placeholder="${currentLanguage === 'it' ? 'Nome playlist' : 'Playlist name'}">
+                            <button class="create-playlist-btn" data-action="save-new-playlist" data-video-id="${videoIdToAdd || ''}">
+                                ${currentLanguage === 'it' ? 'Salva' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                setTimeout(() => document.getElementById('new-playlist-name').focus(), 100);
+            };
+
+            // Variabili per la selezione multipla nelle playlist
+            let playlistSelectionMode = false;
+            let selectedPlaylistVideos = new Set();
+            let activePlaylistId = null;
+
+            const openPlaylistDetailModal = (playlistId) => {
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === playlistId);
+
+                if (!playlist) return;
+
+                activePlaylistId = playlistId;
+                playlistSelectionMode = false;
+                selectedPlaylistVideos.clear();
+
+                // Nascondi il catalogo video e mostra la pagina playlist
+                const videoCatalog = document.getElementById('video-catalog-modal');
+                if (videoCatalog) videoCatalog.style.display = 'none';
+
+                renderPlaylistDetailPage(playlistId);
+            };
+
+            const renderPlaylistDetailPage = (playlistId) => {
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === playlistId);
+
+                if (!playlist) return;
+
+                const videosHTML = playlist.videos.map(videoId => {
+                    const video = youtubeVideosData.find(v => v.id === videoId);
+                    if (!video) return '';
+
+                    let videoIdYT = '';
+                    try {
+                        const url = new URL(video.youtubeUrl);
+                        videoIdYT = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                    } catch (e) { }
+
+                    const thumbnailUrl = videoIdYT ? `https://img.youtube.com/vi/${videoIdYT}/mqdefault.jpg` : '';
 
                     return `
-                        <div class="video-card" data-id="${video.id}">
+                        <div class="video-card" style="position: relative;">
+                            ${playlistSelectionMode ? `
+                                <div class="selection-checkbox ${selectedPlaylistVideos.has(videoId) ? 'selected' : ''}" 
+                                     data-action="toggle-playlist-video-selection" 
+                                     data-video-id="${videoId}"
+                                     style="position: absolute; top: 8px; left: 8px; z-index: 10; width: 24px; height: 24px; border: 2px solid white; border-radius: 4px; background: ${selectedPlaylistVideos.has(videoId) ? 'var(--Koda-primary)' : 'rgba(0,0,0,0.5)'}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                    ${selectedPlaylistVideos.has(videoId) ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' : ''}
+                                </div>
+                            ` : ''}
                             <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                             <div class="video-info">
-                                <h4>${index + 1}. ${video.title}</h4>
-                                <p>${video.description[currentLanguage] || video.description['en']}</p>
-                                <button class="button" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">${t.watchVideo}</button>
-                                ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                <h4>${video.title}</h4>
+                                <button class="button" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">${currentLanguage === 'it' ? 'Guarda' : 'Watch'}</button>
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                const modalHTML = `
-                <div id="video-catalog-modal" class="modal-overlay visible">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2>${t.videoCatalogTitle}</h2>
-                            <button class="modal-close-btn" data-action="close-modal" style="position: static;">×</button>
-                        </div>
-                        <div class="video-list-container">
-                            ${videosHTML.length > 0 ? videosHTML : `<div id="empty-state">Nessun video disponibile.</div>`}
+                const coverImage = playlist.coverImage || 'https://via.placeholder.com/300x200?text=Playlist';
+
+                const pageHTML = `
+                    <div class="playlist-detail-page" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; overflow-y: auto;">
+                        <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                                <button class="pill-btn" data-action="close-playlist-detail" style="display: inline-flex; align-items: center; gap: 8px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                                    ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
+                                </button>
+                                <h2 style="margin: 0; flex: 1;">${playlist.name}</h2>
+                                ${playlist.videos.length > 0 ? `
+                                    <button class="pill-btn ${playlistSelectionMode ? 'active' : ''}" data-action="toggle-playlist-selection-mode" style="display: inline-flex; align-items: center; gap: 8px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        ${playlistSelectionMode ? (currentLanguage === 'it' ? 'Annulla' : 'Cancel') : (currentLanguage === 'it' ? 'Seleziona' : 'Select')}
+                                    </button>
+                                ` : ''}
+                            </div>
+
+                            ${playlistSelectionMode ? `
+                                <div style="background: var(--Koda-card-bg); padding: 16px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px;">
+                                    <span id="playlist-selection-count" style="flex: 1;">${selectedPlaylistVideos.size} ${currentLanguage === 'it' ? 'selezionati' : 'selected'}</span>
+                                    <button class="button" data-action="remove-selected-from-playlist" ${selectedPlaylistVideos.size === 0 ? 'disabled' : ''} style="background-color: #ff6b6b;">
+                                        ${currentLanguage === 'it' ? 'Rimuovi selezionati' : 'Remove selected'}
+                                    </button>
+                                </div>
+                            ` : ''}
+
+                            <div style="background: var(--Koda-card-bg); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
+                                <div style="display: flex; gap: 24px; align-items: start;">
+                                    <div style="position: relative; flex-shrink: 0;">
+                                        <img src="${coverImage}" alt="Cover" style="width: 200px; height: 133px; object-fit: cover; border-radius: 8px;">
+                                        <button class="pill-btn" data-action="change-playlist-cover" data-playlist-id="${playlistId}" style="position: absolute; bottom: 8px; right: 8px; padding: 8px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                        </button>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <p style="color: var(--Koda-text-secondary); margin: 0 0 8px 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+                                        <p style="color: var(--Koda-text-secondary); margin: 0;">${currentLanguage === 'it' ? 'Creata il' : 'Created on'} ${new Date(playlist.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="video-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+                                ${videosHTML.length > 0 ? videosHTML : `<p style="text-align: center; color: var(--Koda-text-secondary); grid-column: 1 / -1;">${currentLanguage === 'it' ? 'Nessun video in questa playlist' : 'No videos in this playlist'}</p>`}
+                            </div>
                         </div>
                     </div>
-                </div>`;
-                el.modalContainer.innerHTML = modalHTML;
+                `;
+
+                // Rimuovi pagine playlist esistenti
+                document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
+                document.body.insertAdjacentHTML('beforeend', pageHTML);
             };
+
+            const togglePlaylistSelectionMode = () => {
+                playlistSelectionMode = !playlistSelectionMode;
+                selectedPlaylistVideos.clear();
+                renderPlaylistDetailPage(activePlaylistId);
+            };
+
+            const togglePlaylistVideoSelection = (videoId) => {
+                if (selectedPlaylistVideos.has(videoId)) {
+                    selectedPlaylistVideos.delete(videoId);
+                } else {
+                    selectedPlaylistVideos.add(videoId);
+                }
+
+                // Aggiorna il contatore
+                const count = selectedPlaylistVideos.size;
+                const countText = currentLanguage === 'it' ? `${count} selezionati` : `${count} selected`;
+                const countElement = document.getElementById('playlist-selection-count');
+                if (countElement) {
+                    countElement.textContent = countText;
+                }
+
+                // Aggiorna lo stato del pulsante Rimuovi
+                const removeBtn = document.querySelector('[data-action="remove-selected-from-playlist"]');
+                if (removeBtn) {
+                    if (count === 0) {
+                        removeBtn.setAttribute('disabled', 'true');
+                    } else {
+                        removeBtn.removeAttribute('disabled');
+                    }
+                }
+
+                // Aggiorna visivamente la checkbox
+                const checkboxes = document.querySelectorAll(`[data-action="toggle-playlist-video-selection"][data-video-id="${videoId}"]`);
+                checkboxes.forEach(cb => {
+                    cb.classList.toggle('selected', selectedPlaylistVideos.has(videoId));
+                    cb.style.background = selectedPlaylistVideos.has(videoId) ? 'var(--Koda-primary)' : 'rgba(0,0,0,0.5)';
+                    cb.innerHTML = selectedPlaylistVideos.has(videoId) ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' : '';
+                });
+            };
+
+            const removeSelectedFromPlaylist = async () => {
+                if (selectedPlaylistVideos.size === 0 || !activePlaylistId) return;
+
+                const count = selectedPlaylistVideos.size;
+                const confirmed = await showConfirmModal({
+                    title: currentLanguage === 'it' ? 'Rimuovi dalla playlist' : 'Remove from playlist',
+                    message: currentLanguage === 'it'
+                        ? `Sei sicuro di voler rimuovere ${count} ${count === 1 ? 'video' : 'video'} da questa playlist?`
+                        : `Are you sure you want to remove ${count} ${count === 1 ? 'video' : 'videos'} from this playlist?`,
+                    icon: '🗑️',
+                    confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
+                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                });
+
+                if (!confirmed) return;
+
+                let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === activePlaylistId);
+
+                if (playlist) {
+                    playlist.videos = playlist.videos.filter(id => !selectedPlaylistVideos.has(id));
+                    localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                    showToast(currentLanguage === 'it' ? `${count} video rimossi` : `${count} videos removed`);
+                    selectedPlaylistVideos.clear();
+                    playlistSelectionMode = false;
+                    renderPlaylistDetailPage(activePlaylistId);
+                }
+            };
+
+            const changePlaylistCover = async (playlistId) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                        const imageData = event.target.result;
+                        
+                        // Mostra modale di conferma con preview
+                        const modalHTML = `
+                            <div class="playlist-modal visible">
+                                <div class="playlist-modal-content">
+                                    <div class="playlist-modal-header">
+                                        <h3 class="playlist-modal-title">${currentLanguage === 'it' ? 'Conferma copertina' : 'Confirm cover'}</h3>
+                                        <button class="playlist-modal-close" data-action="close-playlist-modal">×</button>
+                                    </div>
+                                    <div style="text-align: center; margin: 16px 0;">
+                                        <img src="${imageData}" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px;">
+                                    </div>
+                                    <div style="display: flex; gap: 12px;">
+                                        <button class="button" data-action="close-playlist-modal" style="flex: 1; background: var(--Koda-card-bg); color: var(--Koda-text);">
+                                            ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                        </button>
+                                        <button class="button" data-action="confirm-playlist-cover" data-playlist-id="${playlistId}" data-image="${imageData}" style="flex: 1;">
+                                            ${currentLanguage === 'it' ? 'Salva' : 'Save'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        document.body.insertAdjacentHTML('beforeend', modalHTML);
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            };
+
+            const confirmPlaylistCover = (playlistId, imageData) => {
+                let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === playlistId);
+
+                if (playlist) {
+                    playlist.coverImage = imageData;
+                    localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                    showToast(currentLanguage === 'it' ? 'Copertina aggiornata' : 'Cover updated');
+                    document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
+                    renderPlaylistDetailPage(playlistId);
+                }
+            };
+
+            // Gestori eventi per le azioni delle playlist
+            document.addEventListener('click', async (e) => {
+                const action = e.target.dataset.action;
+
+                if (action === 'close-playlist-modal') {
+                    document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
+                }
+
+                if (action === 'add-video-to-playlist') {
+                    const playlistId = e.target.dataset.playlistId;
+                    const videoId = e.target.dataset.videoId;
+                    let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                    const playlist = playlists.find(p => p.id === playlistId);
+
+                    if (playlist && !playlist.videos.includes(videoId)) {
+                        // Mostra conferma prima di aggiungere
+                        const confirmed = await showConfirmModal({
+                            title: currentLanguage === 'it' ? 'Aggiungi a playlist?' : 'Add to playlist?',
+                            message: currentLanguage === 'it' ? `Vuoi aggiungere questo video alla playlist "${playlist.name}"?` : `Do you want to add this video to the playlist "${playlist.name}"?`,
+                            icon: '📝',
+                            confirmText: currentLanguage === 'it' ? 'Aggiungi' : 'Add',
+                            cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                        });
+                        
+                        if (confirmed) {
+                            playlist.videos.push(videoId);
+                            localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                            showToast(currentLanguage === 'it' ? 'Video aggiunto alla playlist' : 'Video added to playlist');
+                            document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
+                            document.querySelectorAll('.video-options-menu').forEach(m => m.classList.remove('visible'));
+                        }
+                    } else if (playlist && playlist.videos.includes(videoId)) {
+                        showToast(currentLanguage === 'it' ? 'Video già presente nella playlist' : 'Video already in playlist');
+                    }
+                }
+
+                if (action === 'create-playlist-from-modal') {
+                    const videoId = e.target.dataset.videoId;
+                    document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
+                    openCreatePlaylistModal(videoId);
+                }
+
+                if (action === 'save-new-playlist') {
+                    const nameInput = document.getElementById('new-playlist-name');
+                    const name = nameInput ? nameInput.value.trim() : '';
+                    const videoId = e.target.dataset.videoId;
+
+                    if (!name) {
+                        showToast(currentLanguage === 'it' ? 'Inserisci un nome per la playlist' : 'Enter a playlist name');
+                        return;
+                    }
+
+                    let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                    const newPlaylist = {
+                        id: 'playlist-' + Date.now(),
+                        name: name,
+                        videos: videoId ? [videoId] : []
+                    };
+
+                    playlists.push(newPlaylist);
+                    localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                    showToast(currentLanguage === 'it' ? 'Playlist creata' : 'Playlist created');
+                    document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
+
+                    // Aggiorna la vista se siamo nella pagina Cinema
+                    if (currentView === 'cinema') {
+                        const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
+                        if (activeNavBtn && activeNavBtn.dataset.tab === 'playlists') {
+                            handleCinemaTabChange('playlists');
+                        }
+                    }
+                }
+
+                // Gestori rimossi - ora gestiti tramite data-action nel nuovo sistema
+            });
+
+            // Chiudi menu opzioni quando si clicca fuori
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.video-options-btn') && !e.target.closest('.video-options-menu')) {
+                    document.querySelectorAll('.video-options-menu').forEach(m => m.classList.remove('visible'));
+                }
+                
+                // Gestione click su checkbox playlist
+                if (e.target.classList.contains('select-checkbox')) {
+                    const playlistItem = e.target.closest('.playlist-item');
+                    if (playlistItem && playlistItem.classList.contains('multi-select-mode')) {
+                        e.stopPropagation();
+                        playlistItem.classList.toggle('selected');
+                        
+                        // Mostra/nascondi pulsante elimina
+                        const selectedCount = document.querySelectorAll('.playlist-item.selected').length;
+                        const deleteBtn = document.getElementById('playlist-delete-selected-btn');
+                        if (deleteBtn) {
+                            deleteBtn.style.display = selectedCount > 0 ? 'inline-block' : 'none';
+                        }
+                    }
+                }
+                
+                // Previeni apertura playlist quando si è in modalità selezione o si clicca sui pulsanti
+                if (e.target.closest('.playlist-item')?.classList.contains('multi-select-mode') && 
+                    !e.target.classList.contains('select-checkbox') &&
+                    !e.target.closest('[data-action="edit-playlist"]') &&
+                    !e.target.closest('[data-action="delete-single-playlist"]')) {
+                    const playlistItem = e.target.closest('.playlist-item');
+                    if (playlistItem) {
+                        e.stopPropagation();
+                        playlistItem.classList.toggle('selected');
+                        
+                        const selectedCount = document.querySelectorAll('.playlist-item.selected').length;
+                        const deleteBtn = document.getElementById('playlist-delete-selected-btn');
+                        if (deleteBtn) {
+                            deleteBtn.style.display = selectedCount > 0 ? 'inline-block' : 'none';
+                        }
+                    }
+                }
+                
+                // Previeni apertura playlist quando si clicca sui pulsanti modifica/elimina
+                if (e.target.closest('[data-action="edit-playlist"]') || 
+                    e.target.closest('[data-action="delete-single-playlist"]')) {
+                    e.stopPropagation();
+                }
+            });
 
             // --- FUNZIONE PER OTTIMIZZARE I PROMPT ---
             const handlePromptOptimization = async () => {
@@ -12485,13 +14124,288 @@ ${filtersHTML}
                                     .catch(err => console.error('Errore nella copia:', err));
                             }
                             break;
-                        // AZIONI CATALOGO VIDEO (UTENTE)
+                        // AZIONI CATALOGO VIDEO (UTENTE) - Ora naviga alla pagina cinema
                         case 'open-video-catalog':
-                            openVideoCatalogModal();
+                            currentView = 'cinema';
+                            history.pushState({ page: 'cinema' }, '', '#cinema');
+                            renderView();
+                            el.mainContent.scrollTop = 0;
+                            break;
+                        // NUOVO: Esci dal cinema e torna alla home
+                        case 'exit-cinema':
+                            // Rimuovi la bottom nav del Cinema
+                            const cinemaNav = document.querySelector('.cinema-bottom-nav');
+                            if (cinemaNav) cinemaNav.remove();
+
+                            currentView = 'home';
+                            history.pushState({ page: 'home' }, '', '#home');
+                            renderView();
+                            el.mainContent.scrollTop = 0;
+                            break;
+                        // NUOVO: Apri policy Cinema (YouTube)
+                        case 'open-cinema-policy':
+                            event.preventDefault();
+                            openCinemaPolicyModal();
+                            break;
+                        // NUOVO: Chiudi policy Cinema
+                        case 'close-cinema-policy':
+                            document.querySelectorAll('.review-modal').forEach(m => m.remove());
+                            break;
+                        // NUOVO: Toggle selezione multipla playlist
+                        case 'toggle-playlist-multi-select':
+                            const playlistContainer = document.getElementById('playlist-list-container');
+                            const playlistItems = playlistContainer.querySelectorAll('.playlist-item');
+                            const isMultiSelectActive = playlistContainer.classList.contains('multi-select-mode');
+                            
+                            if (isMultiSelectActive) {
+                                // Disattiva selezione multipla
+                                playlistContainer.classList.remove('multi-select-mode');
+                                playlistItems.forEach(item => {
+                                    item.classList.remove('multi-select-mode', 'selected');
+                                });
+                                document.getElementById('playlist-multi-select-btn').textContent = currentLanguage === 'it' ? 'Seleziona' : 'Select';
+                                document.getElementById('playlist-delete-selected-btn').style.display = 'none';
+                            } else {
+                                // Attiva selezione multipla
+                                playlistContainer.classList.add('multi-select-mode');
+                                playlistItems.forEach(item => {
+                                    item.classList.add('multi-select-mode');
+                                });
+                                document.getElementById('playlist-multi-select-btn').textContent = currentLanguage === 'it' ? 'Annulla' : 'Cancel';
+                            }
+                            break;
+                        // NUOVO: Modifica playlist
+                        case 'edit-playlist':
+                            event.stopPropagation();
+                            const editPlaylistId = actionTarget.dataset.playlistId;
+                            openEditPlaylistModal(editPlaylistId);
+                            break;
+                        // NUOVO: Elimina playlist
+                        case 'delete-playlist':
+                            event.stopPropagation();
+                            const delPlaylistId = actionTarget.dataset.playlistId;
+                            const confirmDelete = await showConfirmModal({
+                                title: currentLanguage === 'it' ? 'Elimina playlist' : 'Delete playlist',
+                                message: currentLanguage === 'it' ? 'Sei sicuro di voler eliminare questa playlist?' : 'Are you sure you want to delete this playlist?',
+                                icon: '🗑️',
+                                confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
+                                cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                            });
+                            
+                            if (confirmDelete) {
+                                let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                                playlists = playlists.filter(p => p.id !== delPlaylistId);
+                                localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                                showToast(currentLanguage === 'it' ? 'Playlist eliminata' : 'Playlist deleted');
+                                
+                                // Se siamo nella pagina dettaglio, torna al catalogo
+                                if (activePlaylistId === delPlaylistId) {
+                                    document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
+                                    const videoCatalog = document.getElementById('video-catalog-modal');
+                                    if (videoCatalog) videoCatalog.style.display = 'block';
+                                    activePlaylistId = null;
+                                }
+                                
+                                // Aggiorna la vista
+                                if (currentView === 'cinema') {
+                                    handleCinemaTabChange('playlists');
+                                } else {
+                                    openVideoCatalogModal();
+                                    document.getElementById('video-section-playlists').classList.add('active');
+                                    document.getElementById('video-section-home').classList.remove('active');
+                                }
+                            }
+                            break;
+                        // NUOVO: Toggle menu opzioni playlist
+                        case 'toggle-playlist-options':
+                            event.stopPropagation();
+                            const playlistOptionsMenu = actionTarget.nextElementSibling;
+                            if (playlistOptionsMenu && playlistOptionsMenu.classList.contains('video-options-menu')) {
+                                // Chiudi tutti gli altri menu
+                                document.querySelectorAll('.video-options-menu').forEach(m => {
+                                    if (m !== playlistOptionsMenu) m.classList.remove('visible');
+                                });
+                                playlistOptionsMenu.classList.toggle('visible');
+                            }
+                            break;
+                        // NUOVO: Elimina singola playlist
+                        case 'delete-single-playlist':
+                            event.stopPropagation();
+                            const deletePlaylistId = actionTarget.dataset.playlistId;
+                            let deletePlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                            const deletePlaylist = deletePlaylists.find(p => p.id === deletePlaylistId);
+                            
+                            if (deletePlaylist) {
+                                const confirmed = await showConfirmModal({
+                                    title: currentLanguage === 'it' ? 'Elimina playlist?' : 'Delete playlist?',
+                                    message: currentLanguage === 'it' ? `Sei sicuro di voler eliminare la playlist "${deletePlaylist.name}"?` : `Are you sure you want to delete the playlist "${deletePlaylist.name}"?`,
+                                    icon: '🗑️',
+                                    confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
+                                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                                });
+                                
+                                if (confirmed) {
+                                    deletePlaylists = deletePlaylists.filter(p => p.id !== deletePlaylistId);
+                                    localStorage.setItem('video-playlists', JSON.stringify(deletePlaylists));
+                                    showToast(currentLanguage === 'it' ? 'Playlist eliminata' : 'Playlist deleted');
+                                    handleCinemaTabChange('playlists');
+                                }
+                            }
+                            break;
+                        // NUOVO: Elimina playlist selezionate
+                        case 'delete-selected-playlists':
+                            const selectedPlaylists = document.querySelectorAll('.playlist-item.selected');
+                            if (selectedPlaylists.length === 0) {
+                                showToast(currentLanguage === 'it' ? 'Nessuna playlist selezionata' : 'No playlists selected');
+                                return;
+                            }
+                            
+                            const confirmed = await showConfirmModal({
+                                title: currentLanguage === 'it' ? 'Elimina playlist?' : 'Delete playlists?',
+                                message: currentLanguage === 'it' ? `Sei sicuro di voler eliminare ${selectedPlaylists.length} playlist?` : `Are you sure you want to delete ${selectedPlaylists.length} playlists?`,
+                                icon: '🗑️',
+                                confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
+                                cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                            });
+                            
+                            if (confirmed) {
+                                let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                                selectedPlaylists.forEach(item => {
+                                    const playlistId = item.dataset.playlistId;
+                                    playlists = playlists.filter(p => p.id !== playlistId);
+                                });
+                                localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                                showToast(currentLanguage === 'it' ? 'Playlist eliminate' : 'Playlists deleted');
+                                handleCinemaTabChange('playlists');
+                            }
                             break;
                         case 'watch-youtube-video':
                             const url = actionTarget.dataset.url;
                             if (url) window.open(url, '_blank');
+                            break;
+                        // MODIFICA 1: Cambio sezione nel catalogo video (vecchio modale - non più usato)
+                        case 'switch-video-section':
+                            const section = actionTarget.dataset.section;
+                            document.querySelectorAll('.video-section').forEach(s => s.classList.remove('active'));
+                            document.querySelectorAll('.video-catalog-nav-btn').forEach(b => b.classList.remove('active'));
+                            document.getElementById(`video-section-${section}`).classList.add('active');
+                            actionTarget.classList.add('active');
+                            break;
+                        // MODIFICA 3 & 4: Toggle preferito con conferma per rimozione
+                        case 'toggle-favorite':
+                            event.stopPropagation();
+                            const videoId = actionTarget.dataset.videoId;
+                            let favorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+
+                            if (favorites.includes(videoId)) {
+                                // MODIFICA 4: Mostra modale di conferma per rimozione
+                                const confirmed = await showConfirmModal({
+                                    title: currentLanguage === 'it' ? 'Rimuovi dai preferiti?' : 'Remove from favorites?',
+                                    message: currentLanguage === 'it' ? 'Sei sicuro di voler rimuovere questo video dai preferiti?' : 'Are you sure you want to remove this video from favorites?',
+                                    icon: '❤️',
+                                    confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
+                                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                                });
+
+                                if (confirmed) {
+                                    favorites = favorites.filter(id => id !== videoId);
+                                    actionTarget.classList.remove('favorited');
+                                    showToast(currentLanguage === 'it' ? 'Rimosso dai preferiti' : 'Removed from favorites');
+                                    localStorage.setItem('video-favorites', JSON.stringify(favorites));
+
+                                    // Aggiorna la sezione preferiti se visibile
+                                    if (document.getElementById('video-section-favorites')?.classList.contains('active')) {
+                                        openVideoCatalogModal();
+                                        document.getElementById('video-section-favorites').classList.add('active');
+                                        document.getElementById('video-section-home').classList.remove('active');
+                                        document.querySelectorAll('.video-catalog-nav-btn')[1].classList.add('active');
+                                        document.querySelectorAll('.video-catalog-nav-btn')[0].classList.remove('active');
+                                    }
+                                }
+                            } else {
+                                // Aggiungi senza conferma
+                                favorites.push(videoId);
+                                actionTarget.classList.add('favorited');
+                                showToast(currentLanguage === 'it' ? 'Aggiunto ai preferiti' : 'Added to favorites');
+                                localStorage.setItem('video-favorites', JSON.stringify(favorites));
+                            }
+                            break;
+                        // MODIFICA 4: Mostra menu opzioni video
+                        case 'show-video-options':
+                            event.stopPropagation();
+                            const optionsVideoId = actionTarget.dataset.videoId;
+                            const optionsMenu = document.getElementById(`options-menu-${optionsVideoId}`);
+                            // Chiudi tutti gli altri menu
+                            document.querySelectorAll('.video-options-menu').forEach(m => m.classList.remove('visible'));
+                            optionsMenu.classList.toggle('visible');
+                            break;
+                        // MODIFICA 4: Aggiungi a playlist
+                        case 'add-to-playlist':
+                            event.stopPropagation();
+                            const addVideoId = actionTarget.dataset.videoId;
+                            openAddToPlaylistModal(addVideoId);
+                            break;
+                        // MODIFICA 4: Crea nuova playlist
+                        case 'create-playlist':
+                            openCreatePlaylistModal();
+                            break;
+                        // MODIFICA 4: Apri playlist
+                        case 'open-playlist':
+                            const playlistId = actionTarget.dataset.playlistId;
+                            openPlaylistDetailModal(playlistId);
+                            break;
+                        // NUOVO: Chiudi dettaglio playlist
+                        case 'close-playlist-detail':
+                            document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
+                            const videoCatalog = document.getElementById('video-catalog-modal');
+                            if (videoCatalog) videoCatalog.style.display = 'block';
+                            activePlaylistId = null;
+                            playlistSelectionMode = false;
+                            selectedPlaylistVideos.clear();
+                            break;
+                        // NUOVO: Chiudi modali playlist (per modifica, aggiungi, crea)
+                        case 'close-playlist-modal':
+                            document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
+                            break;
+                        // NUOVO: Toggle selezione multipla playlist
+                        case 'toggle-playlist-selection-mode':
+                            togglePlaylistSelectionMode();
+                            break;
+                        // NUOVO: Toggle selezione video in playlist
+                        case 'toggle-playlist-video-selection':
+                            event.stopPropagation();
+                            const playlistVideoId = actionTarget.dataset.videoId;
+                            if (playlistVideoId) togglePlaylistVideoSelection(playlistVideoId);
+                            break;
+                        // NUOVO: Rimuovi video selezionati dalla playlist
+                        case 'remove-selected-from-playlist':
+                            removeSelectedFromPlaylist();
+                            break;
+                        // NUOVO: Cambia copertina playlist
+                        case 'change-playlist-cover':
+                            event.stopPropagation();
+                            const coverPlaylistId = actionTarget.dataset.playlistId;
+                            if (coverPlaylistId) changePlaylistCover(coverPlaylistId);
+                            break;
+                        // NUOVO: Conferma copertina playlist
+                        case 'confirm-playlist-cover':
+                            const confirmPlaylistId = actionTarget.dataset.playlistId;
+                            const imageData = actionTarget.dataset.image;
+                            if (confirmPlaylistId && imageData) confirmPlaylistCover(confirmPlaylistId, imageData);
+                            break;
+                        // MODIFICA: Cambio visualizzazione video (lista/griglia)
+                        case 'set-video-view-mode':
+                            const videoMode = actionTarget.dataset.mode;
+                            if (videoMode && videoMode !== window.currentVideoViewMode) {
+                                localStorage.setItem('videoViewMode', videoMode);
+                                window.currentVideoViewMode = videoMode;
+                                // Ricarica il tab corrente con la nuova visualizzazione
+                                const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
+                                if (activeNavBtn) {
+                                    const currentTab = activeNavBtn.dataset.tab;
+                                    handleCinemaTabChange(currentTab);
+                                }
+                            }
                             break;
                         // NUOVO: Gestisce il click sull'icona della password
                         case 'toggle-password-visibility':
@@ -12504,6 +14418,11 @@ ${filtersHTML}
                                 libraryTab = tab;
                                 renderView(); // Un re-render completo è il modo più semplice per aggiornare tutto
                             }
+                            break;
+                        // NUOVO: Gestisce i tab della pagina Cinema
+                        case 'set-cinema-tab':
+                            const cinemaTab = actionTarget.dataset.tab;
+                            handleCinemaTabChange(cinemaTab);
                             break;
                         // NUOVO: Gestisce il cambio di visualizzazione (lista/griglia)
                         case 'set-view-mode':
@@ -13111,7 +15030,7 @@ ${filtersHTML}
                 // --- INSERT THIS CODE ---
                 // Check the URL hash to set the initial view
                 const initialHash = window.location.hash.substring(1); // e.g., 'explore' from '#explore'
-                const validPages = ['home', 'top-ai', 'explore', 'user-chats', 'favorites']; // Add any other valid page keys here
+                const validPages = ['home', 'top-ai', 'explore', 'user-chats', 'favorites', 'cinema']; // Add any other valid page keys here
 
                 if (initialHash && validPages.includes(initialHash)) {
                     currentView = initialHash;
@@ -13197,7 +15116,6 @@ ${filtersHTML}
                     initializeAppForGuest();
                 }
             });
-
         });
     </script>
 
