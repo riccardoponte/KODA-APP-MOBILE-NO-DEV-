@@ -561,6 +561,11 @@
             padding: 16px;
         }
 
+        /* NUOVO: Padding extra per il cinema per evitare che il contenuto venga coperto dalla bottom nav */
+        body:has(.cinema-bottom-nav) #content-area {
+            padding-bottom: 90px;
+        }
+
         .section-title {
             font-size: 22px;
             font-weight: 700;
@@ -1095,7 +1100,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 3500;
+            z-index: 10001;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
@@ -6073,7 +6078,7 @@
             position: absolute;
             top: 8px;
             right: 8px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.9);
             border: none;
             border-radius: 50%;
             width: 36px;
@@ -6083,24 +6088,29 @@
             justify-content: center;
             cursor: pointer;
             z-index: 2;
-            transition: transform 0.2s;
+            transition: all 0.2s;
         }
 
         .video-favorite-btn:hover {
             transform: scale(1.1);
+            background: rgba(255, 255, 255, 1);
         }
 
         .video-favorite-btn svg {
             width: 20px;
             height: 20px;
             fill: none;
-            stroke: white;
+            stroke: #333;
             stroke-width: 2;
         }
 
+        .video-favorite-btn.favorited {
+            background: var(--Koda-accent);
+        }
+
         .video-favorite-btn.favorited svg {
-            fill: var(--Koda-accent);
-            stroke: var(--Koda-accent);
+            fill: #000;
+            stroke: #000;
         }
 
         /* MODIFICA 4: Menu opzioni per aggiungere a playlist */
@@ -6294,6 +6304,82 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+        }
+
+        .playlist-modal-title {
+            font-size: 20px;
+        }
+
+        /* NUOVO: Stili per la pagina video-detail */
+        .video-detail-page {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-detail-container {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-player-container iframe {
+            border: none;
+        }
+
+        .video-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .video-actions .button {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        /* NUOVO: Stili per i pulsanti azione video */
+        .video-action-btn {
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0.9;
+        }
+
+        .video-action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .video-detail-page {
+                padding: 12px !important;
+            }
+
+            .video-detail-info {
+                padding: 16px !important;
+            }
+
+            .video-actions .button {
+                min-width: 100%;
+            }
+
+            .video-detail-container h1 {
+                font-size: 20px !important;
+            }
         }
 
         .playlist-modal-title {
@@ -7883,6 +7969,7 @@ ${knowledgeBaseFormatter(tools)}
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Cerca", navSearchUsers: "Utenti", navLibrary: "Libreria",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema",
+                    navCinemaVideos: "Video", navCinemaFavorites: "Preferiti", navCinemaPlaylists: "Playlist",
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Ogni AI è basata su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
@@ -8042,6 +8129,15 @@ ${knowledgeBaseFormatter(tools)}
                     videoCatalogTitle: "Cinema",
                     watchVideo: "Guarda",
                     backToApp: "Torna all'app",
+                    videoDetail: "Dettaglio Video",
+                    back: "Indietro",
+                    backToCinema: "Torna al Cinema",
+                    videoNotFound: "Video non trovato",
+                    description: "Descrizione",
+                    addToFavorites: "Aggiungi ai preferiti",
+                    removeFromFavorites: "Rimuovi dai preferiti",
+                    addToPlaylist: "Aggiungi a playlist",
+                    watchOnYouTube: "Guarda su YouTube",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Privacy Policy di Koda.AI",
@@ -8108,6 +8204,7 @@ ${knowledgeBaseFormatter(tools)}
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Search", navSearchUsers: "Users", navLibrary: "Library",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Search", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Your Library", pageTitleCinema: "Cinema",
+                    navCinemaVideos: "Videos", navCinemaFavorites: "Favorites", navCinemaPlaylists: "Playlists",
                     logout: "Logout", featured: "Featured", featuredDisclaimer: "Each AI is based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
@@ -8266,6 +8363,15 @@ ${knowledgeBaseFormatter(tools)}
                     videoCatalogTitle: "Cinema",
                     watchVideo: "Watch",
                     backToApp: "Back to app",
+                    videoDetail: "Video Detail",
+                    back: "Back",
+                    backToCinema: "Back to Cinema",
+                    videoNotFound: "Video not found",
+                    description: "Description",
+                    addToFavorites: "Add to favorites",
+                    removeFromFavorites: "Remove from favorites",
+                    addToPlaylist: "Add to playlist",
+                    watchOnYouTube: "Watch on YouTube",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Koda.AI Privacy Policy",
@@ -8858,7 +8964,7 @@ ${knowledgeBaseFormatter(tools)}
                 if (addToHistory) {
                     history.pushState({ modal: 'detail', toolId: toolId, page: currentView }, '', '');
                 }
-                
+
                 // Mostra un caricamento immediato per una migliore UX
                 el.modalContainer.innerHTML = `
                 <div id="detail-modal" class="modal-overlay visible">
@@ -8969,7 +9075,7 @@ ${knowledgeBaseFormatter(tools)}
             const closeModal = () => {
                 el.modalContainer.innerHTML = '';
                 closeUserProfileDropdown();
-                
+
                 // NUOVO: Se c'è uno stato modale nella cronologia, torna indietro
                 if (window.history.state && window.history.state.modal) {
                     window.history.back();
@@ -8977,22 +9083,45 @@ ${knowledgeBaseFormatter(tools)}
             };
 
             // NUOVO: Funzione per aprire il modale di dettaglio video
-            window.openVideoDetailModal = (videoId, addToHistory = true) => {
-                console.log('openVideoDetailModal called with:', videoId);
+            // MODIFICATO: Ora apre una pagina invece di un modale
+            window.openVideoDetailPage = (videoId, addToHistory = true) => {
+                console.log('openVideoDetailPage called with:', videoId);
                 console.log('youtubeVideosData:', youtubeVideosData);
-                const video = youtubeVideosData.find(v => v.id === videoId);
-                if (!video) {
-                    console.error('Video not found:', videoId);
-                    return;
-                }
-                console.log('Video found:', video);
+
+                // Salva l'ID del video corrente
+                window.currentVideoId = videoId;
+
+                // Cambia vista a video-detail
+                currentView = 'video-detail';
 
                 // NUOVO: Aggiungi alla cronologia del browser
                 if (addToHistory) {
-                    history.pushState({ modal: 'video-detail', videoId: videoId }, '', '');
+                    history.pushState({ page: 'video-detail', videoId: videoId }, '', `#video-${videoId}`);
                 }
 
-                const t = translations[currentLanguage];
+                // Renderizza la vista
+                renderView();
+                el.mainContent.scrollTop = 0;
+            };
+
+            // Mantieni la vecchia funzione per compatibilità
+            window.openVideoDetailModal = window.openVideoDetailPage;
+
+            // NUOVA FUNZIONE: Renderizza la pagina di dettaglio video
+            const renderVideoDetailPage = (contentArea, t) => {
+                const videoId = window.currentVideoId;
+                const video = youtubeVideosData.find(v => v.id === videoId);
+
+                if (!video) {
+                    contentArea.innerHTML = `
+                        <div style="padding: 40px; text-align: center;">
+                            <h2>${t.videoNotFound || 'Video non trovato'}</h2>
+                            <button class="button" data-action="back-to-cinema">${t.backToCinema || 'Torna al Cinema'}</button>
+                        </div>
+                    `;
+                    return;
+                }
+
                 const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
                 const isFavorited = videoFavorites.includes(videoId);
 
@@ -9006,31 +9135,45 @@ ${knowledgeBaseFormatter(tools)}
                 const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
                 const description = video.description[currentLanguage] || video.description['en'] || '';
 
-                const modalHTML = `
-                <div id="detail-modal" class="modal-overlay">
-                    <div class="modal-content">
-                        <button class="modal-close-btn" data-action="close-modal">×</button>
-                        <div class="detail-container">
-                            <div class="detail-image-container">
-                                <img src="${thumbnailUrl}" alt="${video.title}" class="detail-image" loading="lazy">
+                contentArea.innerHTML = `
+                    <div class="video-detail-page" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+                        <div class="video-detail-container" style="background: var(--Koda-card); border-radius: 12px; overflow: hidden;">
+                            <div class="video-player-container" style="position: relative; padding-bottom: 56.25%; height: 0; background: #000;">
+                                <iframe 
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                    src="https://www.youtube.com/embed/${videoIdFromUrl}?autoplay=0" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
                             </div>
-                            <div class="detail-info">
-                                <h2 class="detail-title">${video.title}</h2>
-                                ${videoDate ? `<div class="video-date" style="color: var(--Koda-text-secondary); margin-bottom: 12px;">${videoDate}</div>` : ''}
-                                ${description ? `<p class="detail-description">${description}</p>` : ''}
-                                <div class="detail-actions">
-                                    <button class="button" data-action="toggle-favorite" data-video-id="${videoId}">${isFavorited ? (currentLanguage === 'it' ? 'Rimuovi dai preferiti' : 'Remove from favorites') : (currentLanguage === 'it' ? 'Aggiungi ai preferiti' : 'Add to favorites')}</button>
-                                    <button class="button" data-action="add-to-playlist" data-video-id="${videoId}" style="background: white; color: #000;">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</button>
-                                    <a href="${video.youtubeUrl}" target="_blank" class="button" style="text-decoration: none; display: flex; justify-content: center; align-items: center; background: var(--Koda-accent); color: #000; font-weight: 600;">
-                                        ${currentLanguage === 'it' ? 'Guarda ora' : 'Watch now'}
+                            
+                            <div class="video-detail-info" style="padding: 24px;">
+                                <h1 style="font-size: 24px; margin-bottom: 12px;">${video.title}</h1>
+                                ${videoDate ? `<div style="color: var(--Koda-text-secondary); margin-bottom: 16px; font-size: 14px;">${videoDate}</div>` : ''}
+                                
+                                <div class="video-actions" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                                    <button class="button video-action-btn" data-action="toggle-video-favorite" data-video-id="${videoId}" style="background: ${isFavorited ? 'var(--Koda-accent)' : 'var(--Koda-card)'}; color: ${isFavorited ? '#000' : 'var(--Koda-text)'}; border: 1px solid ${isFavorited ? 'var(--Koda-accent)' : 'rgba(128, 128, 128, 0.2)'}; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
+                                        ${isFavorited ? ' ' : ' '}${isFavorited ? (t.removeFromFavorites || 'Rimuovi dai preferiti') : (t.addToFavorites || 'Aggiungi ai preferiti')}
+                                    </button>
+                                    <button class="button video-action-btn" data-action="add-to-playlist" data-video-id="${videoId}" style="background: #6b46c1; color: white; border: 1px solid #6b46c1; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
+                                         ${t.addToPlaylist || 'Aggiungi a playlist'}
+                                    </button>
+                                    <a href="${video.youtubeUrl}" target="_blank" class="button video-action-btn" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; background: #ff0000; color: white; border: 1px solid #ff0000; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
+                                         ${t.watchOnYouTube || 'Guarda su YouTube'}
                                     </a>
                                 </div>
+                                
+                                ${description ? `
+                                    <div style="background: var(--Koda-bg-light); padding: 16px; border-radius: 8px;">
+                                        <h3 style="font-size: 16px; margin-bottom: 12px;">${t.description || 'Descrizione'}</h3>
+                                        <p style="line-height: 1.6; white-space: pre-wrap;">${description}</p>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
-                </div>`;
-
-                el.modalContainer.innerHTML = modalHTML;
+                `;
             };
 
             // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda
@@ -10123,6 +10266,49 @@ ${knowledgeBaseFormatter(tools)}
                 }
             };
 
+            // NUOVA FUNZIONE: Crea o aggiorna la bottom nav del Cinema con le traduzioni corrette
+            const createOrUpdateCinemaNav = () => {
+                const t = translations[currentLanguage];
+                const existingNav = document.querySelector('.cinema-bottom-nav');
+
+                // Salva il tab attivo se esiste
+                let activeTab = 'videos';
+                if (existingNav) {
+                    const activeBtn = existingNav.querySelector('.cinema-nav-btn.active');
+                    if (activeBtn) {
+                        activeTab = activeBtn.dataset.tab;
+                    }
+                    // Rimuovi la nav esistente
+                    existingNav.remove();
+                }
+
+                // Crea la nuova nav con le traduzioni aggiornate
+                const cinemaNavHTML = `
+                    <nav class="cinema-bottom-nav">
+                        <button class="cinema-nav-btn ${activeTab === 'videos' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="videos">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M0 0h24v24H0V0z" fill="none"/>
+                                <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            </svg>
+                            <span>${t.navCinemaVideos || (currentLanguage === 'it' ? 'Video' : 'Videos')}</span>
+                        </button>
+                        <button class="cinema-nav-btn ${activeTab === 'favorites' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="favorites">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span>${t.navCinemaFavorites || (currentLanguage === 'it' ? 'Preferiti' : 'Favorites')}</span>
+                        </button>
+                        <button class="cinema-nav-btn ${activeTab === 'playlists' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="playlists">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+                            </svg>
+                            <span>${t.navCinemaPlaylists || (currentLanguage === 'it' ? 'Playlist' : 'Playlists')}</span>
+                        </button>
+                    </nav>
+                `;
+                document.body.insertAdjacentHTML('beforeend', cinemaNavHTML);
+            };
+
             const renderView = () => {
                 const initialLoader = document.getElementById('initial-loader');
                 if (initialLoader) {
@@ -10130,8 +10316,8 @@ ${knowledgeBaseFormatter(tools)}
                 }
 
                 // GESTIONE VISIBILITÀ BARRA DI NAVIGAZIONE E PADDING
-                // Nascondi la bottom nav se siamo nel cinema
-                if (currentView === 'cinema') {
+                // Nascondi la bottom nav se siamo nel cinema o nel dettaglio video
+                if (currentView === 'cinema' || currentView === 'video-detail') {
                     el.bottomNav.style.display = 'none';
                     el.mainContent.style.paddingBottom = '0';
                 } else {
@@ -10177,6 +10363,24 @@ ${knowledgeBaseFormatter(tools)}
                                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                                 </svg>
                             </button>
+                            ${globalControls.otherControls.replace(/<button id="video-catalog-btn"[^>]*>[\s\S]*?<\/button>/g, '')}
+                        </div>
+                    </div>`;
+                        el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
+                    } else if (currentView === 'video-detail') {
+                        // Top bar per dettaglio video con pulsante indietro
+                        const topBarHTML = `<div class="user-chat-header">
+                        <button class="chat-header-btn" data-action="back-to-cinema" title="${t.back || 'Indietro'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            </svg>
+                        </button>
+                        <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
+                        <div class="user-chat-info" style="flex-grow: 1;">
+                            <span style="font-weight: 500;">${t.videoDetail || 'Dettaglio Video'}</span>
+                        </div>
+                        <div id="global-controls">
                             ${globalControls.otherControls.replace(/<button id="video-catalog-btn"[^>]*>[\s\S]*?<\/button>/g, '')}
                         </div>
                     </div>`;
@@ -10308,31 +10512,12 @@ ${filtersHTML}
                     renderCinemaPage(contentArea, t);
                     el.mainContent.appendChild(contentArea);
 
-                    // Aggiungi la bottom nav del Cinema direttamente al body
-                    const cinemaNavHTML = `
-                        <nav class="cinema-bottom-nav">
-                            <button class="cinema-nav-btn active" data-action="set-cinema-tab" data-tab="videos">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M0 0h24v24H0V0z" fill="none"/>
-                                    <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-                                </svg>
-                                <span>${t.navCinemaVideos || (currentLanguage === 'it' ? 'Video' : 'Videos')}</span>
-                            </button>
-                            <button class="cinema-nav-btn" data-action="set-cinema-tab" data-tab="favorites">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                </svg>
-                                <span>${t.navCinemaFavorites || (currentLanguage === 'it' ? 'Preferiti' : 'Favorites')}</span>
-                            </button>
-                            <button class="cinema-nav-btn" data-action="set-cinema-tab" data-tab="playlists">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
-                                </svg>
-                                <span>${t.navCinemaPlaylists || (currentLanguage === 'it' ? 'Playlist' : 'Playlists')}</span>
-                            </button>
-                        </nav>
-                    `;
-                    document.body.insertAdjacentHTML('beforeend', cinemaNavHTML);
+                    // MODIFICATO: Crea o aggiorna la bottom nav del Cinema
+                    createOrUpdateCinemaNav();
+                } else if (currentView === 'video-detail') {
+                    // NUOVA PAGINA DETTAGLIO VIDEO
+                    renderVideoDetailPage(contentArea, t);
+                    el.mainContent.appendChild(contentArea);
 
                 } else if (currentView === 'explore') {
                     el.mainContent.insertAdjacentHTML('beforeend', `<div class="search-bar-container"><input type="text" id="search-input" placeholder="${t.searchPlaceholder}"></div>`);
@@ -12578,9 +12763,9 @@ ${filtersHTML}
             const openEditPlaylistModal = (playlistId) => {
                 const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
                 const playlist = playlists.find(p => p.id === playlistId);
-                
+
                 if (!playlist) return;
-                
+
                 const modalHTML = `
                     <div class="playlist-modal visible">
                         <div class="playlist-modal-content">
@@ -12595,7 +12780,7 @@ ${filtersHTML}
                         </div>
                     </div>
                 `;
-                
+
                 document.body.insertAdjacentHTML('beforeend', modalHTML);
                 setTimeout(() => {
                     const input = document.getElementById('edit-playlist-name');
@@ -12764,6 +12949,15 @@ ${filtersHTML}
 
                 const contentArea = document.getElementById('cinema-content-area');
 
+                // Se non siamo nella pagina cinema, naviga prima alla pagina cinema
+                if (!contentArea) {
+                    currentView = 'cinema';
+                    renderView();
+                    // Richiama la funzione dopo che la pagina è stata renderizzata
+                    setTimeout(() => handleCinemaTabChange(tab, false), 100);
+                    return;
+                }
+
                 if (tab === 'videos' || tab === 'home') {
                     // Mostra tutti i video
                     const allVideosHTML = youtubeVideosData.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
@@ -12857,12 +13051,18 @@ ${filtersHTML}
                 } else if (tab === 'playlists') {
                     // Genera le playlist in base alla modalità di visualizzazione
                     const generateCinemaPlaylistCard = (playlist, mode) => {
-                        const coverImage = playlist.coverImage || 'https://via.placeholder.com/300x200?text=Playlist';
-                        
+                        const coverHTML = playlist.coverImage
+                            ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover;">`
+                            : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div>`;
+
                         if (mode === 'grid') {
                             return `
                                 <div class="video-card" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer;">
-                                    <img src="${coverImage}" class="video-thumbnail" alt="${playlist.name}">
+                                    <div class="video-thumbnail" style="overflow: hidden;">${coverHTML}</div>
                                     <div class="video-info">
                                         <h4>${playlist.name}</h4>
                                         <p style="color: var(--Koda-text-secondary); font-size: 14px; margin: 4px 0 0 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
@@ -12935,8 +13135,8 @@ ${filtersHTML}
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
                             ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`}
                         </div>
-                        <button class="create-playlist-btn" data-action="create-playlist" style="position: fixed; bottom: 80px; left: 16px; right: 16px; margin: 0; z-index: 10;">
-                            ${currentLanguage === 'it' ? '+ Crea nuova playlist' : '+ Create new playlist'}
+                        <button class="create-playlist-btn" data-action="create-playlist" style="position: fixed; bottom: 90px; left: 16px; right: 16px; margin: 0; z-index: 10; max-width: calc(100% - 32px);">
+                            ${currentLanguage === 'it' ? 'Crea nuova playlist' : 'Create new playlist'}
                         </button>
                     `;
                 }
@@ -13194,12 +13394,18 @@ ${filtersHTML}
 
                 // Sezione Playlist - supporta sia lista che griglia
                 const generatePlaylistCard = (playlist, mode) => {
-                    const coverImage = playlist.coverImage || 'https://via.placeholder.com/300x200?text=Playlist';
-                    
+                    const coverHTML = playlist.coverImage
+                        ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover;">`
+                        : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>`;
+
                     if (mode === 'grid') {
                         return `
                             <div class="video-card" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer;">
-                                <img src="${coverImage}" class="video-thumbnail" alt="${playlist.name}">
+                                <div class="video-thumbnail" style="overflow: hidden;">${coverHTML}</div>
                                 <div class="video-info">
                                     <h4>${playlist.name}</h4>
                                     <p style="color: var(--Koda-text-secondary); font-size: 14px; margin: 4px 0 0 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
@@ -13441,8 +13647,8 @@ ${filtersHTML}
                                 <div class="selection-checkbox ${selectedPlaylistVideos.has(videoId) ? 'selected' : ''}" 
                                      data-action="toggle-playlist-video-selection" 
                                      data-video-id="${videoId}"
-                                     style="position: absolute; top: 8px; left: 8px; z-index: 10; width: 24px; height: 24px; border: 2px solid white; border-radius: 4px; background: ${selectedPlaylistVideos.has(videoId) ? 'var(--Koda-primary)' : 'rgba(0,0,0,0.5)'}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                                    ${selectedPlaylistVideos.has(videoId) ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' : ''}
+                                     style="position: absolute; top: 8px; left: 8px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                                 </div>
                             ` : ''}
                             <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
@@ -13454,7 +13660,13 @@ ${filtersHTML}
                     `;
                 }).join('');
 
-                const coverImage = playlist.coverImage || 'https://via.placeholder.com/300x200?text=Playlist';
+                const coverHTML = playlist.coverImage
+                    ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
+                    : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>`;
 
                 const pageHTML = `
                     <div class="playlist-detail-page" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; overflow-y: auto;">
@@ -13474,18 +13686,26 @@ ${filtersHTML}
                             </div>
 
                             ${playlistSelectionMode ? `
-                                <div style="background: var(--Koda-card-bg); padding: 16px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px;">
-                                    <span id="playlist-selection-count" style="flex: 1;">${selectedPlaylistVideos.size} ${currentLanguage === 'it' ? 'selezionati' : 'selected'}</span>
-                                    <button class="button" data-action="remove-selected-from-playlist" ${selectedPlaylistVideos.size === 0 ? 'disabled' : ''} style="background-color: #ff6b6b;">
-                                        ${currentLanguage === 'it' ? 'Rimuovi selezionati' : 'Remove selected'}
-                                    </button>
+                                <div class="selection-bar" style="position: relative; top: 0; margin-bottom: 24px;">
+                                    <div class="selection-bar-content">
+                                        <span id="playlist-selection-count">${selectedPlaylistVideos.size} ${currentLanguage === 'it' ? 'selezionati' : 'selected'}</span>
+                                        <div class="selection-bar-actions">
+                                            <button class="selection-bar-btn" data-action="remove-selected-from-playlist" ${selectedPlaylistVideos.size === 0 ? 'disabled' : ''}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                                ${currentLanguage === 'it' ? 'Rimuovi' : 'Remove'}
+                                            </button>
+                                            <button class="selection-bar-btn" data-action="cancel-playlist-selection">
+                                                ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             ` : ''}
 
                             <div style="background: var(--Koda-card-bg); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
                                 <div style="display: flex; gap: 24px; align-items: start;">
                                     <div style="position: relative; flex-shrink: 0;">
-                                        <img src="${coverImage}" alt="Cover" style="width: 200px; height: 133px; object-fit: cover; border-radius: 8px;">
+                                        <div style="width: 200px; height: 133px;">${coverHTML}</div>
                                         <button class="pill-btn" data-action="change-playlist-cover" data-playlist-id="${playlistId}" style="position: absolute; bottom: 8px; right: 8px; padding: 8px;">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                                         </button>
@@ -13544,8 +13764,6 @@ ${filtersHTML}
                 const checkboxes = document.querySelectorAll(`[data-action="toggle-playlist-video-selection"][data-video-id="${videoId}"]`);
                 checkboxes.forEach(cb => {
                     cb.classList.toggle('selected', selectedPlaylistVideos.has(videoId));
-                    cb.style.background = selectedPlaylistVideos.has(videoId) ? 'var(--Koda-primary)' : 'rgba(0,0,0,0.5)';
-                    cb.innerHTML = selectedPlaylistVideos.has(videoId) ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>' : '';
                 });
             };
 
@@ -13589,7 +13807,7 @@ ${filtersHTML}
                     const reader = new FileReader();
                     reader.onload = async (event) => {
                         const imageData = event.target.result;
-                        
+
                         // Mostra modale di conferma con preview
                         const modalHTML = `
                             <div class="playlist-modal visible">
@@ -13612,7 +13830,7 @@ ${filtersHTML}
                                 </div>
                             </div>
                         `;
-                        
+
                         document.body.insertAdjacentHTML('beforeend', modalHTML);
                     };
                     reader.readAsDataURL(file);
@@ -13656,7 +13874,7 @@ ${filtersHTML}
                             confirmText: currentLanguage === 'it' ? 'Aggiungi' : 'Add',
                             cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
                         });
-                        
+
                         if (confirmed) {
                             playlist.videos.push(videoId);
                             localStorage.setItem('video-playlists', JSON.stringify(playlists));
@@ -13714,14 +13932,14 @@ ${filtersHTML}
                 if (!e.target.closest('.video-options-btn') && !e.target.closest('.video-options-menu')) {
                     document.querySelectorAll('.video-options-menu').forEach(m => m.classList.remove('visible'));
                 }
-                
+
                 // Gestione click su checkbox playlist
                 if (e.target.classList.contains('select-checkbox')) {
                     const playlistItem = e.target.closest('.playlist-item');
                     if (playlistItem && playlistItem.classList.contains('multi-select-mode')) {
                         e.stopPropagation();
                         playlistItem.classList.toggle('selected');
-                        
+
                         // Mostra/nascondi pulsante elimina
                         const selectedCount = document.querySelectorAll('.playlist-item.selected').length;
                         const deleteBtn = document.getElementById('playlist-delete-selected-btn');
@@ -13730,9 +13948,9 @@ ${filtersHTML}
                         }
                     }
                 }
-                
+
                 // Previeni apertura playlist quando si è in modalità selezione o si clicca sui pulsanti
-                if (e.target.closest('.playlist-item')?.classList.contains('multi-select-mode') && 
+                if (e.target.closest('.playlist-item')?.classList.contains('multi-select-mode') &&
                     !e.target.classList.contains('select-checkbox') &&
                     !e.target.closest('[data-action="edit-playlist"]') &&
                     !e.target.closest('[data-action="delete-single-playlist"]')) {
@@ -13740,7 +13958,7 @@ ${filtersHTML}
                     if (playlistItem) {
                         e.stopPropagation();
                         playlistItem.classList.toggle('selected');
-                        
+
                         const selectedCount = document.querySelectorAll('.playlist-item.selected').length;
                         const deleteBtn = document.getElementById('playlist-delete-selected-btn');
                         if (deleteBtn) {
@@ -13748,9 +13966,9 @@ ${filtersHTML}
                         }
                     }
                 }
-                
+
                 // Previeni apertura playlist quando si clicca sui pulsanti modifica/elimina
-                if (e.target.closest('[data-action="edit-playlist"]') || 
+                if (e.target.closest('[data-action="edit-playlist"]') ||
                     e.target.closest('[data-action="delete-single-playlist"]')) {
                     e.stopPropagation();
                 }
@@ -13819,12 +14037,12 @@ ${filtersHTML}
                 el.appContainer.style.display = 'flex';
                 el.authOverlay.style.display = 'none';
                 el.authOverlay.innerHTML = ''; // Ensure auth overlay is empty
-                
+
                 // NUOVO: Inizializza lo stato della cronologia del browser
                 if (!window.history.state) {
                     history.replaceState({ page: currentView }, '', `#${currentView}`);
                 }
-                
+
                 renderView();
             };
 
@@ -13876,12 +14094,12 @@ ${filtersHTML}
                     el.authOverlay.innerHTML = ''; // Clear content after transition
                 }, { once: true });
                 el.appContainer.style.display = 'flex';
-                
+
                 // NUOVO: Inizializza lo stato della cronologia del browser
                 if (!window.history.state) {
                     history.replaceState({ page: currentView }, '', `#${currentView}`);
                 }
-                
+
                 renderView(); // Render the app view
             };
 
@@ -14163,13 +14381,15 @@ ${filtersHTML}
                     return;
                 }
 
-                // Gestisci il ripristino di un modale di dettaglio video
-                if (event.state && event.state.modal === 'video-detail' && event.state.videoId) {
-                    window.openVideoDetailModal(event.state.videoId, false);
+                // Gestisci il ripristino della pagina video-detail
+                if (event.state && event.state.page === 'video-detail' && event.state.videoId) {
+                    window.currentVideoId = event.state.videoId;
+                    currentView = 'video-detail';
+                    renderView();
                     return;
                 }
 
-                // Gestisci il ripristino del catalogo video
+                // Gestisci il ripristino del catalogo video (vecchio modale - deprecato)
                 if (event.state && event.state.modal === 'video-catalog') {
                     openVideoCatalogModal(false);
                     return;
@@ -14179,7 +14399,7 @@ ${filtersHTML}
                     // Se esiste uno stato da un pushState precedente, aggiorna la vista
                     currentView = event.state.page;
                     renderView();
-                    
+
                     // Se lo stato include un tab del cinema, ripristinalo (senza aggiungere alla cronologia)
                     if (event.state.cinemaTab) {
                         setTimeout(() => {
@@ -14357,6 +14577,31 @@ ${filtersHTML}
                             renderView();
                             el.mainContent.scrollTop = 0;
                             break;
+                        // NUOVO: Torna al cinema dalla pagina video-detail
+                        case 'back-to-cinema':
+                            currentView = 'cinema';
+                            history.pushState({ page: 'cinema' }, '', '#cinema');
+                            renderView();
+                            el.mainContent.scrollTop = 0;
+                            break;
+                        // NUOVO: Toggle preferito dalla pagina video-detail
+                        case 'toggle-video-favorite':
+                            const videoIdToToggle = actionTarget.dataset.videoId;
+                            if (videoIdToToggle) {
+                                const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+                                const index = videoFavorites.indexOf(videoIdToToggle);
+                                if (index > -1) {
+                                    videoFavorites.splice(index, 1);
+                                    showToast(currentLanguage === 'it' ? 'Rimosso dai preferiti' : 'Removed from favorites');
+                                } else {
+                                    videoFavorites.push(videoIdToToggle);
+                                    showToast(currentLanguage === 'it' ? 'Aggiunto ai preferiti' : 'Added to favorites');
+                                }
+                                localStorage.setItem('video-favorites', JSON.stringify(videoFavorites));
+                                // Aggiorna la vista
+                                renderView();
+                            }
+                            break;
                         // NUOVO: Apri policy Cinema (YouTube)
                         case 'open-cinema-policy':
                             event.preventDefault();
@@ -14371,7 +14616,7 @@ ${filtersHTML}
                             const playlistContainer = document.getElementById('playlist-list-container');
                             const playlistItems = playlistContainer.querySelectorAll('.playlist-item');
                             const isMultiSelectActive = playlistContainer.classList.contains('multi-select-mode');
-                            
+
                             if (isMultiSelectActive) {
                                 // Disattiva selezione multipla
                                 playlistContainer.classList.remove('multi-select-mode');
@@ -14406,13 +14651,13 @@ ${filtersHTML}
                                 confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
                                 cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
                             });
-                            
+
                             if (confirmDelete) {
                                 let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
                                 playlists = playlists.filter(p => p.id !== delPlaylistId);
                                 localStorage.setItem('video-playlists', JSON.stringify(playlists));
                                 showToast(currentLanguage === 'it' ? 'Playlist eliminata' : 'Playlist deleted');
-                                
+
                                 // Se siamo nella pagina dettaglio, torna al catalogo
                                 if (activePlaylistId === delPlaylistId) {
                                     document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
@@ -14420,7 +14665,7 @@ ${filtersHTML}
                                     if (videoCatalog) videoCatalog.style.display = 'block';
                                     activePlaylistId = null;
                                 }
-                                
+
                                 // Aggiorna la vista
                                 if (currentView === 'cinema') {
                                     handleCinemaTabChange('playlists');
@@ -14449,7 +14694,7 @@ ${filtersHTML}
                             const deletePlaylistId = actionTarget.dataset.playlistId;
                             let deletePlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
                             const deletePlaylist = deletePlaylists.find(p => p.id === deletePlaylistId);
-                            
+
                             if (deletePlaylist) {
                                 const confirmed = await showConfirmModal({
                                     title: currentLanguage === 'it' ? 'Elimina playlist?' : 'Delete playlist?',
@@ -14458,7 +14703,7 @@ ${filtersHTML}
                                     confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
                                     cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
                                 });
-                                
+
                                 if (confirmed) {
                                     deletePlaylists = deletePlaylists.filter(p => p.id !== deletePlaylistId);
                                     localStorage.setItem('video-playlists', JSON.stringify(deletePlaylists));
@@ -14474,7 +14719,7 @@ ${filtersHTML}
                                 showToast(currentLanguage === 'it' ? 'Nessuna playlist selezionata' : 'No playlists selected');
                                 return;
                             }
-                            
+
                             const confirmed = await showConfirmModal({
                                 title: currentLanguage === 'it' ? 'Elimina playlist?' : 'Delete playlists?',
                                 message: currentLanguage === 'it' ? `Sei sicuro di voler eliminare ${selectedPlaylists.length} playlist?` : `Are you sure you want to delete ${selectedPlaylists.length} playlists?`,
@@ -14482,7 +14727,7 @@ ${filtersHTML}
                                 confirmText: currentLanguage === 'it' ? 'Elimina' : 'Delete',
                                 cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
                             });
-                            
+
                             if (confirmed) {
                                 let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
                                 selectedPlaylists.forEach(item => {
@@ -14518,7 +14763,7 @@ ${filtersHTML}
                         case 'toggle-favorite':
                             event.stopPropagation();
                             const videoId = actionTarget.dataset.videoId;
-                            
+
                             // Se è un video (ha videoId), gestisci come video
                             if (videoId) {
                                 let favorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
@@ -14618,6 +14863,12 @@ ${filtersHTML}
                         // NUOVO: Rimuovi video selezionati dalla playlist
                         case 'remove-selected-from-playlist':
                             removeSelectedFromPlaylist();
+                            break;
+                        // NUOVO: Annulla selezione playlist
+                        case 'cancel-playlist-selection':
+                            playlistSelectionMode = false;
+                            selectedPlaylistVideos.clear();
+                            renderPlaylistDetailPage(activePlaylistId);
                             break;
                         // NUOVO: Cambia copertina playlist
                         case 'change-playlist-cover':
@@ -14833,6 +15084,24 @@ ${filtersHTML}
                             // la usiamo per aggiornare lo stato interno di React senza ricaricare.
                             if (currentView === 'user-chats' && typeof window.updateUserChatLanguage === 'function') {
                                 window.updateUserChatLanguage(currentLanguage);
+                            } else if (currentView === 'cinema') {
+                                // NUOVO: Se siamo nel cinema, aggiorna la nav e il contenuto mantenendo il tab attivo
+                                const activeTab = document.querySelector('.cinema-nav-btn.active');
+                                const currentTab = activeTab ? activeTab.dataset.tab : 'videos';
+
+                                // Aggiorna la bottom nav con le nuove traduzioni
+                                createOrUpdateCinemaNav();
+
+                                // Aggiorna il contenuto
+                                renderView();
+
+                                // Ripristina il tab attivo dopo il render
+                                setTimeout(() => {
+                                    handleCinemaTabChange(currentTab, false);
+                                }, 100);
+                            } else if (currentView === 'video-detail') {
+                                // NUOVO: Se siamo nella pagina video-detail, aggiorna il contenuto
+                                renderView();
                             } else {
                                 // Altrimenti, per tutte le altre pagine, eseguiamo un re-render completo
                                 renderView();
