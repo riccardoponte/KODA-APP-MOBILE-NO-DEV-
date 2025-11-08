@@ -699,11 +699,31 @@
         }
 
         .tool-card-list .favorite-icon {
-            font-size: 22px;
-            color: var(--Koda-accent);
             margin-left: auto;
             padding: 10px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .tool-card-list .favorite-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .tool-card-list .favorite-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: var(--Koda-text-secondary);
+            stroke-width: 2;
+            transition: all 0.2s;
+        }
+
+        .tool-card-list .favorite-icon.favorited svg {
+            fill: var(--Koda-accent);
+            stroke: var(--Koda-accent);
         }
 
         /* NUOVO: Stili per la selezione multipla */
@@ -8800,7 +8820,11 @@ ${knowledgeBaseFormatter(tools)}
                     favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
                 }
                 else {
-                    favoriteIconHTML = `<div class="favorite-icon" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? '♥' : '♡'}</div>`;
+                    favoriteIconHTML = `<div class="favorite-icon ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-id="${tool.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>`;
                 }
 
                 let editIconHTML = '';
@@ -8829,7 +8853,12 @@ ${knowledgeBaseFormatter(tools)}
             };
             const createCountryCard = (country) => `<div class="category-card stagger-item" style="background-color: #333;" data-action="set-explore-filter" data-filter-type="country" data-filter-value="${country.name}"><h3 style="font-size: 24px;">${country.flag} ${country.name}</h3></div>`;
 
-            window.openDetailModal = async (toolId) => {
+            window.openDetailModal = async (toolId, addToHistory = true) => {
+                // NUOVO: Aggiungi alla cronologia del browser
+                if (addToHistory) {
+                    history.pushState({ modal: 'detail', toolId: toolId, page: currentView }, '', '');
+                }
+                
                 // Mostra un caricamento immediato per una migliore UX
                 el.modalContainer.innerHTML = `
                 <div id="detail-modal" class="modal-overlay visible">
@@ -8940,6 +8969,68 @@ ${knowledgeBaseFormatter(tools)}
             const closeModal = () => {
                 el.modalContainer.innerHTML = '';
                 closeUserProfileDropdown();
+                
+                // NUOVO: Se c'è uno stato modale nella cronologia, torna indietro
+                if (window.history.state && window.history.state.modal) {
+                    window.history.back();
+                }
+            };
+
+            // NUOVO: Funzione per aprire il modale di dettaglio video
+            window.openVideoDetailModal = (videoId, addToHistory = true) => {
+                console.log('openVideoDetailModal called with:', videoId);
+                console.log('youtubeVideosData:', youtubeVideosData);
+                const video = youtubeVideosData.find(v => v.id === videoId);
+                if (!video) {
+                    console.error('Video not found:', videoId);
+                    return;
+                }
+                console.log('Video found:', video);
+
+                // NUOVO: Aggiungi alla cronologia del browser
+                if (addToHistory) {
+                    history.pushState({ modal: 'video-detail', videoId: videoId }, '', '');
+                }
+
+                const t = translations[currentLanguage];
+                const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+                const isFavorited = videoFavorites.includes(videoId);
+
+                let videoIdFromUrl = '';
+                try {
+                    const url = new URL(video.youtubeUrl);
+                    videoIdFromUrl = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                } catch (e) { }
+
+                const thumbnailUrl = videoIdFromUrl ? `https://img.youtube.com/vi/${videoIdFromUrl}/maxresdefault.jpg` : '';
+                const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+                const description = video.description[currentLanguage] || video.description['en'] || '';
+
+                const modalHTML = `
+                <div id="detail-modal" class="modal-overlay">
+                    <div class="modal-content">
+                        <button class="modal-close-btn" data-action="close-modal">×</button>
+                        <div class="detail-container">
+                            <div class="detail-image-container">
+                                <img src="${thumbnailUrl}" alt="${video.title}" class="detail-image" loading="lazy">
+                            </div>
+                            <div class="detail-info">
+                                <h2 class="detail-title">${video.title}</h2>
+                                ${videoDate ? `<div class="video-date" style="color: var(--Koda-text-secondary); margin-bottom: 12px;">${videoDate}</div>` : ''}
+                                ${description ? `<p class="detail-description">${description}</p>` : ''}
+                                <div class="detail-actions">
+                                    <button class="button" data-action="toggle-favorite" data-video-id="${videoId}">${isFavorited ? (currentLanguage === 'it' ? 'Rimuovi dai preferiti' : 'Remove from favorites') : (currentLanguage === 'it' ? 'Aggiungi ai preferiti' : 'Add to favorites')}</button>
+                                    <button class="button" data-action="add-to-playlist" data-video-id="${videoId}" style="background: white; color: #000;">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</button>
+                                    <a href="${video.youtubeUrl}" target="_blank" class="button" style="text-decoration: none; display: flex; justify-content: center; align-items: center; background: var(--Koda-accent); color: #000; font-weight: 600;">
+                                        ${currentLanguage === 'it' ? 'Guarda ora' : 'Watch now'}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+                el.modalContainer.innerHTML = modalHTML;
             };
 
             // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda
@@ -9064,6 +9155,18 @@ ${knowledgeBaseFormatter(tools)}
                     // Aggiorna l'oggetto currentUser locale per riflettere il cambiamento nella UI
                     currentUser.favorites = guestFavorites;
                 }
+
+                // Aggiorna immediatamente tutte le icone favorite per questo tool
+                const isFavorited = currentUser.favorites.includes(toolId);
+                document.querySelectorAll(`[data-action="toggle-favorite"][data-id="${toolId}"]`).forEach(icon => {
+                    if (icon.classList.contains('favorite-icon')) {
+                        if (isFavorited) {
+                            icon.classList.add('favorited');
+                        } else {
+                            icon.classList.remove('favorited');
+                        }
+                    }
+                });
 
                 // Re-render della vista per aggiornare le icone dei preferiti
                 renderView();
@@ -10068,7 +10171,14 @@ ${knowledgeBaseFormatter(tools)}
                         <div class="user-chat-info" style="flex-grow: 1;">
                             <a href="#" class="cinema-policy-link" id="cinema-link" data-action="open-cinema-policy" style="color: var(--Koda-accent); text-decoration: underline; font-weight: 500;">${pageTitle}</a>
                         </div>
-                        <div id="global-controls">${globalControls.otherControls.replace(/<button id="video-catalog-btn"[^>]*>[\s\S]*?<\/button>/g, '')}</div>
+                        <div id="global-controls">
+                            <button class="global-btn" id="cinema-home-btn" data-action="exit-cinema" title="${t.backToApp || 'Torna all\'app'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#1db954">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                            </button>
+                            ${globalControls.otherControls.replace(/<button id="video-catalog-btn"[^>]*>[\s\S]*?<\/button>/g, '')}
+                        </div>
                     </div>`;
                         el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
                     } else {
@@ -12574,7 +12684,7 @@ ${filtersHTML}
             };
 
             // FUNZIONE: Gestisce il cambio tab nella pagina Cinema
-            const handleCinemaTabChange = (tab) => {
+            const handleCinemaTabChange = (tab, addToHistory = true) => {
                 const t = translations[currentLanguage];
                 const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
                 const videoPlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
@@ -12582,6 +12692,12 @@ ${filtersHTML}
 
                 // Aggiorna anche la variabile globale
                 window.currentVideoViewMode = videoViewMode;
+
+                // NUOVO: Aggiungi alla cronologia del browser
+                if (addToHistory) {
+                    const state = { page: 'cinema', cinemaTab: tab };
+                    history.pushState(state, '', `#cinema-${tab}`);
+                }
 
                 // Aggiorna i pulsanti attivi nella bottom nav
                 document.querySelectorAll('.cinema-nav-btn').forEach(btn => {
@@ -12606,7 +12722,7 @@ ${filtersHTML}
 
                     if (viewMode === 'list') {
                         return `
-                            <div class="video-card-list" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -12616,7 +12732,7 @@ ${filtersHTML}
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 </button>
-                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
                                     <h4>${video.title}</h4>
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
@@ -12626,7 +12742,7 @@ ${filtersHTML}
                         `;
                     } else {
                         return `
-                            <div class="video-card-grid" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -12636,7 +12752,7 @@ ${filtersHTML}
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 </button>
-                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
                                     <h4>${video.title}</h4>
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
@@ -12668,7 +12784,7 @@ ${filtersHTML}
                         </div>
                     `;
 
-                    // Riattiva la ricerca
+                    // Riattiva la ricerca e aggiungi event listeners per le card
                     setTimeout(() => {
                         const searchInput = document.getElementById('video-search-input');
                         if (searchInput) {
@@ -12681,6 +12797,22 @@ ${filtersHTML}
                                 });
                             });
                         }
+
+                        // Aggiungi click listener per aprire il modale video
+                        const videoCards = document.querySelectorAll('.video-card-grid, .video-card-list');
+                        videoCards.forEach(card => {
+                            card.addEventListener('click', (e) => {
+                                // Ignora click su pulsanti interni
+                                if (e.target.closest('.video-favorite-btn') || e.target.closest('.video-options-btn')) {
+                                    return;
+                                }
+                                const videoId = card.dataset.videoId;
+                                if (videoId) {
+                                    console.log('Card clicked, opening video:', videoId);
+                                    window.openVideoDetailModal(videoId);
+                                }
+                            });
+                        });
                     }, 100);
 
                 } else if (tab === 'favorites') {
@@ -12688,7 +12820,7 @@ ${filtersHTML}
                     const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
                     const favoritesHTML = favoriteVideos.length > 0
                         ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
-                        : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video preferito.' : 'No favorite videos.'}</div>`;
+                        : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
 
                     contentArea.innerHTML = `
                         <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
@@ -12703,6 +12835,24 @@ ${filtersHTML}
                             ${favoritesHTML}
                         </div>
                     `;
+
+                    // Aggiungi click listener per aprire il modale video
+                    setTimeout(() => {
+                        const videoCards = document.querySelectorAll('.video-card-grid, .video-card-list');
+                        videoCards.forEach(card => {
+                            card.addEventListener('click', (e) => {
+                                // Ignora click su pulsanti interni
+                                if (e.target.closest('.video-favorite-btn') || e.target.closest('.video-options-btn')) {
+                                    return;
+                                }
+                                const videoId = card.dataset.videoId;
+                                if (videoId) {
+                                    console.log('Card clicked, opening video:', videoId);
+                                    window.openVideoDetailModal(videoId);
+                                }
+                            });
+                        });
+                    }, 100);
 
                 } else if (tab === 'playlists') {
                     // Genera le playlist in base alla modalità di visualizzazione
@@ -12783,7 +12933,7 @@ ${filtersHTML}
                             </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
-                            ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna playlist creata.' : 'No playlists created.'}</div>`}
+                            ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`}
                         </div>
                         <button class="create-playlist-btn" data-action="create-playlist" style="position: fixed; bottom: 80px; left: 16px; right: 16px; margin: 0; z-index: 10;">
                             ${currentLanguage === 'it' ? '+ Crea nuova playlist' : '+ Create new playlist'}
@@ -12840,7 +12990,7 @@ ${filtersHTML}
 
                     if (viewMode === 'list') {
                         return `
-                            <div class="video-card-list" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -12850,7 +13000,7 @@ ${filtersHTML}
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 </button>
-                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
                                     <h4>${video.title}</h4>
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
@@ -12860,7 +13010,7 @@ ${filtersHTML}
                         `;
                     } else {
                         return `
-                            <div class="video-card-grid" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -12870,7 +13020,7 @@ ${filtersHTML}
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 </button>
-                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
                                     <h4>${video.title}</h4>
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
@@ -12887,7 +13037,7 @@ ${filtersHTML}
                 const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
                 const favoritesHTML = favoriteVideos.length > 0
                     ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
-                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video preferito.' : 'No favorite videos.'}</div>`;
+                    : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
 
                 // Sezione Playlist (come le collezioni)
                 const playlistsHTML = videoPlaylists.length > 0
@@ -12897,7 +13047,7 @@ ${filtersHTML}
                             <p>${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
                         </div>
                     `).join('')
-                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna playlist creata.' : 'No playlists created.'}</div>`;
+                    : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
 
                 // Contenuto iniziale (sezione Video) - senza tab in alto
                 let contentHTML = '';
@@ -12922,7 +13072,7 @@ ${filtersHTML}
 
                 contentArea.innerHTML = contentHTML;
 
-                // Gestione ricerca video in tempo reale
+                // Gestione ricerca video in tempo reale e click sulle card
                 setTimeout(() => {
                     const searchInput = document.getElementById('video-search-input');
                     if (searchInput) {
@@ -12935,6 +13085,22 @@ ${filtersHTML}
                             });
                         });
                     }
+
+                    // Aggiungi click listener per aprire il modale video
+                    const videoCards = document.querySelectorAll('.video-card-grid, .video-card-list');
+                    videoCards.forEach(card => {
+                        card.addEventListener('click', (e) => {
+                            // Ignora click su pulsanti interni
+                            if (e.target.closest('.video-favorite-btn') || e.target.closest('.video-options-btn')) {
+                                return;
+                            }
+                            const videoId = card.dataset.videoId;
+                            if (videoId) {
+                                console.log('Card clicked, opening video:', videoId);
+                                window.openVideoDetailModal(videoId);
+                            }
+                        });
+                    });
                 }, 100);
 
                 // Salva lo stato della modalità vista
@@ -12942,8 +13108,13 @@ ${filtersHTML}
             };
 
             // MODIFICA 1-4: Funzione completamente rinnovata per il catalogo video con nav dedicata
-            const openVideoCatalogModal = () => {
+            const openVideoCatalogModal = (addToHistory = true) => {
                 const t = translations[currentLanguage];
+
+                // NUOVO: Aggiungi alla cronologia del browser
+                if (addToHistory) {
+                    history.pushState({ modal: 'video-catalog' }, '', '');
+                }
 
                 // Carica i dati da localStorage
                 const favorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
@@ -12972,7 +13143,7 @@ ${filtersHTML}
 
                     if (viewMode === 'list') {
                         return `
-                            <div class="video-card-list" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -12982,7 +13153,7 @@ ${filtersHTML}
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 </button>
-                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
                                     <h4>${video.title}</h4>
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
@@ -12992,7 +13163,7 @@ ${filtersHTML}
                         `;
                     } else {
                         return `
-                            <div class="video-card-grid" data-id="${video.id}" data-url="${video.youtubeUrl}" data-title="${video.title}">
+                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -13002,7 +13173,7 @@ ${filtersHTML}
                                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                                     </svg>
                                 </button>
-                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
                                     <h4>${video.title}</h4>
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
@@ -13019,7 +13190,7 @@ ${filtersHTML}
                 const favoriteVideos = youtubeVideosData.filter(v => favorites.includes(v.id));
                 const favoritesHTML = favoriteVideos.length > 0
                     ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
-                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video preferito.' : 'No favorite videos.'}</div>`;
+                    : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
 
                 // Sezione Playlist - supporta sia lista che griglia
                 const generatePlaylistCard = (playlist, mode) => {
@@ -13060,7 +13231,7 @@ ${filtersHTML}
 
                 const playlistsHTML = playlists.length > 0
                     ? playlists.map(p => generatePlaylistCard(p, videoViewMode)).join('')
-                    : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna playlist creata.' : 'No playlists created.'}</div>`;
+                    : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
 
                 const modalHTML = `
                 <div id="video-catalog-modal" class="modal-overlay visible">
@@ -13321,7 +13492,7 @@ ${filtersHTML}
                                     </div>
                                     <div style="flex: 1;">
                                         <p style="color: var(--Koda-text-secondary); margin: 0 0 8px 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
-                                        <p style="color: var(--Koda-text-secondary); margin: 0;">${currentLanguage === 'it' ? 'Creata il' : 'Created on'} ${new Date(playlist.createdAt).toLocaleDateString()}</p>
+                                        <p style="color: var(--Koda-text-secondary); margin: 0;">${currentLanguage === 'it' ? '' : ''} ${new Date(playlist.createdAt).toLocaleDateString()}</p>
                                     </div>
                                 </div>
                             </div>
@@ -13648,6 +13819,12 @@ ${filtersHTML}
                 el.appContainer.style.display = 'flex';
                 el.authOverlay.style.display = 'none';
                 el.authOverlay.innerHTML = ''; // Ensure auth overlay is empty
+                
+                // NUOVO: Inizializza lo stato della cronologia del browser
+                if (!window.history.state) {
+                    history.replaceState({ page: currentView }, '', `#${currentView}`);
+                }
+                
                 renderView();
             };
 
@@ -13699,6 +13876,12 @@ ${filtersHTML}
                     el.authOverlay.innerHTML = ''; // Clear content after transition
                 }, { once: true });
                 el.appContainer.style.display = 'flex';
+                
+                // NUOVO: Inizializza lo stato della cronologia del browser
+                if (!window.history.state) {
+                    history.replaceState({ page: currentView }, '', `#${currentView}`);
+                }
+                
                 renderView(); // Render the app view
             };
 
@@ -13951,6 +14134,7 @@ ${filtersHTML}
                     showToast(`Errore: ${error.message}`);
                 }
             };
+            // NUOVO: Sistema completo di gestione della cronologia del browser
             window.addEventListener('popstate', (event) => {
                 // Gestisci il pulsante indietro per i modali
                 const modalOverlay = document.querySelector('.modal-overlay.visible');
@@ -13967,12 +14151,43 @@ ${filtersHTML}
                     return;
                 }
 
+                // Gestisci il ritorno dalla modalità cinema
+                const cinemaNav = document.querySelector('.cinema-bottom-nav');
+                if (cinemaNav && (!event.state || event.state.page !== 'cinema')) {
+                    cinemaNav.remove();
+                }
+
+                // Gestisci il ripristino di un modale di dettaglio AI
+                if (event.state && event.state.modal === 'detail' && event.state.toolId) {
+                    window.openDetailModal(event.state.toolId, false);
+                    return;
+                }
+
+                // Gestisci il ripristino di un modale di dettaglio video
+                if (event.state && event.state.modal === 'video-detail' && event.state.videoId) {
+                    window.openVideoDetailModal(event.state.videoId, false);
+                    return;
+                }
+
+                // Gestisci il ripristino del catalogo video
+                if (event.state && event.state.modal === 'video-catalog') {
+                    openVideoCatalogModal(false);
+                    return;
+                }
+
                 if (event.state && event.state.page) {
-                    // If a state exists from a previous pushState, update the view
+                    // Se esiste uno stato da un pushState precedente, aggiorna la vista
                     currentView = event.state.page;
                     renderView();
+                    
+                    // Se lo stato include un tab del cinema, ripristinalo (senza aggiungere alla cronologia)
+                    if (event.state.cinemaTab) {
+                        setTimeout(() => {
+                            handleCinemaTabChange(event.state.cinemaTab, false);
+                        }, 100);
+                    }
                 } else {
-                    // If no state is found (e.g., initial page load), default to home
+                    // Se non viene trovato alcuno stato (es. caricamento iniziale), vai alla home
                     currentView = 'home';
                     renderView();
                 }
@@ -14279,6 +14494,14 @@ ${filtersHTML}
                                 handleCinemaTabChange('playlists');
                             }
                             break;
+                        case 'open-video-detail':
+                            event.stopPropagation();
+                            const detailVideoId = actionTarget.dataset.videoId;
+                            console.log('Opening video detail for:', detailVideoId);
+                            if (detailVideoId) {
+                                window.openVideoDetailModal(detailVideoId);
+                            }
+                            break;
                         case 'watch-youtube-video':
                             const url = actionTarget.dataset.url;
                             if (url) window.open(url, '_blank');
@@ -14295,39 +14518,54 @@ ${filtersHTML}
                         case 'toggle-favorite':
                             event.stopPropagation();
                             const videoId = actionTarget.dataset.videoId;
-                            let favorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
+                            
+                            // Se è un video (ha videoId), gestisci come video
+                            if (videoId) {
+                                let favorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
 
-                            if (favorites.includes(videoId)) {
-                                // MODIFICA 4: Mostra modale di conferma per rimozione
-                                const confirmed = await showConfirmModal({
-                                    title: currentLanguage === 'it' ? 'Rimuovi dai preferiti?' : 'Remove from favorites?',
-                                    message: currentLanguage === 'it' ? 'Sei sicuro di voler rimuovere questo video dai preferiti?' : 'Are you sure you want to remove this video from favorites?',
-                                    icon: '❤️',
-                                    confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
-                                    cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
-                                });
+                                if (favorites.includes(videoId)) {
+                                    // MODIFICA 4: Mostra modale di conferma per rimozione
+                                    const confirmed = await showConfirmModal({
+                                        title: currentLanguage === 'it' ? 'Rimuovi dai preferiti?' : 'Remove from favorites?',
+                                        message: currentLanguage === 'it' ? 'Sei sicuro di voler rimuovere questo video dai preferiti?' : 'Are you sure you want to remove this video from favorites?',
+                                        icon: '❤️',
+                                        confirmText: currentLanguage === 'it' ? 'Rimuovi' : 'Remove',
+                                        cancelText: currentLanguage === 'it' ? 'Annulla' : 'Cancel'
+                                    });
 
-                                if (confirmed) {
-                                    favorites = favorites.filter(id => id !== videoId);
-                                    actionTarget.classList.remove('favorited');
-                                    showToast(currentLanguage === 'it' ? 'Rimosso dai preferiti' : 'Removed from favorites');
-                                    localStorage.setItem('video-favorites', JSON.stringify(favorites));
+                                    if (confirmed) {
+                                        favorites = favorites.filter(id => id !== videoId);
+                                        actionTarget.classList.remove('favorited');
+                                        showToast(currentLanguage === 'it' ? 'Rimosso dai preferiti' : 'Removed from favorites');
+                                        localStorage.setItem('video-favorites', JSON.stringify(favorites));
 
-                                    // Aggiorna la sezione preferiti se visibile
-                                    if (document.getElementById('video-section-favorites')?.classList.contains('active')) {
-                                        openVideoCatalogModal();
-                                        document.getElementById('video-section-favorites').classList.add('active');
-                                        document.getElementById('video-section-home').classList.remove('active');
-                                        document.querySelectorAll('.video-catalog-nav-btn')[1].classList.add('active');
-                                        document.querySelectorAll('.video-catalog-nav-btn')[0].classList.remove('active');
+                                        // Aggiorna la vista Cinema se siamo nella pagina Cinema
+                                        if (currentView === 'cinema') {
+                                            const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
+                                            if (activeNavBtn) {
+                                                const currentTab = activeNavBtn.dataset.tab;
+                                                handleCinemaTabChange(currentTab);
+                                            }
+                                        }
+                                        // Aggiorna la sezione preferiti se visibile (vecchio modale)
+                                        else if (document.getElementById('video-section-favorites')?.classList.contains('active')) {
+                                            openVideoCatalogModal();
+                                            document.getElementById('video-section-favorites').classList.add('active');
+                                            document.getElementById('video-section-home').classList.remove('active');
+                                            document.querySelectorAll('.video-catalog-nav-btn')[1].classList.add('active');
+                                            document.querySelectorAll('.video-catalog-nav-btn')[0].classList.remove('active');
+                                        }
                                     }
+                                } else {
+                                    // Aggiungi senza conferma
+                                    favorites.push(videoId);
+                                    actionTarget.classList.add('favorited');
+                                    showToast(currentLanguage === 'it' ? 'Aggiunto ai preferiti' : 'Added to favorites');
+                                    localStorage.setItem('video-favorites', JSON.stringify(favorites));
                                 }
                             } else {
-                                // Aggiungi senza conferma
-                                favorites.push(videoId);
-                                actionTarget.classList.add('favorited');
-                                showToast(currentLanguage === 'it' ? 'Aggiunto ai preferiti' : 'Added to favorites');
-                                localStorage.setItem('video-favorites', JSON.stringify(favorites));
+                                // Se è un'AI (ha id invece di videoId), gestisci come AI
+                                toggleFavorite(actionTarget.dataset.id);
                             }
                             break;
                         // MODIFICA 4: Mostra menu opzioni video
@@ -14703,7 +14941,6 @@ ${filtersHTML}
                             break;
                         // Modals (Detail, Settings, Add App, Replace Featured)
                         case 'close-modal': closeModal(); break;
-                        case 'toggle-favorite': toggleFavorite(actionTarget.dataset.id); break;
                         // NUOVO: Gestione recensioni
                         case 'add-review': openReviewModal(actionTarget.dataset.toolId); break;
                         case 'close-review-modal': closeReviewModal(); break;
