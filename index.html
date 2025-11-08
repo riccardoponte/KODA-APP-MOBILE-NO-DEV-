@@ -829,6 +829,40 @@
             color: #ff6b6b;
         }
 
+        /* NUOVO: Stili per i badge delle categorie video */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        .category-badge.tutorial {
+            background-color: rgba(138, 43, 226, 0.15);
+            color: #8a2be2;
+        }
+
+        .category-badge.education {
+            background-color: rgba(30, 144, 255, 0.15);
+            color: #1e90ff;
+        }
+
+        .category-badge.development {
+            background-color: rgba(255, 140, 0, 0.15);
+            color: #ff8c00;
+        }
+
+        .category-badge.news {
+            background-color: rgba(220, 20, 60, 0.15);
+            color: #dc143c;
+        }
+
         .reviews-section {
             margin-top: 24px;
             padding-top: 24px;
@@ -7975,6 +8009,7 @@ ${knowledgeBaseFormatter(tools)}
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
                     pricingFree: "Gratuito", pricingFreemium: "Freemium", pricingPaid: "A Pagamento",
+                    categoryTutorial: "Tutorial", categoryEducation: "Educazione", categoryDevelopment: "Sviluppo", categoryNews: "Notizie",
                     libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "",
                     noResultsFor: "Nessun risultato per",
                     // Rankings
@@ -8210,6 +8245,7 @@ ${knowledgeBaseFormatter(tools)}
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
                     backToSearch: "‹ Back to search", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
                     pricingFree: "Free", pricingFreemium: "Freemium", pricingPaid: "Paid",
+                    categoryTutorial: "Tutorial", categoryEducation: "Education", categoryDevelopment: "Development", categoryNews: "News",
                     libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "",
                     noResultsFor: "No results for",
                     // Rankings
@@ -8843,6 +8879,25 @@ ${knowledgeBaseFormatter(tools)}
                 return `<span class="pricing-badge ${pricing}">${icons[pricing]} ${labels[pricing]}</span>`;
             };
 
+            // Helper function to generate category badge HTML for videos
+            const getCategoryBadgeHTML = (category) => {
+                if (!category) return '';
+                const t = translations[currentLanguage];
+                const icons = {
+                    tutorial: '📚',
+                    education: '🎓',
+                    development: '💻',
+                    news: '📰'
+                };
+                const labels = {
+                    tutorial: t.categoryTutorial,
+                    education: t.categoryEducation,
+                    development: t.categoryDevelopment,
+                    news: t.categoryNews
+                };
+                return `<span class="category-badge ${category}">${icons[category]} ${labels[category]}</span>`;
+            };
+
             // Modified createGridCard to optionally show an edit icon and specify its action
             const createGridCard = (tool, context, options = {}) => {
                 let editIconHTML = '';
@@ -9150,7 +9205,7 @@ ${knowledgeBaseFormatter(tools)}
                             
                             <div class="video-detail-info" style="padding: 24px;">
                                 <h1 style="font-size: 24px; margin-bottom: 12px;">${video.title}</h1>
-                                ${videoDate ? `<div style="color: var(--Koda-text-secondary); margin-bottom: 16px; font-size: 14px;">${videoDate}</div>` : ''}
+                                ${videoDate || video.category ? `<div style="color: var(--Koda-text-secondary); margin-bottom: 16px; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">${videoDate ? `<span>${videoDate}</span>` : ''}${video.category ? getCategoryBadgeHTML(video.category) : ''}</div>` : ''}
                                 
                                 <div class="video-actions" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
                                     <button class="button video-action-btn" data-action="toggle-video-favorite" data-video-id="${videoId}" style="background: ${isFavorited ? 'var(--Koda-accent)' : 'var(--Koda-card)'}; color: ${isFavorited ? '#000' : 'var(--Koda-text)'}; border: 1px solid ${isFavorited ? 'var(--Koda-accent)' : 'rgba(128, 128, 128, 0.2)'}; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
@@ -12919,7 +12974,7 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title}</h4>
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
@@ -12939,7 +12994,7 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title}</h4>
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
                             </div>
@@ -13202,7 +13257,7 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title}</h4>
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
@@ -13222,7 +13277,7 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title}</h4>
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
                             </div>
@@ -13355,7 +13410,7 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title}</h4>
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
@@ -13375,7 +13430,7 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title}</h4>
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
                             </div>
@@ -13653,7 +13708,7 @@ ${filtersHTML}
                             ` : ''}
                             <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                             <div class="video-info">
-                                <h4>${video.title}</h4>
+                                <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
                                 <button class="button" data-action="watch-youtube-video" data-url="${video.youtubeUrl}">${currentLanguage === 'it' ? 'Guarda' : 'Watch'}</button>
                             </div>
                         </div>
