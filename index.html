@@ -10077,6 +10077,8 @@ ${knowledgeBaseFormatter(tools)}
                     el.sideMenuOverlay.classList.add('visible');
                     el.sideMenu.classList.remove('hidden'); /* Ensure it's not hidden by mistake */
                     el.sideMenu.classList.add('visible');
+                    // Aggiungi alla cronologia del browser
+                    history.pushState({ sideMenu: true, page: currentView }, '', '');
                 } else {
                     el.sideMenuOverlay.classList.remove('visible');
                     el.sideMenu.classList.remove('visible');
@@ -10105,6 +10107,9 @@ ${knowledgeBaseFormatter(tools)}
                 if (dropdown) {
                     // Close any other open dropdowns first
                     closeUserProfileDropdown();
+
+                    // Aggiungi alla cronologia del browser
+                    history.pushState({ dropdown: 'user-profile', page: currentView }, '', '');
 
                     // Update user info in dropdown
                     const nameElement = dropdown.querySelector('.user-profile-name');
@@ -10761,11 +10766,11 @@ ${filtersHTML}
                     // Load AI filter state
                     const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
                     const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
-                    const aiFilterMode = localStorage.getItem('ai-filter-mode') || 'all';
-                    const categoryCountText = aiFilterMode === 'categories' && aiSelectedCategories.length > 0 
+                    const hasActiveFilters = aiSelectedCategories.length > 0 || aiSelectedPricing.length > 0;
+                    const categoryCountText = aiSelectedCategories.length > 0 
                         ? ` (${aiSelectedCategories.length})` 
                         : '';
-                    const pricingCountText = aiFilterMode === 'pricing' && aiSelectedPricing.length > 0 
+                    const pricingCountText = aiSelectedPricing.length > 0 
                         ? ` (${aiSelectedPricing.length})` 
                         : '';
 
@@ -10774,14 +10779,14 @@ ${filtersHTML}
                             <input type="text" id="search-input" placeholder="${t.searchPlaceholder}">
                         </div>
                         <div style="display: flex; gap: 8px; align-items: center; padding: 0 16px 16px 16px; overflow-x: auto;">
-                            <button class="filter-btn ${aiFilterMode === 'all' ? 'active' : ''}" data-action="set-ai-filter-mode" data-mode="all">
+                            <button class="filter-btn ${!hasActiveFilters ? 'active' : ''}" data-action="clear-ai-filters">
                                 ${currentLanguage === 'it' ? 'Tutti' : 'All'}
                             </button>
-                            <button class="filter-btn ${aiFilterMode === 'categories' ? 'active' : ''}" data-action="open-ai-category-modal">
+                            <button class="filter-btn ${aiSelectedCategories.length > 0 ? 'active' : ''}" data-action="open-ai-category-modal">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
                                 ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
                             </button>
-                            <button class="filter-btn ${aiFilterMode === 'pricing' ? 'active' : ''}" data-action="open-ai-pricing-modal">
+                            <button class="filter-btn ${aiSelectedPricing.length > 0 ? 'active' : ''}" data-action="open-ai-pricing-modal">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
                                 ${currentLanguage === 'it' ? 'Prezzo' : 'Price'}${pricingCountText}
                             </button>
@@ -10815,12 +10820,12 @@ ${filtersHTML}
                         let allTools = getAllToolsForCurrentUser();
                         
                         // Apply category filter
-                        if (aiFilterMode === 'categories' && aiSelectedCategories.length > 0) {
+                        if (aiSelectedCategories.length > 0) {
                             allTools = allTools.filter(tool => aiSelectedCategories.includes(tool.category));
                         }
                         
                         // Apply pricing filter
-                        if (aiFilterMode === 'pricing' && aiSelectedPricing.length > 0) {
+                        if (aiSelectedPricing.length > 0) {
                             allTools = allTools.filter(tool => aiSelectedPricing.includes(tool.pricing));
                         }
                         
@@ -11424,6 +11429,9 @@ ${filtersHTML}
             const openAddAppModal = () => {
                 const t = translations[currentLanguage];
 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'add-app', page: currentView }, '', '');
+
                 // Get available categories for the dropdown
                 const categoryOptions = categories.map(cat =>
                     `<option value="${cat.id}">${cat.name[currentLanguage]}</option>`
@@ -11533,6 +11541,9 @@ ${filtersHTML}
                 if (!currentUser.uid) return;
                 const t = translations[currentLanguage];
 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'change-nickname', page: currentView }, '', '');
+
                 const modalHTML = `
                 <div id="change-nickname-modal" class="modal-overlay visible">
                     <div class="modal-content">
@@ -11556,6 +11567,9 @@ ${filtersHTML}
             const openChangePasswordModal = () => {
                 if (!currentUser.uid) return;
                 const t = translations[currentLanguage];
+
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'change-password', page: currentView }, '', '');
 
                 const modalHTML = `
                 <div id="change-password-modal" class="modal-overlay visible">
@@ -11704,6 +11718,9 @@ ${filtersHTML}
                 if (!currentUser.uid) return;
                 const t = translations[currentLanguage];
 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'sent-reviews', page: currentView }, '', '');
+
                 const modalHTML = `
                 <div id="sent-reviews-modal" class="sent-reviews-modal visible">
                     <div class="sent-reviews-modal-content">
@@ -11802,6 +11819,9 @@ ${filtersHTML}
             const openAllUserReviewsModal = async (toolId) => {
                 const t = translations[currentLanguage];
 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'all-user-reviews', page: currentView }, '', '');
+
                 const modalHTML = `
                 <div id="all-user-reviews-modal" class="sent-reviews-modal visible">
                     <div class="sent-reviews-modal-content">
@@ -11884,6 +11904,9 @@ ${filtersHTML}
             // NEW FUNCTION: Open Edit Review Modal
             const openEditReviewModal = async (toolId, reviewId) => {
                 if (!currentUser.uid) return;
+
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'edit-review', page: currentView }, '', '');
 
                 try {
                     const reviewDoc = await getDoc(doc(db, 'tools', toolId, 'reviews', reviewId));
@@ -12016,6 +12039,9 @@ ${filtersHTML}
                 const t = translations[currentLanguage];
                 const userTools = currentUser.userTools || [];
 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'replace-featured', page: currentView }, '', '');
+
                 const toolListHTML = userTools.length > 0 ? userTools.map(tool => `
                  <div class="tool-list-item" data-action="select-user-tool-for-featured" data-static-id="${staticToolId}" data-user-id="${tool.id}">
                      <img src="${tool.logoUrl}" alt="${tool.name}" loading="lazy">
@@ -12139,6 +12165,9 @@ ${filtersHTML}
                     showToast("App not found.");
                     return;
                 }
+
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'edit-app', page: currentView }, '', '');
 
                 const modalHTML = `
                  <div id="edit-app-modal" class="modal-overlay visible">
@@ -13899,6 +13928,9 @@ ${filtersHTML}
                 const t = translations[currentLanguage];
                 const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
                 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'ai-category-filter', page: currentView }, '', '');
+                
                 const aiCategories = [
                     { id: 'Testo', label: currentLanguage === 'it' ? 'Testo' : 'Text', icon: '📝' },
                     { id: 'Immagini', label: currentLanguage === 'it' ? 'Immagini' : 'Images', icon: '🖼️' },
@@ -13971,13 +14003,6 @@ ${filtersHTML}
                 // Save to localStorage
                 localStorage.setItem('ai-selected-categories', JSON.stringify(aiSelectedCategories));
                 
-                // Set filter mode to categories if any are selected, otherwise to all
-                if (aiSelectedCategories.length > 0) {
-                    localStorage.setItem('ai-filter-mode', 'categories');
-                } else {
-                    localStorage.setItem('ai-filter-mode', 'all');
-                }
-                
                 // Close modal
                 closeAICategoryModal();
                 
@@ -13991,6 +14016,9 @@ ${filtersHTML}
             const openAIPricingModal = () => {
                 const t = translations[currentLanguage];
                 const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
+                
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'ai-pricing-filter', page: currentView }, '', '');
                 
                 const pricingOptions = [
                     { id: 'free', label: t.pricingFree || (currentLanguage === 'it' ? 'Gratuito' : 'Free'), icon: '💚' },
@@ -14058,13 +14086,6 @@ ${filtersHTML}
                 // Save to localStorage
                 localStorage.setItem('ai-selected-pricing', JSON.stringify(aiSelectedPricing));
                 
-                // Set filter mode to pricing if any are selected, otherwise to all
-                if (aiSelectedPricing.length > 0) {
-                    localStorage.setItem('ai-filter-mode', 'pricing');
-                } else {
-                    localStorage.setItem('ai-filter-mode', 'all');
-                }
-                
                 // Close modal
                 closeAIPricingModal();
                 
@@ -14078,6 +14099,9 @@ ${filtersHTML}
             const openCategoryModal = () => {
                 const t = translations[currentLanguage];
                 const selectedCategories = JSON.parse(localStorage.getItem('video-selected-categories') || '[]');
+                
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'category-filter', page: currentView }, '', '');
                 
                 const categories = [
                     { id: 'tutorial', label: t.categoryTutorial || 'Tutorial', icon: '📚' },
@@ -14169,6 +14193,9 @@ ${filtersHTML}
                 const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
                 const video = youtubeVideosData.find(v => v.id === videoId);
 
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'add-to-playlist', page: currentView }, '', '');
+
                 const playlistsHTML = playlists.map(playlist => `
                     <div class="playlist-modal-item" data-action="add-video-to-playlist" data-playlist-id="${playlist.id}" data-video-id="${videoId}">
                         ${playlist.name} (${playlist.videos.length} video)
@@ -14196,6 +14223,9 @@ ${filtersHTML}
             };
 
             const openCreatePlaylistModal = (videoIdToAdd = null) => {
+                // Aggiungi alla cronologia del browser
+                history.pushState({ modal: 'create-playlist', page: currentView }, '', '');
+
                 const modalHTML = `
                     <div class="playlist-modal visible">
                         <div class="playlist-modal-content">
@@ -14968,34 +14998,75 @@ ${filtersHTML}
             };
             // NUOVO: Sistema completo di gestione della cronologia del browser
             window.addEventListener('popstate', (event) => {
-                // Gestisci il pulsante indietro per i modali
+                // 1. Gestisci il side menu
+                const sideMenu = document.getElementById('side-menu');
+                const sideMenuOverlay = document.getElementById('side-menu-overlay');
+                if (sideMenu && sideMenu.classList.contains('visible')) {
+                    toggleSideMenu(false);
+                    return;
+                }
+
+                // 2. Gestisci i modali custom (review-modal, confirm-modal, sent-reviews-modal, etc.)
+                const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible');
+                if (customModals.length > 0) {
+                    customModals.forEach(modal => {
+                        modal.classList.remove('visible');
+                        setTimeout(() => modal.remove(), 300);
+                    });
+                    return;
+                }
+
+                // 3. Gestisci i modali standard (modal-overlay)
                 const modalOverlay = document.querySelector('.modal-overlay.visible');
                 if (modalOverlay) {
-                    // Se c'è un modale aperto, chiudilo
                     const fullscreenModal = document.getElementById('prompt-fullscreen-modal');
                     if (fullscreenModal) {
-                        // Torna alla galleria
                         openPromptGalleryModal();
                         return;
                     }
-                    // Per altri modali, chiudili semplicemente
                     el.modalContainer.innerHTML = '';
                     return;
                 }
 
-                // Gestisci il ritorno dalla modalità cinema
+                // 4. Gestisci il dropdown del profilo utente
+                const userProfileDropdown = document.querySelector('.user-profile-dropdown.visible');
+                if (userProfileDropdown) {
+                    closeUserProfileDropdown();
+                    return;
+                }
+
+                // 5. Gestisci il ritorno dalla modalità cinema
                 const cinemaNav = document.querySelector('.cinema-bottom-nav');
                 if (cinemaNav && (!event.state || event.state.page !== 'cinema')) {
                     cinemaNav.remove();
                 }
 
-                // Gestisci il ripristino di un modale di dettaglio AI
+                // 6. Gestisci il ripristino dei filtri
+                if (event.state && event.state.exploreFilter) {
+                    exploreFilter = event.state.exploreFilter;
+                    renderView();
+                    return;
+                }
+
+                if (event.state && event.state.rankingFilter) {
+                    rankingFilter = event.state.rankingFilter;
+                    renderView();
+                    return;
+                }
+
+                if (event.state && event.state.activeFilter) {
+                    activeFilter = event.state.activeFilter;
+                    renderView();
+                    return;
+                }
+
+                // 7. Gestisci il ripristino di un modale di dettaglio AI
                 if (event.state && event.state.modal === 'detail' && event.state.toolId) {
                     window.openDetailModal(event.state.toolId, false);
                     return;
                 }
 
-                // Gestisci il ripristino della pagina video-detail
+                // 8. Gestisci il ripristino della pagina video-detail
                 if (event.state && event.state.page === 'video-detail' && event.state.videoId) {
                     window.currentVideoId = event.state.videoId;
                     currentView = 'video-detail';
@@ -15003,15 +15074,27 @@ ${filtersHTML}
                     return;
                 }
 
-                // Gestisci il ripristino del catalogo video (vecchio modale - deprecato)
+                // 9. Gestisci il ripristino del catalogo video (vecchio modale - deprecato)
                 if (event.state && event.state.modal === 'video-catalog') {
                     openVideoCatalogModal(false);
                     return;
                 }
 
+                // 10. Gestisci il cambio di pagina
                 if (event.state && event.state.page) {
-                    // Se esiste uno stato da un pushState precedente, aggiorna la vista
                     currentView = event.state.page;
+                    
+                    // Ripristina i filtri se presenti nello stato
+                    if (event.state.exploreFilter !== undefined) {
+                        exploreFilter = event.state.exploreFilter;
+                    }
+                    if (event.state.rankingFilter !== undefined) {
+                        rankingFilter = event.state.rankingFilter;
+                    }
+                    if (event.state.activeFilter !== undefined) {
+                        activeFilter = event.state.activeFilter;
+                    }
+                    
                     renderView();
 
                     // Se lo stato include un tab del cinema, ripristinalo (senza aggiungere alla cronologia)
@@ -15023,6 +15106,9 @@ ${filtersHTML}
                 } else {
                     // Se non viene trovato alcuno stato (es. caricamento iniziale), vai alla home
                     currentView = 'home';
+                    exploreFilter = { type: null, value: null };
+                    rankingFilter = 'All';
+                    activeFilter = 'All';
                     renderView();
                 }
             });
@@ -15539,16 +15625,14 @@ ${filtersHTML}
                         case 'open-category-modal':
                             openCategoryModal();
                             break;
-                        // NUOVO: Gestisce il filtro "Tutti" per AI
-                        case 'set-ai-filter-mode':
-                            const aiFilterMode = actionTarget.dataset.mode;
-                            if (aiFilterMode) {
-                                localStorage.setItem('ai-filter-mode', aiFilterMode);
-                                // Ricarica la vista explore
-                                currentView = 'explore';
-                                exploreFilter = {};
-                                renderView();
-                            }
+                        // NUOVO: Pulisce tutti i filtri AI
+                        case 'clear-ai-filters':
+                            localStorage.setItem('ai-selected-categories', '[]');
+                            localStorage.setItem('ai-selected-pricing', '[]');
+                            // Ricarica la vista explore
+                            currentView = 'explore';
+                            exploreFilter = {};
+                            renderView();
                             break;
                         // NUOVO: Apre il modale di selezione categorie AI
                         case 'open-ai-category-modal':
@@ -15852,6 +15936,11 @@ ${filtersHTML}
                             exploreFilter.value = actionTarget.dataset.filterValue;
                             exploreMultiSelectMode = false;
                             exploreSelectedTools = [];
+                            // Aggiungi alla cronologia del browser
+                            history.pushState({ 
+                                page: currentView, 
+                                exploreFilter: { ...exploreFilter } 
+                            }, '', `#explore-${exploreFilter.type}-${exploreFilter.value}`);
                             renderView();
                             break;
                         case 'toggle-multi-select':
@@ -15872,10 +15961,20 @@ ${filtersHTML}
                             break;
                         case 'set-ranking-filter':
                             rankingFilter = actionTarget.dataset.filter;
+                            // Aggiungi alla cronologia del browser
+                            history.pushState({ 
+                                page: currentView, 
+                                rankingFilter: rankingFilter 
+                            }, '', `#ranking-${rankingFilter}`);
                             renderView(); // Re-render to apply ranking filter
                             break;
                         case 'set-favorite-filter':
                             activeFilter = actionTarget.dataset.filter;
+                            // Aggiungi alla cronologia del browser
+                            history.pushState({ 
+                                page: currentView, 
+                                activeFilter: activeFilter 
+                            }, '', `#library-${activeFilter}`);
                             renderView(); // Re-render to apply favorite filter
                             break;
 
