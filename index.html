@@ -6277,11 +6277,11 @@
         .playlist-item {
             background-color: var(--Koda-bg-light);
             border-radius: 12px;
-            padding: 16px;
+            padding: 12px;
             cursor: pointer;
             transition: background-color 0.2s;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
         }
 
@@ -6290,14 +6290,20 @@
         }
 
         .playlist-item h4 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .playlist-item p {
             font-size: 13px;
             color: var(--Koda-text-secondary);
+        }
+        
+        @media (max-width: 600px) {
+            .playlist-item h4 {
+                font-size: 14px;
+            }
         }
 
         /* Modal per creare/selezionare playlist */
@@ -6913,22 +6919,21 @@
 
         /* Card collezione */
         .collection-card {
-            background: var(--Koda-card);
-            border-radius: 8px;
+            background: var(--Koda-bg-light);
+            border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: transform 0.2s;
             position: relative;
         }
 
         .collection-card:hover {
-            background: var(--Koda-bg-light);
-            transform: scale(1.02);
+            transform: translateY(-4px);
         }
 
         .collection-cover {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 16 / 9;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
@@ -10252,13 +10257,13 @@ ${knowledgeBaseFormatter(tools)}
                     const isInCollection = isToolInCollection(collection.id, toolId);
                     const count = collection.toolIds.length;
                     const countText = count === 1 ? t.toolCount.replace('%d', count) : t.toolsCount.replace('%d', count);
+                    const logoUrl = currentTheme === 'light'
+                        ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                        : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                    
                     const coverHTML = collection.coverImage
                         ? `<img src="${collection.coverImage}" alt="${collection.name}">`
-                        : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </div>`;
+                        : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
 
                     return `
                         <div class="collection-list-item ${isInCollection ? 'selected' : ''}" data-action="toggle-tool-in-collection" data-collection-id="${collection.id}" data-tool-id="${toolId}">
@@ -10311,6 +10316,194 @@ ${knowledgeBaseFormatter(tools)}
                     modal.classList.remove('visible');
                     setTimeout(() => modal.remove(), 300);
                 }
+            };
+
+            // NUOVO: Modal per aggiungere multipli AI tools a una collezione
+            const openAddMultipleToolsModal = (collectionId) => {
+                const t = translations[currentLanguage];
+                const collection = collections.find(c => c.id === collectionId);
+                if (!collection) return;
+
+                const allTools = getAllToolsForCurrentUser();
+                const availableTools = allTools.filter(tool => !collection.toolIds.includes(tool.id));
+
+                // Get unique categories from available tools
+                const categories = [...new Set(availableTools.map(tool => tool.category))].filter(Boolean);
+                const categoryFiltersHTML = `
+                    <div class="filter-pills" style="margin-bottom: 16px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;">
+                        <button class="pill-btn active" data-action="filter-tools-by-category" data-category="all">
+                            ${currentLanguage === 'it' ? 'Tutti' : 'All'}
+                        </button>
+                        ${categories.map(cat => `
+                            <button class="pill-btn" data-action="filter-tools-by-category" data-category="${cat}">
+                                ${cat}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                const toolsListHTML = availableTools.map(tool => `
+                    <div class="collection-list-item tool-item-selectable" data-action="toggle-tool-selection-for-add" data-tool-id="${tool.id}" data-category="${tool.category || ''}" style="cursor: pointer;">
+                        <div class="collection-list-item-cover">
+                            <img src="${tool.logoUrl}" alt="${tool.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="collection-list-item-info">
+                            <div class="collection-list-item-name">${tool.name}</div>
+                            ${tool.category ? `<div class="collection-list-item-count" style="font-size: 11px;">${tool.category}</div>` : ''}
+                        </div>
+                        <div class="collection-list-item-check">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                        </div>
+                    </div>
+                `).join('');
+
+                const modalHTML = `
+                    <div class="add-to-collection-modal visible" id="add-multiple-tools-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; display: flex; flex-direction: column;">
+                        <div class="add-to-collection-content" style="max-width: 100%; width: 100%; height: 100%; border-radius: 0; display: flex; flex-direction: column;">
+                            <div class="add-to-collection-header" style="flex-shrink: 0;">
+                                <h3 class="add-to-collection-title">${currentLanguage === 'it' ? 'Aggiungi AI a' : 'Add AI to'} "${collection.name}"</h3>
+                                <button class="add-to-collection-close" data-action="close-add-multiple-tools-modal">×</button>
+                            </div>
+                            ${availableTools.length > 0 ? `
+                                <div style="padding: 0 16px; flex-shrink: 0;">
+                                    <input type="text" id="search-tools-input" placeholder="${currentLanguage === 'it' ? 'Cerca AI...' : 'Search AI...'}" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); background: var(--Koda-card); color: var(--Koda-text); font-size: 14px; margin-bottom: 16px;">
+                                    ${categoryFiltersHTML}
+                                </div>
+                            ` : ''}
+                            <div class="collections-list" id="tools-list-container" style="flex: 1; overflow-y: auto; padding: 0 16px;">
+                                ${availableTools.length > 0 ? toolsListHTML : `<p style="text-align: center; color: var(--Koda-text-secondary); padding: 20px;">${currentLanguage === 'it' ? 'Tutti gli AI sono già nella collezione' : 'All AI tools are already in the collection'}</p>`}
+                            </div>
+                            ${availableTools.length > 0 ? `
+                                <div style="display: flex; gap: 12px; padding: 16px; border-top: 1px solid rgba(128, 128, 128, 0.2); flex-shrink: 0;">
+                                    <button class="create-new-collection-btn" data-action="close-add-multiple-tools-modal" style="flex: 1; background: var(--Koda-card); color: var(--Koda-text);">
+                                        ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                    </button>
+                                    <button class="create-new-collection-btn" data-action="confirm-add-multiple-tools" data-collection-id="${collectionId}" style="flex: 1;">
+                                        ${currentLanguage === 'it' ? '✓ Aggiungi Selezionati' : '✓ Add Selected'}
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // Add search functionality
+                if (availableTools.length > 0) {
+                    const searchInput = document.getElementById('search-tools-input');
+                    searchInput?.addEventListener('input', (e) => {
+                        const query = e.target.value.toLowerCase();
+                        const toolItems = document.querySelectorAll('.tool-item-selectable');
+                        toolItems.forEach(item => {
+                            const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
+                            const matchesSearch = name.includes(query);
+                            const activeCategory = document.querySelector('#add-multiple-tools-modal .pill-btn.active')?.dataset.category;
+                            const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
+                            item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                        });
+                    });
+                }
+
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
+            };
+
+            // NUOVO: Modal per aggiungere multipli video a una playlist
+            const openAddMultipleVideosModal = (playlistId) => {
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === playlistId);
+                if (!playlist) return;
+
+                const availableVideos = youtubeVideosData.filter(video => !playlist.videos.includes(video.id));
+
+                // Get unique categories from available videos
+                const videoCategories = [...new Set(availableVideos.map(video => video.category))].filter(Boolean);
+                const categoryFiltersHTML = `
+                    <div class="filter-pills" style="margin-bottom: 16px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;">
+                        <button class="pill-btn active" data-action="filter-videos-by-category" data-category="all">
+                            ${currentLanguage === 'it' ? 'Tutti' : 'All'}
+                        </button>
+                        ${videoCategories.map(cat => `
+                            <button class="pill-btn" data-action="filter-videos-by-category" data-category="${cat}">
+                                ${cat}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                const videosListHTML = availableVideos.map(video => {
+                    let videoIdYT = '';
+                    try {
+                        const url = new URL(video.youtubeUrl);
+                        videoIdYT = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                    } catch (e) { }
+                    const thumbnailUrl = videoIdYT ? `https://img.youtube.com/vi/${videoIdYT}/mqdefault.jpg` : '';
+
+                    return `
+                        <div class="collection-list-item video-item-selectable" data-action="toggle-video-selection-for-add" data-video-id="${video.id}" data-category="${video.category || ''}" style="cursor: pointer;">
+                            <div class="collection-list-item-cover">
+                                <img src="${thumbnailUrl}" alt="${video.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div class="collection-list-item-info">
+                                <div class="collection-list-item-name">${video.title}</div>
+                                ${video.category ? `<div class="collection-list-item-count" style="font-size: 11px;">${video.category}</div>` : ''}
+                            </div>
+                            <div class="collection-list-item-check">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const modalHTML = `
+                    <div class="add-to-collection-modal visible" id="add-multiple-videos-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; display: flex; flex-direction: column;">
+                        <div class="add-to-collection-content" style="max-width: 100%; width: 100%; height: 100%; border-radius: 0; display: flex; flex-direction: column;">
+                            <div class="add-to-collection-header" style="flex-shrink: 0;">
+                                <h3 class="add-to-collection-title">${currentLanguage === 'it' ? 'Aggiungi Video a' : 'Add Videos to'} "${playlist.name}"</h3>
+                                <button class="add-to-collection-close" data-action="close-add-multiple-videos-modal">×</button>
+                            </div>
+                            ${availableVideos.length > 0 ? `
+                                <div style="padding: 0 16px; flex-shrink: 0;">
+                                    <input type="text" id="search-videos-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(128, 128, 128, 0.2); background: var(--Koda-card); color: var(--Koda-text); font-size: 14px; margin-bottom: 16px;">
+                                    ${categoryFiltersHTML}
+                                </div>
+                            ` : ''}
+                            <div class="collections-list" id="videos-list-container" style="flex: 1; overflow-y: auto; padding: 0 16px;">
+                                ${availableVideos.length > 0 ? videosListHTML : `<p style="text-align: center; color: var(--Koda-text-secondary); padding: 20px;">${currentLanguage === 'it' ? 'Tutti i video sono già nella playlist' : 'All videos are already in the playlist'}</p>`}
+                            </div>
+                            ${availableVideos.length > 0 ? `
+                                <div style="display: flex; gap: 12px; padding: 16px; border-top: 1px solid rgba(128, 128, 128, 0.2); flex-shrink: 0;">
+                                    <button class="create-new-collection-btn" data-action="close-add-multiple-videos-modal" style="flex: 1; background: var(--Koda-card); color: var(--Koda-text);">
+                                        ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                    </button>
+                                    <button class="create-new-collection-btn" data-action="confirm-add-multiple-videos" data-playlist-id="${playlistId}" style="flex: 1;">
+                                        ${currentLanguage === 'it' ? '✓ Aggiungi Selezionati' : '✓ Add Selected'}
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // Add search functionality
+                if (availableVideos.length > 0) {
+                    const searchInput = document.getElementById('search-videos-input');
+                    searchInput?.addEventListener('input', (e) => {
+                        const query = e.target.value.toLowerCase();
+                        const videoItems = document.querySelectorAll('.video-item-selectable');
+                        videoItems.forEach(item => {
+                            const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
+                            const matchesSearch = name.includes(query);
+                            const activeCategory = document.querySelector('#add-multiple-videos-modal .pill-btn.active')?.dataset.category;
+                            const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
+                            item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                        });
+                    });
+                }
+
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
             };
 
             const toggleToolInCollection = async (collectionId, toolId) => {
@@ -10479,6 +10672,7 @@ ${knowledgeBaseFormatter(tools)}
             const openCollectionDetail = (collectionId) => {
                 activeCollectionId = collectionId;
                 renderView();
+                updateBottomNavFAB(); // Aggiorna il FAB per mostrare il pulsante Aggiungi AI
             };
 
             // NUOVO: Funzione per aggiornare il pulsante FAB nella bottom nav
@@ -10492,7 +10686,13 @@ ${knowledgeBaseFormatter(tools)}
                 if (currentView === 'favorites') {
                     fabBtn.style.display = 'flex';
 
-                    if (tab === 'collections') {
+                    // Se siamo dentro una collezione, mostra il pulsante per aggiungere AI
+                    if (activeCollectionId) {
+                        fabBtn.dataset.action = 'add-tools-to-collection';
+                        fabBtn.dataset.collectionId = activeCollectionId;
+                        fabBtn.title = currentLanguage === 'it' ? 'Aggiungi AI' : 'Add AI';
+                        fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
+                    } else if (tab === 'collections') {
                         // Icona per creare collezione
                         fabBtn.dataset.action = 'create-collection';
                         fabBtn.title = t.createCollection;
@@ -10929,13 +11129,13 @@ ${filtersHTML}
 
                         const count = collection.toolIds.length;
                         const countText = count === 1 ? t.toolCount.replace('%d', count) : t.toolsCount.replace('%d', count);
+                        const logoUrl = currentTheme === 'light'
+                            ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                            : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                        
                         const coverHTML = collection.coverImage
                             ? `<img src="${collection.coverImage}" alt="${collection.name}">`
-                            : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                            </div>`;
+                            : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
 
                         const headerHTML = `
                             <div class="collection-detail-header">
@@ -10949,7 +11149,7 @@ ${filtersHTML}
                         `;
 
                         const backButtonHTML = `
-                            <div style="padding: 16px; display: flex; align-items: center; gap: 12px;">
+                            <div style="padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                                 <button class="pill-btn" data-action="back-to-collections" style="display: inline-flex; align-items: center; gap: 8px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                     ${t.backToSearch}
@@ -11091,13 +11291,13 @@ ${filtersHTML}
                                 const collectionsHTML = collections.map(collection => {
                                     const count = collection.toolIds.length;
                                     const countText = count === 1 ? t.toolCount.replace('%d', count) : t.toolsCount.replace('%d', count);
+                                    const logoUrl = currentTheme === 'light'
+                                        ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                                        : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                                    
                                     const coverHTML = collection.coverImage
                                         ? `<img src="${collection.coverImage}" alt="${collection.name}">`
-                                        : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                                            </svg>
-                                        </div>`;
+                                        : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
 
                                     return `
                                         <div class="collection-card stagger-item" data-collection-id="${collection.id}">
@@ -13400,13 +13600,13 @@ ${filtersHTML}
                 } else if (tab === 'playlists') {
                     // Genera le playlist in base alla modalità di visualizzazione
                     const generateCinemaPlaylistCard = (playlist, mode) => {
+                        const logoUrl = currentTheme === 'light'
+                            ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                            : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                        
                         const coverHTML = playlist.coverImage
                             ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover;">`
-                            : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                            </div>`;
+                            : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
 
                         if (mode === 'grid') {
                             return `
@@ -13435,6 +13635,9 @@ ${filtersHTML}
                             return `
                                 <div class="playlist-item" data-action="open-playlist" data-playlist-id="${playlist.id}" style="position: relative;">
                                     <div class="select-checkbox" data-playlist-id="${playlist.id}"></div>
+                                    <div style="width: 160px; min-width: 160px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
+                                        ${coverHTML}
+                                    </div>
                                     <div style="flex: 1;">
                                         <h4>${playlist.name}</h4>
                                         <p>${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
@@ -13767,13 +13970,13 @@ ${filtersHTML}
 
                 // Sezione Playlist - supporta sia lista che griglia
                 const generatePlaylistCard = (playlist, mode) => {
+                    const logoUrl = currentTheme === 'light'
+                        ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                        : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                    
                     const coverHTML = playlist.coverImage
                         ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover;">`
-                        : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </div>`;
+                        : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
 
                     if (mode === 'grid') {
                         return `
@@ -14304,23 +14507,27 @@ ${filtersHTML}
                     `;
                 }).join('');
 
+                const logoUrl = currentTheme === 'light'
+                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                    : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                
                 const coverHTML = playlist.coverImage
                     ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
-                    : `<div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--Koda-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                    </div>`;
+                    : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; background: var(--Koda-card);">`;
 
                 const pageHTML = `
                     <div class="playlist-detail-page" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; overflow-y: auto;">
                         <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
-                            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
                                 <button class="pill-btn" data-action="close-playlist-detail" style="display: inline-flex; align-items: center; gap: 8px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                     ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
                                 </button>
                                 <h2 style="margin: 0; flex: 1;">${playlist.name}</h2>
+                                <button class="pill-btn" data-action="add-videos-to-playlist" data-playlist-id="${playlistId}" style="display: inline-flex; align-items: center; gap: 8px; background: var(--Koda-accent); color: #000;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                    ${currentLanguage === 'it' ? 'Aggiungi Video' : 'Add Videos'}
+                                </button>
                                 ${playlist.videos.length > 0 ? `
                                     <button class="pill-btn ${playlistSelectionMode ? 'active' : ''}" data-action="toggle-playlist-selection-mode" style="display: inline-flex; align-items: center; gap: 8px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -15344,6 +15551,7 @@ ${filtersHTML}
                         case 'delete-playlist':
                             event.stopPropagation();
                             const delPlaylistId = actionTarget.dataset.playlistId;
+                            
                             const confirmDelete = await showConfirmModal({
                                 title: currentLanguage === 'it' ? 'Elimina playlist' : 'Delete playlist',
                                 message: currentLanguage === 'it' ? 'Sei sicuro di voler eliminare questa playlist?' : 'Are you sure you want to delete this playlist?',
@@ -15699,6 +15907,99 @@ ${filtersHTML}
                             const addToolId = actionTarget.dataset.toolId;
                             openAddToCollectionModal(addToolId);
                             break;
+                        case 'add-tools-to-collection':
+                            const collectionIdForAdd = actionTarget.dataset.collectionId;
+                            openAddMultipleToolsModal(collectionIdForAdd);
+                            break;
+                        case 'add-videos-to-playlist':
+                            const playlistIdForAdd = actionTarget.dataset.playlistId;
+                            openAddMultipleVideosModal(playlistIdForAdd);
+                            break;
+                        case 'toggle-tool-selection-for-add':
+                            actionTarget.classList.toggle('selected');
+                            break;
+                        case 'toggle-video-selection-for-add':
+                            actionTarget.classList.toggle('selected');
+                            break;
+                        case 'filter-tools-by-category':
+                            const toolCategory = actionTarget.dataset.category;
+                            const toolItems = document.querySelectorAll('.tool-item-selectable');
+                            const searchToolsInput = document.getElementById('search-tools-input');
+                            const searchToolsQuery = searchToolsInput ? searchToolsInput.value.toLowerCase() : '';
+                            
+                            // Update active filter button
+                            document.querySelectorAll('#add-multiple-tools-modal .pill-btn').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            actionTarget.classList.add('active');
+                            
+                            // Filter items by both category and search
+                            toolItems.forEach(item => {
+                                const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
+                                const matchesSearch = !searchToolsQuery || name.includes(searchToolsQuery);
+                                const matchesCategory = toolCategory === 'all' || item.dataset.category === toolCategory;
+                                item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                            });
+                            break;
+                        case 'filter-videos-by-category':
+                            const videoCategory = actionTarget.dataset.category;
+                            const videoItems = document.querySelectorAll('.video-item-selectable');
+                            const searchVideosInput = document.getElementById('search-videos-input');
+                            const searchVideosQuery = searchVideosInput ? searchVideosInput.value.toLowerCase() : '';
+                            
+                            // Update active filter button
+                            document.querySelectorAll('#add-multiple-videos-modal .pill-btn').forEach(btn => {
+                                btn.classList.remove('active');
+                            });
+                            actionTarget.classList.add('active');
+                            
+                            // Filter items by both category and search
+                            videoItems.forEach(item => {
+                                const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
+                                const matchesSearch = !searchVideosQuery || name.includes(searchVideosQuery);
+                                const matchesCategory = videoCategory === 'all' || item.dataset.category === videoCategory;
+                                item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                            });
+                            break;
+                        case 'close-add-multiple-tools-modal':
+                            document.getElementById('add-multiple-tools-modal')?.remove();
+                            break;
+                        case 'close-add-multiple-videos-modal':
+                            document.getElementById('add-multiple-videos-modal')?.remove();
+                            break;
+                        case 'confirm-add-multiple-tools':
+                            const collectionIdForTools = actionTarget.dataset.collectionId;
+                            const selectedToolItems = document.querySelectorAll('#add-multiple-tools-modal .collection-list-item.selected');
+                            const selectedToolIds = Array.from(selectedToolItems).map(item => item.dataset.toolId);
+                            
+                            if (selectedToolIds.length > 0) {
+                                const collection = collections.find(c => c.id === collectionIdForTools);
+                                if (collection) {
+                                    collection.toolIds.push(...selectedToolIds);
+                                    saveCollections();
+                                    showToast(currentLanguage === 'it' ? `${selectedToolIds.length} AI aggiunti!` : `${selectedToolIds.length} AI added!`);
+                                    document.getElementById('add-multiple-tools-modal')?.remove();
+                                    renderView(); // Refresh the view
+                                }
+                            }
+                            break;
+                        case 'confirm-add-multiple-videos':
+                            const playlistIdForVideos = actionTarget.dataset.playlistId;
+                            const selectedVideoItems = document.querySelectorAll('#add-multiple-videos-modal .collection-list-item.selected');
+                            const selectedVideoIds = Array.from(selectedVideoItems).map(item => item.dataset.videoId);
+                            
+                            if (selectedVideoIds.length > 0) {
+                                let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                                const playlist = playlists.find(p => p.id === playlistIdForVideos);
+                                if (playlist) {
+                                    playlist.videos.push(...selectedVideoIds);
+                                    localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                                    showToast(currentLanguage === 'it' ? `${selectedVideoIds.length} video aggiunti!` : `${selectedVideoIds.length} videos added!`);
+                                    document.getElementById('add-multiple-videos-modal')?.remove();
+                                    renderPlaylistDetailPage(playlistIdForVideos); // Refresh the playlist page
+                                }
+                            }
+                            break;
                         case 'close-add-to-collection-modal':
                             // Mostra messaggio di conferma solo se ci sono collezioni
                             if (collections.length > 0) {
@@ -15734,6 +16035,7 @@ ${filtersHTML}
                             selectionMode = false;
                             selectedTools.clear();
                             renderView();
+                            updateBottomNavFAB('collections'); // Aggiorna il FAB per tornare a creare collezione
                             break;
                         // NUOVO: Gestione selezione multipla
                         case 'toggle-selection-mode':
@@ -15823,6 +16125,18 @@ ${filtersHTML}
                                     img.src = avatarImageUrl;
                                 });
                             }
+                            
+                            // Aggiorna i loghi delle collezioni e playlist
+                            const newLogoUrl = currentTheme === 'light'
+                                ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                                : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                            
+                            // Aggiorna tutte le immagini con alt="Koda Logo"
+                            const logoImages = document.querySelectorAll('img[alt="Koda Logo"]');
+                            logoImages.forEach(img => {
+                                img.src = newLogoUrl;
+                            });
+                            
                             break;
                         case 'toggle-lang':
                             // Cambia la lingua a livello globale
@@ -16330,6 +16644,30 @@ ${filtersHTML}
                     fetchRankingsFromFirestore(),
                     fetchVideosFromFirestore()
                 ]);
+
+                // Inizializza la playlist predefinita "Guarda più tardi" (solo localStorage, non Firebase)
+                const initializeDefaultPlaylists = () => {
+                    let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                    
+                    // Verifica se la playlist "Guarda più tardi" esiste già
+                    const hasGuardaPiuTardi = playlists.some(p => p.id === 'default-guarda-piu-tardi');
+                    
+                    // Aggiungi "Guarda più tardi" se non esiste
+                    if (!hasGuardaPiuTardi) {
+                        playlists.unshift({
+                            id: 'default-guarda-piu-tardi',
+                            name: 'Guarda più tardi',
+                            videos: [],
+                            createdAt: Date.now(),
+                            isDefault: true
+                        });
+                        localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                        console.log('Playlist predefinita inizializzata: Guarda più tardi');
+                    }
+                };
+                
+                // Chiama la funzione di inizializzazione
+                initializeDefaultPlaylists();
 
                 if (user) {
                     // L'utente è loggato, avvia l'app con i suoi dati.
