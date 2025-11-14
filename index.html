@@ -531,6 +531,8 @@
             background-color: #333;
         }
 
+
+
         /* NUOVO: Stili per l'icona mostra/nascondi password */
         .password-input-wrapper {
             position: relative;
@@ -583,6 +585,11 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
+            min-height: 50vh;
+        }
+        
+        .grid-container #empty-state {
+            grid-column: 1 / -1;
         }
 
         /* NUOVO: Layout per la griglia AI in evidenza su schermi grandi */
@@ -833,10 +840,10 @@
         .category-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+            gap: 2px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 9px;
             font-weight: 600;
             text-transform: uppercase;
             vertical-align: middle;
@@ -1530,9 +1537,15 @@
         }
 
         #empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             color: var(--Koda-text-secondary);
-            padding: 40px;
+            padding: 40px 20px;
+            min-height: 50vh;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
         #bottom-nav {
@@ -3832,13 +3845,15 @@
         }
 
         #empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             color: var(--Koda-text-secondary);
             font-size: 16px;
             padding: 40px 20px;
-            background: var(--Koda-card-bg);
-            border-radius: 12px;
-            border: 2px dashed var(--Koda-border);
+            min-height: 50vh;
+            line-height: 1.5;
         }
 
         /* AI Suggestions Grid and Cards */
@@ -6055,13 +6070,18 @@
         /* MODIFICA 2: Griglia stile YouTube per i video */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 16px;
+            min-height: 50vh;
+        }
+        
+        .video-grid #empty-state {
+            grid-column: 1 / -1;
         }
 
         @media (max-width: 768px) {
             .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 12px;
             }
         }
@@ -6087,24 +6107,25 @@
         }
 
         .video-card-grid .video-info {
-            padding: 12px;
+            padding: 8px;
         }
 
         .video-card-grid .video-info h4 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            line-height: 1.3;
         }
 
         .video-card-grid .video-date {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--Koda-text-secondary);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         /* MODIFICA 3: Icona cuore per i preferiti */
@@ -6247,6 +6268,39 @@
         .cinema-nav-btn span {
             font-size: 12px;
             font-weight: 500;
+        }
+
+        /* FAB button per il cinema (al centro della bottom nav) */
+        #cinema-fab-btn {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--Koda-accent);
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            margin-top: -28px;
+            flex-shrink: 0;
+        }
+
+        #cinema-fab-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        #cinema-fab-btn .fab-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #cinema-fab-btn svg {
+            fill: #000;
         }
 
         /* Pulsante normale per i modal */
@@ -8198,7 +8252,7 @@ ${knowledgeBaseFormatter(tools)}
                     backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
                     pricingFree: "Gratuito", pricingFreemium: "Freemium", pricingPaid: "A Pagamento",
                     categoryTutorial: "Tutorial", categoryEducation: "Educazione", categoryDevelopment: "Sviluppo", categoryNews: "Notizie",
-                    libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "",
+                    libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "Aggiungi AI ai tuoi preferiti per vederli qui",
                     noResultsFor: "Nessun risultato per",
                     // Rankings
                     rankingTextTitle: "Classifica per il testo", rankingCodeTitle: "Classifica per il codice",
@@ -8300,8 +8354,11 @@ ${knowledgeBaseFormatter(tools)}
                     coverChanged: "Copertina aggiornata!",
                     addedToCollection: "Aggiunto alla collezione!",
                     removedFromCollection: "Rimosso dalla collezione!",
-                    emptyCollection: "",
-                    emptyCollections: "",
+                    emptyCollection: "Aggiungi AI ai tuoi preferiti per vederli qui",
+                    emptyCollections: "Crea una collezione per organizzare le tue AI preferite",
+                    emptyPlaylist: "Aggiungi video alla playlist per iniziare",
+                    emptyPlaylists: "Crea una playlist per organizzare i tuoi video preferiti",
+                    emptyVideoFavorites: "Aggiungi video ai preferiti per vederli qui",
                     confirmDeleteCollection: "Sei sicuro di voler eliminare questa collezione?",
                     toolsCount: "%d strumenti",
                     toolCount: "%d strumento",
@@ -8434,7 +8491,7 @@ ${knowledgeBaseFormatter(tools)}
                     backToSearch: "‹ Back to search", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
                     pricingFree: "Free", pricingFreemium: "Freemium", pricingPaid: "Paid",
                     categoryTutorial: "Tutorial", categoryEducation: "Education", categoryDevelopment: "Development", categoryNews: "News",
-                    libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "",
+                    libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "Add AI to your favorites to see them here",
                     noResultsFor: "No results for",
                     // Rankings
                     rankingTextTitle: "Ranking for Text", rankingCodeTitle: "Ranking for Code",
@@ -8536,8 +8593,11 @@ ${knowledgeBaseFormatter(tools)}
                     coverChanged: "Cover updated!",
                     addedToCollection: "Added to collection!",
                     removedFromCollection: "Removed from collection!",
-                    emptyCollection: "",
-                    emptyCollections: "",
+                    emptyCollection: "Add AI to your favorites to see them here",
+                    emptyCollections: "Create a collection to organize your favorite AI",
+                    emptyPlaylist: "Add videos to the playlist to get started",
+                    emptyPlaylists: "Create a playlist to organize your favorite videos",
+                    emptyVideoFavorites: "Add videos to favorites to see them here",
                     confirmDeleteCollection: "Are you sure you want to delete this collection?",
                     toolsCount: "%d tools",
                     toolCount: "%d tool",
@@ -10318,7 +10378,8 @@ ${knowledgeBaseFormatter(tools)}
                 }
             };
 
-            // NUOVO: Modal per aggiungere multipli AI tools a una collezione
+            // RIMOSSO: Modali per aggiungere AI/Video alle collezioni/playlist
+            /*
             const openAddMultipleToolsModal = (collectionId) => {
                 const t = translations[currentLanguage];
                 const collection = collections.find(c => c.id === collectionId);
@@ -10329,21 +10390,37 @@ ${knowledgeBaseFormatter(tools)}
 
                 // Get unique categories from available tools
                 const categories = [...new Set(availableTools.map(tool => tool.category))].filter(Boolean);
+                
+                // Initialize filter state for this modal
+                if (!window.collectionModalFilters) {
+                    window.collectionModalFilters = {
+                        categories: [],
+                        pricing: []
+                    };
+                }
+                
+                const hasActiveFilters = window.collectionModalFilters.categories.length > 0 || window.collectionModalFilters.pricing.length > 0;
+                const categoryCountText = window.collectionModalFilters.categories.length > 0 ? ` (${window.collectionModalFilters.categories.length})` : '';
+                const pricingCountText = window.collectionModalFilters.pricing.length > 0 ? ` (${window.collectionModalFilters.pricing.length})` : '';
+                
                 const categoryFiltersHTML = `
-                    <div class="filter-pills" style="margin-bottom: 16px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;">
-                        <button class="pill-btn active" data-action="filter-tools-by-category" data-category="all">
+                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px;">
+                        <button class="filter-btn ${!hasActiveFilters ? 'active' : ''}" data-action="clear-collection-filters">
                             ${currentLanguage === 'it' ? 'Tutti' : 'All'}
                         </button>
-                        ${categories.map(cat => `
-                            <button class="pill-btn" data-action="filter-tools-by-category" data-category="${cat}">
-                                ${cat}
-                            </button>
-                        `).join('')}
+                        <button class="filter-btn ${window.collectionModalFilters.categories.length > 0 ? 'active' : ''}" data-action="open-collection-category-page" data-collection-id="${collectionId}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
+                            ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
+                        </button>
+                        <button class="filter-btn ${window.collectionModalFilters.pricing.length > 0 ? 'active' : ''}" data-action="open-collection-pricing-page" data-collection-id="${collectionId}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                            ${currentLanguage === 'it' ? 'Prezzo' : 'Price'}${pricingCountText}
+                        </button>
                     </div>
                 `;
 
                 const toolsListHTML = availableTools.map(tool => `
-                    <div class="collection-list-item tool-item-selectable" data-action="toggle-tool-selection-for-add" data-tool-id="${tool.id}" data-category="${tool.category || ''}" style="cursor: pointer;">
+                    <div class="collection-list-item tool-item-selectable" data-action="toggle-tool-selection-for-add" data-tool-id="${tool.id}" data-category="${tool.category || ''}" data-pricing="${tool.pricing || ''}" style="cursor: pointer;">
                         <div class="collection-list-item-cover">
                             <img src="${tool.logoUrl}" alt="${tool.name}" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
@@ -10389,20 +10466,33 @@ ${knowledgeBaseFormatter(tools)}
 
                 el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
                 
-                // Add search functionality
+                // Add search functionality and apply initial filters
                 if (availableTools.length > 0) {
                     const searchInput = document.getElementById('search-tools-input');
-                    searchInput?.addEventListener('input', (e) => {
-                        const query = e.target.value.toLowerCase();
+                    
+                    // Function to apply all filters
+                    const applyCollectionFilters = () => {
+                        const query = searchInput ? searchInput.value.toLowerCase() : '';
                         const toolItems = document.querySelectorAll('.tool-item-selectable');
+                        const selectedCategories = window.collectionModalFilters.categories;
+                        const selectedPricing = window.collectionModalFilters.pricing;
+                        
                         toolItems.forEach(item => {
                             const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
-                            const matchesSearch = name.includes(query);
-                            const activeCategory = document.querySelector('#add-multiple-tools-modal .pill-btn.active')?.dataset.category;
-                            const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
-                            item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
+                            const matchesSearch = !query || name.includes(query);
+                            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category);
+                            const matchesPricing = selectedPricing.length === 0 || selectedPricing.includes(item.dataset.pricing);
+                            item.style.display = (matchesSearch && matchesCategory && matchesPricing) ? '' : 'none';
                         });
-                    });
+                    };
+                    
+                    // Store the filter function globally so it can be called from modal actions
+                    window.applyCollectionFilters = applyCollectionFilters;
+                    
+                    // Apply initial filters
+                    applyCollectionFilters();
+                    
+                    searchInput?.addEventListener('input', applyCollectionFilters);
                 }
 
                 el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
@@ -10418,16 +10508,26 @@ ${knowledgeBaseFormatter(tools)}
 
                 // Get unique categories from available videos
                 const videoCategories = [...new Set(availableVideos.map(video => video.category))].filter(Boolean);
+                
+                // Initialize filter state for video modal
+                if (!window.playlistModalFilters) {
+                    window.playlistModalFilters = {
+                        categories: []
+                    };
+                }
+                
+                const hasActiveVideoFilters = window.playlistModalFilters.categories.length > 0;
+                const videoCategoryCountText = window.playlistModalFilters.categories.length > 0 ? ` (${window.playlistModalFilters.categories.length})` : '';
+                
                 const categoryFiltersHTML = `
-                    <div class="filter-pills" style="margin-bottom: 16px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;">
-                        <button class="pill-btn active" data-action="filter-videos-by-category" data-category="all">
+                    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px;">
+                        <button class="filter-btn ${!hasActiveVideoFilters ? 'active' : ''}" data-action="clear-playlist-filters">
                             ${currentLanguage === 'it' ? 'Tutti' : 'All'}
                         </button>
-                        ${videoCategories.map(cat => `
-                            <button class="pill-btn" data-action="filter-videos-by-category" data-category="${cat}">
-                                ${cat}
-                            </button>
-                        `).join('')}
+                        <button class="filter-btn ${window.playlistModalFilters.categories.length > 0 ? 'active' : ''}" data-action="open-playlist-category-page" data-playlist-id="${playlistId}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
+                            ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${videoCategoryCountText}
+                        </button>
                     </div>
                 `;
 
@@ -10487,24 +10587,37 @@ ${knowledgeBaseFormatter(tools)}
 
                 el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
                 
-                // Add search functionality
+                // Add search functionality and apply initial filters
                 if (availableVideos.length > 0) {
                     const searchInput = document.getElementById('search-videos-input');
-                    searchInput?.addEventListener('input', (e) => {
-                        const query = e.target.value.toLowerCase();
+                    
+                    // Function to apply all filters
+                    const applyPlaylistFilters = () => {
+                        const query = searchInput ? searchInput.value.toLowerCase() : '';
                         const videoItems = document.querySelectorAll('.video-item-selectable');
+                        const selectedCategories = window.playlistModalFilters.categories;
+                        
                         videoItems.forEach(item => {
                             const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
-                            const matchesSearch = name.includes(query);
-                            const activeCategory = document.querySelector('#add-multiple-videos-modal .pill-btn.active')?.dataset.category;
-                            const matchesCategory = activeCategory === 'all' || item.dataset.category === activeCategory;
+                            const matchesSearch = !query || name.includes(query);
+                            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(item.dataset.category);
                             item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
                         });
-                    });
+                    };
+                    
+                    // Store the filter function globally so it can be called from modal actions
+                    window.applyPlaylistFilters = applyPlaylistFilters;
+                    
+                    // Apply initial filters
+                    applyPlaylistFilters();
+                    
+                    searchInput?.addEventListener('input', applyPlaylistFilters);
                 }
 
                 el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
             };
+            */
+            // FINE RIMOZIONE MODALI
 
             const toggleToolInCollection = async (collectionId, toolId) => {
                 const t = translations[currentLanguage];
@@ -10686,13 +10799,8 @@ ${knowledgeBaseFormatter(tools)}
                 if (currentView === 'favorites') {
                     fabBtn.style.display = 'flex';
 
-                    // Se siamo dentro una collezione, mostra il pulsante per aggiungere AI
-                    if (activeCollectionId) {
-                        fabBtn.dataset.action = 'add-tools-to-collection';
-                        fabBtn.dataset.collectionId = activeCollectionId;
-                        fabBtn.title = currentLanguage === 'it' ? 'Aggiungi AI' : 'Add AI';
-                        fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
-                    } else if (tab === 'collections') {
+                    // Sempre mostra il pulsante per creare collezione
+                    if (tab === 'collections' || activeCollectionId) {
                         // Icona per creare collezione
                         fabBtn.dataset.action = 'create-collection';
                         fabBtn.title = t.createCollection;
@@ -10741,6 +10849,19 @@ ${knowledgeBaseFormatter(tools)}
                             </svg>
                             <span>${t.navCinemaFavorites || (currentLanguage === 'it' ? 'Preferiti' : 'Favorites')}</span>
                         </button>
+                        <button id="cinema-fab-btn" class="nav-btn-fab" data-action="create-playlist" title="${currentLanguage === 'it' ? 'Crea playlist' : 'Create playlist'}">
+                            <div class="fab-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                            </div>
+                        </button>
+                        <button class="cinema-nav-btn ${activeTab === 'uni' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="uni">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+                            </svg>
+                            <span>Uni</span>
+                        </button>
                         <button class="cinema-nav-btn ${activeTab === 'playlists' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="playlists">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
@@ -10759,7 +10880,7 @@ ${knowledgeBaseFormatter(tools)}
                 }
 
                 // GESTIONE VISIBILITÀ BARRA DI NAVIGAZIONE E PADDING
-                // Nascondi la bottom nav se siamo nel cinema o nel dettaglio video
+                // Nascondi la bottom nav se siamo nel cinema o dettaglio video
                 if (currentView === 'cinema' || currentView === 'video-detail') {
                     el.bottomNav.style.display = 'none';
                     el.mainContent.style.paddingBottom = '0';
@@ -13399,6 +13520,12 @@ ${filtersHTML}
                         btn.classList.add('active');
                     }
                 });
+                
+                // Mostra/nascondi il FAB solo nella sezione playlists
+                const cinemaFab = document.getElementById('cinema-fab-btn');
+                if (cinemaFab) {
+                    cinemaFab.style.display = tab === 'playlists' ? 'flex' : 'none';
+                }
 
                 // Funzione per generare card (copia dalla renderCinemaPage)
                 const generateVideoCard = (video, index, viewMode = 'grid') => {
@@ -13548,7 +13675,7 @@ ${filtersHTML}
                     
                     const favoritesHTML = favoriteVideos.length > 0
                         ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
-                        : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
+                        : `<div id="empty-state">${translations[currentLanguage].emptyVideoFavorites}</div>`;
                     
                     const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
                         ? ` (${selectedCategories.length})` 
@@ -13576,6 +13703,49 @@ ${filtersHTML}
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" style="padding-bottom: 20px;">
                             ${favoritesHTML}
+                        </div>
+                    `;
+
+                    // Aggiungi click listener per aprire il modale video
+                    setTimeout(() => {
+                        const videoCards = document.querySelectorAll('.video-card-grid, .video-card-list');
+                        videoCards.forEach(card => {
+                            card.addEventListener('click', (e) => {
+                                // Ignora click su pulsanti interni
+                                if (e.target.closest('.video-favorite-btn') || e.target.closest('.video-options-btn')) {
+                                    return;
+                                }
+                                const videoId = card.dataset.videoId;
+                                if (videoId) {
+                                    console.log('Card clicked, opening video:', videoId);
+                                    window.openVideoDetailModal(videoId);
+                                }
+                            });
+                        });
+                    }, 100);
+
+                } else if (tab === 'uni') {
+                    // Mostra solo i video con categoria "education"
+                    const educationVideos = youtubeVideosData.filter(v => v.category === 'education');
+                    
+                    const uniHTML = educationVideos.length > 0
+                        ? educationVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
+                        : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video educativo disponibile' : 'No educational videos available'}</div>`;
+
+                    contentArea.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
+                            <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Uni</h2>
+                            <div class="view-toggle-container">
+                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                </button>
+                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" style="padding-bottom: 20px;">
+                            ${uniHTML}
                         </div>
                     `;
 
@@ -13685,11 +13855,8 @@ ${filtersHTML}
                             </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
-                            ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`}
+                            ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${translations[currentLanguage].emptyPlaylists}</div>`}
                         </div>
-                        <button class="create-playlist-btn" data-action="create-playlist" style="position: fixed; bottom: 90px; left: 16px; right: 16px; margin: 0; z-index: 10; max-width: calc(100% - 32px);">
-                            ${currentLanguage === 'it' ? 'Crea nuova playlist' : 'Create new playlist'}
-                        </button>
                     `;
                 }
             };
@@ -13802,7 +13969,7 @@ ${filtersHTML}
                 const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
                 const favoritesHTML = favoriteVideos.length > 0
                     ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
-                    : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
+                    : `<div id="empty-state">${translations[currentLanguage].emptyVideoFavorites}</div>`;
 
                 // Sezione Playlist (come le collezioni)
                 const playlistsHTML = videoPlaylists.length > 0
@@ -13966,7 +14133,7 @@ ${filtersHTML}
                 const favoriteVideos = youtubeVideosData.filter(v => favorites.includes(v.id));
                 const favoritesHTML = favoriteVideos.length > 0
                     ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
-                    : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
+                    : `<div id="empty-state">${translations[currentLanguage].emptyVideoFavorites}</div>`;
 
                 // Sezione Playlist - supporta sia lista che griglia
                 const generatePlaylistCard = (playlist, mode) => {
@@ -14568,8 +14735,8 @@ ${filtersHTML}
                                 </div>
                             </div>
 
-                            <div class="video-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
-                                ${videosHTML.length > 0 ? videosHTML : `<p style="text-align: center; color: var(--Koda-text-secondary); grid-column: 1 / -1;">${currentLanguage === 'it' ? 'Nessun video in questa playlist' : 'No videos in this playlist'}</p>`}
+                            <div class="video-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; min-height: 40vh;">
+                                ${videosHTML.length > 0 ? videosHTML : `<div id="empty-state" style="grid-column: 1 / -1;">${translations[currentLanguage].emptyPlaylist}</div>`}
                             </div>
                         </div>
                     </div>
@@ -15907,99 +16074,10 @@ ${filtersHTML}
                             const addToolId = actionTarget.dataset.toolId;
                             openAddToCollectionModal(addToolId);
                             break;
-                        case 'add-tools-to-collection':
-                            const collectionIdForAdd = actionTarget.dataset.collectionId;
-                            openAddMultipleToolsModal(collectionIdForAdd);
-                            break;
-                        case 'add-videos-to-playlist':
-                            const playlistIdForAdd = actionTarget.dataset.playlistId;
-                            openAddMultipleVideosModal(playlistIdForAdd);
-                            break;
-                        case 'toggle-tool-selection-for-add':
-                            actionTarget.classList.toggle('selected');
-                            break;
-                        case 'toggle-video-selection-for-add':
-                            actionTarget.classList.toggle('selected');
-                            break;
-                        case 'filter-tools-by-category':
-                            const toolCategory = actionTarget.dataset.category;
-                            const toolItems = document.querySelectorAll('.tool-item-selectable');
-                            const searchToolsInput = document.getElementById('search-tools-input');
-                            const searchToolsQuery = searchToolsInput ? searchToolsInput.value.toLowerCase() : '';
-                            
-                            // Update active filter button
-                            document.querySelectorAll('#add-multiple-tools-modal .pill-btn').forEach(btn => {
-                                btn.classList.remove('active');
-                            });
-                            actionTarget.classList.add('active');
-                            
-                            // Filter items by both category and search
-                            toolItems.forEach(item => {
-                                const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
-                                const matchesSearch = !searchToolsQuery || name.includes(searchToolsQuery);
-                                const matchesCategory = toolCategory === 'all' || item.dataset.category === toolCategory;
-                                item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-                            });
-                            break;
-                        case 'filter-videos-by-category':
-                            const videoCategory = actionTarget.dataset.category;
-                            const videoItems = document.querySelectorAll('.video-item-selectable');
-                            const searchVideosInput = document.getElementById('search-videos-input');
-                            const searchVideosQuery = searchVideosInput ? searchVideosInput.value.toLowerCase() : '';
-                            
-                            // Update active filter button
-                            document.querySelectorAll('#add-multiple-videos-modal .pill-btn').forEach(btn => {
-                                btn.classList.remove('active');
-                            });
-                            actionTarget.classList.add('active');
-                            
-                            // Filter items by both category and search
-                            videoItems.forEach(item => {
-                                const name = item.querySelector('.collection-list-item-name').textContent.toLowerCase();
-                                const matchesSearch = !searchVideosQuery || name.includes(searchVideosQuery);
-                                const matchesCategory = videoCategory === 'all' || item.dataset.category === videoCategory;
-                                item.style.display = (matchesSearch && matchesCategory) ? '' : 'none';
-                            });
-                            break;
-                        case 'close-add-multiple-tools-modal':
-                            document.getElementById('add-multiple-tools-modal')?.remove();
-                            break;
-                        case 'close-add-multiple-videos-modal':
-                            document.getElementById('add-multiple-videos-modal')?.remove();
-                            break;
-                        case 'confirm-add-multiple-tools':
-                            const collectionIdForTools = actionTarget.dataset.collectionId;
-                            const selectedToolItems = document.querySelectorAll('#add-multiple-tools-modal .collection-list-item.selected');
-                            const selectedToolIds = Array.from(selectedToolItems).map(item => item.dataset.toolId);
-                            
-                            if (selectedToolIds.length > 0) {
-                                const collection = collections.find(c => c.id === collectionIdForTools);
-                                if (collection) {
-                                    collection.toolIds.push(...selectedToolIds);
-                                    saveCollections();
-                                    showToast(currentLanguage === 'it' ? `${selectedToolIds.length} AI aggiunti!` : `${selectedToolIds.length} AI added!`);
-                                    document.getElementById('add-multiple-tools-modal')?.remove();
-                                    renderView(); // Refresh the view
-                                }
-                            }
-                            break;
-                        case 'confirm-add-multiple-videos':
-                            const playlistIdForVideos = actionTarget.dataset.playlistId;
-                            const selectedVideoItems = document.querySelectorAll('#add-multiple-videos-modal .collection-list-item.selected');
-                            const selectedVideoIds = Array.from(selectedVideoItems).map(item => item.dataset.videoId);
-                            
-                            if (selectedVideoIds.length > 0) {
-                                let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
-                                const playlist = playlists.find(p => p.id === playlistIdForVideos);
-                                if (playlist) {
-                                    playlist.videos.push(...selectedVideoIds);
-                                    localStorage.setItem('video-playlists', JSON.stringify(playlists));
-                                    showToast(currentLanguage === 'it' ? `${selectedVideoIds.length} video aggiunti!` : `${selectedVideoIds.length} videos added!`);
-                                    document.getElementById('add-multiple-videos-modal')?.remove();
-                                    renderPlaylistDetailPage(playlistIdForVideos); // Refresh the playlist page
-                                }
-                            }
-                            break;
+                        // RIMOSSO: add-tools-to-collection e add-videos-to-playlist
+                        // RIMOSSO: toggle-tool-selection-for-add e toggle-video-selection-for-add
+                        // RIMOSSO: Tutti i gestori per i modali di aggiunta AI/Video
+                        // RIMOSSO: confirm-add-multiple-tools e confirm-add-multiple-videos
                         case 'close-add-to-collection-modal':
                             // Mostra messaggio di conferma solo se ci sono collezioni
                             if (collections.length > 0) {
