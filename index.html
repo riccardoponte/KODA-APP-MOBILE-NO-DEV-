@@ -6708,6 +6708,189 @@
             background: var(--Koda-bg-light);
         }
 
+        /* Filter buttons for cinema */
+        .filter-btn {
+            background: var(--Koda-card);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--Koda-text);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: var(--Koda-text);
+            border-color: var(--Koda-text);
+            color: var(--Koda-bg);
+        }
+
+        body.light-mode .filter-btn.active {
+            color: #fff;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: var(--Koda-bg-light);
+        }
+
+        .filter-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Category selection modal */
+        .category-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .category-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .category-modal-content {
+            background: var(--Koda-card);
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .category-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .category-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .category-modal-close {
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .category-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .category-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--Koda-bg-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .category-option:hover {
+            background: var(--Koda-bg);
+        }
+
+        .category-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--Koda-text-secondary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .category-option.selected .category-checkbox {
+            background-color: var(--Koda-accent);
+            border-color: var(--Koda-accent);
+        }
+
+        .category-option.selected .category-checkbox::after {
+            content: '✓';
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .category-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .category-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .category-cancel-btn {
+            background: none;
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-cancel-btn:hover {
+            background-color: var(--Koda-bg-light);
+        }
+
+        .category-apply-btn {
+            background-color: var(--Koda-accent);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .category-apply-btn:hover {
+            background-color: #1ed760;
+        }
+
         /* Layout a griglia per le card */
         .grid-view-container {
             display: grid;
@@ -10575,7 +10758,35 @@ ${filtersHTML}
                     el.mainContent.appendChild(contentArea);
 
                 } else if (currentView === 'explore') {
-                    el.mainContent.insertAdjacentHTML('beforeend', `<div class="search-bar-container"><input type="text" id="search-input" placeholder="${t.searchPlaceholder}"></div>`);
+                    // Load AI filter state
+                    const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
+                    const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
+                    const aiFilterMode = localStorage.getItem('ai-filter-mode') || 'all';
+                    const categoryCountText = aiFilterMode === 'categories' && aiSelectedCategories.length > 0 
+                        ? ` (${aiSelectedCategories.length})` 
+                        : '';
+                    const pricingCountText = aiFilterMode === 'pricing' && aiSelectedPricing.length > 0 
+                        ? ` (${aiSelectedPricing.length})` 
+                        : '';
+
+                    el.mainContent.insertAdjacentHTML('beforeend', `
+                        <div class="search-bar-container">
+                            <input type="text" id="search-input" placeholder="${t.searchPlaceholder}">
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; padding: 0 16px 16px 16px; overflow-x: auto;">
+                            <button class="filter-btn ${aiFilterMode === 'all' ? 'active' : ''}" data-action="set-ai-filter-mode" data-mode="all">
+                                ${currentLanguage === 'it' ? 'Tutti' : 'All'}
+                            </button>
+                            <button class="filter-btn ${aiFilterMode === 'categories' ? 'active' : ''}" data-action="open-ai-category-modal">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
+                                ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
+                            </button>
+                            <button class="filter-btn ${aiFilterMode === 'pricing' ? 'active' : ''}" data-action="open-ai-pricing-modal">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                                ${currentLanguage === 'it' ? 'Prezzo' : 'Price'}${pricingCountText}
+                            </button>
+                        </div>
+                    `);
 
 
                     if (exploreFilter.type) {
@@ -10601,7 +10812,18 @@ ${filtersHTML}
 
                     } else {
                         const toolsByCategory = {};
-                        const allTools = getAllToolsForCurrentUser();
+                        let allTools = getAllToolsForCurrentUser();
+                        
+                        // Apply category filter
+                        if (aiFilterMode === 'categories' && aiSelectedCategories.length > 0) {
+                            allTools = allTools.filter(tool => aiSelectedCategories.includes(tool.category));
+                        }
+                        
+                        // Apply pricing filter
+                        if (aiFilterMode === 'pricing' && aiSelectedPricing.length > 0) {
+                            allTools = allTools.filter(tool => aiSelectedPricing.includes(tool.pricing));
+                        }
+                        
                         allTools.forEach(tool => {
                             const category = tool.category;
                             if (!toolsByCategory[category]) {
@@ -12929,6 +13151,8 @@ ${filtersHTML}
                 const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
                 const videoPlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
                 const videoViewMode = localStorage.getItem('videoViewMode') || 'grid';
+                const selectedCategories = JSON.parse(localStorage.getItem('video-selected-categories') || '[]');
+                const filterMode = localStorage.getItem('video-filter-mode') || 'all'; // 'all' or 'categories'
 
                 // Aggiorna anche la variabile globale
                 window.currentVideoViewMode = videoViewMode;
@@ -12962,7 +13186,7 @@ ${filtersHTML}
 
                     if (viewMode === 'list') {
                         return `
-                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}">
+                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}" data-title="${video.title}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -12982,7 +13206,7 @@ ${filtersHTML}
                         `;
                     } else {
                         return `
-                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}">
+                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}" data-title="${video.title}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -13014,19 +13238,39 @@ ${filtersHTML}
                 }
 
                 if (tab === 'videos' || tab === 'home') {
-                    // Mostra tutti i video
-                    const allVideosHTML = youtubeVideosData.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+                    // Filter videos based on selected categories
+                    let filteredVideos = youtubeVideosData;
+                    if (filterMode === 'categories' && selectedCategories.length > 0) {
+                        filteredVideos = youtubeVideosData.filter(v => selectedCategories.includes(v.category));
+                    }
+                    
+                    const allVideosHTML = filteredVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+                    const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
+                        ? ` (${selectedCategories.length})` 
+                        : '';
+                    
                     contentArea.innerHTML = `
                         <div class="video-search-bar">
                             <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
                         </div>
-                        <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
-                            <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                            </button>
-                            <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                            </button>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button class="filter-btn ${filterMode === 'all' ? 'active' : ''}" data-action="set-filter-mode" data-mode="all">
+                                    ${currentLanguage === 'it' ? 'Tutti' : 'All'}
+                                </button>
+                                <button class="filter-btn ${filterMode === 'categories' ? 'active' : ''}" data-action="open-category-modal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
+                                    ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
+                                </button>
+                            </div>
+                            <div class="view-toggle-container">
+                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                </button>
+                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home" style="padding-bottom: 20px;">
                             ${allVideosHTML}
@@ -13066,19 +13310,40 @@ ${filtersHTML}
 
                 } else if (tab === 'favorites') {
                     // Mostra solo i preferiti
-                    const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
+                    let favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
+                    
+                    // Apply category filter to favorites
+                    if (filterMode === 'categories' && selectedCategories.length > 0) {
+                        favoriteVideos = favoriteVideos.filter(v => selectedCategories.includes(v.category));
+                    }
+                    
                     const favoritesHTML = favoriteVideos.length > 0
                         ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
                         : `<div id="empty-state">${currentLanguage === 'it' ? '' : ''}</div>`;
+                    
+                    const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
+                        ? ` (${selectedCategories.length})` 
+                        : '';
 
                     contentArea.innerHTML = `
-                        <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
-                            <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                            </button>
-                            <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                            </button>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button class="filter-btn ${filterMode === 'all' ? 'active' : ''}" data-action="set-filter-mode" data-mode="all">
+                                    ${currentLanguage === 'it' ? 'Tutti' : 'All'}
+                                </button>
+                                <button class="filter-btn ${filterMode === 'categories' ? 'active' : ''}" data-action="open-category-modal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
+                                    ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
+                                </button>
+                            </div>
+                            <div class="view-toggle-container">
+                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                </button>
+                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" style="padding-bottom: 20px;">
                             ${favoritesHTML}
@@ -13245,7 +13510,7 @@ ${filtersHTML}
 
                     if (viewMode === 'list') {
                         return `
-                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}">
+                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}" data-title="${video.title}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -13265,7 +13530,7 @@ ${filtersHTML}
                         `;
                     } else {
                         return `
-                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}">
+                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}" data-title="${video.title}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -13285,8 +13550,21 @@ ${filtersHTML}
                     }
                 };
 
+                // Load filter state
+                const selectedCategories = JSON.parse(localStorage.getItem('video-selected-categories') || '[]');
+                const filterMode = localStorage.getItem('video-filter-mode') || 'all';
+
+                // Filter videos based on selected categories
+                let filteredVideos = youtubeVideosData;
+                if (filterMode === 'categories' && selectedCategories.length > 0) {
+                    filteredVideos = youtubeVideosData.filter(v => selectedCategories.includes(v.category));
+                }
+
                 // Sezione Home/Tutti
-                const allVideosHTML = youtubeVideosData.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+                const allVideosHTML = filteredVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
+                const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
+                    ? ` (${selectedCategories.length})` 
+                    : '';
 
                 // Sezione Preferiti
                 const favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
@@ -13311,13 +13589,24 @@ ${filtersHTML}
                         <div class="video-search-bar">
                             <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
                         </div>
-                        <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
-                            <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                            </button>
-                            <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                            </button>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button class="filter-btn ${filterMode === 'all' ? 'active' : ''}" data-action="set-filter-mode" data-mode="all">
+                                    ${currentLanguage === 'it' ? 'Tutti' : 'All'}
+                                </button>
+                                <button class="filter-btn ${filterMode === 'categories' ? 'active' : ''}" data-action="open-category-modal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
+                                    ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
+                                </button>
+                            </div>
+                            <div class="view-toggle-container">
+                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                                </button>
+                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
+                                </button>
+                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home">
                             ${allVideosHTML.length > 0 ? allVideosHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video disponibile.' : 'No videos available.'}</div>`}
@@ -13398,7 +13687,7 @@ ${filtersHTML}
 
                     if (viewMode === 'list') {
                         return `
-                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}">
+                            <div class="video-card-list" data-action="open-video-detail" data-video-id="${video.id}" data-title="${video.title}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -13418,7 +13707,7 @@ ${filtersHTML}
                         `;
                     } else {
                         return `
-                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}">
+                            <div class="video-card-grid" data-action="open-video-detail" data-video-id="${video.id}" data-title="${video.title}">
                                 <button class="video-options-btn" data-action="show-video-options" data-video-id="${video.id}">⋯</button>
                                 <div class="video-options-menu" id="options-menu-${video.id}">
                                     <div class="video-options-item" data-action="add-to-playlist" data-video-id="${video.id}">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</div>
@@ -13603,6 +13892,276 @@ ${filtersHTML}
 
                 // MODIFICA: Gestione cambio visualizzazione lista/griglia
                 window.currentVideoViewMode = videoViewMode;
+            };
+
+            // NUOVO: Funzione per aprire il modale di selezione categorie AI
+            const openAICategoryModal = () => {
+                const t = translations[currentLanguage];
+                const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
+                
+                const aiCategories = [
+                    { id: 'Testo', label: currentLanguage === 'it' ? 'Testo' : 'Text', icon: '📝' },
+                    { id: 'Immagini', label: currentLanguage === 'it' ? 'Immagini' : 'Images', icon: '🖼️' },
+                    { id: 'Video', label: 'Video', icon: '🎥' },
+                    { id: 'Presentazioni', label: currentLanguage === 'it' ? 'Presentazioni' : 'Presentations', icon: '📊' },
+                    { id: 'Codice', label: currentLanguage === 'it' ? 'Codice' : 'Code', icon: '💻' },
+                    { id: 'Audio', label: 'Audio', icon: '🎵' },
+                    { id: 'Automation Tools', label: currentLanguage === 'it' ? 'Automazioni' : 'Automation Tools', icon: '⚙️' },
+                    { id: 'Browser AI', label: currentLanguage === 'it' ? 'Browser AI' : 'AI Browser', icon: '🌐' },
+                    { id: 'AI Playground', label: 'AI Playground', icon: '🎮' }
+                ];
+
+                const categoriesHTML = aiCategories.map(cat => `
+                    <div class="category-option ${aiSelectedCategories.includes(cat.id) ? 'selected' : ''}" data-category-id="${cat.id}">
+                        <div class="category-checkbox"></div>
+                        <div class="category-label">
+                            <span>${cat.icon}</span>
+                            <span>${cat.label}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                const modalHTML = `
+                    <div class="category-modal visible" id="ai-category-modal">
+                        <div class="category-modal-content">
+                            <div class="category-modal-header">
+                                <h3 class="category-modal-title">${currentLanguage === 'it' ? 'Seleziona Categorie AI' : 'Select AI Categories'}</h3>
+                                <button class="category-modal-close" data-action="close-ai-category-modal">×</button>
+                            </div>
+                            <div class="category-options">
+                                ${categoriesHTML}
+                            </div>
+                            <div class="category-modal-actions">
+                                <button class="category-cancel-btn" data-action="close-ai-category-modal">
+                                    ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                </button>
+                                <button class="category-apply-btn" data-action="apply-ai-category-filter">
+                                    ${currentLanguage === 'it' ? 'Applica' : 'Apply'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Add click handlers for category options
+                setTimeout(() => {
+                    const categoryOptions = document.querySelectorAll('#ai-category-modal .category-option');
+                    categoryOptions.forEach(option => {
+                        option.addEventListener('click', () => {
+                            option.classList.toggle('selected');
+                        });
+                    });
+                }, 50);
+            };
+
+            const closeAICategoryModal = () => {
+                const modal = document.getElementById('ai-category-modal');
+                if (modal) {
+                    modal.classList.remove('visible');
+                    setTimeout(() => modal.remove(), 300);
+                }
+            };
+
+            const applyAICategoryFilter = () => {
+                const selectedOptions = document.querySelectorAll('#ai-category-modal .category-option.selected');
+                const aiSelectedCategories = Array.from(selectedOptions).map(opt => opt.dataset.categoryId);
+                
+                // Save to localStorage
+                localStorage.setItem('ai-selected-categories', JSON.stringify(aiSelectedCategories));
+                
+                // Set filter mode to categories if any are selected, otherwise to all
+                if (aiSelectedCategories.length > 0) {
+                    localStorage.setItem('ai-filter-mode', 'categories');
+                } else {
+                    localStorage.setItem('ai-filter-mode', 'all');
+                }
+                
+                // Close modal
+                closeAICategoryModal();
+                
+                // Reload the explore view
+                currentView = 'explore';
+                exploreFilter = {};
+                renderView();
+            };
+
+            // NUOVO: Funzione per aprire il modale di selezione prezzi AI
+            const openAIPricingModal = () => {
+                const t = translations[currentLanguage];
+                const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
+                
+                const pricingOptions = [
+                    { id: 'free', label: t.pricingFree || (currentLanguage === 'it' ? 'Gratuito' : 'Free'), icon: '💚' },
+                    { id: 'freemium', label: t.pricingFreemium || 'Freemium', icon: '💛' },
+                    { id: 'paid', label: t.pricingPaid || (currentLanguage === 'it' ? 'A Pagamento' : 'Paid'), icon: '💰' }
+                ];
+
+                const pricingHTML = pricingOptions.map(opt => `
+                    <div class="category-option ${aiSelectedPricing.includes(opt.id) ? 'selected' : ''}" data-pricing-id="${opt.id}">
+                        <div class="category-checkbox"></div>
+                        <div class="category-label">
+                            <span>${opt.icon}</span>
+                            <span>${opt.label}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                const modalHTML = `
+                    <div class="category-modal visible" id="ai-pricing-modal">
+                        <div class="category-modal-content">
+                            <div class="category-modal-header">
+                                <h3 class="category-modal-title">${currentLanguage === 'it' ? 'Seleziona Prezzo' : 'Select Price'}</h3>
+                                <button class="category-modal-close" data-action="close-ai-pricing-modal">×</button>
+                            </div>
+                            <div class="category-options">
+                                ${pricingHTML}
+                            </div>
+                            <div class="category-modal-actions">
+                                <button class="category-cancel-btn" data-action="close-ai-pricing-modal">
+                                    ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                </button>
+                                <button class="category-apply-btn" data-action="apply-ai-pricing-filter">
+                                    ${currentLanguage === 'it' ? 'Applica' : 'Apply'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Add click handlers for pricing options
+                setTimeout(() => {
+                    const pricingOptions = document.querySelectorAll('#ai-pricing-modal .category-option');
+                    pricingOptions.forEach(option => {
+                        option.addEventListener('click', () => {
+                            option.classList.toggle('selected');
+                        });
+                    });
+                }, 50);
+            };
+
+            const closeAIPricingModal = () => {
+                const modal = document.getElementById('ai-pricing-modal');
+                if (modal) {
+                    modal.classList.remove('visible');
+                    setTimeout(() => modal.remove(), 300);
+                }
+            };
+
+            const applyAIPricingFilter = () => {
+                const selectedOptions = document.querySelectorAll('#ai-pricing-modal .category-option.selected');
+                const aiSelectedPricing = Array.from(selectedOptions).map(opt => opt.dataset.pricingId);
+                
+                // Save to localStorage
+                localStorage.setItem('ai-selected-pricing', JSON.stringify(aiSelectedPricing));
+                
+                // Set filter mode to pricing if any are selected, otherwise to all
+                if (aiSelectedPricing.length > 0) {
+                    localStorage.setItem('ai-filter-mode', 'pricing');
+                } else {
+                    localStorage.setItem('ai-filter-mode', 'all');
+                }
+                
+                // Close modal
+                closeAIPricingModal();
+                
+                // Reload the explore view
+                currentView = 'explore';
+                exploreFilter = {};
+                renderView();
+            };
+
+            // NUOVO: Funzione per aprire il modale di selezione categorie
+            const openCategoryModal = () => {
+                const t = translations[currentLanguage];
+                const selectedCategories = JSON.parse(localStorage.getItem('video-selected-categories') || '[]');
+                
+                const categories = [
+                    { id: 'tutorial', label: t.categoryTutorial || 'Tutorial', icon: '📚' },
+                    { id: 'education', label: t.categoryEducation || 'Education', icon: '🎓' },
+                    { id: 'development', label: t.categoryDevelopment || 'Development', icon: '💻' },
+                    { id: 'news', label: t.categoryNews || 'News', icon: '📰' }
+                ];
+
+                const categoriesHTML = categories.map(cat => `
+                    <div class="category-option ${selectedCategories.includes(cat.id) ? 'selected' : ''}" data-category-id="${cat.id}">
+                        <div class="category-checkbox"></div>
+                        <div class="category-label">
+                            <span>${cat.icon}</span>
+                            <span>${cat.label}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                const modalHTML = `
+                    <div class="category-modal visible" id="category-modal">
+                        <div class="category-modal-content">
+                            <div class="category-modal-header">
+                                <h3 class="category-modal-title">${currentLanguage === 'it' ? 'Seleziona Categorie' : 'Select Categories'}</h3>
+                                <button class="category-modal-close" data-action="close-category-modal">×</button>
+                            </div>
+                            <div class="category-options">
+                                ${categoriesHTML}
+                            </div>
+                            <div class="category-modal-actions">
+                                <button class="category-cancel-btn" data-action="close-category-modal">
+                                    ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
+                                </button>
+                                <button class="category-apply-btn" data-action="apply-category-filter">
+                                    ${currentLanguage === 'it' ? 'Applica' : 'Apply'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Add click handlers for category options
+                setTimeout(() => {
+                    const categoryOptions = document.querySelectorAll('.category-option');
+                    categoryOptions.forEach(option => {
+                        option.addEventListener('click', () => {
+                            option.classList.toggle('selected');
+                        });
+                    });
+                }, 50);
+            };
+
+            const closeCategoryModal = () => {
+                const modal = document.getElementById('category-modal');
+                if (modal) {
+                    modal.classList.remove('visible');
+                    setTimeout(() => modal.remove(), 300);
+                }
+            };
+
+            const applyCategoryFilter = () => {
+                const selectedOptions = document.querySelectorAll('.category-option.selected');
+                const selectedCategories = Array.from(selectedOptions).map(opt => opt.dataset.categoryId);
+                
+                // Save to localStorage
+                localStorage.setItem('video-selected-categories', JSON.stringify(selectedCategories));
+                
+                // Set filter mode to categories if any are selected, otherwise to all
+                if (selectedCategories.length > 0) {
+                    localStorage.setItem('video-filter-mode', 'categories');
+                } else {
+                    localStorage.setItem('video-filter-mode', 'all');
+                }
+                
+                // Close modal
+                closeCategoryModal();
+                
+                // Reload current tab with new filter
+                const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
+                if (activeNavBtn) {
+                    const currentTab = activeNavBtn.dataset.tab;
+                    handleCinemaTabChange(currentTab);
+                }
             };
 
             // MODIFICA 4: Funzioni per gestire le playlist video
@@ -14909,6 +15468,14 @@ ${filtersHTML}
                         case 'close-playlist-modal':
                             document.querySelectorAll('.playlist-modal').forEach(m => m.remove());
                             break;
+                        // NUOVO: Chiudi modale categorie
+                        case 'close-category-modal':
+                            closeCategoryModal();
+                            break;
+                        // NUOVO: Applica filtro categorie
+                        case 'apply-category-filter':
+                            applyCategoryFilter();
+                            break;
                         // NUOVO: Toggle selezione multipla playlist
                         case 'toggle-playlist-selection-mode':
                             togglePlaylistSelectionMode();
@@ -14954,6 +15521,58 @@ ${filtersHTML}
                                     handleCinemaTabChange(currentTab);
                                 }
                             }
+                            break;
+                        // NUOVO: Gestisce il filtro "Tutti"
+                        case 'set-filter-mode':
+                            const filterMode = actionTarget.dataset.mode;
+                            if (filterMode) {
+                                localStorage.setItem('video-filter-mode', filterMode);
+                                // Ricarica il tab corrente con il nuovo filtro
+                                const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
+                                if (activeNavBtn) {
+                                    const currentTab = activeNavBtn.dataset.tab;
+                                    handleCinemaTabChange(currentTab);
+                                }
+                            }
+                            break;
+                        // NUOVO: Apre il modale di selezione categorie
+                        case 'open-category-modal':
+                            openCategoryModal();
+                            break;
+                        // NUOVO: Gestisce il filtro "Tutti" per AI
+                        case 'set-ai-filter-mode':
+                            const aiFilterMode = actionTarget.dataset.mode;
+                            if (aiFilterMode) {
+                                localStorage.setItem('ai-filter-mode', aiFilterMode);
+                                // Ricarica la vista explore
+                                currentView = 'explore';
+                                exploreFilter = {};
+                                renderView();
+                            }
+                            break;
+                        // NUOVO: Apre il modale di selezione categorie AI
+                        case 'open-ai-category-modal':
+                            openAICategoryModal();
+                            break;
+                        // NUOVO: Chiudi modale categorie AI
+                        case 'close-ai-category-modal':
+                            closeAICategoryModal();
+                            break;
+                        // NUOVO: Applica filtro categorie AI
+                        case 'apply-ai-category-filter':
+                            applyAICategoryFilter();
+                            break;
+                        // NUOVO: Apre il modale di selezione prezzi AI
+                        case 'open-ai-pricing-modal':
+                            openAIPricingModal();
+                            break;
+                        // NUOVO: Chiudi modale prezzi AI
+                        case 'close-ai-pricing-modal':
+                            closeAIPricingModal();
+                            break;
+                        // NUOVO: Applica filtro prezzi AI
+                        case 'apply-ai-pricing-filter':
+                            applyAIPricingFilter();
                             break;
                         // NUOVO: Gestisce il click sull'icona della password
                         case 'toggle-password-visibility':
