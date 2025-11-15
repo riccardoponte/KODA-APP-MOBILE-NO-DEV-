@@ -8407,11 +8407,11 @@ ${knowledgeBaseFormatter(tools)}
                     coverChanged: "Copertina aggiornata!",
                     addedToCollection: "Aggiunto alla collezione!",
                     removedFromCollection: "Rimosso dalla collezione!",
-                    emptyCollection: "Aggiungi AI ai tuoi preferiti per vederli qui",
-                    emptyCollections: "Crea una collezione per organizzare le tue AI preferite",
-                    emptyPlaylist: "Aggiungi video alla playlist per iniziare",
-                    emptyPlaylists: "Crea una playlist per organizzare i tuoi video preferiti",
-                    emptyVideoFavorites: "Aggiungi video ai preferiti per vederli qui",
+                    emptyCollection: "Aggiungi preferiti",
+                    emptyCollections: "Crea una collezione",
+                    emptyPlaylist: "Aggiungi video alla playlist",
+                    emptyPlaylists: "Crea una playlist",
+                    emptyVideoFavorites: "Aggiungi video preferiti",
                     confirmDeleteCollection: "Sei sicuro di voler eliminare questa collezione?",
                     toolsCount: "%d strumenti",
                     toolCount: "%d strumento",
@@ -8646,11 +8646,11 @@ ${knowledgeBaseFormatter(tools)}
                     coverChanged: "Cover updated!",
                     addedToCollection: "Added to collection!",
                     removedFromCollection: "Removed from collection!",
-                    emptyCollection: "Add AI to your favorites to see them here",
-                    emptyCollections: "Create a collection to organize your favorite AI",
-                    emptyPlaylist: "Add videos to the playlist to get started",
-                    emptyPlaylists: "Create a playlist to organize your favorite videos",
-                    emptyVideoFavorites: "Add videos to favorites to see them here",
+                    emptyCollection: "Add AI to your favorites",
+                    emptyCollections: "Create a collection",
+                    emptyPlaylist: "Add videos to the playlist",
+                    emptyPlaylists: "Create a playlist",
+                    emptyVideoFavorites: "Add videos to favorites",
                     confirmDeleteCollection: "Are you sure you want to delete this collection?",
                     toolsCount: "%d tools",
                     toolCount: "%d tool",
@@ -11531,6 +11531,9 @@ ${filtersHTML}
 
                 // NUOVO: Aggiorna il pulsante FAB nella bottom nav
                 updateBottomNavFAB(libraryTab);
+
+                // NUOVO: Aggiorna sempre il badge di notifica del Cinema dopo ogni cambio di vista
+                setTimeout(() => updateCinemaNotificationBadge(), 100);
             };
 
             const updateNavActiveState = () => el.bottomNav.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.page === currentView));
@@ -14770,10 +14773,6 @@ ${filtersHTML}
                                     ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
                                 </button>
                                 <h2 style="margin: 0; flex: 1;">${playlist.name}</h2>
-                                <button class="pill-btn" data-action="add-videos-to-playlist" data-playlist-id="${playlistId}" style="display: inline-flex; align-items: center; gap: 8px; background: var(--Koda-accent); color: #000;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                                    ${currentLanguage === 'it' ? 'Aggiungi Video' : 'Add Videos'}
-                                </button>
                                 ${playlist.videos.length > 0 ? `
                                     <button class="pill-btn ${playlistSelectionMode ? 'active' : ''}" data-action="toggle-playlist-selection-mode" style="display: inline-flex; align-items: center; gap: 8px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -16808,30 +16807,6 @@ ${filtersHTML}
 
                 // Aggiorna il badge di notifica del Cinema dopo aver caricato i video
                 setTimeout(() => updateCinemaNotificationBadge(), 100);
-
-                // Inizializza la playlist predefinita "Guarda più tardi" (solo localStorage, non Firebase)
-                const initializeDefaultPlaylists = () => {
-                    let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
-                    
-                    // Verifica se la playlist "Guarda più tardi" esiste già
-                    const hasGuardaPiuTardi = playlists.some(p => p.id === 'default-guarda-piu-tardi');
-                    
-                    // Aggiungi "Guarda più tardi" se non esiste
-                    if (!hasGuardaPiuTardi) {
-                        playlists.unshift({
-                            id: 'default-guarda-piu-tardi',
-                            name: 'Guarda più tardi',
-                            videos: [],
-                            createdAt: Date.now(),
-                            isDefault: true
-                        });
-                        localStorage.setItem('video-playlists', JSON.stringify(playlists));
-                        console.log('Playlist predefinita inizializzata: Guarda più tardi');
-                    }
-                };
-                
-                // Chiama la funzione di inizializzazione
-                initializeDefaultPlaylists();
 
                 if (user) {
                     // L'utente è loggato, avvia l'app con i suoi dati.
