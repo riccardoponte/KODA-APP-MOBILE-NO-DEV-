@@ -262,6 +262,32 @@
             color: var(--Koda-accent);
         }
 
+        .global-btn {
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: #ff4444;
+            color: white;
+            border-radius: 10px;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 0 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification-badge.hidden {
+            display: none;
+        }
+
         #lang-toggle-btn {
             font-size: 14px;
             font-weight: bold;
@@ -590,6 +616,11 @@
         
         .grid-container #empty-state {
             grid-column: 1 / -1;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            width: 100%;
         }
 
         /* NUOVO: Layout per la griglia AI in evidenza su schermi grandi */
@@ -6077,6 +6108,11 @@
         
         .video-grid #empty-state {
             grid-column: 1 / -1;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            width: 100%;
         }
 
         @media (max-width: 768px) {
@@ -6093,6 +6129,9 @@
             cursor: pointer;
             transition: transform 0.2s;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 130px;
         }
 
         .video-card-grid:hover {
@@ -6101,13 +6140,17 @@
 
         .video-card-grid .video-thumbnail {
             width: 100%;
-            aspect-ratio: 16 / 9;
+            height: 90px;
             object-fit: cover;
             background-color: var(--Koda-card);
+            flex-shrink: 0;
         }
 
         .video-card-grid .video-info {
             padding: 8px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .video-card-grid .video-info h4 {
@@ -6284,8 +6327,9 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             transition: all 0.2s ease;
-            margin-top: -28px;
+            margin-top: -50px;
             flex-shrink: 0;
+            z-index: 10;
         }
 
         #cinema-fab-btn:hover {
@@ -6969,6 +7013,15 @@
             .grid-view-container {
                 grid-template-columns: repeat(4, 1fr);
             }
+        }
+
+        .grid-view-container #empty-state {
+            grid-column: 1 / -1;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            width: 100%;
         }
 
         /* Card collezione */
@@ -10283,6 +10336,7 @@ ${knowledgeBaseFormatter(tools)}
                 otherControlsHTML += `
     <button id="video-catalog-btn" class="global-btn" data-action="open-video-catalog" title="${translations[currentLanguage].videoCatalogTitle}" style="color: var(--Koda-accent);">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+        <span id="cinema-notification-badge" class="notification-badge hidden">0</span>
     </button>
 `;
 
@@ -10843,11 +10897,11 @@ ${knowledgeBaseFormatter(tools)}
                             </svg>
                             <span>${t.navCinemaVideos || (currentLanguage === 'it' ? 'Video' : 'Videos')}</span>
                         </button>
-                        <button class="cinema-nav-btn ${activeTab === 'favorites' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="favorites">
+                        <button class="cinema-nav-btn ${activeTab === 'uni' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="uni">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
                             </svg>
-                            <span>${t.navCinemaFavorites || (currentLanguage === 'it' ? 'Preferiti' : 'Favorites')}</span>
+                            <span>Uni</span>
                         </button>
                         <button id="cinema-fab-btn" class="nav-btn-fab" data-action="create-playlist" title="${currentLanguage === 'it' ? 'Crea playlist' : 'Create playlist'}">
                             <div class="fab-icon">
@@ -10856,11 +10910,11 @@ ${knowledgeBaseFormatter(tools)}
                                 </svg>
                             </div>
                         </button>
-                        <button class="cinema-nav-btn ${activeTab === 'uni' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="uni">
+                        <button class="cinema-nav-btn ${activeTab === 'favorites' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="favorites">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                             </svg>
-                            <span>Uni</span>
+                            <span>${t.navCinemaFavorites || (currentLanguage === 'it' ? 'Preferiti' : 'Favorites')}</span>
                         </button>
                         <button class="cinema-nav-btn ${activeTab === 'playlists' ? 'active' : ''}" data-action="set-cinema-tab" data-tab="playlists">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -10871,6 +10925,26 @@ ${knowledgeBaseFormatter(tools)}
                     </nav>
                 `;
                 document.body.insertAdjacentHTML('beforeend', cinemaNavHTML);
+            };
+
+            // Funzione per aggiornare il badge di notifica del Cinema
+            const updateCinemaNotificationBadge = () => {
+                const badge = document.getElementById('cinema-notification-badge');
+                if (!badge) return;
+
+                const lastVisit = parseInt(localStorage.getItem('lastCinemaVisit') || '0');
+                const newVideosCount = youtubeVideosData.filter(video => {
+                    if (!video.createdAt || !video.createdAt.seconds) return false;
+                    const videoTimestamp = video.createdAt.seconds * 1000;
+                    return videoTimestamp > lastVisit;
+                }).length;
+
+                if (newVideosCount > 0) {
+                    badge.textContent = newVideosCount > 99 ? '99+' : newVideosCount.toString();
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
             };
 
             const renderView = () => {
@@ -13574,8 +13648,10 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
-                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <h4 style="margin: 0; flex: 1; min-width: 0;">${video.title}</h4>
+                                        ${video.category ? getCategoryBadgeHTML(video.category) : ''}
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -13733,8 +13809,7 @@ ${filtersHTML}
                         : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video educativo disponibile' : 'No educational videos available'}</div>`;
 
                     contentArea.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
-                            <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Uni</h2>
+                        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
                             <div class="view-toggle-container">
                                 <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
@@ -13941,8 +14016,10 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
-                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <h4 style="margin: 0; flex: 1; min-width: 0;">${video.title}</h4>
+                                        ${video.category ? getCategoryBadgeHTML(video.category) : ''}
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -14118,8 +14195,10 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
-                                    ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <h4 style="margin: 0; flex: 1; min-width: 0;">${video.title}</h4>
+                                        ${video.category ? getCategoryBadgeHTML(video.category) : ''}
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -15635,6 +15714,10 @@ ${filtersHTML}
                             break;
                         // AZIONI CATALOGO VIDEO (UTENTE) - Ora naviga alla pagina cinema
                         case 'open-video-catalog':
+                            // Azzera il badge quando si apre il Cinema
+                            localStorage.setItem('lastCinemaVisit', Date.now().toString());
+                            updateCinemaNotificationBadge();
+                            
                             currentView = 'cinema';
                             history.pushState({ page: 'cinema' }, '', '#cinema');
                             renderView();
@@ -16722,6 +16805,9 @@ ${filtersHTML}
                     fetchRankingsFromFirestore(),
                     fetchVideosFromFirestore()
                 ]);
+
+                // Aggiorna il badge di notifica del Cinema dopo aver caricato i video
+                setTimeout(() => updateCinemaNotificationBadge(), 100);
 
                 // Inizializza la playlist predefinita "Guarda più tardi" (solo localStorage, non Firebase)
                 const initializeDefaultPlaylists = () => {
