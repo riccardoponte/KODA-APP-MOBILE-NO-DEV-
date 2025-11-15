@@ -6131,7 +6131,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            height: 130px;
+            min-height: 130px;
         }
 
         .video-card-grid:hover {
@@ -8299,13 +8299,13 @@ ${knowledgeBaseFormatter(tools)}
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Cerca", navSearchUsers: "Utenti", navLibrary: "Libreria",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema",
                     navCinemaVideos: "Video", navCinemaFavorites: "Preferiti", navCinemaPlaylists: "Playlist",
-                    logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Ogni AI è basata su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
+                    logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
                     pricingFree: "Gratuito", pricingFreemium: "Freemium", pricingPaid: "A Pagamento",
                     categoryTutorial: "Tutorial", categoryEducation: "Educazione", categoryDevelopment: "Sviluppo", categoryNews: "Notizie",
-                    libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "Aggiungi AI ai tuoi preferiti per vederli qui",
+                    libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "Aggiungi AI ai tuoi preferiti",
                     noResultsFor: "Nessun risultato per",
                     // Rankings
                     rankingTextTitle: "Classifica per il testo", rankingCodeTitle: "Classifica per il codice",
@@ -8407,11 +8407,11 @@ ${knowledgeBaseFormatter(tools)}
                     coverChanged: "Copertina aggiornata!",
                     addedToCollection: "Aggiunto alla collezione!",
                     removedFromCollection: "Rimosso dalla collezione!",
-                    emptyCollection: "Aggiungi preferiti",
+                    emptyCollection: "Aggiungi dei preferiti",
                     emptyCollections: "Crea una collezione",
                     emptyPlaylist: "Aggiungi video alla playlist",
                     emptyPlaylists: "Crea una playlist",
-                    emptyVideoFavorites: "Aggiungi video preferiti",
+                    emptyVideoFavorites: "Aggiungi video ai preferiti",
                     confirmDeleteCollection: "Sei sicuro di voler eliminare questa collezione?",
                     toolsCount: "%d strumenti",
                     toolCount: "%d strumento",
@@ -8538,7 +8538,7 @@ ${knowledgeBaseFormatter(tools)}
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Search", navSearchUsers: "Users", navLibrary: "Library",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Search", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Your Library", pageTitleCinema: "Cinema",
                     navCinemaVideos: "Videos", navCinemaFavorites: "Favorites", navCinemaPlaylists: "Playlists",
-                    logout: "Logout", featured: "Featured", featuredDisclaimer: "Each AI is based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
+                    logout: "Logout", featured: "Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
                     backToSearch: "‹ Back to search", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
@@ -13631,7 +13631,8 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
+                                    <h4>${video.title}</h4>
+                                    ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
@@ -13651,10 +13652,8 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <h4 style="margin: 0; flex: 1; min-width: 0;">${video.title}</h4>
-                                        ${video.category ? getCategoryBadgeHTML(video.category) : ''}
-                                    </div>
+                                    <h4 style="margin: 0;">${video.title}</h4>
+                                    ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
                                 </div>
                             </div>
                         `;
@@ -13999,7 +13998,8 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
+                                    <h4>${video.title}</h4>
+                                    ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
@@ -14019,10 +14019,8 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <h4 style="margin: 0; flex: 1; min-width: 0;">${video.title}</h4>
-                                        ${video.category ? getCategoryBadgeHTML(video.category) : ''}
-                                    </div>
+                                    <h4 style="margin: 0;">${video.title}</h4>
+                                    ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
                                 </div>
                             </div>
                         `;
@@ -14178,7 +14176,8 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
+                                    <h4>${video.title}</h4>
+                                    ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
                                     ${description ? `<div class="video-description">${description}</div>` : ''}
                                     ${videoDate ? `<div class="video-date">${videoDate}</div>` : ''}
                                 </div>
@@ -14198,10 +14197,8 @@ ${filtersHTML}
                                 </button>
                                 <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
                                 <div class="video-info">
-                                    <div style="display: flex; align-items: center; gap: 6px;">
-                                        <h4 style="margin: 0; flex: 1; min-width: 0;">${video.title}</h4>
-                                        ${video.category ? getCategoryBadgeHTML(video.category) : ''}
-                                    </div>
+                                    <h4 style="margin: 0;">${video.title}</h4>
+                                    ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
                                 </div>
                             </div>
                         `;
@@ -16807,6 +16804,17 @@ ${filtersHTML}
 
                 // Aggiorna il badge di notifica del Cinema dopo aver caricato i video
                 setTimeout(() => updateCinemaNotificationBadge(), 100);
+
+                // Rimuovi la playlist predefinita "Guarda più tardi" se esiste nel localStorage
+                const removeDefaultPlaylist = () => {
+                    let playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                    const filteredPlaylists = playlists.filter(p => p.id !== 'default-guarda-piu-tardi');
+                    if (filteredPlaylists.length !== playlists.length) {
+                        localStorage.setItem('video-playlists', JSON.stringify(filteredPlaylists));
+                        console.log('Playlist predefinita "Guarda più tardi" rimossa dal localStorage');
+                    }
+                };
+                removeDefaultPlaylist();
 
                 if (user) {
                     // L'utente è loggato, avvia l'app con i suoi dati.
