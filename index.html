@@ -6101,7 +6101,7 @@
         /* MODIFICA 2: Griglia stile YouTube per i video */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 16px;
             min-height: 50vh;
         }
@@ -6117,7 +6117,7 @@
 
         @media (max-width: 768px) {
             .video-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 12px;
             }
         }
@@ -13654,6 +13654,7 @@ ${filtersHTML}
                                 <div class="video-info">
                                     <h4 style="margin: 0;">${video.title}</h4>
                                     ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
+                                    ${videoDate ? `<div class="video-date" style="margin-top: 4px;">${videoDate}</div>` : ''}
                                 </div>
                             </div>
                         `;
@@ -13857,15 +13858,13 @@ ${filtersHTML}
 
                         if (mode === 'grid') {
                             return `
-                                <div class="video-card" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer; position: relative;">
-                                    <div class="video-thumbnail" style="overflow: hidden; position: relative;">
+                                <div class="tool-card-grid" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer; position: relative;">
+                                    <div class="logo-container" style="position: relative;">
                                         ${coverHTML}
                                         <button class="video-options-btn" data-action="toggle-playlist-options" data-playlist-id="${playlist.id}" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.8); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">⋮</button>
                                     </div>
-                                    <div class="video-info">
-                                        <h4>${playlist.name}</h4>
-                                        <p style="color: var(--Koda-text-secondary); font-size: 14px; margin: 4px 0 0 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
-                                    </div>
+                                    <div class="tool-name">${playlist.name}</div>
+                                    <p style="color: var(--Koda-text-secondary); font-size: 12px; margin: 4px 0 0 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
                                     <div class="video-options-menu" id="playlist-options-${playlist.id}" style="position: absolute; top: 48px; right: 8px; z-index: 20; display: none; background: var(--Koda-card); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); min-width: 150px;">
                                         <button data-action="edit-playlist" data-playlist-id="${playlist.id}" style="width: 100%; padding: 12px 16px; background: none; border: none; color: var(--Koda-text); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='var(--Koda-bg-light)'" onmouseout="this.style.background='none'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -13913,15 +13912,7 @@ ${filtersHTML}
                         : '';
 
                     contentArea.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <button class="pill-btn" id="playlist-multi-select-btn" data-action="toggle-playlist-multi-select" style="font-size: 13px; display: ${videoPlaylists.length > 0 && videoViewMode === 'list' ? 'inline-block' : 'none'};">
-                                    ${currentLanguage === 'it' ? 'Seleziona' : 'Select'}
-                                </button>
-                                <button class="pill-btn" id="playlist-delete-selected-btn" data-action="delete-selected-playlists" style="font-size: 13px; background-color: #ff6b6b; color: white; display: none;">
-                                    ${currentLanguage === 'it' ? 'Elimina' : 'Delete'}
-                                </button>
-                            </div>
+                        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
                             <div class="view-toggle-container">
                                 <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
@@ -13931,7 +13922,7 @@ ${filtersHTML}
                                 </button>
                             </div>
                         </div>
-                        <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
+                        <div class="${videoViewMode === 'grid' ? 'grid-container' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
                             ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${translations[currentLanguage].emptyPlaylists}</div>`}
                         </div>
                     `;
@@ -14021,6 +14012,7 @@ ${filtersHTML}
                                 <div class="video-info">
                                     <h4 style="margin: 0;">${video.title}</h4>
                                     ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
+                                    ${videoDate ? `<div class="video-date" style="margin-top: 4px;">${videoDate}</div>` : ''}
                                 </div>
                             </div>
                         `;
@@ -14199,6 +14191,7 @@ ${filtersHTML}
                                 <div class="video-info">
                                     <h4 style="margin: 0;">${video.title}</h4>
                                     ${video.category ? `<div style="margin-top: 4px;">${getCategoryBadgeHTML(video.category)}</div>` : ''}
+                                    ${videoDate ? `<div class="video-date" style="margin-top: 4px;">${videoDate}</div>` : ''}
                                 </div>
                             </div>
                         `;
