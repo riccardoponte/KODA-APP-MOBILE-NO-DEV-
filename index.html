@@ -11194,7 +11194,13 @@ ${filtersHTML}
                     if (exploreFilter.type) {
                         const allTools = getAllToolsForCurrentUser();
                         const uniqueTools = allTools.filter((tool, idx, arr) => arr.findIndex(t => t.id === tool.id) === idx);
-                        const filteredTools = uniqueTools.filter(t => t[exploreFilter.type] === exploreFilter.value);
+                        let filteredTools = uniqueTools.filter(t => t[exploreFilter.type] === exploreFilter.value);
+
+                        // Apply pricing filter if active
+                        if (aiSelectedPricing.length > 0) {
+                            filteredTools = filteredTools.filter(tool => aiSelectedPricing.includes(tool.pricing));
+                        }
+
                         const title = exploreFilter.type === 'category' ? getTranslatedCategoryName(exploreFilter.value) : `${t.toolsFrom} ${exploreFilter.value}`;
 
                         contentArea.innerHTML = `
@@ -14451,9 +14457,8 @@ ${filtersHTML}
                 // Close modal
                 closeAICategoryModal();
 
-                // Reload the explore view
+                // Reload the explore view (preserve exploreFilter to stay in category view)
                 currentView = 'explore';
-                exploreFilter = {};
                 renderView();
             };
 
@@ -14534,9 +14539,8 @@ ${filtersHTML}
                 // Close modal
                 closeAIPricingModal();
 
-                // Reload the explore view
+                // Reload the explore view (preserve exploreFilter to stay in category view)
                 currentView = 'explore';
-                exploreFilter = {};
                 renderView();
             };
 
