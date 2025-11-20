@@ -613,7 +613,7 @@
             gap: 16px;
             min-height: 50vh;
         }
-        
+
         .grid-container #empty-state {
             grid-column: 1 / -1;
             display: flex !important;
@@ -6105,7 +6105,7 @@
             gap: 16px;
             min-height: 50vh;
         }
-        
+
         .video-grid #empty-state {
             grid-column: 1 / -1;
             display: flex !important;
@@ -6397,7 +6397,7 @@
             font-size: 13px;
             color: var(--Koda-text-secondary);
         }
-        
+
         @media (max-width: 600px) {
             .playlist-item h4 {
                 font-size: 14px;
@@ -8471,6 +8471,7 @@ ${knowledgeBaseFormatter(tools)}
                     removeFromFavorites: "Rimuovi dai preferiti",
                     addToPlaylist: "Aggiungi a playlist",
                     watchOnYouTube: "Guarda su YouTube",
+                    educationalPurpose: "Video a scopo didattico",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Privacy Policy di Koda.AI",
@@ -8709,6 +8710,7 @@ ${knowledgeBaseFormatter(tools)}
                     removeFromFavorites: "Remove from favorites",
                     addToPlaylist: "Add to playlist",
                     watchOnYouTube: "Watch on YouTube",
+                    educationalPurpose: "Educational purpose video",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Koda.AI Privacy Policy",
@@ -10374,7 +10376,7 @@ ${knowledgeBaseFormatter(tools)}
                     const logoUrl = currentTheme === 'light'
                         ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                         : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                    
+
                     const coverHTML = collection.coverImage
                         ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                         : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
@@ -11162,11 +11164,11 @@ ${filtersHTML}
                     const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
                     const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
                     const hasActiveFilters = aiSelectedCategories.length > 0 || aiSelectedPricing.length > 0;
-                    const categoryCountText = aiSelectedCategories.length > 0 
-                        ? ` (${aiSelectedCategories.length})` 
+                    const categoryCountText = aiSelectedCategories.length > 0
+                        ? ` (${aiSelectedCategories.length})`
                         : '';
-                    const pricingCountText = aiSelectedPricing.length > 0 
-                        ? ` (${aiSelectedPricing.length})` 
+                    const pricingCountText = aiSelectedPricing.length > 0
+                        ? ` (${aiSelectedPricing.length})`
                         : '';
 
                     el.mainContent.insertAdjacentHTML('beforeend', `
@@ -11213,17 +11215,17 @@ ${filtersHTML}
                     } else {
                         const toolsByCategory = {};
                         let allTools = getAllToolsForCurrentUser();
-                        
+
                         // Apply category filter
                         if (aiSelectedCategories.length > 0) {
                             allTools = allTools.filter(tool => aiSelectedCategories.includes(tool.category));
                         }
-                        
+
                         // Apply pricing filter
                         if (aiSelectedPricing.length > 0) {
                             allTools = allTools.filter(tool => aiSelectedPricing.includes(tool.pricing));
                         }
-                        
+
                         allTools.forEach(tool => {
                             const category = tool.category;
                             if (!toolsByCategory[category]) {
@@ -11327,7 +11329,7 @@ ${filtersHTML}
                         const logoUrl = currentTheme === 'light'
                             ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                             : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                        
+
                         const coverHTML = collection.coverImage
                             ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                             : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
@@ -11489,7 +11491,7 @@ ${filtersHTML}
                                     const logoUrl = currentTheme === 'light'
                                         ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                                         : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                                    
+
                                     const coverHTML = collection.coverImage
                                         ? `<img src="${collection.coverImage}" alt="${collection.name}">`
                                         : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
@@ -13597,7 +13599,7 @@ ${filtersHTML}
                         btn.classList.add('active');
                     }
                 });
-                
+
                 // Mostra/nascondi il FAB solo nella sezione playlists
                 const cinemaFab = document.getElementById('cinema-fab-btn');
                 if (cinemaFab) {
@@ -13678,12 +13680,12 @@ ${filtersHTML}
                     if (filterMode === 'categories' && selectedCategories.length > 0) {
                         filteredVideos = youtubeVideosData.filter(v => selectedCategories.includes(v.category));
                     }
-                    
+
                     const allVideosHTML = filteredVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
-                    const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
-                        ? ` (${selectedCategories.length})` 
+                    const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0
+                        ? ` (${selectedCategories.length})`
                         : '';
-                    
+
                     contentArea.innerHTML = `
                         <div class="video-search-bar">
                             <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
@@ -13746,18 +13748,18 @@ ${filtersHTML}
                 } else if (tab === 'favorites') {
                     // Mostra solo i preferiti
                     let favoriteVideos = youtubeVideosData.filter(v => videoFavorites.includes(v.id));
-                    
+
                     // Apply category filter to favorites
                     if (filterMode === 'categories' && selectedCategories.length > 0) {
                         favoriteVideos = favoriteVideos.filter(v => selectedCategories.includes(v.category));
                     }
-                    
+
                     const favoritesHTML = favoriteVideos.length > 0
                         ? favoriteVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
                         : `<div id="empty-state">${translations[currentLanguage].emptyVideoFavorites}</div>`;
-                    
-                    const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
-                        ? ` (${selectedCategories.length})` 
+
+                    const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0
+                        ? ` (${selectedCategories.length})`
                         : '';
 
                     contentArea.innerHTML = `
@@ -13806,13 +13808,14 @@ ${filtersHTML}
                 } else if (tab === 'uni') {
                     // Mostra solo i video con categoria "education"
                     const educationVideos = youtubeVideosData.filter(v => v.category === 'education');
-                    
+
                     const uniHTML = educationVideos.length > 0
                         ? educationVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('')
                         : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video educativo disponibile' : 'No educational videos available'}</div>`;
 
                     contentArea.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
+                            <span style="color: var(--Koda-text-secondary); font-size: 14px; font-weight: 500;">${translations[currentLanguage].educationalPurpose}</span>
                             <div class="view-toggle-container">
                                 <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
@@ -13851,7 +13854,7 @@ ${filtersHTML}
                         const logoUrl = currentTheme === 'light'
                             ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                             : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                        
+
                         const coverHTML = playlist.coverImage
                             ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover;">`
                             : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
@@ -14031,8 +14034,8 @@ ${filtersHTML}
 
                 // Sezione Home/Tutti
                 const allVideosHTML = filteredVideos.map((v, i) => generateVideoCard(v, i, videoViewMode)).join('');
-                const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0 
-                    ? ` (${selectedCategories.length})` 
+                const categoryCountText = filterMode === 'categories' && selectedCategories.length > 0
+                    ? ` (${selectedCategories.length})`
                     : '';
 
                 // Sezione Preferiti
@@ -14212,7 +14215,7 @@ ${filtersHTML}
                     const logoUrl = currentTheme === 'light'
                         ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                         : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                    
+
                     const coverHTML = playlist.coverImage
                         ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover;">`
                         : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
@@ -14369,10 +14372,10 @@ ${filtersHTML}
             const openAICategoryModal = () => {
                 const t = translations[currentLanguage];
                 const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
-                
+
                 // Aggiungi alla cronologia del browser
                 history.pushState({ modal: 'ai-category-filter', page: currentView }, '', '');
-                
+
                 const aiCategories = [
                     { id: 'Testo', label: currentLanguage === 'it' ? 'Testo' : 'Text', icon: '📝' },
                     { id: 'Immagini', label: currentLanguage === 'it' ? 'Immagini' : 'Images', icon: '🖼️' },
@@ -14441,13 +14444,13 @@ ${filtersHTML}
             const applyAICategoryFilter = () => {
                 const selectedOptions = document.querySelectorAll('#ai-category-modal .category-option.selected');
                 const aiSelectedCategories = Array.from(selectedOptions).map(opt => opt.dataset.categoryId);
-                
+
                 // Save to localStorage
                 localStorage.setItem('ai-selected-categories', JSON.stringify(aiSelectedCategories));
-                
+
                 // Close modal
                 closeAICategoryModal();
-                
+
                 // Reload the explore view
                 currentView = 'explore';
                 exploreFilter = {};
@@ -14458,10 +14461,10 @@ ${filtersHTML}
             const openAIPricingModal = () => {
                 const t = translations[currentLanguage];
                 const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
-                
+
                 // Aggiungi alla cronologia del browser
                 history.pushState({ modal: 'ai-pricing-filter', page: currentView }, '', '');
-                
+
                 const pricingOptions = [
                     { id: 'free', label: t.pricingFree || (currentLanguage === 'it' ? 'Gratuito' : 'Free'), icon: '💚' },
                     { id: 'freemium', label: t.pricingFreemium || 'Freemium', icon: '💛' },
@@ -14524,13 +14527,13 @@ ${filtersHTML}
             const applyAIPricingFilter = () => {
                 const selectedOptions = document.querySelectorAll('#ai-pricing-modal .category-option.selected');
                 const aiSelectedPricing = Array.from(selectedOptions).map(opt => opt.dataset.pricingId);
-                
+
                 // Save to localStorage
                 localStorage.setItem('ai-selected-pricing', JSON.stringify(aiSelectedPricing));
-                
+
                 // Close modal
                 closeAIPricingModal();
-                
+
                 // Reload the explore view
                 currentView = 'explore';
                 exploreFilter = {};
@@ -14541,10 +14544,10 @@ ${filtersHTML}
             const openCategoryModal = () => {
                 const t = translations[currentLanguage];
                 const selectedCategories = JSON.parse(localStorage.getItem('video-selected-categories') || '[]');
-                
+
                 // Aggiungi alla cronologia del browser
                 history.pushState({ modal: 'category-filter', page: currentView }, '', '');
-                
+
                 const categories = [
                     { id: 'tutorial', label: t.categoryTutorial || 'Tutorial', icon: '📚' },
                     { id: 'education', label: t.categoryEducation || 'Education', icon: '🎓' },
@@ -14608,20 +14611,20 @@ ${filtersHTML}
             const applyCategoryFilter = () => {
                 const selectedOptions = document.querySelectorAll('.category-option.selected');
                 const selectedCategories = Array.from(selectedOptions).map(opt => opt.dataset.categoryId);
-                
+
                 // Save to localStorage
                 localStorage.setItem('video-selected-categories', JSON.stringify(selectedCategories));
-                
+
                 // Set filter mode to categories if any are selected, otherwise to all
                 if (selectedCategories.length > 0) {
                     localStorage.setItem('video-filter-mode', 'categories');
                 } else {
                     localStorage.setItem('video-filter-mode', 'all');
                 }
-                
+
                 // Close modal
                 closeCategoryModal();
-                
+
                 // Reload current tab with new filter
                 const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
                 if (activeNavBtn) {
@@ -14749,7 +14752,7 @@ ${filtersHTML}
                 const logoUrl = currentTheme === 'light'
                     ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                     : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                
+
                 const coverHTML = playlist.coverImage
                     ? `<img src="${playlist.coverImage}" alt="${playlist.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
                     : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; background: var(--Koda-card);">`;
@@ -15525,7 +15528,7 @@ ${filtersHTML}
                 // 10. Gestisci il cambio di pagina
                 if (event.state && event.state.page) {
                     currentView = event.state.page;
-                    
+
                     // Ripristina i filtri se presenti nello stato
                     if (event.state.exploreFilter !== undefined) {
                         exploreFilter = event.state.exploreFilter;
@@ -15536,7 +15539,7 @@ ${filtersHTML}
                     if (event.state.activeFilter !== undefined) {
                         activeFilter = event.state.activeFilter;
                     }
-                    
+
                     renderView();
 
                     // Se lo stato include un tab del cinema, ripristinalo (senza aggiungere alla cronologia)
@@ -15706,7 +15709,7 @@ ${filtersHTML}
                             // Azzera il badge quando si apre il Cinema
                             localStorage.setItem('lastCinemaVisit', Date.now().toString());
                             updateCinemaNotificationBadge();
-                            
+
                             currentView = 'cinema';
                             history.pushState({ page: 'cinema' }, '', '#cinema');
                             renderView();
@@ -15790,7 +15793,7 @@ ${filtersHTML}
                         case 'delete-playlist':
                             event.stopPropagation();
                             const delPlaylistId = actionTarget.dataset.playlistId;
-                            
+
                             const confirmDelete = await showConfirmModal({
                                 title: currentLanguage === 'it' ? 'Elimina playlist' : 'Delete playlist',
                                 message: currentLanguage === 'it' ? 'Sei sicuro di voler eliminare questa playlist?' : 'Are you sure you want to delete this playlist?',
@@ -16275,18 +16278,18 @@ ${filtersHTML}
                                     img.src = avatarImageUrl;
                                 });
                             }
-                            
+
                             // Aggiorna i loghi delle collezioni e playlist
                             const newLogoUrl = currentTheme === 'light'
                                 ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                                 : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                            
+
                             // Aggiorna tutte le immagini con alt="Koda Logo"
                             const logoImages = document.querySelectorAll('img[alt="Koda Logo"]');
                             logoImages.forEach(img => {
                                 img.src = newLogoUrl;
                             });
-                            
+
                             break;
                         case 'toggle-lang':
                             // Cambia la lingua a livello globale
@@ -16401,9 +16404,9 @@ ${filtersHTML}
                             exploreMultiSelectMode = false;
                             exploreSelectedTools = [];
                             // Aggiungi alla cronologia del browser
-                            history.pushState({ 
-                                page: currentView, 
-                                exploreFilter: { ...exploreFilter } 
+                            history.pushState({
+                                page: currentView,
+                                exploreFilter: { ...exploreFilter }
                             }, '', `#explore-${exploreFilter.type}-${exploreFilter.value}`);
                             renderView();
                             break;
@@ -16426,18 +16429,18 @@ ${filtersHTML}
                         case 'set-ranking-filter':
                             rankingFilter = actionTarget.dataset.filter;
                             // Aggiungi alla cronologia del browser
-                            history.pushState({ 
-                                page: currentView, 
-                                rankingFilter: rankingFilter 
+                            history.pushState({
+                                page: currentView,
+                                rankingFilter: rankingFilter
                             }, '', `#ranking-${rankingFilter}`);
                             renderView(); // Re-render to apply ranking filter
                             break;
                         case 'set-favorite-filter':
                             activeFilter = actionTarget.dataset.filter;
                             // Aggiungi alla cronologia del browser
-                            history.pushState({ 
-                                page: currentView, 
-                                activeFilter: activeFilter 
+                            history.pushState({
+                                page: currentView,
+                                activeFilter: activeFilter
                             }, '', `#library-${activeFilter}`);
                             renderView(); // Re-render to apply favorite filter
                             break;
