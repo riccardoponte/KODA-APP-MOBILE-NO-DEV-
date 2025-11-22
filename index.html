@@ -7419,6 +7419,208 @@
                 font-size: 24px;
             }
         }
+
+        /* Dice Button and Overlay Styles */
+        #dice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        #dice-overlay.visible {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .dice-container {
+            perspective: 1000px;
+            width: 150px;
+            height: 150px;
+            position: relative;
+        }
+
+        .dice {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rollDice 2s ease-in-out;
+        }
+
+        @keyframes rollDice {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+
+            25% {
+                transform: rotateX(360deg) rotateY(180deg);
+            }
+
+            50% {
+                transform: rotateX(720deg) rotateY(360deg);
+            }
+
+            75% {
+                transform: rotateX(1080deg) rotateY(540deg);
+            }
+
+            100% {
+                transform: rotateX(1440deg) rotateY(720deg);
+            }
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+        }
+
+        .dice-face.front {
+            transform: rotateY(0deg) translateZ(75px);
+        }
+
+        .dice-face.back {
+            transform: rotateY(180deg) translateZ(75px);
+        }
+
+        .dice-face.right {
+            transform: rotateY(90deg) translateZ(75px);
+        }
+
+        .dice-face.left {
+            transform: rotateY(-90deg) translateZ(75px);
+        }
+
+        .dice-face.top {
+            transform: rotateX(90deg) translateZ(75px);
+        }
+
+        .dice-face.bottom {
+            transform: rotateX(-90deg) translateZ(75px);
+        }
+
+        /* Result Modal */
+        .dice-result-modal {
+            background: var(--Koda-card);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+            display: none;
+        }
+
+        .dice-result-modal.visible {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .dice-result-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--Koda-accent);
+        }
+
+        .dice-result-tool {
+            background: var(--Koda-bg-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .dice-result-tool-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            object-fit: cover;
+        }
+
+        .dice-result-tool-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .dice-result-tool-desc {
+            font-size: 14px;
+            color: var(--Koda-text-secondary);
+            line-height: 1.5;
+        }
+
+        .dice-result-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .dice-result-btn {
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .dice-result-btn.primary {
+            background: var(--Koda-accent);
+            color: #000;
+        }
+
+        .dice-result-btn.primary:hover {
+            background: #1ed760;
+            transform: scale(1.05);
+        }
+
+        .dice-result-btn.secondary {
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text);
+        }
+
+        .dice-result-btn.secondary:hover {
+            background: var(--Koda-bg);
+        }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
     <script type="importmap">
@@ -7528,6 +7730,36 @@
                             d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
                     </svg></span><span data-translate="navLibrary">Libreria</span></button>
         </nav>
+    </div>
+
+    <!-- Dice Overlay -->
+    <div id="dice-overlay">
+        <div class="dice-container">
+            <div class="dice">
+                <div class="dice-face front">❓</div>
+                <div class="dice-face back">❓</div>
+                <div class="dice-face right">❓</div>
+                <div class="dice-face left">❓</div>
+                <div class="dice-face top">❓</div>
+                <div class="dice-face bottom">❓</div>
+            </div>
+        </div>
+        <div class="dice-result-modal">
+            <div class="dice-result-title" id="dice-result-title"></div>
+            <div class="dice-result-tool">
+                <img class="dice-result-tool-logo" id="dice-result-logo" src="" alt="">
+                <div class="dice-result-tool-name" id="dice-result-name"></div>
+                <div class="dice-result-tool-desc" id="dice-result-desc"></div>
+            </div>
+            <div class="dice-result-actions">
+                <button class="dice-result-btn secondary" id="dice-close-btn">
+                    <span id="dice-close-text"></span>
+                </button>
+                <button class="dice-result-btn primary" id="dice-view-btn">
+                    <span id="dice-view-text"></span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <div id="modal-container"></div>
@@ -7890,8 +8122,8 @@ ${knowledgeBaseFormatter(tools)}
 
 
         // --- Gemini Service ---
-        const k1 = "AIzaSyA6BwZbYprIcStmXS"; 
-        const k2 = "DIy4pGS-xhFVpTD84";      
+        const k1 = "AIzaSyA6BwZbYprIcStmXS";
+        const k2 = "DIy4pGS-xhFVpTD84";
         const UNIVERSAL_KEY = k1 + k2;
 
         const API_KEY = localStorage.getItem('gemini-api-key') || UNIVERSAL_KEY;
@@ -10343,6 +10575,16 @@ ${knowledgeBaseFormatter(tools)}
     <button id="video-catalog-btn" class="global-btn" data-action="open-video-catalog" title="${translations[currentLanguage].videoCatalogTitle}" style="color: var(--Koda-accent);">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
         <span id="cinema-notification-badge" class="notification-badge hidden">0</span>
+    </button>
+`;
+
+                // NUOVO: Pulsante Dado (Random AI Tool)
+                otherControlsHTML += `
+    <button id="dice-btn" class="global-btn" data-action="roll-dice" title="${currentLanguage === 'it' ? 'Scopri un AI casuale' : 'Discover a random AI'}" style="color: var(--Koda-accent);">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
+        </svg>
     </button>
 `;
 
@@ -17071,6 +17313,133 @@ ${filtersHTML}
 
             // Listen for language changes
             window.addEventListener('languageChanged', updatePrivacyModalContent);
+        })();
+
+        // Dice Roll Functionality
+        (function () {
+            let selectedTool = null;
+
+            // Get dice overlay and elements
+            const diceOverlay = document.getElementById('dice-overlay');
+            const diceContainer = document.querySelector('.dice-container');
+            const diceResultModal = document.querySelector('.dice-result-modal');
+            const diceResultTitle = document.getElementById('dice-result-title');
+            const diceResultLogo = document.getElementById('dice-result-logo');
+            const diceResultName = document.getElementById('dice-result-name');
+            const diceResultDesc = document.getElementById('dice-result-desc');
+            const diceCloseBtn = document.getElementById('dice-close-btn');
+            const diceViewBtn = document.getElementById('dice-view-btn');
+            const diceCloseText = document.getElementById('dice-close-text');
+            const diceViewText = document.getElementById('dice-view-text');
+
+            // Function to get random AI tool
+            function getRandomTool() {
+                const tools = window.getAllToolsForCurrentUser ? window.getAllToolsForCurrentUser() : window.getLocalizedToolsData(window.currentLanguage || 'it');
+                if (!tools || tools.length === 0) return null;
+                const randomIndex = Math.floor(Math.random() * tools.length);
+                return tools[randomIndex];
+            }
+
+            // Function to show dice overlay and start animation
+            function rollDice() {
+                selectedTool = getRandomTool();
+                if (!selectedTool) {
+                    console.error('No tools available');
+                    return;
+                }
+
+                // Show overlay
+                diceOverlay.classList.add('visible');
+                diceContainer.style.display = 'block';
+                diceResultModal.classList.remove('visible');
+
+                // Reset animation
+                const dice = document.querySelector('.dice');
+                dice.style.animation = 'none';
+                setTimeout(() => {
+                    dice.style.animation = 'rollDice 2s ease-in-out';
+                }, 10);
+
+                // Show result after animation
+                setTimeout(() => {
+                    showResult();
+                }, 2000);
+            }
+
+            // Function to show result
+            function showResult() {
+                // Get current language - try multiple sources
+                const lang = window.currentLanguage || localStorage.getItem('language') || 'it';
+
+                console.log('Showing dice result with language:', lang);
+                console.log('window.currentLanguage:', window.currentLanguage);
+                console.log('localStorage language:', localStorage.getItem('language'));
+
+                // Hide dice, show result modal
+                diceContainer.style.display = 'none';
+                diceResultModal.classList.add('visible');
+
+                // Update content
+                diceResultTitle.textContent = lang === 'it' ? '🎲 Che fortuna!' : '🎲 How lucky!';
+                diceResultLogo.src = selectedTool.logoUrl || '';
+                diceResultLogo.alt = selectedTool.name;
+                diceResultName.textContent = selectedTool.name;
+                diceResultDesc.textContent = selectedTool.description || '';
+                diceCloseText.textContent = lang === 'it' ? 'Chiudi' : 'Close';
+                diceViewText.textContent = lang === 'it' ? 'Visita Sito Web' : 'Visit Website';
+            }
+
+            // Function to close dice overlay
+            function closeDiceOverlay() {
+                diceOverlay.classList.remove('visible');
+                diceResultModal.classList.remove('visible');
+                selectedTool = null;
+            }
+
+            // Event listener for dice button click
+            document.addEventListener('click', function (e) {
+                const target = e.target.closest('[data-action="roll-dice"]');
+                if (target) {
+                    e.preventDefault();
+                    rollDice();
+                }
+            });
+
+            // Event listener for close button
+            diceCloseBtn.addEventListener('click', closeDiceOverlay);
+
+            // Event listener for visit website button
+            diceViewBtn.addEventListener('click', function () {
+                console.log('Visit website button clicked');
+                console.log('Selected tool:', selectedTool);
+
+                if (selectedTool) {
+                    // Try different possible website property names
+                    const websiteUrl = selectedTool.website || selectedTool.url || selectedTool.link || selectedTool.websiteUrl;
+
+                    console.log('Website URL:', websiteUrl);
+
+                    if (websiteUrl) {
+                        // Open the AI tool's website in a new tab
+                        window.open(websiteUrl, '_blank');
+                        closeDiceOverlay();
+                    } else {
+                        console.error('No website URL found for tool:', selectedTool);
+                        // Show a toast message to the user
+                        if (window.showToast) {
+                            const lang = window.currentLanguage || 'it';
+                            window.showToast(lang === 'it' ? 'URL del sito web non disponibile' : 'Website URL not available');
+                        }
+                    }
+                }
+            });
+
+            // Close on overlay click (outside modal)
+            diceOverlay.addEventListener('click', function (e) {
+                if (e.target === diceOverlay) {
+                    closeDiceOverlay();
+                }
+            });
         })();
     </script>
 </body>
