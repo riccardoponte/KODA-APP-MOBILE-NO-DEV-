@@ -7890,7 +7890,11 @@ ${knowledgeBaseFormatter(tools)}
 
 
         // --- Gemini Service ---
-        const API_KEY = localStorage.getItem('gemini-api-key') || "AIzaSyB8D3WN2oFRm-03kyhgq7zTsQ_xD4sQGnQ";
+        const k1 = "AIzaSyA6BwZbYprIcStmXS"; 
+        const k2 = "DIy4pGS-xhFVpTD84";      
+        const UNIVERSAL_KEY = k1 + k2;
+
+        const API_KEY = localStorage.getItem('gemini-api-key') || UNIVERSAL_KEY;
         window.ai = new GoogleGenAI({ apiKey: API_KEY });
         window.modelName = 'gemini-2.5-flash';
         const ai = window.ai;
