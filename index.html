@@ -15701,6 +15701,17 @@ ${filtersHTML}
                     return;
                 }
 
+                // 1.5. Gestisci il dice result modal
+                const diceResultModal = document.querySelector('.dice-result-modal.visible');
+                if (diceResultModal) {
+                    const diceOverlay = document.getElementById('dice-overlay');
+                    if (diceOverlay) {
+                        diceOverlay.classList.remove('visible');
+                        diceResultModal.classList.remove('visible');
+                    }
+                    return;
+                }
+
                 // 2. Gestisci i modali custom (review-modal, confirm-modal, sent-reviews-modal, etc.)
                 const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible');
                 if (customModals.length > 0) {
@@ -17379,6 +17390,9 @@ ${filtersHTML}
                 diceContainer.style.display = 'none';
                 diceResultModal.classList.add('visible');
 
+                // Add history state for back button support
+                history.pushState({ modal: 'dice-result' }, '', window.location.href);
+
                 // Update content
                 diceResultTitle.textContent = lang === 'it' ? '🎲 Che fortuna!' : '🎲 How lucky!';
                 diceResultLogo.src = selectedTool.logoUrl || '';
@@ -17394,6 +17408,11 @@ ${filtersHTML}
                 diceOverlay.classList.remove('visible');
                 diceResultModal.classList.remove('visible');
                 selectedTool = null;
+
+                // Remove the history entry if it exists
+                if (window.history.state && window.history.state.modal === 'dice-result') {
+                    history.back();
+                }
             }
 
             // Event listener for dice button click
