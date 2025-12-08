@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 
-  Koda AI - Enhanced Chatbot
+  Koda AI 
   © 2025 Riccardo Giorgio Ponte & Davide Narracci. Tutti i diritti riservati.
   
   Quest'opera dell'ingegno è protetta dalla Legge sul Diritto d'Autore (L. 633/1941).
@@ -12,7 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Koda AI - Enhanced Chatbot</title>
+    <title>Koda AI</title>
     <style>
         @font-face {
             font-family: 'Inter';
@@ -2925,25 +2925,279 @@
         }
 
         #add-app-modal textarea {
-            min-height: 80px;
+            min-height: 100px;
             resize: vertical;
+            font-family: inherit;
         }
+
+        #add-app-modal input:focus,
+        #add-app-modal textarea:focus,
+        #add-app-modal select:focus {
+            outline: none;
+            border-color: var(--Koda-accent);
+            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
+        }
+
+        /* NUOVI Stili per il modale Aggiungi AI a Collezione */
+        #add-tools-modal .modal-content {
+            max-width: 100%;
+            max-height: 90vh;
+            overflow-y: hidden;
+            /* L'overflow è gestito dal body */
+            width: 100%;
+            margin: 20px 0;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #add-tools-modal .modal-body {
+            overflow-y: auto;
+            /* Rende il corpo del modale scrollabile */
+            flex-grow: 1;
+            padding: 0;
+        }
+
+        #add-tools-modal .modal-header {
+            flex-shrink: 0;
+            padding: 24px 16px 16px;
+        }
+
+        #add-tools-modal .list-container {
+            padding: 16px;
+        }
+
+        /* Stile Fullscreen per mobile */
+        @media (max-width: 768px) {
+            #add-tools-modal .modal-content {
+                width: 100%;
+                height: 100%;
+                max-width: none;
+                max-height: none;
+                border-radius: 0;
+                margin: 0;
+                padding: 0;
+            }
+
+            #add-tools-modal .modal-header {
+                padding: 20px 16px 12px;
+            }
+
+            #add-tools-modal .list-container {
+                padding: 12px;
+            }
+        }
+
 
         /* Stili responsive per il modal Aggiungi App Custom */
         #add-app-modal .modal-content {
-            max-width: 600px;
+            max-width: 650px;
             max-height: 90vh;
             overflow-y: auto;
             width: 90%;
             margin: 20px auto;
+            padding: 0;
+        }
+
+        #add-app-modal .modal-header {
+            padding: 28px 32px 20px;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+            position: sticky;
+            top: 0;
+            background: var(--Koda-card);
+            z-index: 10;
+        }
+
+        #add-app-modal .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        #add-app-modal .modal-body {
+            padding: 24px 32px 32px;
+        }
+
+        #add-app-modal .form-section {
+            margin-bottom: 28px;
+        }
+
+        #add-app-modal .form-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--Koda-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #add-app-modal .form-section-title svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--Koda-accent);
+        }
+
+        #add-app-modal .logo-upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 32px 24px;
+            background: var(--Koda-bg-light);
+            border-radius: 12px;
+            border: 2px dashed var(--Koda-text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        #add-app-modal .logo-upload-area:hover {
+            border-color: var(--Koda-accent);
+            background: var(--Koda-bg);
+        }
+
+        #add-app-modal .logo-upload-area.has-image {
+            border-style: solid;
+            border-color: var(--Koda-accent);
+        }
+
+        #add-app-modal .logo-preview-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+        }
+
+        #add-app-modal .logo-placeholder {
+            width: 140px;
+            height: 140px;
+            background: var(--Koda-card);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 48px;
+            border: 3px solid var(--Koda-bg-light);
+        }
+
+        #add-app-modal .logo-placeholder-text {
+            font-size: 13px;
+            color: var(--Koda-text-secondary);
+            font-weight: 500;
+        }
+
+        #add-app-modal .logo-preview-img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 3px solid var(--Koda-bg-light);
+        }
+
+        #add-app-modal .logo-change-btn {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--Koda-accent);
+            border: 3px solid var(--Koda-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #add-app-modal .logo-change-btn:hover {
+            transform: scale(1.1);
+        }
+
+        #add-app-modal .logo-change-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #000;
+        }
+
+        #add-app-modal .logo-upload-hint {
+            text-align: center;
+            color: var(--Koda-text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #add-app-modal .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        #add-app-modal .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid rgba(128, 128, 128, 0.15);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            position: sticky;
+            bottom: 0;
+            background: var(--Koda-card);
+        }
+
+        #add-app-modal .button-secondary {
+            background: none;
+            border: 1px solid var(--Koda-text-secondary);
+            color: var(--Koda-text);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        #add-app-modal .button-secondary:hover {
+            background-color: var(--Koda-bg-light);
+            border-color: var(--Koda-text);
+        }
+
+        #add-app-modal .button-primary {
+            background-color: var(--Koda-accent);
+            color: #000;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        #add-app-modal .button-primary:hover {
+            background-color: #1ed760;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
         }
 
         @media (max-width: 768px) {
             #add-app-modal .modal-content {
                 width: 95%;
                 max-height: 85vh;
-                padding: 20px;
-                margin: 10px auto;
+            }
+
+            #add-app-modal .modal-header,
+            #add-app-modal .modal-body,
+            #add-app-modal .modal-footer {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            #add-app-modal .form-row {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -2951,13 +3205,28 @@
             #add-app-modal .modal-content {
                 width: 100%;
                 max-height: 100vh;
-                padding: 16px;
-                margin: 0;
                 border-radius: 0;
+                margin: 0;
+            }
+
+            #add-app-modal .modal-header,
+            #add-app-modal .modal-body,
+            #add-app-modal .modal-footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            #add-app-modal .modal-header {
+                padding-top: 24px;
+                padding-bottom: 16px;
+            }
+
+            #add-app-modal .modal-header h2 {
+                font-size: 20px;
             }
 
             #add-app-modal .input-group {
-                margin-bottom: 12px;
+                margin-bottom: 14px;
             }
 
             #add-app-modal label {
@@ -2966,23 +3235,39 @@
 
             #add-app-modal input:not([type="file"]),
             #add-app-modal textarea {
-                padding: 10px 12px;
-                font-size: 14px;
+                padding: 12px 14px;
+                font-size: 15px;
             }
 
-            #add-app-modal .button {
-                padding: 12px 20px;
+            #add-app-modal .logo-upload-area {
+                padding: 24px 16px;
+            }
+
+            #add-app-modal .logo-preview-container,
+            #add-app-modal .logo-placeholder,
+            #add-app-modal .logo-preview-img {
+                width: 120px;
+                height: 120px;
+            }
+
+            #add-app-modal .button-secondary,
+            #add-app-modal .button-primary {
+                padding: 14px 20px;
                 font-size: 14px;
             }
         }
 
-        /* Stili specifici per il modal Aggiungi AI */
-        .add-ai-modal {
-            max-width: 500px;
-            max-height: 90vh;
+        /* Stili specifici per il modal Aggiungi AI - Fullscreen */
+        #add-global-tool-modal .modal-content,
+        #edit-global-tool-modal .modal-content {
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
             overflow-y: auto;
-            margin: 20px;
-            width: calc(100% - 40px);
+            margin: 0;
+            border-radius: 0;
+            padding: 24px;
         }
 
         .add-ai-form {
@@ -2991,11 +3276,10 @@
 
         /* Responsive design per il modal */
         @media (max-width: 768px) {
-            .add-ai-modal {
-                max-width: none;
-                width: calc(100% - 20px);
-                margin: 10px;
-                max-height: 95vh;
+
+            #add-global-tool-modal .modal-content,
+            #edit-global-tool-modal .modal-content {
+                padding: 20px;
             }
 
             .add-ai-form {
@@ -3025,11 +3309,10 @@
         }
 
         @media (max-width: 480px) {
-            .add-ai-modal {
-                width: calc(100% - 10px);
-                margin: 5px;
-                border-radius: 12px;
-                max-height: 98vh;
+
+            #add-global-tool-modal .modal-content,
+            #edit-global-tool-modal .modal-content {
+                padding: 16px;
             }
 
             .add-ai-form {
@@ -3083,10 +3366,14 @@
         #add-global-tool-modal select:focus,
         #edit-global-tool-modal input:focus,
         #edit-global-tool-modal textarea:focus,
-        #edit-global-tool-modal select:focus {
+        #edit-global-tool-modal select:focus,
+        #create-collection-modal input:focus,
+        #rename-collection-modal input:focus,
+        .playlist-modal .playlist-input:focus {
+            /* Aggiunto per i modali delle playlist */
             outline: none;
             border-color: var(--Koda-accent);
-            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
+            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3);
         }
 
         #add-global-tool-modal textarea,
@@ -3316,12 +3603,12 @@
             fill: currentColor;
         }
 
-        /* Stili per il pulsante X di rimozione dai preferiti (grid view) */
+        /* Stili per il pulsante X di rimozione dai preferiti (grid view) - NUOVO STILE */
         .remove-favorite-icon {
             position: absolute;
             top: 4px;
             left: 4px;
-            background-color: rgba(255, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.6);
             border-radius: 50%;
             width: 28px;
             height: 28px;
@@ -3330,39 +3617,53 @@
             justify-content: center;
             cursor: pointer;
             z-index: 5;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
             opacity: 0;
             transition: all 0.2s ease;
-            line-height: 1;
+        }
+
+        .remove-favorite-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--Koda-text);
+            stroke-width: 2.5;
+            fill: none;
         }
 
         .remove-favorite-icon:hover {
-            background-color: rgba(255, 0, 0, 1);
+            background-color: rgba(255, 107, 107, 0.8);
             transform: scale(1.1);
         }
 
-        .tool-card-grid:hover .remove-favorite-icon,
-        .logo-container:hover .remove-favorite-icon {
-            opacity: 1;
+        .remove-favorite-icon:hover svg {
+            stroke: white;
         }
 
-        /* Stili per il pulsante X di rimozione dai preferiti (list view) */
+        /* Stili per il pulsante X di rimozione dai preferiti (list view) - NUOVO STILE */
         .remove-favorite-icon-list {
-            font-size: 28px;
-            color: #ff4444;
-            cursor: pointer;
-            padding: 10px;
             margin-left: auto;
-            transition: all 0.2s ease;
-            font-weight: bold;
-            line-height: 1;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
         }
 
         .remove-favorite-icon-list:hover {
-            color: #ff0000;
-            transform: scale(1.2);
+            transform: scale(1.1);
+        }
+
+        .remove-favorite-icon-list svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: var(--Koda-text-secondary);
+            stroke-width: 2;
+            transition: all 0.2s;
+        }
+
+        .remove-favorite-icon-list:hover svg {
+            stroke: #ff6b6b;
         }
 
         /* Su mobile e touch devices, mostra sempre l'icona di rimozione */
@@ -7635,16 +7936,16 @@
     }
     </script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<!-- PWA & Apple Meta Tags -->
+    <!-- PWA & Apple Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
 
     <!-- Apple-specific meta tags for Add to Home Screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Koda AI">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
@@ -8556,7 +8857,7 @@ ${knowledgeBaseFormatter(tools)}
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
-                    backToSearch: "‹ Torna a cercare", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
+                    backToSearch: "Indietro", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
                     pricingFree: "Gratuito", pricingFreemium: "Freemium", pricingPaid: "A Pagamento",
                     categoryTutorial: "Tutorial", categoryEducation: "Educazione", categoryDevelopment: "Sviluppo", categoryNews: "Notizie",
                     libraryPromptText: "Accedi o registrati per salvare i preferiti.", emptyFavorites: "Aggiungi AI ai tuoi preferiti",
@@ -8582,11 +8883,12 @@ ${knowledgeBaseFormatter(tools)}
                     privilegedUnlocked: "Modalità privilegiata sbloccata!",
                     addCustomApp: "Aggiungi app personalizzata", // New translation for the button
                     addAppTitle: "Aggiungi nuova app",
+                    addAppDisclaimer: "Aggiungi siti web e applicazioni",
                     appNameLabel: "Nome App", appNamePlaceholder: "Es. ChatGPT",
                     appDescriptionLabel: "Descrizione", appDescriptionPlaceholder: "Breve descrizione dell'app...",
                     appWebsiteLabel: "Link Web", appWebsitePlaceholder: "https://sito.com",
                     appLogoLabel: "Logo (File Immagine)", // Updated label for file input
-                    addAppButton: "Aggiungi app",
+                    addAppButton: "Aggiungi",
                     addAppSuccess: "App aggiunta con successo!",
                     appUpdateSuccess: "App aggiornata con successo!",
                     favoriteAdded: "Preferito aggiunto alla Libreria!",
@@ -8691,6 +8993,7 @@ ${knowledgeBaseFormatter(tools)}
                     confirmDeletePromptMessage: "Sei sicuro di voler eliminare questo prompt? L'azione è irreversibile.",
                     promptGalleryTitle: "Galleria Prompt",
                     searchPlaceholderGallery: "Cerca",
+                    noSavedPrompts: "Nessun prompt salvato",
 
                     // Admin translations
                     addAI: "Aggiungi AI",
@@ -8796,10 +9099,10 @@ ${knowledgeBaseFormatter(tools)}
                     logout: "Logout", featured: "Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
-                    backToSearch: "‹ Back to search", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
+                    backToSearch: "Back", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
                     pricingFree: "Free", pricingFreemium: "Freemium", pricingPaid: "Paid",
                     categoryTutorial: "Tutorial", categoryEducation: "Education", categoryDevelopment: "Development", categoryNews: "News",
-                    libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "Add AI to your favorites to see them here",
+                    libraryPromptText: "Log in or sign up to save your favorites.", emptyFavorites: "Add AI to your favorites",
                     noResultsFor: "No results for",
                     // Rankings
                     rankingTextTitle: "Ranking for Text", rankingCodeTitle: "Ranking for Code",
@@ -8822,11 +9125,12 @@ ${knowledgeBaseFormatter(tools)}
                     privilegedUnlocked: "Privileged mode unlocked!",
                     addCustomApp: "Add Custom App", // New translation for the button
                     addAppTitle: "Add New App",
+                    addAppDisclaimer: "Add your favorite AI tools to keep them handy in your personal library.",
                     appNameLabel: "App Name", appNamePlaceholder: "Ex. ChatGPT",
                     appDescriptionLabel: "Description", appDescriptionPlaceholder: "Brief description of the app...",
                     appWebsiteLabel: "Website Link", appWebsitePlaceholder: "https://yourwebsite.com",
                     appLogoLabel: "Logo (Image File)", // Updated label for file input
-                    addAppButton: "Add App",
+                    addAppButton: "Add",
                     addAppSuccess: "App added successfully!",
                     appUpdateSuccess: "App updated successfully!",
                     favoriteAdded: "Favorite added to Library!",
@@ -8931,6 +9235,7 @@ ${knowledgeBaseFormatter(tools)}
                     confirmDeletePromptMessage: "Are you sure you want to delete this prompt? This action is irreversible.",
                     promptGalleryTitle: "Prompt Gallery",
                     searchPlaceholderGallery: "Search",
+                    noSavedPrompts: "No saved prompts",
                     // Admin translations
                     addAI: "Add AI",
                     addAIToDatabase: "Add AI to Database",
@@ -9363,15 +9668,8 @@ ${knowledgeBaseFormatter(tools)}
                     selectedTools.add(toolId);
                 }
 
-                // Aggiorna il contatore
-                const count = selectedTools.size;
-                const countText = currentLanguage === 'it' ? `${count} selezionati` : `${count} selected`;
-                const countElement = document.getElementById('selection-count');
-                if (countElement) {
-                    countElement.textContent = countText;
-                }
-
                 // Aggiorna lo stato del pulsante Rimuovi
+                const count = selectedTools.size;
                 const removeBtn = document.querySelector('[data-action="remove-selected-from-collection"]');
                 if (removeBtn) {
                     if (count === 0) {
@@ -9473,11 +9771,11 @@ ${knowledgeBaseFormatter(tools)}
 
                 // NUOVO: Mostra pulsante X per rimuovere dai preferiti
                 if (context === 'favorites') {
-                    removeIconHTML = `<div class="remove-favorite-icon" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                    removeIconHTML = `<div class="remove-favorite-icon" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>`;
                 }
                 // NUOVO: Mostra pulsante X per rimuovere dalla collezione (solo se non in modalità selezione)
                 else if (context === 'collection' && !selectionMode) {
-                    removeIconHTML = `<div class="remove-favorite-icon" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
+                    removeIconHTML = `<div class="remove-favorite-icon" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>`;
                 }
 
                 // Mostra icona di modifica per app custom dell'utente
@@ -9531,11 +9829,11 @@ ${knowledgeBaseFormatter(tools)}
                 }
                 // NUOVO: Mostra X invece di cuore nei preferiti
                 else if (context === 'favorites') {
-                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}">×</div>`;
+                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="toggle-favorite" data-id="${tool.id}" title="${t.detailModalRemoveFavorite}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>`;
                 }
                 // NUOVO: Mostra X per rimuovere dalla collezione
                 else if (context === 'collection') {
-                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}">×</div>`;
+                    favoriteIconHTML = `<div class="remove-favorite-icon-list" data-action="remove-from-collection" data-id="${tool.id}" title="${currentLanguage === 'it' ? 'Rimuovi dalla collezione' : 'Remove from collection'}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>`;
                 }
                 else {
                     favoriteIconHTML = `<div class="favorite-icon ${isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-id="${tool.id}">
@@ -10698,6 +10996,237 @@ ${knowledgeBaseFormatter(tools)}
                 }
             };
 
+            // NUOVO: Modale per aggiungere AI alla collezione corrente
+            const openAddToolsToCollectionModal = (collectionId) => {
+                const t = translations[currentLanguage];
+                const collection = collections.find(c => c.id === collectionId);
+                if (!collection) return;
+
+                const allTools = getAllToolsForCurrentUser();
+                const availableTools = allTools.filter(tool => !collection.toolIds.includes(tool.id));
+
+                if (availableTools.length === 0) {
+                    showToast(currentLanguage === 'it' ? 'Tutte le AI sono già nella collezione!' : 'All AI tools are already in the collection!');
+                    return;
+                }
+
+                let selectedToolsForAdd = new Set();
+                let activeFilters = { categories: [], pricing: [] };
+                let searchQuery = '';
+
+                const getFilteredTools = () => {
+                    return availableTools.filter(tool => {
+                        if (activeFilters.categories.length > 0 && !activeFilters.categories.includes(tool.category)) return false;
+                        if (activeFilters.pricing.length > 0 && !activeFilters.pricing.includes(tool.pricing)) return false;
+                        if (searchQuery) {
+                            const query = searchQuery.toLowerCase();
+                            const name = tool.name.toLowerCase();
+                            const description = typeof tool.description === 'object' ? (tool.description[currentLanguage] || tool.description['en'] || '') : tool.description;
+                            const desc = description.toLowerCase();
+                            if (!name.includes(query) && !desc.includes(query)) return false;
+                        }
+                        return true;
+                    });
+                };
+
+                const renderToolsList = () => {
+                    const filteredTools = getFilteredTools();
+                    const toolsContainer = document.getElementById('add-tools-list');
+                    if (!toolsContainer) return;
+
+                    if (filteredTools.length === 0) {
+                        toolsContainer.innerHTML = `<div id="empty-state">${currentLanguage === 'it' ? 'Nessuna AI trovata' : 'No AI found'}</div>`;
+                        return;
+                    }
+
+                    toolsContainer.innerHTML = filteredTools.map(tool => {
+                        const description = typeof tool.description === 'object' ? (tool.description[currentLanguage] || tool.description['en'] || '') : tool.description;
+                        const isSelected = selectedToolsForAdd.has(tool.id);
+                        return `
+                            <div class="tool-card-list multi-select-mode ${isSelected ? 'selected' : ''}" data-action="toggle-tool-for-add" data-tool-id="${tool.id}" style="cursor: pointer; transition: all 0.2s;">
+                                <div class="select-checkbox"></div>
+                                <div class="logo-container">
+                                    <img src="${tool.logoUrl}" alt="${tool.name}" class="tool-logo">
+                                </div>
+                                <div class="info">
+                                    <div class="tool-name">${tool.name}</div>
+                                    <div class="tool-subtext">${description.split('.')[0]}.</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                };
+
+                const updateConfirmButton = () => {
+                    const confirmBtn = document.getElementById('confirm-add-tools-btn');
+                    if (confirmBtn) {
+                        confirmBtn.disabled = selectedToolsForAdd.size === 0;
+                        confirmBtn.textContent = selectedToolsForAdd.size > 0
+                            ? `${currentLanguage === 'it' ? 'Aggiungi' : 'Add'} (${selectedToolsForAdd.size})`
+                            : (currentLanguage === 'it' ? 'Aggiungi' : 'Add');
+                    }
+                };
+
+                // Ottieni categorie e prezzi unici
+                const categories = [...new Set(availableTools.map(t => t.category))].filter(Boolean);
+                const pricingOptions = [...new Set(availableTools.map(t => t.pricing))].filter(Boolean);
+
+                const filtersHTML = `
+                    <div style="padding: 12px 16px; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                        <input type="text" id="search-tools-input" placeholder="${currentLanguage === 'it' ? 'Cerca AI...' : 'Search AI...'}" style="width: 100%; padding: 10px 16px; font-size: 14px; background-color: var(--Koda-bg-light); border: 1px solid rgba(128, 128, 128, 0.2); border-radius: 8px; color: var(--Koda-text); margin-bottom: 12px;">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                        <div class="filter-pills" style="display: flex; gap: 8px; overflow-x: auto; flex: 1;">
+                            ${categories.length > 0 ? `<button class="pill-btn" data-filter-action="show-categories">${currentLanguage === 'it' ? 'Categorie' : 'Categories'}</button>` : ''}
+                            ${pricingOptions.length > 0 ? `<button class="pill-btn" data-filter-action="show-pricing">${currentLanguage === 'it' ? 'Prezzo' : 'Price'}</button>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-shrink: 0;">
+                            <button id="confirm-add-tools-btn" class="button-primary" disabled style="padding: 8px 16px; font-size: 14px; border-radius: 8px;">
+                                ${currentLanguage === 'it' ? 'Aggiungi' : 'Add'}
+                            </button>
+                        </div>
+                    </div>
+                    <div id="filter-options" style="padding: 12px 16px; display: none; border-bottom: 1px solid rgba(128, 128, 128, 0.2);"></div>
+                `;
+
+                const modalHTML = `
+                    <div id="add-tools-modal" class="modal-overlay visible">
+                        <div class="modal-content">
+                            <div class="modal-header" style="padding-top: 24px;">
+                                <button class="modal-close-btn" data-action="close-add-tools-modal">×</button>
+                                <h2>${currentLanguage === 'it' ? 'Aggiungi AI a' : 'Add AI to'} "${collection.name}"</h2>
+                            </div>
+                            <div class="modal-body">
+                                ${filtersHTML}
+                                <div class="list-container" id="add-tools-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
+                renderToolsList();
+
+                // Event listener per la barra di ricerca
+                const searchInput = document.getElementById('search-tools-input');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        searchQuery = e.target.value;
+                        renderToolsList();
+                    });
+                }
+
+                // Event delegation
+                const modal = document.getElementById('add-tools-modal');
+                modal.addEventListener('click', (e) => {
+                    // Gestione filtri
+                    const filterBtn = e.target.closest('[data-filter-action]');
+                    if (filterBtn) {
+                        const action = filterBtn.dataset.filterAction;
+                        const filterOptions = document.getElementById('filter-options');
+
+                        // Rimuovi active da tutti i pulsanti filtro
+                        document.querySelectorAll('.filter-pills .pill-btn').forEach(btn => btn.classList.remove('active'));
+                        
+                        // Se clicco su un filtro già attivo, lo disattivo
+                        const wasActive = filterBtn.classList.contains('active');
+                        
+                        if (action === 'show-categories') {
+                            if (wasActive) {
+                                // Chiudi il pannello filtri
+                                filterOptions.style.display = 'none';
+                            } else {
+                                filterBtn.classList.add('active');
+                                filterOptions.style.display = 'block';
+                                filterOptions.innerHTML = categories.map(cat => {
+                                    const catName = getTranslatedCategoryName(cat);
+                                    const isActive = activeFilters.categories.includes(cat);
+                                    return `<button class="pill-btn ${isActive ? 'active' : ''}" data-category="${cat}" style="margin: 4px;">${catName}</button>`;
+                                }).join('');
+                            }
+                        } else if (action === 'show-pricing') {
+                            if (wasActive) {
+                                // Chiudi il pannello filtri
+                                filterOptions.style.display = 'none';
+                            } else {
+                                filterBtn.classList.add('active');
+                                filterOptions.style.display = 'block';
+                                filterOptions.innerHTML = pricingOptions.map(price => {
+                                    const isActive = activeFilters.pricing.includes(price);
+                                    const priceLabel = price === 'free' ? t.pricingFree : price === 'freemium' ? t.pricingFreemium : t.pricingPaid;
+                                    return `<button class="pill-btn ${isActive ? 'active' : ''}" data-pricing="${price}" style="margin: 4px;">${priceLabel}</button>`;
+                                }).join('');
+                            }
+                        }
+                        return;
+                    }
+
+                    // Toggle categoria
+                    const catBtn = e.target.closest('[data-category]');
+                    if (catBtn) {
+                        const cat = catBtn.dataset.category;
+                        if (activeFilters.categories.includes(cat)) {
+                            activeFilters.categories = activeFilters.categories.filter(c => c !== cat);
+                            catBtn.classList.remove('active');
+                        } else {
+                            activeFilters.categories.push(cat);
+                            catBtn.classList.add('active');
+                        }
+                        renderToolsList();
+                        return;
+                    }
+
+                    // Toggle pricing
+                    const priceBtn = e.target.closest('[data-pricing]');
+                    if (priceBtn) {
+                        const price = priceBtn.dataset.pricing;
+                        if (activeFilters.pricing.includes(price)) {
+                            activeFilters.pricing = activeFilters.pricing.filter(p => p !== price);
+                            priceBtn.classList.remove('active');
+                        } else {
+                            activeFilters.pricing.push(price);
+                            priceBtn.classList.add('active');
+                        }
+                        renderToolsList();
+                        return;
+                    }
+
+                    // Selezione tool
+                    const toolCard = e.target.closest('[data-action="toggle-tool-for-add"]');
+                    if (toolCard) {
+                        const toolId = toolCard.dataset.toolId;
+                        if (selectedToolsForAdd.has(toolId)) {
+                            selectedToolsForAdd.delete(toolId);
+                            toolCard.classList.remove('selected');
+                        } else {
+                            selectedToolsForAdd.add(toolId);
+                            toolCard.classList.add('selected');
+                        }
+                        updateConfirmButton();
+                        return;
+                    }
+
+                    if (e.target.closest('[data-action="close-add-tools-modal"]')) {
+                        modal.remove();
+                        return;
+                    }
+
+                    if (e.target.closest('#confirm-add-tools-btn') && selectedToolsForAdd.size > 0) {
+                        selectedToolsForAdd.forEach(toolId => {
+                            if (!collection.toolIds.includes(toolId)) {
+                                collection.toolIds.push(toolId);
+                            }
+                        });
+                        saveCollections();
+                        showToast(currentLanguage === 'it'
+                            ? `${selectedToolsForAdd.size} AI aggiunte alla collezione!`
+                            : `${selectedToolsForAdd.size} AI added to collection!`);
+                        modal.remove();
+                        renderView();
+                    }
+                });
+            };
+
             // RIMOSSO: Modali per aggiungere AI/Video alle collezioni/playlist
             /*
             const openAddMultipleToolsModal = (collectionId) => {
@@ -11119,9 +11648,15 @@ ${knowledgeBaseFormatter(tools)}
                 if (currentView === 'favorites') {
                     fabBtn.style.display = 'flex';
 
-                    // Sempre mostra il pulsante per creare collezione
-                    if (tab === 'collections' || activeCollectionId) {
-                        // Icona per creare collezione
+                    // Se siamo dentro una collezione, mostra il pulsante per aggiungere AI
+                    if (activeCollectionId) {
+                        fabBtn.dataset.action = 'add-tools-to-collection';
+                        fabBtn.dataset.collectionId = activeCollectionId;
+                        fabBtn.title = currentLanguage === 'it' ? 'Aggiungi AI' : 'Add AI';
+                        fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
+                    }
+                    // Se siamo nel tab collezioni, mostra il pulsante per creare collezione
+                    else if (tab === 'collections') {
                         fabBtn.dataset.action = 'create-collection';
                         fabBtn.title = t.createCollection;
                         fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
@@ -11617,40 +12152,30 @@ ${filtersHTML}
 
                         const backButtonHTML = `
                             <div style="padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                                <button class="pill-btn" data-action="back-to-collections" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <button class="pill-btn" data-action="back-to-collections" style="display: none; align-items: center; gap: 8px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                     ${t.backToSearch}
                                 </button>
-                                ${collection.toolIds.length > 0 ? `
-                                    <button class="pill-btn ${selectionMode ? 'active' : ''}" data-action="toggle-selection-mode" id="selection-mode-btn" style="display: inline-flex; align-items: center; gap: 8px; margin-left: auto;">
+                                ${collection.toolIds.length > 0 && selectionMode ? `
+                                    <button class="pill-btn ${selectionMode ? 'active' : ''}" data-action="toggle-selection-mode" id="selection-mode-btn" style="display: inline-flex; align-items: center; gap: 8px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                                        ${selectionMode ? (currentLanguage === 'it' ? 'Annulla selezione' : 'Cancel selection') : (currentLanguage === 'it' ? 'Seleziona' : 'Select')}
+                                        ${currentLanguage === 'it' ? 'Deseleziona' : 'Deselect'}
+                                    </button>
+                                    <button class="pill-btn" data-action="remove-selected-from-collection" ${selectedTools.size === 0 ? 'disabled' : ''} style="display: inline-flex; align-items: center; gap: 8px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Rimuovi' : 'Remove'}
+                                    </button>
+                                ` : ''}
+                                ${collection.toolIds.length > 0 && !selectionMode ? `
+                                    <button class="pill-btn" data-action="toggle-selection-mode" id="selection-mode-btn" style="display: inline-flex; align-items: center; gap: 8px; margin-left: auto;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Seleziona' : 'Select'}
                                     </button>
                                 ` : ''}
                             </div>
                         `;
 
-                        // Barra azioni selezione multipla
-                        const selectedCount = selectedTools.size;
-                        const selectionCountText = currentLanguage === 'it' ? `${selectedCount} selezionati` : `${selectedCount} selected`;
-                        const selectionBarHTML = `
-                            <div id="selection-bar" class="selection-bar" style="display: ${selectionMode ? 'block' : 'none'};">
-                                <div class="selection-bar-content">
-                                    <span id="selection-count">${selectionCountText}</span>
-                                    <div class="selection-bar-actions">
-                                        <button class="selection-bar-btn" data-action="remove-selected-from-collection" ${selectedCount === 0 ? 'disabled' : ''}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                            ${currentLanguage === 'it' ? 'Rimuovi' : 'Remove'}
-                                        </button>
-                                        <button class="selection-bar-btn" data-action="cancel-selection">
-                                            ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        contentArea.innerHTML = backButtonHTML + selectionBarHTML + headerHTML;
+                        contentArea.innerHTML = backButtonHTML + headerHTML;
 
                         // Renderizza gli strumenti della collezione
                         const toolsContainer = document.createElement('div');
@@ -12112,30 +12637,29 @@ ${filtersHTML}
                 if (currentUser.uid) {
                     // Logged-in user: URL input
                     logoInputHTML = `
-                        <label for="add-app-logo-url" data-translate="logoURLLabel">${t.logoURLLabel}</label>
-                        <input type="url" id="add-app-logo-url" placeholder="${t.logoURLPlaceholder}">
+                        <div class="input-group">
+                            <label for="add-app-logo-url" data-translate="logoURLLabel">${t.logoURLLabel}</label>
+                            <input type="url" id="add-app-logo-url" placeholder="${t.logoURLPlaceholder}">
+                        </div>
                     `;
                 } else {
                     // Guest user: File input with improved UI
                     logoInputHTML = `
-                        <label data-translate="appLogoLabel">${t.appLogoLabel}</label>
-                        <div style="display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 20px; background: var(--Koda-bg-light); border-radius: 8px; border: 2px dashed var(--Koda-text-secondary);">
-                            <img id="add-app-logo-preview" src="" alt="Logo Preview" style="display: none; width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
-                            <div id="add-app-logo-placeholder" style="width: 120px; height: 120px; background: var(--Koda-card); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px;">
-                                🖼️
+                        <div class="logo-upload-area" onclick="document.getElementById('add-app-logo').click()">
+                            <div class="logo-preview-container">
+                                <img id="add-app-logo-preview" class="logo-preview-img" src="" alt="Logo Preview" style="display: none;">
+                                <div id="add-app-logo-placeholder" class="logo-placeholder">
+                                    <div>🖼️</div>
+                                    <div class="logo-placeholder-text">${currentLanguage === 'it' ? 'Carica' : 'Upload'}</div>
+                                </div>
+                                <div id="add-app-logo-change-btn" class="logo-change-btn" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                </div>
                             </div>
                             <input type="file" id="add-app-logo" accept="image/*" style="display: none;">
-                            <button type="button" class="button" onclick="document.getElementById('add-app-logo').click()" style="background: var(--Koda-accent); color: #000; padding: 10px 20px; font-size: 14px; display: flex; align-items: center; gap: 8px; justify-content: center;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="17 8 12 3 7 8"></polyline>
-                                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                                </svg>
-                                <span>${currentLanguage === 'it' ? 'Carica Immagine' : 'Upload Image'}</span>
-                            </button>
-                            <p style="font-size: 12px; color: var(--Koda-text-secondary); text-align: center; margin: 0;">
-                                ${currentLanguage === 'it' ? 'PNG, JPG o GIF (max 5MB)' : 'PNG, JPG or GIF (max 5MB)'}
-                            </p>
+                            <div class="logo-upload-hint">
+                                ${currentLanguage === 'it' ? 'PNG, JPG o GIF' : 'PNG, JPG or GIF'}
+                            </div>
                         </div>
                     `;
                 }
@@ -12144,31 +12668,46 @@ ${filtersHTML}
                  <div id="add-app-modal" class="modal-overlay visible">
                      <div class="modal-content">
                          <button class="modal-close-btn" data-action="close-modal">×</button>
-                         <h2 data-translate="addAppTitle">${t.addAppTitle}</h2>
-
-                         <div class="input-group" style="margin-top: 24px;">
-                             <label for="add-app-name" data-translate="appNameLabel">${t.appNameLabel}</label>
-                             <input type="text" id="add-app-name" placeholder="${t.appNamePlaceholder}">
-                         </div>
-                         <div class="input-group">
-                             <label for="add-app-description" data-translate="appDescriptionLabel">${t.appDescriptionLabel}</label>
-                             <textarea id="add-app-description" placeholder="${t.appDescriptionPlaceholder}"></textarea>
-                         </div>
-                         <div class="input-group">
-                             <label for="add-app-website" data-translate="appWebsiteLabel">${t.appWebsiteLabel}</label>
-                             <input type="url" id="add-app-website" placeholder="${t.appWebsitePlaceholder}">
-                         </div>
-                         <div class="input-group">
-                             ${logoInputHTML}
-                         </div>
-                         <div class="input-group">
-                             <label for="add-app-category" data-translate="category">${t.category}</label>
-                             <select id="add-app-category" style="width: 100%; padding: 14px 16px; font-size: 16px; background-color: var(--Koda-bg-light); border: 1px solid rgba(128,128,128,0.2); border-radius: 8px; color: var(--Koda-text);">
-                                 ${categoryOptions}
-                             </select>
+                         
+                         <div class="modal-header">
+                             <h2 data-translate="addAppTitle">${t.addAppTitle}</h2>
                          </div>
 
-                         <button class="button" id="add-app-btn" data-translate="addAppButton">${t.addAppButton}</button>
+                         <div class="modal-body">
+                             <!-- Logo Section -->
+                             <div class="form-section">
+                                 <div class="form-section-title">
+                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                     <span data-translate="appLogoLabel">${t.appLogoLabel}</span>
+                                 </div>
+                                 ${logoInputHTML}
+                             </div>
+
+                             <!-- Basic Info Section -->
+                             <div class="form-section">
+                                 <div class="form-section-title">
+                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                     <span>${currentLanguage === 'it' ? 'Informazioni di base' : 'Basic Information'}</span>
+                                 </div>
+                                 <div class="input-group">
+                                     <label for="add-app-name" data-translate="appNameLabel">${t.appNameLabel}</label>
+                                     <input type="text" id="add-app-name" placeholder="${t.appNamePlaceholder}">
+                                 </div>
+                                 <div class="input-group">
+                                     <label for="add-app-description" data-translate="appDescriptionLabel">${t.appDescriptionLabel}</label>
+                                     <textarea id="add-app-description" placeholder="${t.appDescriptionPlaceholder}"></textarea>
+                                 </div>
+                                 <div class="input-group">
+                                     <label for="add-app-website" data-translate="appWebsiteLabel">${t.appWebsiteLabel}</label>
+                                     <input type="url" id="add-app-website" placeholder="${t.appWebsitePlaceholder}">
+                                 </div>
+                             </div>
+                         </div>
+
+                         <div class="modal-footer">
+                             <button class="button-secondary" data-action="close-modal" data-translate="cancel">${t.cancel}</button>
+                             <button class="button-primary" id="add-app-btn" data-translate="addAppButton">${t.addAppButton}</button>
+                         </div>
                      </div>
                  </div>
              `;
@@ -12182,25 +12721,27 @@ ${filtersHTML}
                 if (logoInput) {
                     const logoPreview = document.getElementById('add-app-logo-preview');
                     const logoPlaceholder = document.getElementById('add-app-logo-placeholder');
+                    const logoChangeBtn = document.getElementById('add-app-logo-change-btn');
+                    const uploadArea = document.querySelector('.logo-upload-area');
+
                     logoInput.addEventListener('change', (event) => {
                         const file = event.target.files[0];
                         if (file) {
-                            // Verifica dimensione file (max 5MB)
-                            if (file.size > 5 * 1024 * 1024) {
-                                showToast(currentLanguage === 'it' ? 'Immagine troppo grande! Max 5MB' : 'Image too large! Max 5MB');
-                                return;
-                            }
                             const reader = new FileReader();
                             reader.onload = (e) => {
                                 logoPreview.src = e.target.result;
                                 logoPreview.style.display = 'block';
                                 if (logoPlaceholder) logoPlaceholder.style.display = 'none';
+                                if (logoChangeBtn) logoChangeBtn.style.display = 'flex';
+                                if (uploadArea) uploadArea.classList.add('has-image');
                             };
                             reader.readAsDataURL(file);
                         } else {
                             logoPreview.src = '';
                             logoPreview.style.display = 'none';
                             if (logoPlaceholder) logoPlaceholder.style.display = 'flex';
+                            if (logoChangeBtn) logoChangeBtn.style.display = 'none';
+                            if (uploadArea) uploadArea.classList.remove('has-image');
                         }
                     });
                 }
@@ -12745,7 +13286,6 @@ ${filtersHTML}
                 const name = document.getElementById('add-app-name').value.trim();
                 const description = document.getElementById('add-app-description').value.trim();
                 const website = document.getElementById('add-app-website').value.trim();
-                const category = document.getElementById('add-app-category').value;
 
                 // Validazione campi comuni
                 if (!name) { showToast(t.appNameRequired); return; }
@@ -12762,7 +13302,7 @@ ${filtersHTML}
                         description: { it: description, en: description },
                         website: website,
                         logoUrl: logoUrl,
-                        category: category,
+                        category: 'custom',
                         country: 'User Added',
                     };
 
@@ -12801,7 +13341,7 @@ ${filtersHTML}
                         description: description, // Per gli ospiti, una stringa semplice è sufficiente
                         website: website,
                         logoUrl: logoUrl, // Stringa Base64
-                        category: category,
+                        category: 'custom',
                         country: 'User Added',
                     };
 
@@ -12883,11 +13423,6 @@ ${filtersHTML}
                     editLogoInput.addEventListener('change', (event) => {
                         const file = event.target.files[0];
                         if (file) {
-                            // Verifica dimensione file (max 5MB)
-                            if (file.size > 5 * 1024 * 1024) {
-                                showToast(currentLanguage === 'it' ? 'Immagine troppo grande! Max 5MB' : 'Image too large! Max 5MB');
-                                return;
-                            }
                             const reader = new FileReader();
                             reader.onload = (e) => {
                                 editLogoPreview.src = e.target.result;
@@ -13631,7 +14166,8 @@ ${filtersHTML}
                 };
 
                 const generatePromptsHTML = (prompts) => {
-                    if (prompts.length === 0) return `<div id="empty-state">Nessun prompt salvato.</div>`;
+                    const t = translations[currentLanguage];
+                    if (prompts.length === 0) return `<div id="empty-state">${t.noSavedPrompts}</div>`;
                     return prompts.map((p, index) => `
                         <div class="prompt-gallery-item" data-prompt-id="${p.id}" data-action="open-prompt-fullscreen" data-original="${p.originalPrompt}" data-optimized="${p.optimizedPrompt}" data-timestamp="${formatDate(p.timestamp)}">
                             <div class="prompt-gallery-item-header">
@@ -13873,7 +14409,20 @@ ${filtersHTML}
                 // Mostra/nascondi il FAB solo nella sezione playlists
                 const cinemaFab = document.getElementById('cinema-fab-btn');
                 if (cinemaFab) {
-                    cinemaFab.style.display = tab === 'playlists' ? 'flex' : 'none';
+                    if (tab === 'playlists') {
+                        cinemaFab.style.display = 'flex';
+                        // Se siamo dentro una playlist, cambia l'azione per aggiungere video
+                        if (activePlaylistId) {
+                            cinemaFab.dataset.action = 'add-videos-to-playlist';
+                            cinemaFab.dataset.playlistId = activePlaylistId;
+                            cinemaFab.title = currentLanguage === 'it' ? 'Aggiungi Video' : 'Add Video';
+                        } else {
+                            cinemaFab.dataset.action = 'create-playlist';
+                            cinemaFab.title = currentLanguage === 'it' ? 'Crea playlist' : 'Create playlist';
+                        }
+                    } else {
+                        cinemaFab.style.display = 'none';
+                    }
                 }
 
                 // Funzione per generare card (copia dalla renderCinemaPage)
@@ -14171,7 +14720,7 @@ ${filtersHTML}
                                         <button class="global-btn" data-action="delete-playlist" data-playlist-id="${playlist.id}" title="${currentLanguage === 'it' ? 'Elimina' : 'Delete'}" style="padding: 8px; color: #ff6b6b;">
                                             <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor">
                                                 <path d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                             </svg>
                                         </button>
                                     </div>
@@ -15029,35 +15578,28 @@ ${filtersHTML}
                     <div class="playlist-detail-page" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; overflow-y: auto;">
                         <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                                <button class="pill-btn" data-action="close-playlist-detail" style="display: inline-flex; align-items: center; gap: 8px;">
+                                <button class="pill-btn" data-action="close-playlist-detail" style="display: none; align-items: center; gap: 8px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                     ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
                                 </button>
                                 <h2 style="margin: 0; flex: 1;">${playlist.name}</h2>
-                                ${playlist.videos.length > 0 ? `
+                                ${playlist.videos.length > 0 && playlistSelectionMode ? `
                                     <button class="pill-btn ${playlistSelectionMode ? 'active' : ''}" data-action="toggle-playlist-selection-mode" style="display: inline-flex; align-items: center; gap: 8px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                                        ${playlistSelectionMode ? (currentLanguage === 'it' ? 'Annulla' : 'Cancel') : (currentLanguage === 'it' ? 'Seleziona' : 'Select')}
+                                        ${currentLanguage === 'it' ? 'Deseleziona' : 'Deselect'}
+                                    </button>
+                                    <button class="pill-btn" data-action="remove-selected-from-playlist" ${selectedPlaylistVideos.size === 0 ? 'disabled' : ''} style="display: inline-flex; align-items: center; gap: 8px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Rimuovi' : 'Remove'}
+                                    </button>
+                                ` : ''}
+                                ${playlist.videos.length > 0 && !playlistSelectionMode ? `
+                                    <button class="pill-btn" data-action="toggle-playlist-selection-mode" style="display: inline-flex; align-items: center; gap: 8px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Seleziona' : 'Select'}
                                     </button>
                                 ` : ''}
                             </div>
-
-                            ${playlistSelectionMode ? `
-                                <div class="selection-bar" style="position: relative; top: 0; margin-bottom: 24px;">
-                                    <div class="selection-bar-content">
-                                        <span id="playlist-selection-count">${selectedPlaylistVideos.size} ${currentLanguage === 'it' ? 'selezionati' : 'selected'}</span>
-                                        <div class="selection-bar-actions">
-                                            <button class="selection-bar-btn" data-action="remove-selected-from-playlist" ${selectedPlaylistVideos.size === 0 ? 'disabled' : ''}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                                ${currentLanguage === 'it' ? 'Rimuovi' : 'Remove'}
-                                            </button>
-                                            <button class="selection-bar-btn" data-action="cancel-playlist-selection">
-                                                ${currentLanguage === 'it' ? 'Annulla' : 'Cancel'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
 
                             <div style="background: var(--Koda-card-bg); padding: 24px; border-radius: 12px; margin-bottom: 24px;">
                                 <div style="display: flex; gap: 24px; align-items: start;">
@@ -15068,9 +15610,8 @@ ${filtersHTML}
                                         </button>
                                     </div>
                                     <div style="flex: 1;">
-                                        <p style="color: var(--Koda-text-secondary); margin: 0 0 8px 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
-                                        <p style="color: var(--Koda-text-secondary); margin: 0;">${currentLanguage === 'it' ? '' : ''} ${new Date(playlist.createdAt).toLocaleDateString()}</p>
-                                    </div>
+    <p style="color: var(--Koda-text-secondary); margin: 0 0 8px 0;">${playlist.videos.length} ${currentLanguage === 'it' ? 'video' : 'videos'}</p>
+</div>
                                 </div>
                             </div>
 
@@ -15100,14 +15641,8 @@ ${filtersHTML}
                 }
 
                 // Aggiorna il contatore
-                const count = selectedPlaylistVideos.size;
-                const countText = currentLanguage === 'it' ? `${count} selezionati` : `${count} selected`;
-                const countElement = document.getElementById('playlist-selection-count');
-                if (countElement) {
-                    countElement.textContent = countText;
-                }
-
                 // Aggiorna lo stato del pulsante Rimuovi
+                const count = selectedPlaylistVideos.size;
                 const removeBtn = document.querySelector('[data-action="remove-selected-from-playlist"]');
                 if (removeBtn) {
                     if (count === 0) {
@@ -15151,6 +15686,160 @@ ${filtersHTML}
                     playlistSelectionMode = false;
                     renderPlaylistDetailPage(activePlaylistId);
                 }
+            };
+
+            // NUOVO: Modale per aggiungere video alla playlist corrente
+            const openAddVideosToPlaylistModal = (playlistId) => {
+                const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
+                const playlist = playlists.find(p => p.id === playlistId);
+                if (!playlist) return;
+
+                const availableVideos = youtubeVideosData.filter(video => !playlist.videos.includes(video.id));
+
+                if (availableVideos.length === 0) {
+                    showToast(currentLanguage === 'it' ? 'Tutti i video sono già nella playlist!' : 'All videos are already in the playlist!');
+                    return;
+                }
+
+                let selectedVideosForAdd = new Set();
+                let activeCategory = null;
+
+                const getFilteredVideos = () => {
+                    if (!activeCategory) return availableVideos;
+                    return availableVideos.filter(video => video.category === activeCategory);
+                };
+
+                const renderVideosList = () => {
+                    const filteredVideos = getFilteredVideos();
+                    const videosContainer = document.getElementById('add-videos-grid');
+                    if (!videosContainer) return;
+
+                    if (filteredVideos.length === 0) {
+                        videosContainer.innerHTML = `<div id="empty-state" style="grid-column: 1 / -1;">${currentLanguage === 'it' ? 'Nessun video trovato' : 'No videos found'}</div>`;
+                        return;
+                    }
+
+                    videosContainer.innerHTML = filteredVideos.map(video => {
+                        let videoIdYT = '';
+                        try {
+                            const url = new URL(video.youtubeUrl);
+                            videoIdYT = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
+                        } catch (e) { }
+
+                        const thumbnailUrl = videoIdYT ? `https://img.youtube.com/vi/${videoIdYT}/mqdefault.jpg` : '';
+                        const isSelected = selectedVideosForAdd.has(video.id);
+
+                        return `
+                            <div class="video-card ${isSelected ? 'selected' : ''}" data-action="toggle-video-for-add" data-video-id="${video.id}" style="cursor: pointer; position: relative; transition: all 0.2s;">
+                                <div class="selection-checkbox" style="position: absolute; top: 8px; left: 8px; z-index: 10; display: flex;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                </div>
+                                <img src="${thumbnailUrl}" class="video-thumbnail" alt="Thumbnail">
+                                <div class="video-info">
+                                    <h4>${video.title} ${video.category ? getCategoryBadgeHTML(video.category) : ''}</h4>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                };
+
+                const updateConfirmButton = () => {
+                    const confirmBtn = document.getElementById('confirm-add-videos-btn');
+                    if (confirmBtn) {
+                        confirmBtn.disabled = selectedVideosForAdd.size === 0;
+                        confirmBtn.textContent = selectedVideosForAdd.size > 0
+                            ? `${currentLanguage === 'it' ? 'Aggiungi' : 'Add'} (${selectedVideosForAdd.size})`
+                            : (currentLanguage === 'it' ? 'Aggiungi' : 'Add');
+                    }
+                };
+
+                // Ottieni categorie uniche
+                const categories = [...new Set(availableVideos.map(v => v.category))].filter(Boolean);
+
+                const filtersHTML = categories.length > 0 ? `
+                    <div class="filter-pills" style="padding: 12px 16px; display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                        <button class="pill-btn active" data-category-filter="all">${currentLanguage === 'it' ? 'Tutti' : 'All'}</button>
+                        ${categories.map(cat => {
+                    const catLabel = cat === 'tutorial' ? translations[currentLanguage].categoryTutorial :
+                        cat === 'education' ? translations[currentLanguage].categoryEducation :
+                            cat === 'development' ? translations[currentLanguage].categoryDevelopment :
+                                cat === 'news' ? translations[currentLanguage].categoryNews : cat;
+                    return `<button class="pill-btn" data-category-filter="${cat}">${catLabel}</button>`;
+                }).join('')}
+                    </div>
+                ` : '';
+
+                const modalHTML = `
+                    <div class="add-to-collection-modal visible" id="add-videos-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; display: flex; flex-direction: column;">
+                        <div class="add-to-collection-content" style="max-width: 100%; width: 100%; height: 100%; border-radius: 0; display: flex; flex-direction: column;">
+                            <div class="add-to-collection-header" style="flex-shrink: 0; padding: 20px; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                                <button class="add-to-collection-close" data-action="close-add-videos-modal" style="position: absolute; top: 16px; left: 16px; background: none; border: none; color: var(--Koda-text); font-size: 28px; cursor: pointer;">←</button>
+                                <h3 class="add-to-collection-title" style="text-align: center; margin: 0;">${currentLanguage === 'it' ? 'Aggiungi video a' : 'Add videos to'} "${playlist.name}"</h3>
+                            </div>
+                            ${filtersHTML}
+                            <div style="flex: 1; overflow-y: auto; padding: 16px;">
+                                <div class="video-grid" id="add-videos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;"></div>
+                            </div>
+                            <div style="flex-shrink: 0; padding: 16px; border-top: 1px solid rgba(128, 128, 128, 0.2); background: var(--Koda-bg);">
+                                <button id="confirm-add-videos-btn" class="button" style="width: 100%; background: var(--Koda-accent); color: #000; padding: 16px; font-size: 16px; font-weight: 600; border-radius: 24px;" disabled>
+                                    ${currentLanguage === 'it' ? 'Aggiungi' : 'Add'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
+                renderVideosList();
+
+                // Event delegation
+                const modal = document.getElementById('add-videos-modal');
+                modal.addEventListener('click', (e) => {
+                    // Gestione filtri categoria
+                    const categoryBtn = e.target.closest('[data-category-filter]');
+                    if (categoryBtn) {
+                        const category = categoryBtn.dataset.categoryFilter;
+                        document.querySelectorAll('[data-category-filter]').forEach(btn => btn.classList.remove('active'));
+                        categoryBtn.classList.add('active');
+                        activeCategory = category === 'all' ? null : category;
+                        renderVideosList();
+                        return;
+                    }
+
+                    // Selezione video
+                    const videoCard = e.target.closest('[data-action="toggle-video-for-add"]');
+                    if (videoCard) {
+                        const videoId = videoCard.dataset.videoId;
+                        if (selectedVideosForAdd.has(videoId)) {
+                            selectedVideosForAdd.delete(videoId);
+                            videoCard.classList.remove('selected');
+                        } else {
+                            selectedVideosForAdd.add(videoId);
+                            videoCard.classList.add('selected');
+                        }
+                        updateConfirmButton();
+                        return;
+                    }
+
+                    if (e.target.closest('[data-action="close-add-videos-modal"]')) {
+                        modal.remove();
+                        return;
+                    }
+
+                    if (e.target.closest('#confirm-add-videos-btn') && selectedVideosForAdd.size > 0) {
+                        selectedVideosForAdd.forEach(videoId => {
+                            if (!playlist.videos.includes(videoId)) {
+                                playlist.videos.push(videoId);
+                            }
+                        });
+                        localStorage.setItem('video-playlists', JSON.stringify(playlists));
+                        showToast(currentLanguage === 'it'
+                            ? `${selectedVideosForAdd.size} video aggiunti alla playlist!`
+                            : `${selectedVideosForAdd.size} videos added to playlist!`);
+                        modal.remove();
+                        renderPlaylistDetailPage(activePlaylistId);
+                    }
+                });
             };
 
             const changePlaylistCover = async (playlistId) => {
@@ -16295,6 +16984,11 @@ ${filtersHTML}
                         case 'toggle-playlist-selection-mode':
                             togglePlaylistSelectionMode();
                             break;
+                        // NUOVO: Aggiungi video alla playlist corrente
+                        case 'add-videos-to-playlist':
+                            const targetPlaylistId = actionTarget.dataset.playlistId;
+                            openAddVideosToPlaylistModal(targetPlaylistId);
+                            break;
                         // NUOVO: Toggle selezione video in playlist
                         case 'toggle-playlist-video-selection':
                             event.stopPropagation();
@@ -16428,7 +17122,12 @@ ${filtersHTML}
                             const addToolId = actionTarget.dataset.toolId;
                             openAddToCollectionModal(addToolId);
                             break;
-                        // RIMOSSO: add-tools-to-collection e add-videos-to-playlist
+                        // NUOVO: Aggiungi AI alla collezione corrente
+                        case 'add-tools-to-collection':
+                            const targetCollectionId = actionTarget.dataset.collectionId;
+                            openAddToolsToCollectionModal(targetCollectionId);
+                            break;
+                        // RIMOSSO: add-videos-to-playlist
                         // RIMOSSO: toggle-tool-selection-for-add e toggle-video-selection-for-add
                         // RIMOSSO: Tutti i gestori per i modali di aggiunta AI/Video
                         // RIMOSSO: confirm-add-multiple-tools e confirm-add-multiple-videos
@@ -17479,7 +18178,7 @@ ${filtersHTML}
             });
         })();
     </script>
-<script>
+    <script>
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
