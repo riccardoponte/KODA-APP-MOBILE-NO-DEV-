@@ -6276,7 +6276,6 @@
         .video-card-list {
             background-color: var(--Koda-bg-light);
             border-radius: 12px;
-            border: 2px solid var(--Koda-accent);
             padding: 12px;
             display: flex;
             gap: 12px;
@@ -6456,7 +6455,6 @@
         .video-card-grid {
             background-color: var(--Koda-bg-light);
             border-radius: 12px;
-            border: 2px solid var(--Koda-accent);
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.2s;
@@ -14427,6 +14425,17 @@ ${filtersHTML}
 
             // FUNZIONE: Gestisce il cambio tab nella pagina Cinema
             const handleCinemaTabChange = (tab, addToHistory = true) => {
+                // NUOVO: Chiudi la pagina di dettaglio playlist se aperta
+                document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
+                
+                // NUOVO: Reset dello stato della playlist
+                activePlaylistId = null;
+                playlistSelectionMode = false;
+                selectedPlaylistVideos.clear();
+                
+                // NUOVO: Chiudi eventuali modali aperti
+                document.querySelectorAll('.add-to-collection-modal').forEach(m => m.remove());
+                
                 const t = translations[currentLanguage];
                 const videoFavorites = JSON.parse(localStorage.getItem('video-favorites') || '[]');
                 const videoPlaylists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
@@ -14709,7 +14718,7 @@ ${filtersHTML}
 
                         if (mode === 'grid') {
                             return `
-                                <div class="tool-card-grid" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer; position: relative; border: 2px solid var(--Koda-accent); border-radius: 12px; padding: 8px;">
+                                <div class="tool-card-grid" data-action="open-playlist" data-playlist-id="${playlist.id}" style="cursor: pointer; position: relative;">
                                     <div class="logo-container" style="position: relative;">
                                         ${coverHTML}
                                         <button class="video-options-btn" data-action="toggle-playlist-options" data-playlist-id="${playlist.id}" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.8); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">⋮</button>
@@ -14730,7 +14739,7 @@ ${filtersHTML}
                             `;
                         } else {
                             return `
-                                <div class="playlist-item" data-action="open-playlist" data-playlist-id="${playlist.id}" style="position: relative; border: 2px solid var(--Koda-accent); border-radius: 12px; padding: 12px;">
+                                <div class="playlist-item" data-action="open-playlist" data-playlist-id="${playlist.id}" style="position: relative;">
                                     <div class="select-checkbox" data-playlist-id="${playlist.id}"></div>
                                     <div style="width: 160px; min-width: 160px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
                                         ${coverHTML}
@@ -16846,6 +16855,17 @@ ${filtersHTML}
                             localStorage.setItem('lastCinemaVisit', Date.now().toString());
                             updateCinemaNotificationBadge();
 
+                            // Reset dello stato della playlist quando si entra nel cinema
+                            activePlaylistId = null;
+                            playlistSelectionMode = false;
+                            selectedPlaylistVideos.clear();
+                            
+                            // Chiudi eventuali pagine di dettaglio playlist
+                            document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
+                            
+                            // Chiudi eventuali modali aperti
+                            document.querySelectorAll('.add-to-collection-modal').forEach(m => m.remove());
+
                             currentView = 'cinema';
                             history.pushState({ page: 'cinema' }, '', '#cinema');
                             renderView();
@@ -16864,6 +16884,13 @@ ${filtersHTML}
                             break;
                         // NUOVO: Torna al cinema dalla pagina video-detail
                         case 'back-to-cinema':
+                            // Reset dello stato della playlist
+                            activePlaylistId = null;
+                            playlistSelectionMode = false;
+                            selectedPlaylistVideos.clear();
+                            document.querySelectorAll('.playlist-detail-page').forEach(p => p.remove());
+                            document.querySelectorAll('.add-to-collection-modal').forEach(m => m.remove());
+                            
                             currentView = 'cinema';
                             history.pushState({ page: 'cinema' }, '', '#cinema');
                             renderView();
