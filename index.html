@@ -11222,7 +11222,11 @@ ${knowledgeBaseFormatter(tools)}
                             ? `${selectedToolsForAdd.size} AI aggiunte alla collezione!`
                             : `${selectedToolsForAdd.size} AI added to collection!`);
                         modal.remove();
+                        // Assicurati di tornare alla vista library con la collezione attiva
+                        currentView = 'favorites';
+                        activeCollectionId = collectionId;
                         renderView();
+                        updateBottomNav();
                     }
                 });
             };
@@ -12152,9 +12156,9 @@ ${filtersHTML}
 
                         const backButtonHTML = `
                             <div style="padding: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                                <button class="pill-btn" data-action="back-to-collections" style="display: none; align-items: center; gap: 8px;">
+                                <button class="pill-btn" data-action="back-to-collections" style="display: inline-flex; align-items: center; gap: 8px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                                    ${t.backToSearch}
+                                    ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
                                 </button>
                                 ${collection.toolIds.length > 0 && selectionMode ? `
                                     <button class="pill-btn ${selectionMode ? 'active' : ''}" data-action="toggle-selection-mode" id="selection-mode-btn" style="display: inline-flex; align-items: center; gap: 8px;">
@@ -15578,9 +15582,8 @@ ${filtersHTML}
                     <div class="playlist-detail-page" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--Koda-bg); z-index: 10000; overflow-y: auto;">
                         <div style="max-width: 1200px; margin: 0 auto; padding: 24px;">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
-                                <button class="pill-btn" data-action="close-playlist-detail" style="display: none; align-items: center; gap: 8px;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                                    ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
+                                <button class="pill-btn" data-action="close-playlist-detail" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 8px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                 </button>
                                 <h2 style="margin: 0; flex: 1;">${playlist.name}</h2>
                                 ${playlist.videos.length > 0 && playlistSelectionMode ? `
@@ -15837,6 +15840,8 @@ ${filtersHTML}
                             ? `${selectedVideosForAdd.size} video aggiunti alla playlist!`
                             : `${selectedVideosForAdd.size} videos added to playlist!`);
                         modal.remove();
+                        // Assicurati di mantenere lo stato della playlist attiva
+                        activePlaylistId = playlistId;
                         renderPlaylistDetailPage(activePlaylistId);
                     }
                 });
@@ -16497,6 +16502,18 @@ ${filtersHTML}
                 if (event.state && event.state.page) {
                     currentView = event.state.page;
 
+                    // Reset activeCollectionId e activePlaylistId quando si cambia vista
+                    if (currentView !== 'favorites') {
+                        activeCollectionId = null;
+                        selectionMode = false;
+                        selectedTools.clear();
+                    }
+                    if (currentView !== 'cinema') {
+                        activePlaylistId = null;
+                        playlistSelectionMode = false;
+                        selectedPlaylistVideos.clear();
+                    }
+
                     // Ripristina i filtri se presenti nello stato
                     if (event.state.exploreFilter !== undefined) {
                         exploreFilter = event.state.exploreFilter;
@@ -16535,6 +16552,18 @@ ${filtersHTML}
                 if (navBtn && navBtn.dataset.page !== currentView) {
                     const newView = navBtn.dataset.page;
                     currentView = newView;
+
+                    // Reset activeCollectionId e activePlaylistId quando si cambia vista
+                    if (newView !== 'favorites') {
+                        activeCollectionId = null;
+                        selectionMode = false;
+                        selectedTools.clear();
+                    }
+                    if (newView !== 'cinema') {
+                        activePlaylistId = null;
+                        playlistSelectionMode = false;
+                        selectedPlaylistVideos.clear();
+                    }
 
                     // --- INSERT THIS CODE ---
                     const state = { page: newView };
