@@ -8060,12 +8060,14 @@
         </div>
         <nav id="bottom-nav">
             <!-- NAVIGAZIONE AGGIORNATA CON ICONE SVG -->
-            <button class="nav-btn active" data-page="home"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
+            <!-- Pulsante Home Disabilitato
+            <button class="nav-btn" data-page="home"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
                         height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
                         <path d="M0 0h24v24H0z" fill="none" />
                         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                     </svg></span><span data-translate="navHome">Home</span></button>
-            <button class="nav-btn" data-page="top-ai"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
+-->
+            <button class="nav-btn active" data-page="top-ai"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
                         height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
                         <path d="M0 0h24v24H0z" fill="none" />
                         <path d="M5 9.2h3V19H5zM10.6 5h3v14h-3zm5.6 8H19v6h-2.8z" />
@@ -9509,7 +9511,7 @@ ${knowledgeBaseFormatter(tools)}
             // currentUser will now include Firestore data (favorites, userTools, userFeaturedTools, userFeaturedReplacements)
             // and the privileged status loaded from Firestore
             let currentUser = {};
-            let currentView = 'home';
+            let currentView = 'top-ai';
             let activeFilter = 'All'; // Filter for Favorites page
             let exploreFilter = { type: null, value: null }; // Filter for Explore page
             let rankingFilter = 'All'; // Filter for Top AI page
@@ -11889,7 +11891,7 @@ ${knowledgeBaseFormatter(tools)}
                 // Aggiungi animazione di transizione pagina
                 contentArea.classList.add('page-transition');
 
-                if (currentView === 'home') {
+                if (false && currentView === 'home') { // Schermata Home disabilitata
                     // Add the same header structure as other pages for consistency
                     const globalControls = getGlobalControlsHTML();
                     const pageTitle = pageTitles[currentView] || currentView;
@@ -17972,10 +17974,10 @@ ${filtersHTML}
                 if (initialHash && validPages.includes(initialHash)) {
                     currentView = initialHash;
                 } else {
-                    // Default to home view if hash is missing or invalid
-                    currentView = 'home';
+                    // Default to top-ai view if hash is missing or invalid
+                    currentView = 'top-ai';
                     // Use replaceState to set the initial history entry without creating a new one
-                    history.replaceState({ page: 'home' }, '', '#home');
+                    history.replaceState({ page: 'top-ai' }, '', '#top-ai');
                 }
                 // --- END OF INSERTION ---
                 // Carica tutti i dati da Firestore PRIMA di inizializzare l'app
