@@ -7976,7 +7976,7 @@
       }
     }
     </script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
     <!-- PWA & Apple Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
@@ -8125,7 +8125,7 @@
     <div id="modal-container"></div>
 
     <!-- SCRIPT DEL CHATBOT MIGLIORATO -->
-    <script type="text/babel" data-type="module" id="chatbot-script" data-presets="env,react">
+    <script type="text/babel" data-type="module" id="chatbot-script" data-presets="react">
         import React, { useState, useEffect, useRef, useCallback } from 'react';
         import ReactDOMClient from 'react-dom/client';
         import { GoogleGenAI } from '@google/genai';
@@ -8823,6 +8823,8 @@ ${knowledgeBaseFormatter(tools)}
     </script>
 
     <script type="module">
+        // Definisco la funzione vuota per prevenire crash
+        window.loadToolRatings = function () { console.log("Caricamento ratings..."); };
         // --- FIREBASE IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
