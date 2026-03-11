@@ -13,6 +13,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Koda AI</title>
+    <!-- Font Montserrat (Alternativa Spotify) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'Inter';
@@ -45,7 +47,7 @@
             --Koda-text: #ffffff;
             --Koda-text-secondary: #b3b3b3;
             --Koda-accent: #1db954;
-            --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            --font-family: 'Montserrat', sans-serif;
             --bottom-nav-height: 70px;
         }
 
@@ -231,7 +233,8 @@
 
         .page-title {
             font-size: 22px;
-            font-weight: 700;
+            font-weight: 900; /* Extra Bold */
+            letter-spacing: -0.5px;
             flex-grow: 1;
             color: var(--Koda-text);
             margin: 0;
@@ -322,39 +325,90 @@
             transform: scale(1.05);
         }
 
-        /* User Profile Dropdown Menu */
+        /* User Profile Menu - Trasformato in Menu Laterale Fisso */
         .user-profile-container {
             position: relative;
             display: inline-block;
         }
 
-        .user-profile-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 8px;
-            background-color: var(--Koda-card);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            min-width: 200px;
-            z-index: 2000;
+        /* Overlay di sfondo per cliccare fuori */
+        .profile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10004;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(128, 128, 128, 0.2);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .profile-menu-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Menu laterale a comparsa */
+        .user-profile-dropdown {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 350px;
+            height: 100vh;
+            background-color: var(--Koda-bg);
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+            z-index: 10005; /* Z-index altissimo per coprire la chat e la navbar */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            border-radius: 0;
+            border: none;
+            border-left: 1px solid var(--Koda-card);
+        }
+
+        /* Su schermi piccoli occupa il 100% della larghezza */
+        @media (max-width: 480px) {
+            .user-profile-dropdown {
+                max-width: 100vw;
+                border-left: none;
+            }
         }
 
         .user-profile-dropdown.visible {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateX(0);
         }
 
         .user-profile-header {
-            padding: 16px;
+            padding: 40px 24px 24px 24px;
+            background-color: var(--Koda-card);
             border-bottom: 1px solid rgba(128, 128, 128, 0.2);
             text-align: center;
+            position: relative;
+        }
+
+        /* Tasto chiusura Menu Profilo */
+        .user-profile-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            font-size: 32px;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .user-profile-close-btn:hover {
+            color: var(--Koda-text);
         }
 
         .user-profile-avatar {
@@ -423,49 +477,7 @@
             background-color: rgba(255, 107, 107, 0.1);
         }
 
-        /* Responsive adjustments for mobile */
-        @media (max-width: 768px) {
-            .user-profile-dropdown {
-                position: fixed;
-                top: auto;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                margin: 0;
-                border-radius: 12px 12px 0 0;
-                min-width: auto;
-                max-height: 80vh;
-                overflow-y: auto;
-            }
-
-            .user-profile-dropdown.visible {
-                transform: translateY(0);
-            }
-
-            .user-profile-header {
-                padding: 20px 16px;
-            }
-
-            .user-profile-avatar {
-                width: 56px;
-                height: 56px;
-                font-size: 24px;
-            }
-
-            .user-profile-name {
-                font-size: 18px;
-            }
-
-            .user-profile-item {
-                padding: 16px;
-                font-size: 16px;
-            }
-
-            .user-profile-item svg {
-                width: 20px;
-                height: 20px;
-            }
-        }
+        /* Stili mobile per il menu profilo rimossi, gestiti ora dal Side Drawer generale */
 
         @media (max-width: 480px) {
             .top-bar {
@@ -534,22 +546,28 @@
         }
 
         .pill-btn {
-            background-color: var(--Koda-card);
+            background-color: #2a2a2a; /* Grigio Spotify */
             color: var(--Koda-text);
-            border: 1px solid rgba(128, 128, 128, 0.2);
-            border-radius: 50px;
+            border: none;
+            border-radius: 500px;
             padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 13px; /* Leggermente più piccolo */
+            font-weight: 700; /* Bold Spotify */
             cursor: pointer;
             white-space: nowrap;
-            transition: background-color 0.2s, color 0.2s;
+            transition: all 0.2s ease;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .pill-btn.active {
-            background-color: var(--Koda-text);
-            color: var(--Koda-bg);
-            font-weight: bold;
+            background-color: var(--Koda-accent);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .pill-btn:hover:not(.active) {
+            background-color: #3e3e3e;
+            transform: scale(1.04);
         }
 
         body.light-mode .pill-btn.active {
@@ -656,9 +674,11 @@
         }
 
         .tool-card-grid .tool-name {
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 1.3;
+            font-size: 13px;
+            font-weight: 700; /* Bold deciso */
+            color: var(--Koda-text);
+            line-height: 1.2;
+            margin-top: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -1555,13 +1575,24 @@
 
         #search-input {
             width: 100%;
-            padding: 14px 16px;
-            font-size: 16px;
-            background-color: var(--Koda-card);
-            border: 2px solid transparent;
-            border-radius: 8px;
-            color: var(--Koda-text);
-            transition: border-color 0.3s ease;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: #fff; /* Spotify mobile usa spesso search bar bianche o grigio chiarissimo */
+            border: none;
+            border-radius: 500px; /* Completamente pillola */
+            color: #000;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode #search-input {
+            background-color: #e9e9e9;
+        }
+
+        #search-input::placeholder {
+            color: #535353;
+            font-weight: 600;
         }
 
         #search-input:focus {
@@ -1616,10 +1647,15 @@
             background: none;
             border: none;
             color: var(--Koda-text-secondary);
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 10px; /* Più piccolo, stile Spotify */
+            font-weight: 600;
+            text-transform: none;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn.active {
+            color: #fff; /* Spotify usa il bianco puro per l'icona attiva */
         }
 
         .nav-btn .icon {
@@ -1723,13 +1759,13 @@
             background-color: var(--Koda-accent);
             color: #000;
             border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 500px; /* Massima rotondità */
+            font-size: 15px;
+            font-weight: 800; /* Molto bold */
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-transform: none; /* Spotify raramente usa il tutto maiuscolo nei bottoni moderni */
+            letter-spacing: -0.2px;
             transition: all 0.3s ease;
         }
 
@@ -2434,10 +2470,23 @@
             background-color: transparent;
             border: none;
             color: var(--Koda-text);
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: 'Montserrat', sans-serif;
             resize: none;
-            padding: 6px 0;
-            line-height: 1.5;
+            padding: 8px 0;
+            line-height: 1.4;
+        }
+
+        /* Testo dentro le bolle della chat */
+        .chat-bubble {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+        }
+        
+        .chat-bubble.user {
+            font-weight: 700; /* Il testo dell'utente è più marcato */
         }
 
         #chat-input:focus {
@@ -6428,6 +6477,13 @@
             color: var(--Koda-text);
             font-size: 14px;
             font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        /* NUOVO: Rimuove l'outline di default e applica il bordo verde Koda */
+        .video-search-input:focus {
+            outline: none;
+            border-color: var(--Koda-accent);
         }
 
         .video-search-input::placeholder {
@@ -7805,7 +7861,16 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            animation: rollDice 2s ease-in-out;
+            /* L'animazione viene applicata via JS al click */
+        }
+
+        @keyframes rollDice {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            20% { transform: rotateX(180deg) rotateY(90deg); }
+            40% { transform: rotateX(360deg) rotateY(180deg); }
+            60% { transform: rotateX(540deg) rotateY(270deg); }
+            80% { transform: rotateX(720deg) rotateY(450deg); }
+            100% { transform: rotateX(1080deg) rotateY(720deg); }
         }
 
         @keyframes rollDice {
@@ -7997,35 +8062,7 @@
 
 <body>
 
-    <div id="optimizer-overlay">
-        <div class="optimizer-header">
-            <div class="optimizer-title" data-translate="optimizerTitle">Optimize for GPT-5</div>
-            <div class="optimizer-controls">
-                <button class="button" data-action="copy-optimized-prompt" data-translate="copyButton">Copy</button>
-                <button class="button primary" data-action="save-optimized-prompt"
-                    data-translate="saveButton">Save</button>
-                <button class="close-btn" data-action="close-optimizer">&times;</button>
-            </div>
-        </div>
-        <div class="optimizer-content">
-            <div class="optimizer-panel">
-                <label data-translate="originalPromptLabel">Original prompt</label>
-                <textarea id="optimizer-original-prompt"
-                    data-translate-placeholder="originalPromptPlaceholder"></textarea>
-            </div>
-            <div class="optimizer-panel">
-                <label data-translate="optimizedPromptLabel">Optimized prompt</label>
-                <textarea id="optimizer-optimized-prompt" readonly
-                    data-translate-placeholder="optimizedPromptPlaceholder"></textarea>
-            </div>
-        </div>
-        <div class="optimizer-footer">
-            <div class="optimizer-actions">
-                <button id="optimizer-submit-btn" class="button primary" data-action="optimize-prompt"
-                    data-translate="optimizeButton">Optimize</button>
-            </div>
-        </div>
-    </div>
+    
 
     <div id="auth-overlay">
         <!-- Authentication content will be dynamically generated here by JS -->
@@ -8092,35 +8129,7 @@
         </nav>
     </div>
 
-    <!-- Dice Overlay -->
-    <div id="dice-overlay">
-        <div class="dice-container">
-            <div class="dice">
-                <div class="dice-face front">❓</div>
-                <div class="dice-face back">❓</div>
-                <div class="dice-face right">❓</div>
-                <div class="dice-face left">❓</div>
-                <div class="dice-face top">❓</div>
-                <div class="dice-face bottom">❓</div>
-            </div>
-        </div>
-        <div class="dice-result-modal">
-            <div class="dice-result-title" id="dice-result-title"></div>
-            <div class="dice-result-tool">
-                <img class="dice-result-tool-logo" id="dice-result-logo" src="" alt="">
-                <div class="dice-result-tool-name" id="dice-result-name"></div>
-                <div class="dice-result-tool-desc" id="dice-result-desc"></div>
-            </div>
-            <div class="dice-result-actions">
-                <button class="dice-result-btn secondary" id="dice-close-btn">
-                    <span id="dice-close-text"></span>
-                </button>
-                <button class="dice-result-btn primary" id="dice-view-btn">
-                    <span id="dice-view-text"></span>
-                </button>
-            </div>
-        </div>
-    </div>
+    
 
     <div id="modal-container"></div>
 
@@ -8670,21 +8679,12 @@ ${knowledgeBaseFormatter(tools)}
                             {lang === 'it' ? 'Consigliami AI per programmare' : 'Suggest AI tools for coding'}
                         </button>
                     </div>
-                    <div className="prompt-starter-container">
+                    <div class="prompt-starter-container">
                         {suggestions[lang].map((text, i) => (
                             <button key={i} className="prompt-starter-btn" onClick={() => onSendMessage(text)}>
                                 {text}
                             </button>
                         ))}
-                    </div>
-                    {/* NUOVO: Contenitore per i pulsanti di azione */}
-                    <div className="prompt-actions-container">
-                        <button className="action-btn primary" data-action="navigate-to-optimizer">
-                            {lang === 'it' ? "Ottimizza Prompt" : "Optimize Prompt"}
-                        </button>
-                        <button className="action-btn tertiary" data-action="show-prompt-gallery">
-                            {lang === 'it' ? "Galleria Prompt" : "Prompt Gallery"}
-                        </button>
                     </div>
                 </div>
             );
@@ -8990,6 +8990,9 @@ ${knowledgeBaseFormatter(tools)}
                     libraryCollections: "Collezioni",
                     editProfile: "Modifica profilo",
                     viewChats: "Visualizza chat",
+                    myAiStack: "Il mio AI Stack",
+                    myAiStackEmpty: "Aggiungi almeno un'AI ai preferiti per generare il tuo Stack!",
+                    myAiStackScreenshot: "📸 Fai uno screenshot per condividere!",
                     // Traduzioni Collezioni
                     createCollection: "Crea collezione",
                     collectionName: "Nome collezione",
@@ -9072,6 +9075,7 @@ ${knowledgeBaseFormatter(tools)}
                     addToPlaylist: "Aggiungi a playlist",
                     watchOnYouTube: "Guarda su YouTube",
                     educationalPurpose: "Video a scopo didattico",
+                    toolsInThisVideo: "Strumenti menzionati in questo video",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Privacy Policy di Koda AI",
@@ -9114,7 +9118,7 @@ ${knowledgeBaseFormatter(tools)}
                     privacyRightsNote: "Dato che non conserviamo dati personali, l'esercizio di tali diritti può essere rivolto principalmente verso le terze parti menzionate. Per qualsiasi domanda, è possibile contattarci all'indirizzo email sopra indicato.",
                     privacyChangesTitle: "Modifiche a questa privacy policy",
                     privacyChangesDesc: "Il titolare del trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli utenti su questa pagina.",
-                    privacyReminderTitle: "Benvenuto in Koda AI",
+                    privacyReminderTitle: "Benvenuto in Koda",
                     privacyReminderMessage: "Prima di iniziare, ti invitiamo a leggere la nostra privacy policy per comprendere come trattiamo i tuoi dati.",
                     privacyReminderDontShow: "Non mostrare più questo messaggio",
                     privacyReminderReadBtn: "Leggi Privacy Policy",
@@ -9232,6 +9236,9 @@ ${knowledgeBaseFormatter(tools)}
                     libraryCollections: "Collections",
                     editProfile: "Edit profile",
                     viewChats: "View chats",
+                    myAiStack: "My AI Stack",
+                    myAiStackEmpty: "Add at least one AI to favorites to generate your Stack!",
+                    myAiStackScreenshot: "📸 Take a screenshot to share!",
                     // Collections Translations
                     createCollection: "Create collection",
                     collectionName: "Collection name",
@@ -9313,6 +9320,7 @@ ${knowledgeBaseFormatter(tools)}
                     addToPlaylist: "Add to playlist",
                     watchOnYouTube: "Watch on YouTube",
                     educationalPurpose: "Educational purpose videos",
+                    toolsInThisVideo: "Tools mentioned in this video",
                     // Privacy
                     privacy: "Privacy",
                     privacyPolicyTitle: "Koda AI Privacy Policy",
@@ -9355,7 +9363,7 @@ ${knowledgeBaseFormatter(tools)}
                     privacyRightsNote: "Since we do not store personal data, the exercise of these rights can be addressed primarily to the third parties mentioned. For any questions, you can contact us at the email address indicated above.",
                     privacyChangesTitle: "Changes to this privacy policy",
                     privacyChangesDesc: "The data controller reserves the right to make changes to this privacy policy at any time, giving notice to users on this page.",
-                    privacyReminderTitle: "Welcome to Koda AI",
+                    privacyReminderTitle: "Welcome to Koda",
                     privacyReminderMessage: "Before you begin, we invite you to read our privacy policy to understand how we handle your data.",
                     privacyReminderDontShow: "Don't show this message again",
                     privacyReminderReadBtn: "Read Privacy Policy",
@@ -10090,6 +10098,32 @@ ${knowledgeBaseFormatter(tools)}
                 const videoDate = video.createdAt ? new Date(video.createdAt.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
                 const description = video.description[currentLanguage] || video.description['en'] || '';
 
+                // --- INIZIO SMART CINEMA LOGIC ---
+                const allTools = window.getAllToolsForCurrentUser();
+                const mentionedTools = allTools.filter(tool => {
+                    if (!tool.name) return false;
+                    // Protegge la stringa per usarla in una RegEx e usa \b per trovare solo la parola intera
+                    const safeName = tool.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const regex = new RegExp(`\\b${safeName}\\b`, 'i');
+                    const textToSearch = `${video.title} ${description}`;
+                    return regex.test(textToSearch);
+                });
+
+                let mentionedToolsHTML = '';
+                if (mentionedTools.length > 0) {
+                    // Genera le card usando la funzione esistente (formato 'explore' per la lista)
+                    const toolsCards = mentionedTools.map(tool => createListCard(tool, 'explore')).join('');
+                    mentionedToolsHTML = `
+                        <div style="margin-top: 32px; border-top: 1px solid rgba(128, 128, 128, 0.2); padding-top: 24px;">
+                            <h3 style="font-size: 18px; margin-bottom: 16px;">${t.toolsInThisVideo || 'Strumenti menzionati in questo video'}</h3>
+                            <div class="list-container">
+                                ${toolsCards}
+                            </div>
+                        </div>
+                    `;
+                }
+                // --- FINE SMART CINEMA LOGIC ---
+
                 contentArea.innerHTML = `
                     <div class="video-detail-page" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
                         <div class="video-detail-container" style="background: var(--Koda-card); border-radius: 12px; overflow: hidden;">
@@ -10125,26 +10159,49 @@ ${knowledgeBaseFormatter(tools)}
                                         <p style="line-height: 1.6; white-space: pre-wrap;">${description}</p>
                                     </div>
                                 ` : ''}
+
+                                ${mentionedToolsHTML}
                             </div>
                         </div>
                     </div>
                 `;
             };
 
-            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda
+            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda (Spotify Style)
             const showConfirmModal = (options) => {
                 return new Promise((resolve) => {
-                    const { title, message, icon = '⚠️', confirmText, cancelText } = options;
+                    const { title, message, icon = '', confirmText, cancelText } = options;
+
+                    // Determina se è un'azione distruttiva per colorare il bottone
+                    const isDestructive = confirmText.toLowerCase().includes('elimina') || 
+                                          confirmText.toLowerCase().includes('delete') || 
+                                          confirmText.toLowerCase().includes('rimuovi') || 
+                                          confirmText.toLowerCase().includes('remove');
+                                          
+                    const btnColor = isDestructive ? '#ff4444' : 'var(--Koda-accent)';
+                    const btnTextColor = isDestructive ? '#fff' : '#000';
 
                     const modalHTML = `
-                        <div class="confirm-modal visible">
-                            <div class="confirm-modal-content">
-                                <div class="confirm-modal-icon">${icon}</div>
-                                <h3 class="confirm-modal-title">${title}</h3>
-                                <p class="confirm-modal-message">${message}</p>
-                                <div class="confirm-modal-actions">
-                                    <button class="confirm-cancel-btn" data-action="confirm-cancel">${cancelText}</button>
-                                    <button class="confirm-ok-btn" data-action="confirm-ok">${confirmText}</button>
+                        <div class="confirm-modal visible" style="background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 20px; z-index: 10007;">
+                            <div style="width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                                ${icon ? `<div style="font-size: 48px; margin-bottom: 24px;">${icon}</div>` : ''}
+                                
+                                <h2 style="font-size: clamp(24px, 7vw, 32px); font-weight: 900; letter-spacing: -1px; line-height: 1.2; margin-bottom: 16px; color: var(--Koda-text);">
+                                    ${title}
+                                </h2>
+                                
+                                <p style="color: #a7a7a7; font-size: 15px; margin-bottom: 40px; line-height: 1.5;">
+                                    ${message}
+                                </p>
+                                
+                                <div style="width: 100%; display: flex; flex-direction: column; gap: 16px;">
+                                    <button data-action="confirm-ok" style="width: 100%; padding: 14px; border-radius: 500px; background-color: ${btnColor}; color: ${btnTextColor}; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.04)';" onmouseout="this.style.transform='scale(1)';">
+                                        ${confirmText}
+                                    </button>
+                                    
+                                    <button data-action="confirm-cancel" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                                        ${cancelText}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -10821,6 +10878,8 @@ ${knowledgeBaseFormatter(tools)}
 
             const openUserProfileDropdown = () => {
                 const dropdown = document.getElementById('user-profile-dropdown');
+                const overlay = document.getElementById('profile-menu-overlay');
+                
                 if (dropdown) {
                     // Close any other open dropdowns first
                     closeUserProfileDropdown();
@@ -10835,35 +10894,26 @@ ${knowledgeBaseFormatter(tools)}
 
                     if (nameElement) nameElement.textContent = currentUser.nickname || currentUser.name;
                     if (emailElement) emailElement.textContent = currentUser.name;
-                    if (avatarElement) avatarElement.textContent = currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : currentUser.name.charAt(0).toUpperCase();
+                    // Se non ci sono immagini, lascia che sia l'HTML generato (che già ha l'img) a prevalere, oppure aggiorna il testo
+                    if (avatarElement && !avatarElement.querySelector('img')) {
+                         avatarElement.textContent = currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : currentUser.name.charAt(0).toUpperCase();
+                    }
 
                     // Apply translations
                     applyTranslations(currentLanguage);
 
-                    // Show dropdown
+                    // Mostra dropdown e overlay
                     dropdown.classList.add('visible');
-
-                    // Add click outside listener
-                    setTimeout(() => {
-                        document.addEventListener('click', closeUserProfileDropdownOnClickOutside);
-                    }, 100);
+                    if(overlay) overlay.classList.add('visible');
                 }
             };
 
             const closeUserProfileDropdown = () => {
                 const dropdown = document.getElementById('user-profile-dropdown');
+                const overlay = document.getElementById('profile-menu-overlay');
                 if (dropdown) {
                     dropdown.classList.remove('visible');
-                    document.removeEventListener('click', closeUserProfileDropdownOnClickOutside);
-                }
-            };
-
-            const closeUserProfileDropdownOnClickOutside = (event) => {
-                const dropdown = document.getElementById('user-profile-dropdown');
-                const container = document.querySelector('.user-profile-container');
-
-                if (dropdown && container && !container.contains(event.target)) {
-                    closeUserProfileDropdown();
+                    if(overlay) overlay.classList.remove('visible');
                 }
             };
 
@@ -10875,24 +10925,40 @@ ${knowledgeBaseFormatter(tools)}
                 const userInitial = isGuest ? '?' : (currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : 'U');
 
                 // Logica condizionale per il contenuto dell'avatar
-                const avatarImageUrl = currentTheme === 'light'
+                const defaultLogo = currentTheme === 'light'
                     ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                     : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                const avatarContentHTML = isGuest
-                    ? `<img src="${avatarImageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
-                    : userInitial;
+                    
+                // Recupera l'avatar dal local storage (Guest) o usa il default
+                const savedAvatar = localStorage.getItem('guest-avatar');
+                const userAvatar = savedAvatar || defaultLogo;
+                
+                const avatarContentHTML = `<img src="${userAvatar}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 
                 // The avatar is now always rendered in the top-bar, but its click action depends on login status
                 const avatarHTML = `
             <div class="user-profile-container">
                 <div class="user-avatar" data-action="profile-avatar-click">${avatarContentHTML}</div>
+                
+                <!-- Overlay scuro per il menu laterale -->
+                <div class="profile-menu-overlay" id="profile-menu-overlay" data-action="close-profile-menu"></div>
+                
                 <div class="user-profile-dropdown" id="user-profile-dropdown">
                     <div class="user-profile-header">
+                        <button class="user-profile-close-btn" data-action="close-profile-menu">&times;</button>
                         <div class="user-profile-avatar">${avatarContentHTML}</div>
                         <div class="user-profile-name">${currentUser.nickname || currentUser.name}</div>
                         <div class="user-profile-email">${currentUser.name}</div>
                     </div>
                     <div class="user-profile-menu">
+                        <div class="user-profile-item" data-action="generate-ai-stack">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" fill="none"/>
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                                <path d="M7 12h2v5H7zm4-3h2v8h-2zm4-3h2v11h-2z"/>
+                            </svg>
+                            <span data-translate="myAiStack">${translations[currentLanguage]?.myAiStack || 'Il mio AI Stack'}</span>
+                        </div>
                         <div class="user-profile-item" data-action="open-settings">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -10904,12 +10970,6 @@ ${knowledgeBaseFormatter(tools)}
                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                             </svg>
                             <span data-translate="changeNicknameTitle">Cambia nickname</span>
-                        </div>
-                        <div class="user-profile-item" data-action="change-password">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                            </svg>
-                            <span data-translate="changePasswordTitle">Cambia password</span>
                         </div>
                         
                     </div>
@@ -10939,15 +10999,7 @@ ${knowledgeBaseFormatter(tools)}
     </button>
 `;
 
-                // NUOVO: Pulsante Dado (Random AI Tool)
-                otherControlsHTML += `
-    <button id="dice-btn" class="global-btn" data-action="roll-dice" title="${currentLanguage === 'it' ? 'Scopri un AI casuale' : 'Discover a random AI'}" style="color: var(--Koda-accent);">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
-        </svg>
-    </button>
-`;
+                
 
                 otherControlsHTML += `
 <button id="theme-toggle-btn" class="global-btn" data-action="toggle-theme">${themeIcon}</button>
@@ -10972,8 +11024,6 @@ ${knowledgeBaseFormatter(tools)}
 
             const openAddToCollectionModal = (toolId) => {
                 const t = translations[currentLanguage];
-
-                // NUOVO: Salva il toolId corrente
                 currentToolIdInModal = toolId;
 
                 const collectionsListHTML = collections.map(collection => {
@@ -10989,43 +11039,48 @@ ${knowledgeBaseFormatter(tools)}
                         : `<img src="${logoUrl}" alt="Koda Logo" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
 
                     return `
-                        <div class="collection-list-item ${isInCollection ? 'selected' : ''}" data-action="toggle-tool-in-collection" data-collection-id="${collection.id}" data-tool-id="${toolId}">
+                        <div class="collection-list-item ${isInCollection ? 'selected' : ''}" data-action="toggle-tool-in-collection" data-collection-id="${collection.id}" data-tool-id="${toolId}" style="background: transparent; border: 1px solid rgba(128,128,128,0.1); margin-bottom: 12px;">
                             <div class="collection-list-item-cover">${coverHTML}</div>
                             <div class="collection-list-item-info">
-                                <div class="collection-list-item-name">${collection.name}</div>
-                                <div class="collection-list-item-count">${countText}</div>
+                                <div class="collection-list-item-name" style="font-size: 16px; font-weight: 700;">${collection.name}</div>
+                                <div class="collection-list-item-count" style="font-size: 13px; color: #a7a7a7;">${countText}</div>
                             </div>
-                            <div class="collection-list-item-check">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <div class="collection-list-item-check" style="${isInCollection ? 'background: var(--Koda-accent); border-color: var(--Koda-accent);' : 'border-color: #727272;'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${isInCollection ? '#000' : 'transparent'}"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                // Mostra pulsante "Salva" solo se ci sono collezioni esistenti
                 const hasCollections = collections.length > 0;
-                const buttonsHTML = hasCollections
-                    ? `
-                        <div style="display: flex; gap: 12px; margin-top: 16px;">
-                            <button class="create-new-collection-btn" data-action="create-collection-from-modal" style="flex: 1; background: var(--Koda-card); color: var(--Koda-text);">
-                                ${t.createCollection}
-                            </button>
-                            <button class="create-new-collection-btn" data-action="close-add-to-collection-modal" style="flex: 1;">
-                                ${currentLanguage === 'it' ? '✓ Salva' : '✓ Save'}
-                            </button>
-                        </div>
-                    `
-                    : `<button class="create-new-collection-btn" data-action="create-collection-from-modal">${t.createCollection}</button>`;
 
                 const modalHTML = `
-                    <div class="add-to-collection-modal visible">
-                        <div class="add-to-collection-content">
-                            <div class="add-to-collection-header">
-                                <h3 class="add-to-collection-title">${t.addToCollection}</h3>
-                                <button class="add-to-collection-close" data-action="close-add-to-collection-modal">×</button>
+                    <div class="add-to-collection-modal visible" style="background: var(--Koda-bg); z-index: 10006; align-items: flex-start; padding: 0;">
+                        <div style="width: 100%; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh;">
+                            
+                            <!-- Sticky Header -->
+                            <div style="position: sticky; top: 0; background: var(--Koda-bg); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 10; border-bottom: 1px solid rgba(128,128,128,0.1);">
+                                <h2 style="font-size: 24px; font-weight: 900; margin: 0; color: var(--Koda-text);">${t.addToCollection}</h2>
+                                <button data-action="close-add-to-collection-modal" style="background: none; border: none; color: var(--Koda-text-secondary); font-size: 32px; cursor: pointer;">&times;</button>
                             </div>
-                            ${hasCollections ? `<div class="collections-list">${collectionsListHTML}</div>` : `<p style="text-align: center; color: var(--Koda-text-secondary); padding: 20px;">${t.emptyCollections}</p>`}
-                            ${buttonsHTML}
+
+                            <!-- List Content -->
+                            <div style="flex: 1; overflow-y: auto; padding: 24px;">
+                                ${hasCollections ? `<div class="collections-list">${collectionsListHTML}</div>` : `<p style="text-align: center; color: #a7a7a7; padding: 40px 20px; font-size: 16px; font-weight: 600;">${t.emptyCollections}</p>`}
+                            </div>
+
+                            <!-- Sticky Footer Buttons -->
+                            <div style="position: sticky; bottom: 0; background: linear-gradient(to top, var(--Koda-bg) 80%, transparent); padding: 24px; display: flex; flex-direction: column; gap: 12px; padding-bottom: max(24px, env(safe-area-inset-bottom));">
+                                ${hasCollections ? `
+                                    <button data-action="close-add-to-collection-modal" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease;">
+                                        ${currentLanguage === 'it' ? 'Fine' : 'Done'}
+                                    </button>
+                                ` : ''}
+                                <button data-action="create-collection-from-modal" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                                    ${t.createCollection}
+                                </button>
+                            </div>
+
                         </div>
                     </div>
                 `;
@@ -11843,7 +11898,7 @@ ${knowledgeBaseFormatter(tools)}
                         </button>
                         <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
                         <div class="user-chat-info" style="flex-grow: 1;">
-                            <a href="#" class="cinema-policy-link" id="cinema-link" data-action="open-cinema-policy" style="color: var(--Koda-accent); text-decoration: underline; font-weight: 500;">${pageTitle}</a>
+                            <span style="font-weight: 600; font-size: 18px;">${pageTitle}</span>
                         </div>
                         <div id="global-controls">
                             <button class="global-btn" id="cinema-home-btn" data-action="exit-cinema" title="${t.backToApp || 'Torna all\'app'}">
@@ -11877,7 +11932,7 @@ ${knowledgeBaseFormatter(tools)}
                         // Top bar normale per altre pagine
                         const topBarHTML = `<div class="user-chat-header">
                         <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
-                        <div class="user-chat-info" style="flex-grow: 1;"><a href="#" class="privacy-link" id="privacy-link-top">${t.privacy}</a></div>
+                        <div class="user-chat-info" style="flex-grow: 1;"><span style="font-weight: 600; font-size: 18px;">${pageTitle || 'Koda'}</span></div>
                         <div id="global-controls">${globalControls.otherControls}</div>
                     </div>`;
                         el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
@@ -11898,7 +11953,7 @@ ${knowledgeBaseFormatter(tools)}
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
                     </button>
                     <div id="profile-avatar-menu" style="margin-left: 8px;">${globalControls.avatar}</div>
-                    <div class="user-chat-info" style="flex-grow: 1;"><a href="#" class="privacy-link" id="privacy-link-chat">${t.privacy}</a></div>
+                    <div class="user-chat-info" style="flex-grow: 1;"><span style="font-weight: 600; font-size: 18px;">${pageTitle}</span></div>
                     <div id="global-controls">${globalControls.otherControls}</div>
                 </div>`;
                     el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
@@ -11927,9 +11982,32 @@ ${knowledgeBaseFormatter(tools)}
                     }
                 } else if (currentView === 'top-ai') {
 
+                    // --- LOGICA AI DEL GIORNO ---
+                    // Calcoliamo l'indice in base al giorno dell'anno, così cambia ogni 24h
+                    const dayOfYear = Math.floor(Date.now() / 86400000); 
+                    const dailyAiIndex = dayOfYear % staticTools.length;
+                    const aiOfTheDay = staticTools[dailyAiIndex] || staticTools[0];
+                    
+                    const dailyAiHTML = `
+                        <div style="margin-bottom: 32px; background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid var(--Koda-accent); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; cursor: pointer; box-shadow: 0 8px 24px rgba(29, 185, 84, 0.15);" data-action="open-detail-modal" data-id="${aiOfTheDay.id}">
+                            <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.05;">🌟</div>
+                            <div style="font-size: 12px; font-weight: 700; color: var(--Koda-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                                <span>✨</span> ${currentLanguage === 'it' ? 'La Scoperta di Oggi' : 'App of the Day'}
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <img src="${aiOfTheDay.logoUrl}" style="width: 64px; height: 64px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                                <div>
+                                    <h3 style="font-size: 20px; margin: 0 0 4px 0;">${aiOfTheDay.name}</h3>
+                                    <p style="font-size: 14px; color: var(--Koda-text-secondary); margin: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${aiOfTheDay.description}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    // --- FINE AI DEL GIORNO ---
+
                     // Limita a 4 le AI In evidenza
                     const featuredTools = staticTools.filter(t => t.isFeatured).slice(0, 4); // Solo 4 AI In evidenza
-                    let contentHTML = `<div class="section-title"><span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container featured-ai-grid">`;
+                    let contentHTML = dailyAiHTML + `<div class="section-title"><span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container featured-ai-grid">`;
 
                     // Render static featured tools, potentially replaced by user tools
                     contentHTML += featuredTools.map(staticTool => {
@@ -12537,69 +12615,107 @@ ${filtersHTML}
             // --- SETTINGS MODAL FUNCTIONS (Copied from index.html and adapted) ---
 
             window.openSettingsModal = () => {
-                if (!currentUser.uid) return;
                 const t = translations[currentLanguage];
+                const isGuest = !currentUser.uid;
+                const emailDisplay = isGuest ? (currentLanguage === 'it' ? 'Profilo Locale' : 'Local Profile') : currentUser.name;
 
-                const modalHTML = `
-                <div id="settings-modal" class="modal-overlay visible">
-                    <div class="modal-content">
-                        <button class="modal-close-btn" data-action="close-modal">×</button>
-                        <h2 data-translate="settingsTitle">${t.settingsTitle}</h2>
-                        
-                        <p style="font-size: 16px; color: var(--Koda-text-secondary); margin-top: 16px; margin-bottom: 24px;">${currentUser.name}</p>
-                        
-                        <hr class="modal-divider">
-
-                        <h4 data-translate="changeNicknameTitle">${t.changeNicknameTitle}</h4>
-                        <div class="input-group" style="margin-top: 16px;">
-                            <label for="profile-nickname" data-translate="registerNicknameLabel">${t.registerNicknameLabel}</label>
-                            <input type="text" id="profile-nickname" placeholder="${t.registerNicknamePlaceholder}" value="${currentUser.nickname || ''}">
-                        </div>
-                        <button class="button" id="update-nickname-btn" data-translate="saveNicknameButton">${t.saveNicknameButton}</button>
-
-                        <hr class="modal-divider">
-
-                        <h4 data-translate="changePasswordTitle">${t.changePasswordTitle}</h4>
-                        <div class="input-group" style="margin-top: 16px;">
-                            <label for="profile-new-password" data-translate="newPasswordLabel">${t.newPasswordLabel}</label>
-                            <div class="password-input-wrapper">
-                                <input type="password" id="profile-new-password" placeholder="${t.newPasswordPlaceholder}">
-                                <button type="button" class="password-toggle-icon" data-action="toggle-password-visibility" data-toggle-for="profile-new-password">${eyeIconSVG}</button>
+                const passwordSectionHTML = isGuest ? '' : `
+                        <div style="margin-top: 40px; margin-bottom: 24px;">
+                            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">${t.changePasswordTitle}</h3>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; margin-bottom: 8px;">${t.newPasswordLabel}</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="profile-new-password" placeholder="${t.newPasswordPlaceholder}" style="width: 100%; padding: 14px; background: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none;">
+                                    <button type="button" class="password-toggle-icon" data-action="toggle-password-visibility" data-toggle-for="profile-new-password">${eyeIconSVG}</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="input-group">
-                            <label for="profile-confirm-password" data-translate="confirmPasswordLabel">${t.confirmPasswordLabel}</label>
-                             <div class="password-input-wrapper">
-                                <input type="password" id="profile-confirm-password" placeholder="${t.confirmPasswordPlaceholder}">
-                                <button type="button" class="password-toggle-icon" data-action="toggle-password-visibility" data-toggle-for="profile-confirm-password">${eyeIconSVG}</button>
+                            <div style="margin-bottom: 24px;">
+                                <label style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; margin-bottom: 8px;">${t.confirmPasswordLabel}</label>
+                                 <div class="password-input-wrapper">
+                                    <input type="password" id="profile-confirm-password" placeholder="${t.confirmPasswordPlaceholder}" style="width: 100%; padding: 14px; background: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none;">
+                                    <button type="button" class="password-toggle-icon" data-action="toggle-password-visibility" data-toggle-for="profile-confirm-password">${eyeIconSVG}</button>
+                                </div>
                             </div>
+                            <button id="update-password-btn" style="padding: 10px 24px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-weight: 700; cursor: pointer;">${t.savePasswordButton}</button>
                         </div>
-                        <button class="button" id="update-password-btn" data-translate="savePasswordButton">${t.savePasswordButton}</button>
+                `;
 
-                         <hr class="modal-divider">
-                         
-                         <h4>${currentLanguage === 'it' ? 'Chiave API Gemini' : 'Gemini API Key'}</h4>
-                         <p style="font-size: 13px; color: var(--Koda-text-secondary); margin: 8px 0 16px 0;">
-                            ${currentLanguage === 'it' ? 'Configura la tua chiave API personale per utilizzare Gemini AI' : 'Configure your personal API key to use Gemini AI'}
-                         </p>
-                         <div class="input-group">
-                            <label for="gemini-api-key">${currentLanguage === 'it' ? 'Chiave API' : 'API Key'}</label>
-                            <input type="password" id="gemini-api-key" placeholder="${currentLanguage === 'it' ? 'Inserisci la tua chiave API' : 'Enter your API key'}" value="${localStorage.getItem('gemini-api-key') || ''}">
+                const logoutSectionHTML = isGuest ? '' : `
+                         <div style="margin-top: 60px; width: 100%; display: flex; justify-content: center;">
+                             <button id="logout-btn-modal" data-action="logout" style="width: 100%; max-width: 350px; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#fff'">${t.logout}</button>
                          </div>
-                         <button class="button" id="save-api-key-btn">${currentLanguage === 'it' ? 'Salva Chiave API' : 'Save API Key'}</button>
-                         <p style="font-size: 12px; color: var(--Koda-text-secondary); margin-top: 8px;">
-                            ${currentLanguage === 'it' ? 'Ottieni la tua chiave gratuita su' : 'Get your free key at'} <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--Koda-accent);">Google AI Studio</a>
-                         </p>
+                `;
 
-                         <hr class="modal-divider">
-                         <button id="logout-btn-modal" class="pill-btn" data-action="logout" data-translate="logout">${t.logout}</button>
+                // Layout full screen immersivo e centrato
+                const modalHTML = `
+                <div id="settings-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10006; align-items: center; justify-content: center; overflow-y: auto; padding: 0;">
+                    
+                    <div style="width: 100%; max-width: 500px; min-height: 100vh; display: flex; flex-direction: column; text-align: center; padding: 20px 24px 80px 24px;">
+                        
+                        <!-- Header centrato con X a destra -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-top: 20px;">
+                            <h2 style="font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -1px;">${t.settingsTitle}</h2>
+                            <button data-action="close-modal" style="background: none; border: none; color: var(--Koda-text); font-size: 36px; cursor: pointer; line-height: 1;">&times;</button>
+                        </div>
+
+                        <p style="font-size: 14px; color: var(--Koda-text-secondary); margin-bottom: 40px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">${emailDisplay}</p>
+                        
+                        <!-- Box Profilo Centrato -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; margin-bottom: 48px;">
+                            <div style="position: relative; width: 120px; height: 120px; cursor: pointer;" onclick="document.getElementById('settings-avatar-upload').click()">
+                                <img id="settings-avatar-preview" src="${localStorage.getItem('guest-avatar') || (currentTheme === 'light' ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png')}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #727272; transition: transform 0.2s;">
+                                <input type="file" id="settings-avatar-upload" accept="image/*" style="display: none;">
+                                <div style="position: absolute; right: 4px; bottom: 4px; background: var(--Koda-accent); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: 2px solid var(--Koda-bg);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="black"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                </div>
+                            </div>
+                            
+                            <div style="width: 100%; max-width: 350px;">
+                                <label for="profile-nickname" style="display: block; font-size: 11px; font-weight: 800; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; text-align: left;">Nickname</label>
+                                <input type="text" id="profile-nickname" placeholder="${t.registerNicknamePlaceholder}" value="${currentUser.nickname || ''}" style="width: 100%; padding: 16px; font-size: 16px; background-color: #282828; border: 1px solid transparent; border-radius: 8px; color: var(--Koda-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#fff'">
+                            </div>
+
+                            <button id="update-profile-btn" style="width: 100%; max-width: 350px; padding: 16px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 800; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                ${currentLanguage === 'it' ? 'Salva Profilo' : 'Save Profile'}
+                            </button>
+                        </div>
+
+                         ${passwordSectionHTML}
+
+                         <!-- Sezione Info Legali Centrata -->
+                         <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto;">
+                             <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: left;">${currentLanguage === 'it' ? 'Informazioni' : 'About'}</h3>
+                             <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <button data-action="open-cinema-policy" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                                    Policy <span style="pointer-events: none; color: #a7a7a7; font-size: 20px;">›</span>
+                                </button>
+                             </div>
+                         </div>
+
+                         ${logoutSectionHTML}
 
                     </div>
                 </div>`;
                 el.modalContainer.innerHTML = modalHTML;
 
-                // Attach listener to the update nickname button
-                document.getElementById('update-nickname-btn')?.addEventListener('click', handleNicknameUpdate);
+                // Attach listener to the update profile (nickname + avatar) button
+                document.getElementById('update-profile-btn')?.addEventListener('click', handleNicknameUpdate);
+
+                // Attach listener for avatar preview in settings
+                const settingsAvatarInput = document.getElementById('settings-avatar-upload');
+                const settingsAvatarPreview = document.getElementById('settings-avatar-preview');
+                if (settingsAvatarInput && settingsAvatarPreview) {
+                    settingsAvatarInput.addEventListener('change', (event) => {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                settingsAvatarPreview.src = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
                 // Attach listener to the update password button
                 document.getElementById('update-password-btn')?.addEventListener('click', handlePasswordUpdate);
                 // Attach listener to save API key button
@@ -12626,6 +12742,7 @@ ${filtersHTML}
             const handleNicknameUpdate = async () => {
                 const nicknameInput = document.getElementById('profile-nickname');
                 const newNickname = nicknameInput.value.trim();
+                const avatarPreview = document.getElementById('settings-avatar-preview');
                 const t = translations[currentLanguage];
 
                 if (!newNickname) {
@@ -12633,15 +12750,32 @@ ${filtersHTML}
                     return;
                 }
 
-                try {
-                    const userDocRef = doc(db, "users", currentUser.uid);
-                    await updateDoc(userDocRef, { nickname: newNickname });
+                // Salvataggio dell'avatar in Local Storage (valido per tutti)
+                if (avatarPreview && avatarPreview.src.startsWith('data:image')) {
+                    localStorage.setItem('guest-avatar', avatarPreview.src);
+                }
+
+                if (currentUser.uid) {
+                    // Logica Firebase (mantiene compatibilità se mai abilitato, ma salviamo avatar solo in local)
+                    try {
+                        const userDocRef = doc(db, "users", currentUser.uid);
+                        await updateDoc(userDocRef, { nickname: newNickname });
+                        currentUser.nickname = newNickname;
+                        showToast(t.nicknameUpdateSuccess);
+                        closeModal(); 
+                        renderView();
+                    } catch (error) {
+                        console.error("Error updating nickname:", error);
+                        showToast(`Error: ${error.message}`);
+                    }
+                } else {
+                    // Logica LOCAL STORAGE (Guest Mode)
+                    localStorage.setItem('guest-nickname', newNickname);
                     currentUser.nickname = newNickname;
-                    showToast(t.nicknameUpdateSuccess);
-                    closeModal(); // Close modal on success
-                } catch (error) {
-                    console.error("Error updating nickname:", error);
-                    showToast(`Error: ${error.message}`);
+                    currentUser.name = newNickname; 
+                    showToast('Profilo aggiornato con successo!');
+                    closeModal();
+                    renderView(); // Aggiorna per mostrare la nuova foto/nome
                 }
             };
 
@@ -12673,93 +12807,76 @@ ${filtersHTML}
                 }
             };
 
-            // NEW FUNCTION: Open Add App Modal
+            // NEW FUNCTION: Open Add App Modal (Stile Spotify)
             const openAddAppModal = () => {
                 const t = translations[currentLanguage];
-
-                // Aggiungi alla cronologia del browser
                 history.pushState({ modal: 'add-app', page: currentView }, '', '');
 
-                // Get available categories for the dropdown
-                const categoryOptions = categories.map(cat =>
-                    `<option value="${cat.id}">${cat.name[currentLanguage]}</option>`
-                ).join('');
-
-                // Conditionally create the logo input HTML
                 let logoInputHTML = '';
                 if (currentUser.uid) {
-                    // Logged-in user: URL input
+                    // Firebase User: URL Input styled like Spotify
                     logoInputHTML = `
-                        <div class="input-group">
-                            <label for="add-app-logo-url" data-translate="logoURLLabel">${t.logoURLLabel}</label>
-                            <input type="url" id="add-app-logo-url" placeholder="${t.logoURLPlaceholder}">
+                        <div style="margin-bottom: 32px;">
+                            <label for="add-app-logo-url" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; margin-bottom: 8px;">${t.logoURLLabel}</label>
+                            <input type="url" id="add-app-logo-url" placeholder="${t.logoURLPlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;">
                         </div>
                     `;
                 } else {
-                    // Guest user: File input with improved UI
+                    // Guest User: Visual Image Uploader
                     logoInputHTML = `
-                        <div class="logo-upload-area" onclick="document.getElementById('add-app-logo').click()">
-                            <div class="logo-preview-container">
-                                <img id="add-app-logo-preview" class="logo-preview-img" src="" alt="Logo Preview" style="display: none;">
-                                <div id="add-app-logo-placeholder" class="logo-placeholder">
-                                    <div>🖼️</div>
-                                    <div class="logo-placeholder-text">${currentLanguage === 'it' ? 'Carica' : 'Upload'}</div>
+                        <div style="margin-bottom: 40px; text-align: center;">
+                            <div style="position: relative; width: 120px; height: 120px; cursor: pointer; transition: transform 0.2s ease; margin: 0 auto;" id="add-app-logo-container" onclick="document.getElementById('add-app-logo').click()">
+                                <img id="add-app-logo-preview" src="" alt="Logo Preview" style="display: none; width: 100%; height: 100%; border-radius: 24px; object-fit: cover; border: 1px solid #727272;">
+                                <div id="add-app-logo-placeholder" style="width: 100%; height: 100%; border-radius: 24px; background: #282828; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #727272;">
+                                    <span style="font-size: 32px; margin-bottom: 4px;">🖼️</span>
+                                    <span style="font-size: 11px; font-weight: 700; color: #a7a7a7; text-transform: uppercase;">Carica Logo</span>
                                 </div>
-                                <div id="add-app-logo-change-btn" class="logo-change-btn" style="display: none;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                                </div>
-                            </div>
-                            <input type="file" id="add-app-logo" accept="image/*" style="display: none;">
-                            <div class="logo-upload-hint">
-                                ${currentLanguage === 'it' ? 'PNG, JPG o GIF' : 'PNG, JPG or GIF'}
+                                <input type="file" id="add-app-logo" accept="image/*" style="display: none;">
                             </div>
                         </div>
                     `;
                 }
 
                 const modalHTML = `
-                 <div id="add-app-modal" class="modal-overlay visible">
-                     <div class="modal-content">
-                         <button class="modal-close-btn" data-action="close-modal">×</button>
+                 <div id="add-app-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10006; align-items: flex-start; padding: 0;">
+                     <div style="width: 100%; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh;">
                          
-                         <div class="modal-header">
-                             <h2 data-translate="addAppTitle">${t.addAppTitle}</h2>
+                         <!-- Sticky Header -->
+                         <div style="position: sticky; top: 0; background: var(--Koda-bg); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
+                             <h2 style="font-size: 24px; font-weight: 900; margin: 0; color: var(--Koda-text);">${t.addAppTitle}</h2>
+                             <button data-action="close-modal" style="background: none; border: none; color: var(--Koda-text-secondary); font-size: 32px; cursor: pointer;">&times;</button>
                          </div>
 
-                         <div class="modal-body">
-                             <!-- Logo Section -->
-                             <div class="form-section">
-                                 <div class="form-section-title">
-                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-                                     <span data-translate="appLogoLabel">${t.appLogoLabel}</span>
-                                 </div>
-                                 ${logoInputHTML}
-                             </div>
+                         <!-- Form Content -->
+                         <div style="flex: 1; overflow-y: auto; padding: 20px 24px;">
+                             ${logoInputHTML}
 
-                             <!-- Basic Info Section -->
-                             <div class="form-section">
-                                 <div class="form-section-title">
-                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                                     <span>${currentLanguage === 'it' ? 'Informazioni di base' : 'Basic Information'}</span>
+                             <div style="display: flex; flex-direction: column; gap: 24px;">
+                                 <div>
+                                     <label for="add-app-name" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appNameLabel}</label>
+                                     <input type="text" id="add-app-name" placeholder="${t.appNamePlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='#fff';" onblur="this.style.borderColor='#727272';">
                                  </div>
-                                 <div class="input-group">
-                                     <label for="add-app-name" data-translate="appNameLabel">${t.appNameLabel}</label>
-                                     <input type="text" id="add-app-name" placeholder="${t.appNamePlaceholder}">
+
+                                 <div>
+                                     <label for="add-app-description" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appDescriptionLabel}</label>
+                                     <textarea id="add-app-description" placeholder="${t.appDescriptionPlaceholder}" rows="3" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; resize: vertical; font-family: var(--font-family); transition: border-color 0.2s ease;" onfocus="this.style.borderColor='#fff';" onblur="this.style.borderColor='#727272';"></textarea>
                                  </div>
-                                 <div class="input-group">
-                                     <label for="add-app-description" data-translate="appDescriptionLabel">${t.appDescriptionLabel}</label>
-                                     <textarea id="add-app-description" placeholder="${t.appDescriptionPlaceholder}"></textarea>
-                                 </div>
-                                 <div class="input-group">
-                                     <label for="add-app-website" data-translate="appWebsiteLabel">${t.appWebsiteLabel}</label>
-                                     <input type="url" id="add-app-website" placeholder="${t.appWebsitePlaceholder}">
+
+                                 <div>
+                                     <label for="add-app-website" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appWebsiteLabel}</label>
+                                     <input type="url" id="add-app-website" placeholder="${t.appWebsitePlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='#fff';" onblur="this.style.borderColor='#727272';">
                                  </div>
                              </div>
                          </div>
 
-                         <div class="modal-footer">
-                             <button class="button-secondary" data-action="close-modal" data-translate="cancel">${t.cancel}</button>
-                             <button class="button-primary" id="add-app-btn" data-translate="addAppButton">${t.addAppButton}</button>
+                         <!-- Sticky Footer Buttons -->
+                         <div style="position: sticky; bottom: 0; background: linear-gradient(to top, var(--Koda-bg) 80%, transparent); padding: 24px; display: flex; flex-direction: column; gap: 12px; padding-bottom: max(24px, env(safe-area-inset-bottom));">
+                             <button id="add-app-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#1ed760';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--Koda-accent)';">
+                                 ${t.addAppButton}
+                             </button>
+                             <button data-action="close-modal" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                                 ${t.cancel}
+                             </button>
                          </div>
                      </div>
                  </div>
@@ -12802,7 +12919,7 @@ ${filtersHTML}
 
             // NEW FUNCTION: Open Change Nickname Modal
             const openChangeNicknameModal = () => {
-                if (!currentUser.uid) return;
+                // Rimosso il blocco per utenti non loggati
                 const t = translations[currentLanguage];
 
                 // Aggiungi alla cronologia del browser
@@ -12875,15 +12992,26 @@ ${filtersHTML}
                     return;
                 }
 
-                try {
-                    const userDocRef = doc(db, "users", currentUser.uid);
-                    await updateDoc(userDocRef, { nickname: newNickname });
+                if (currentUser.uid) {
+                    // Logica Firebase (se dovesse mai servire)
+                    try {
+                        const userDocRef = doc(db, "users", currentUser.uid);
+                        await updateDoc(userDocRef, { nickname: newNickname });
+                        currentUser.nickname = newNickname;
+                        showToast(t.nicknameUpdateSuccess);
+                        closeModal();
+                    } catch (error) {
+                        console.error("Error updating nickname:", error);
+                        showToast(`Error: ${error.message}`);
+                    }
+                } else {
+                    // Logica LOCAL STORAGE (Guest Mode)
+                    localStorage.setItem('guest-nickname', newNickname);
                     currentUser.nickname = newNickname;
-                    showToast(t.nicknameUpdateSuccess);
+                    currentUser.name = newNickname; // Aggiorna anche il nome visivo
+                    showToast(currentLanguage === 'it' ? 'Nickname salvato in locale!' : 'Nickname saved locally!');
                     closeModal();
-                } catch (error) {
-                    console.error("Error updating nickname:", error);
-                    showToast(`Error: ${error.message}`);
+                    renderView(); // Aggiorna l'interfaccia per mostrare il nuovo nome e l'iniziale
                 }
             };
 
@@ -12916,27 +13044,33 @@ ${filtersHTML}
                 }
             };
 
-            // NUOVA FUNZIONE: Apre il modale per creare una collezione
+            // NUOVA FUNZIONE: Apre il modale per creare una collezione (Stile Spotify)
             const openCreateCollectionModal = () => {
                 const t = translations[currentLanguage];
                 const modalHTML = `
-                <div id="create-collection-modal" class="modal-overlay visible">
-                    <div class="modal-content" style="text-align: left; max-width: 400px;">
-                        <button class="modal-close-btn" data-action="close-modal">×</button>
-                        <h2 style="font-size: 20px; margin-bottom: 24px;">${t.createCollection}</h2>
-                        <div class="input-group">
-                            <label for="new-collection-name">${t.collectionName}</label>
-                            <input type="text" id="new-collection-name" placeholder="${t.collectionNamePlaceholder}" style="margin-top: 8px;">
-                        </div>
-                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-                            <button class="pill-btn" data-action="close-modal">${t.cancel}</button>
-                            <button class="button" data-action="submit-create-collection">${t.createCollectionButton}</button>
+                <div id="create-collection-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10006; align-items: center; justify-content: center;">
+                    <button class="modal-close-btn" data-action="close-modal" style="position: absolute; top: 20px; right: 24px; font-size: 32px; color: var(--Koda-text-secondary);">×</button>
+                    
+                    <div style="width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <h2 style="font-size: clamp(32px, 8vw, 48px); font-weight: 900; letter-spacing: -1px; margin-bottom: 40px; color: var(--Koda-text);">
+                            ${t.createCollection}
+                        </h2>
+                        
+                        <input type="text" id="new-collection-name" placeholder="${t.collectionNamePlaceholder}" 
+                            style="width: 100%; background: transparent; border: none; border-bottom: 2px solid #727272; color: var(--Koda-text); font-size: clamp(24px, 6vw, 36px); font-weight: 700; text-align: center; padding-bottom: 12px; outline: none; transition: border-color 0.3s; margin-bottom: 40px;"
+                            onfocus="this.style.borderBottomColor='var(--Koda-accent)'" 
+                            onblur="this.style.borderBottomColor='#727272'"
+                            onkeyup="if(event.key === 'Enter') document.querySelector('[data-action=submit-create-collection]').click()">
+                            
+                        <div style="width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 16px;">
+                            <button data-action="submit-create-collection" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.04)';" onmouseout="this.style.transform='scale(1)';">
+                                ${t.createCollectionButton}
+                            </button>
                         </div>
                     </div>
                 </div>`;
                 el.modalContainer.innerHTML = modalHTML;
-                // Mette il focus sull'input field all'apertura del modale
-                document.getElementById('new-collection-name')?.focus();
+                setTimeout(() => document.getElementById('new-collection-name')?.focus(), 100);
             };
             const handleLogout = async () => {
                 if (currentUser && currentUser.uid) {
@@ -14356,81 +14490,71 @@ ${filtersHTML}
                 }, 100);
             };
 
-            // FUNZIONE: Apre il modale della policy Cinema (YouTube)
+            // FUNZIONE: Apre il modale della Policy (YouTube) Sovrascrivendo le impostazioni
             const openCinemaPolicyModal = () => {
                 const t = translations[currentLanguage];
-
-                const policyContent = currentLanguage === 'it' ? `
-                    <h3 style="margin-bottom: 16px;">Informativa sull'uso di Video YouTube</h3>
-                    <p style="margin-bottom: 12px; line-height: 1.6;">
-                        La sezione <strong>Cinema</strong> di questa applicazione utilizza video pubblici di YouTube 
-                        incorporati tramite l'API ufficiale di YouTube.
-                    </p>
-                    <h4 style="margin: 16px 0 8px 0;">Come funziona:</h4>
-                    <ul style="margin-bottom: 12px; padding-left: 20px; line-height: 1.6;">
-                        <li>Tutti i video sono <strong>pubblici</strong> e disponibili su YouTube</li>
-                        <li>I video vengono incorporati utilizzando l'<strong>API ufficiale di YouTube</strong></li>
-                        <li>Cliccando su un video, verrai reindirizzato a YouTube per la visualizzazione</li>
-                        <li>Non scarichiamo né ospitiamo alcun contenuto video</li>
-                    </ul>
-                    <h4 style="margin: 16px 0 8px 0;">Diritti d'autore:</h4>
-                    <p style="margin-bottom: 12px; line-height: 1.6;">
-                        Tutti i video appartengono ai rispettivi creatori su YouTube. 
-                        Rispettiamo i <strong>Termini di Servizio di YouTube</strong> e le leggi sul copyright.
-                    </p>
-                    <h4 style="margin: 16px 0 8px 0;">Privacy:</h4>
-                    <p style="margin-bottom: 12px; line-height: 1.6;">
-                        Le tue playlist e preferiti sono salvati <strong>localmente</strong> sul tuo dispositivo 
-                        e non vengono condivisi con terze parti.
-                    </p>
-                    <p style="margin-top: 16px; font-size: 13px; color: var(--Koda-text-secondary);">
-                        Per maggiori informazioni, consulta i 
-                        <a href="https://www.youtube.com/t/terms" target="_blank" style="color: var(--Koda-accent);">Termini di Servizio di YouTube</a>.
-                    </p>
+                
+                const originalPolicy = currentLanguage === 'it' ? `
+                    <h3 style="margin-top: 24px; margin-bottom: 12px; font-weight: 800;">Uso di Video YouTube</h3>
+                    <p style="margin-bottom: 16px;">La sezione <strong>Cinema</strong> utilizza video pubblici di YouTube incorporati tramite l'API ufficiale. Non ospitiamo né scarichiamo alcun contenuto video sui nostri server.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 12px; font-weight: 800;">Diritti d'Autore</h3>
+                    <p style="margin-bottom: 16px;">Tutti i video appartengono ai rispettivi creatori su YouTube. L'applicazione rispetta i Termini di Servizio della piattaforma YouTube.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 12px; font-weight: 800;">Dati Locali</h3>
+                    <p style="margin-bottom: 16px;">Le tue playlist e i tuoi video preferiti sono salvati esclusivamente nel Local Storage del tuo browser e non vengono mai trasmessi a server esterni.</p>
                 ` : `
-                    <h3 style="margin-bottom: 16px;">YouTube Video Usage Policy</h3>
-                    <p style="margin-bottom: 12px; line-height: 1.6;">
-                        The <strong>Cinema</strong> section of this application uses public YouTube videos 
-                        embedded through the official YouTube API.
-                    </p>
-                    <h4 style="margin: 16px 0 8px 0;">How it works:</h4>
-                    <ul style="margin-bottom: 12px; padding-left: 20px; line-height: 1.6;">
-                        <li>All videos are <strong>public</strong> and available on YouTube</li>
-                        <li>Videos are embedded using the <strong>official YouTube API</strong></li>
-                        <li>Clicking on a video will redirect you to YouTube for viewing</li>
-                        <li>We do not download or host any video content</li>
-                    </ul>
-                    <h4 style="margin: 16px 0 8px 0;">Copyright:</h4>
-                    <p style="margin-bottom: 12px; line-height: 1.6;">
-                        All videos belong to their respective creators on YouTube. 
-                        We respect <strong>YouTube's Terms of Service</strong> and copyright laws.
-                    </p>
-                    <h4 style="margin: 16px 0 8px 0;">Privacy:</h4>
-                    <p style="margin-bottom: 12px; line-height: 1.6;">
-                        Your playlists and favorites are saved <strong>locally</strong> on your device 
-                        and are not shared with third parties.
-                    </p>
-                    <p style="margin-top: 16px; font-size: 13px; color: var(--Koda-text-secondary);">
-                        For more information, please see 
-                        <a href="https://www.youtube.com/t/terms" target="_blank" style="color: var(--Koda-accent);">YouTube's Terms of Service</a>.
-                    </p>
+                    <h3 style="margin-top: 24px; margin-bottom: 12px; font-weight: 800;">YouTube Videos</h3>
+                    <p style="margin-bottom: 16px;">The <strong>Cinema</strong> section uses public YouTube videos embedded via the official API. We do not host or download any video content on our servers.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 12px; font-weight: 800;">Copyright</h3>
+                    <p style="margin-bottom: 16px;">All videos belong to their respective creators on YouTube. The app respects the platform's Terms of Service.</p>
                 `;
 
+                const yourPrivacyPolicy = `
+                    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #727272;">
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Termini di servizio</h3>
+                    <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 1 Novembre 2025</strong></p>
+                    <p style="margin-bottom: 16px;">Questa applicazione ("Koda AI") è fornita da Riccardo Giorgio Ponte e Davide Narracci.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Titolare del trattamento dei dati</h3>
+                    <p style="margin-bottom: 16px;"><strong>Riccardo Giorgio Ponte & Davide Narracci</strong><br>Indirizzo email di contatto del titolare: [koda.aihelp@gmail.com]</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Tipi di dati trattati</h3>
+                    <p style="margin-bottom: 16px;">Questa applicazione non raccoglie dati personali identificativi come nome o email, né utilizza cookie di profilazione o strumenti di analisi statistica.</p>
+                    <p style="margin-bottom: 16px;">Tuttavia, per fornire il suo servizio principale (il chatbot), l'applicazione interagisce con servizi di terze parti.</p>
+                    <p style="margin-bottom: 16px;"><strong>Dati di navigazione:</strong> Durante il normale funzionamento, i sistemi informatici acquisiscono alcuni dati la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di internet. In questa categoria di dati rientra l'indirizzo IP dell'utente. Questo dato viene tecnicamente trasmesso per poter ricevere una risposta dal chatbot.</p>
+                    <p style="margin-bottom: 16px;"><strong>Dati forniti volontariamente dall'utente:</strong> I messaggi, le domande o i testi che l'utente scrive volontariamente all'interno del chatbot.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Archiviazione locale dei dati (Local Storage)</h3>
+                    <p style="margin-bottom: 16px;">L'applicazione utilizza il local storage del browser per salvare alcune informazioni direttamente sul dispositivo dell'utente. Il local storage è una tecnologia che permette ai siti web di memorizzare dati nel browser, simile ai cookie ma con maggiore capacità di archiviazione.</p>
+                    <p style="margin-bottom: 8px;"><strong>Cosa viene salvato nel local storage:</strong></p>
+                    <p style="margin-bottom: 16px; line-height: 1.8;">• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.<br>• Cronologia delle conversazioni: i messaggi scambiati con il chatbot vengono salvati localmente per permetterti di ritrovare le tue conversazioni precedenti.<br>• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.<br>• Stato dell'applicazione: informazioni tecniche necessarie per il corretto funzionamento dell'app (es. se hai già visto il messaggio di benvenuto).</p>
+                    <p style="margin-bottom: 8px;"><strong>Importante da sapere:</strong></p>
+                    <p style="margin-bottom: 16px; line-height: 1.8;">• Tutti questi dati rimangono solo sul tuo dispositivo e non vengono mai inviati ai nostri server.<br>• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser.<br>• Se cancelli i dati del local storage, perderai le tue preferenze, la cronologia delle chat e le collezioni salvate.<br>• Questi dati sono accessibili solo da questa applicazione e solo sul browser e dispositivo che stai utilizzando.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Finalità del trattamento</h3>
+                    <p style="margin-bottom: 16px;">I dati sopra menzionati sono trattati per l'unica finalità di permettere il funzionamento del chatbot e fornire una risposta all'utente. L'indirizzo IP è necessario per stabilire la comunicazione tra il browser dell'utente e il servizio di intelligenza artificiale. I testi inseriti dall'utente sono necessari per generare una risposta pertinente. Noi, in qualità di titolari, non conserviamo né archiviamo le conversazioni o gli indirizzi IP degli utenti.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Destinatari dei dati (terze parti)</h3>
+                    <p style="margin-bottom: 16px;">Per poter funzionare, il chatbot invia i dati di navigazione (indirizzo IP) e i testi inseriti dall'utente al seguente fornitore di servizi di intelligenza artificiale:<br><strong>Google LLC (Google GenAI API)</strong><br>Il servizio è soggetto alle politiche sulla privacy di Google. Per maggiori informazioni, si prega di consultare la loro documentazione.<br>Luogo del trattamento: Stati Uniti – privacy policy di Google.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Diritti dell'interessato</h3>
+                    <p style="margin-bottom: 8px;">Ai sensi del regolamento europeo 679/2016 (GDPR), l'utente ha diritto di:</p>
+                    <p style="margin-bottom: 16px; line-height: 1.8;">• Chiedere al titolare del trattamento l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione del trattamento.<br>• Opporsi al trattamento.<br>• Proporre reclamo a un'autorità di controllo.</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">Modifiche a questa privacy policy</h3>
+                    <p style="margin-bottom: 16px;">Il titolare del trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli utenti su questa pagina.</p>
+                `;
+
+                const policyContent = originalPolicy + yourPrivacyPolicy;
+
                 const modalHTML = `
-                    <div class="review-modal visible">
-                        <div class="review-modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
-                            <div class="review-modal-header">
-                                <h3 class="review-modal-title">${currentLanguage === 'it' ? 'Policy Cinema' : 'Cinema Policy'}</h3>
-                                <button class="review-modal-close" data-action="close-cinema-policy">×</button>
+                    <div class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10007; align-items: center; justify-content: center;">
+                        <div style="width: 100%; max-width: 600px; height: 100vh; overflow-y: auto; text-align: left; padding: 24px 24px 80px 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; position: sticky; top: 0; background: var(--Koda-bg); padding: 10px 0; z-index: 2;">
+                                <h2 style="font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -1px;">${currentLanguage === 'it' ? 'Policy' : 'Cinema Policy'}</h2>
+                                <button onclick="document.getElementById('modal-container').innerHTML = ''; window.openSettingsModal();" style="background: none; border: none; color: var(--Koda-text); font-size: 36px; cursor: pointer; line-height: 1;">&times;</button>
                             </div>
-                            <div style="text-align: left;">
+                            <div style="font-size: 15px; line-height: 1.7; color: var(--Koda-text-secondary); font-weight: 500;">
                                 ${policyContent}
                             </div>
+                            <button onclick="document.getElementById('modal-container').innerHTML = ''; window.openSettingsModal();" class="button" style="width: 100%; margin-top: 40px; font-weight: 800;">Torna alle impostazioni</button>
                         </div>
                     </div>
                 `;
 
-                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                el.modalContainer.innerHTML = modalHTML;
             };
 
             // FUNZIONE: Gestisce il cambio tab nella pagina Cinema
@@ -15524,29 +15648,41 @@ ${filtersHTML}
             // MODIFICA 4: Funzioni per gestire le playlist video
             const openAddToPlaylistModal = (videoId) => {
                 const playlists = JSON.parse(localStorage.getItem('video-playlists') || '[]');
-                const video = youtubeVideosData.find(v => v.id === videoId);
-
-                // Aggiungi alla cronologia del browser
                 history.pushState({ modal: 'add-to-playlist', page: currentView }, '', '');
 
                 const playlistsHTML = playlists.map(playlist => `
-                    <div class="playlist-modal-item" data-action="add-video-to-playlist" data-playlist-id="${playlist.id}" data-video-id="${videoId}">
-                        ${playlist.name} (${playlist.videos.length} video)
+                    <div data-action="add-video-to-playlist" data-playlist-id="${playlist.id}" data-video-id="${videoId}" 
+                         style="padding: 16px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(128,128,128,0.1); transition: background 0.2s;"
+                         onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='none'">
+                        <div style="flex: 1;">
+                            <div style="font-size: 16px; font-weight: 700; color: var(--Koda-text);">${playlist.name}</div>
+                            <div style="font-size: 13px; color: #a7a7a7;">${playlist.videos.length} video</div>
+                        </div>
+                        <span style="color: var(--Koda-accent); font-weight: 800; font-size: 20px;">+</span>
                     </div>
                 `).join('');
 
                 const modalHTML = `
-                    <div class="playlist-modal visible">
-                        <div class="playlist-modal-content">
-                            <div class="playlist-modal-header">
-                                <h3 class="playlist-modal-title">${currentLanguage === 'it' ? 'Aggiungi a playlist' : 'Add to playlist'}</h3>
-                                <button class="playlist-modal-close" data-action="close-playlist-modal">×</button>
-                            </div>
-                            <div class="playlist-modal-list" style="margin-bottom: 16px;">
-                                ${playlists.length > 0 ? playlistsHTML : `<p style="text-align: center; color: var(--Koda-text-secondary); padding: 16px 0;">${currentLanguage === 'it' ? 'Nessuna playlist disponibile' : 'No playlists available'}</p>`}
-                            </div>
-                            <button class="create-playlist-btn" data-action="create-playlist-from-modal" data-video-id="${videoId}" style="margin-top: 8px;">
-                                ${currentLanguage === 'it' ? '+ Crea nuova playlist' : '+ Create new playlist'}
+                    <div class="playlist-modal visible" style="position: fixed; inset: 0; background: var(--Koda-bg); z-index: 10006; display: flex; flex-direction: column;">
+                        
+                        <!-- Header -->
+                        <div style="position: sticky; top: 0; background: var(--Koda-bg); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 10; border-bottom: 1px solid rgba(128,128,128,0.1);">
+                            <h2 style="font-size: 24px; font-weight: 900; margin: 0;">${currentLanguage === 'it' ? 'Salva in playlist' : 'Add to playlist'}</h2>
+                            <button data-action="close-playlist-modal" style="background: none; border: none; color: var(--Koda-text-secondary); font-size: 32px; cursor: pointer;">&times;</button>
+                        </div>
+
+                        <!-- Playlist List -->
+                        <div style="flex: 1; overflow-y: auto; padding: 24px;">
+                            ${playlists.length > 0 ? playlistsHTML : `<p style="text-align: center; color: #a7a7a7; padding: 40px 0; font-size: 16px; font-weight: 600;">${currentLanguage === 'it' ? 'Nessuna playlist creata' : 'No playlists yet'}</p>`}
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div style="padding: 24px; display: flex; flex-direction: column; gap: 12px; background: linear-gradient(to top, var(--Koda-bg) 80%, transparent); padding-bottom: max(24px, env(safe-area-inset-bottom));">
+                            <button data-action="create-playlist-from-modal" data-video-id="${videoId}" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.04)';" onmouseout="this.style.transform='scale(1)';">
+                                ${currentLanguage === 'it' ? '+ Nuova Playlist' : '+ New Playlist'}
+                            </button>
+                            <button data-action="close-playlist-modal" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                                ${currentLanguage === 'it' ? 'Chiudi' : 'Close'}
                             </button>
                         </div>
                     </div>
@@ -15556,20 +15692,28 @@ ${filtersHTML}
             };
 
             const openCreatePlaylistModal = (videoIdToAdd = null) => {
-                // Aggiungi alla cronologia del browser
                 history.pushState({ modal: 'create-playlist', page: currentView }, '', '');
 
                 const modalHTML = `
-                    <div class="playlist-modal visible">
-                        <div class="playlist-modal-content">
-                            <div class="playlist-modal-header">
-                                <h3 class="playlist-modal-title">${currentLanguage === 'it' ? 'Crea nuova playlist' : 'Create new playlist'}</h3>
-                                <button class="playlist-modal-close" data-action="close-playlist-modal">×</button>
+                    <div class="playlist-modal visible modal-overlay" style="background: var(--Koda-bg); z-index: 10006; align-items: center; justify-content: center;">
+                        <button class="playlist-modal-close" data-action="close-playlist-modal" style="position: absolute; top: 20px; right: 24px; font-size: 32px; color: var(--Koda-text-secondary); background: none; border: none; cursor: pointer;">×</button>
+                        
+                        <div style="width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                            <h2 style="font-size: clamp(32px, 8vw, 48px); font-weight: 900; letter-spacing: -1px; margin-bottom: 40px; color: var(--Koda-text);">
+                                ${currentLanguage === 'it' ? 'Dai un nome alla<br>tua playlist' : 'Name your<br>playlist'}
+                            </h2>
+                            
+                            <input type="text" id="new-playlist-name" placeholder="${currentLanguage === 'it' ? 'La mia playlist' : 'My playlist'}" 
+                                style="width: 100%; background: transparent; border: none; border-bottom: 2px solid #727272; color: var(--Koda-text); font-size: clamp(24px, 6vw, 36px); font-weight: 700; text-align: center; padding-bottom: 12px; outline: none; transition: border-color 0.3s; margin-bottom: 40px;"
+                                onfocus="this.style.borderBottomColor='var(--Koda-accent)'" 
+                                onblur="this.style.borderBottomColor='#727272'"
+                                onkeyup="if(event.key === 'Enter') document.querySelector('[data-action=save-new-playlist]').click()">
+                                
+                            <div style="width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 16px;">
+                                <button data-action="save-new-playlist" data-video-id="${videoIdToAdd || ''}" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.04)';" onmouseout="this.style.transform='scale(1)';">
+                                    ${currentLanguage === 'it' ? 'Crea' : 'Create'}
+                                </button>
                             </div>
-                            <input type="text" class="playlist-input" id="new-playlist-name" placeholder="${currentLanguage === 'it' ? 'Nome playlist' : 'Playlist name'}">
-                            <button class="create-playlist-btn" data-action="save-new-playlist" data-video-id="${videoIdToAdd || ''}">
-                                ${currentLanguage === 'it' ? 'Salva' : 'Save'}
-                            </button>
                         </div>
                     </div>
                 `;
@@ -16222,20 +16366,148 @@ ${filtersHTML}
 
             // --- INITIALIZATION LOGIC ---
 
+            // NUOVO: Funzione per il modale di registrazione obbligatorio al primo avvio (Stile Spotify)
+            const showFirstLaunchRegistration = () => {
+                const modalHTML = `
+                <div id="first-launch-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 99999; align-items: flex-start; overflow-y: auto; padding: 40px 20px;">
+                    <div style="width: 100%; max-width: 350px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; padding-bottom: 40px;">
+                        
+                        <!-- Logo Koda in alto -->
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin-bottom: 32px; fill: var(--Koda-text);">
+                            <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="6" fill="none"/>
+                            <text x="50" y="65" font-size="42" font-weight="900" text-anchor="middle" fill="currentColor">K</text>
+                        </svg>
+
+                        <!-- Titolo enorme stile Spotify -->
+                        <h1 style="font-size: clamp(32px, 9vw, 42px); font-weight: 900; letter-spacing: -1.5px; text-align: center; line-height: 1.1; margin-bottom: 40px; color: var(--Koda-text);">
+                            ${currentLanguage === 'it' ? 'Crea il profilo<br>per iniziare<br>a esplorare' : 'Create profile<br>to start<br>exploring'}
+                        </h1>
+
+                        <!-- Input Immagine Avatar -->
+                        <div style="margin-bottom: 24px; text-align: center;">
+                            <div style="position: relative; width: 80px; height: 80px; cursor: pointer; transition: transform 0.2s ease; margin: 0 auto;" id="welcome-avatar-container" onclick="document.getElementById('welcome-avatar-upload').click()">
+                                <img id="welcome-avatar-preview" src="${currentTheme === 'light' ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png'}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid #727272;">
+                                <input type="file" id="welcome-avatar-upload" accept="image/*" style="display: none;">
+                                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;" id="welcome-avatar-hover">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+                                </div>
+                            </div>
+                            <span style="font-size: 11px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 12px;">Foto Profilo</span>
+                        </div>
+
+                        <!-- Input Testo Stile Spotify -->
+                        <div style="width: 100%; margin-bottom: 24px; text-align: left;">
+                            <label for="welcome-nickname" style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--Koda-text);">
+                                ${currentLanguage === 'it' ? 'Nome utente' : 'Username'}
+                            </label>
+                            <input type="text" id="welcome-nickname" placeholder="${currentLanguage === 'it' ? 'es. KodaUser' : 'e.g. KodaUser'}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); font-family: var(--font-family); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;">
+                            <style>
+                                #welcome-nickname:hover { border-color: #fff; }
+                                #welcome-nickname:focus { border-color: #fff; box-shadow: inset 0 0 0 1px #fff; }
+                                #welcome-avatar-container:hover { transform: scale(1.05); }
+                                #welcome-avatar-container:hover #welcome-avatar-hover { opacity: 1; }
+                            </style>
+                        </div>
+
+                        <!-- Bottone Verde Arrotondato -->
+                        <button id="welcome-start-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#1ed760';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--Koda-accent)';">
+                            ${currentLanguage === 'it' ? 'Avanti' : 'Next'}
+                        </button>
+
+                        <!-- Divisore "oppure" -->
+                        <div style="display: flex; align-items: center; width: 100%; margin: 32px 0;">
+                            <div style="flex: 1; height: 1px; background: #292929;"></div>
+                            <span style="padding: 0 16px; color: var(--Koda-text); font-size: 14px; font-weight: 700;">oppure</span>
+                            <div style="flex: 1; height: 1px; background: #292929;"></div>
+                        </div>
+
+                        <!-- Bottone Secondario -->
+                        <button id="welcome-skip-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                            ${currentLanguage === 'it' ? 'Continua come Anonimo' : 'Continue as Guest'}
+                        </button>
+
+                        <!-- Footer Legale -->
+                        <p style="margin-top: 40px; font-size: 11px; color: #a7a7a7; text-align: center; line-height: 1.5;">
+                            This site is protected by reCAPTCHA and the Google <br>
+                            <span style="text-decoration: underline; cursor: pointer;">Privacy Policy</span> and <span style="text-decoration: underline; cursor: pointer;">Terms of Service</span> apply.
+                        </p>
+                    </div>
+                </div>`;
+                
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                // Gestione upload foto
+                document.getElementById('welcome-avatar-upload').addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            document.getElementById('welcome-avatar-preview').src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                // Gestione salvataggio e avvio
+                document.getElementById('welcome-start-btn').addEventListener('click', () => {
+                    const nickname = document.getElementById('welcome-nickname').value.trim();
+                    const avatarSrc = document.getElementById('welcome-avatar-preview').src;
+
+                    if (!nickname) {
+                        showToast(currentLanguage === 'it' ? 'Per favore, inserisci un nome!' : 'Please enter a name!');
+                        return;
+                    }
+
+                    // Salva in local storage
+                    localStorage.setItem('guest-nickname', nickname);
+                    if (avatarSrc.startsWith('data:image')) {
+                        localStorage.setItem('guest-avatar', avatarSrc);
+                    }
+                    localStorage.setItem('koda-guest-registered', 'true');
+
+                    // Aggiorna l'utente corrente
+                    currentUser.nickname = nickname;
+                    currentUser.name = nickname;
+
+                    // Chiudi modale e ricarica vista
+                    document.getElementById('first-launch-modal').remove();
+                    renderView();
+                });
+
+                // Gestione "Continua come Anonimo"
+                document.getElementById('welcome-skip-btn').addEventListener('click', () => {
+                    localStorage.setItem('guest-nickname', 'Ospite');
+                    localStorage.setItem('koda-guest-registered', 'true');
+                    
+                    currentUser.nickname = 'Ospite';
+                    currentUser.name = 'Ospite';
+                    
+                    document.getElementById('first-launch-modal').remove();
+                    renderView();
+                });
+            };
+
             const initializeAppForGuest = () => {
                 // Initialize currentUser with default empty state and load data from localStorage
                 const guestFavorites = JSON.parse(localStorage.getItem('guest-favorites')) || [];
                 const guestUserTools = JSON.parse(localStorage.getItem('guest-userTools')) || [];
-                currentUser = { uid: null, name: 'Guest', nickname: 'Guest', favorites: guestFavorites, isPrivileged: false, userTools: guestUserTools, userFeaturedTools: [], userFeaturedReplacements: {}, aiSuggestions: [] };
+                const localNickname = localStorage.getItem('guest-nickname') || 'Ospite';
+                currentUser = { uid: null, name: localNickname, nickname: localNickname, favorites: guestFavorites, isPrivileged: false, userTools: guestUserTools, userFeaturedTools: [], userFeaturedReplacements: {}, aiSuggestions: [] };
+                
                 loadConversations();
                 unmountReactApp();
                 el.appContainer.style.display = 'flex';
                 el.authOverlay.style.display = 'none';
-                el.authOverlay.innerHTML = ''; // Ensure auth overlay is empty
+                el.authOverlay.innerHTML = '';
 
-                // NUOVO: Inizializza lo stato della cronologia del browser
                 if (!window.history.state) {
                     history.replaceState({ page: currentView }, '', `#${currentView}`);
+                }
+
+                // Verifica se è il primo avvio
+                const isRegistered = localStorage.getItem('koda-guest-registered');
+                if (!isRegistered) {
+                    showFirstLaunchRegistration();
                 }
 
                 renderView();
@@ -16557,16 +16829,7 @@ ${filtersHTML}
                     return;
                 }
 
-                // 1.5. Gestisci il dice result modal
-                const diceResultModal = document.querySelector('.dice-result-modal.visible');
-                if (diceResultModal) {
-                    const diceOverlay = document.getElementById('dice-overlay');
-                    if (diceOverlay) {
-                        diceOverlay.classList.remove('visible');
-                        diceResultModal.classList.remove('visible');
-                    }
-                    return;
-                }
+                
 
                 // 2. Gestisci i modali custom (review-modal, confirm-modal, sent-reviews-modal, etc.)
                 const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible');
@@ -16762,46 +17025,6 @@ ${filtersHTML}
                             console.log('submit-edit-global-tool action triggered');
                             handleEditGlobalTool(actionTarget.dataset.id);
                             break;
-                        case 'navigate-to-optimizer':
-                            const optimizer = document.getElementById('optimizer-overlay');
-                            if (optimizer) {
-                                optimizer.classList.add('visible');
-                                // Blocchiamo lo scroll del body quando l'overlay è attivo
-                                document.body.style.overflow = 'hidden';
-                            }
-                            break;
-                        case 'close-optimizer':
-                            const optimizerToClose = document.getElementById('optimizer-overlay');
-                            if (optimizerToClose) {
-                                optimizerToClose.classList.remove('visible');
-                                // Ripristiniamo lo scroll del body
-                                document.body.style.overflow = '';
-                            }
-                            break;
-                        case 'optimize-prompt':
-                            handlePromptOptimization();
-                            break;
-                        // --- AZIONI PER OPTIMIZER E GALLERIA (NUOVE) ---
-                        case 'copy-optimized-prompt':
-                            handleCopyOptimizedPrompt();
-                            break;
-                        case 'save-optimized-prompt':
-                            handleSaveOptimizedPrompt();
-                            break;
-                        case 'show-prompt-gallery':
-                            openPromptGalleryModal();
-                            break;
-                        case 'copy-gallery-prompt':
-                            // Chiama la nuova funzione helper per la copia
-                            handleCopyFromGallery(actionTarget.dataset.targetId);
-                            break;
-                        case 'delete-saved-prompt':
-                            handleDeleteSavedPrompt(actionTarget.dataset.id); // Ora apre il modale di conferma
-                            break;
-                        case 'execute-delete-saved-prompt': // NUOVA AZIONE
-                            executeDeleteSavedPrompt(actionTarget.dataset.id);
-                            break;
-                        case 'open-prompt-fullscreen':
                             // Apri il prompt a tutto schermo
                             const promptItem = actionTarget.closest('.prompt-gallery-item');
                             if (promptItem) {
@@ -16924,14 +17147,20 @@ ${filtersHTML}
                                 renderView();
                             }
                             break;
-                        // NUOVO: Apri policy Cinema (YouTube)
+                        // FIX: Apertura dinamica delle Policy dalle Impostazioni
                         case 'open-cinema-policy':
-                            event.preventDefault();
+                            e.preventDefault();
+                            // Non serve il timeout, chiamiamo direttamente la funzione che sovrascrive l'HTML
                             openCinemaPolicyModal();
                             break;
-                        // NUOVO: Chiudi policy Cinema
+                        case 'open-general-privacy':
+                            e.preventDefault();
+                            window.showDynamicPrivacyModal();
+                            break;
+                        // NUOVO: Chiudi Policy
                         case 'close-cinema-policy':
-                            document.querySelectorAll('.review-modal').forEach(m => m.remove());
+                            const cinemaPolicy = document.getElementById('cinema-policy-modal');
+                            if(cinemaPolicy) cinemaPolicy.remove();
                             break;
                         // NUOVO: Toggle selezione multipla playlist
                         case 'toggle-playlist-multi-select':
@@ -17527,7 +17756,7 @@ ${filtersHTML}
                             toggleSideMenu(true);
                             break;
                         case 'open-settings-modal':
-                            if (!currentUser.uid) { triggerAuthFlow(); } else { window.openSettingsModal(); }
+                            window.openSettingsModal();
                             break;
                         case 'logout':
                             // NUOVO: Imposta lo stato offline prima del logout
@@ -17742,9 +17971,10 @@ ${filtersHTML}
                             // Let the specific auth overlay listener handle these
                             return;
                         case 'profile-avatar-click':
-                            if (currentUser.uid) {
-                                toggleUserProfileDropdown();
-                            }
+                            toggleUserProfileDropdown();
+                            break;
+                        case 'close-profile-menu':
+                            closeUserProfileDropdown();
                             break;
                         case 'open-settings':
                             closeUserProfileDropdown();
@@ -17757,6 +17987,63 @@ ${filtersHTML}
                         case 'change-password':
                             closeUserProfileDropdown();
                             openChangePasswordModal();
+                            break;
+                        case 'generate-ai-stack':
+                            closeUserProfileDropdown();
+                            const favIds = currentUser.favorites || [];
+                            if (favIds.length === 0) {
+                                showToast(translations[currentLanguage].myAiStackEmpty);
+                                return;
+                            }
+                            
+                            // Prende massimo 9 strumenti per una griglia 3x3 perfetta
+                            const allToolsForStack = window.getAllToolsForCurrentUser();
+                            const stackTools = favIds.map(id => allToolsForStack.find(t => t.id === id)).filter(Boolean).slice(0, 9);
+                            
+                            const nickname = currentUser.nickname || currentUser.name.split('@')[0];
+                            
+                            const gridHTML = stackTools.map(tool => `
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                    <div style="width: 64px; height: 64px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); background: #282828;">
+                                        <img src="${tool.logoUrl}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <span style="font-size: 11px; font-weight: 600; text-align: center; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70px;">${tool.name}</span>
+                                </div>
+                            `).join('');
+
+                            const stackModalHTML = `
+                                <div id="ai-stack-modal" class="modal-overlay visible">
+                                    <div class="modal-content" style="background: transparent; box-shadow: none; display: flex; flex-direction: column; align-items: center; padding: 0;">
+                                        <button class="modal-close-btn" data-action="close-modal" style="color: white; position: absolute; right: 0; top: -40px; background: rgba(0,0,0,0.5); border-radius: 50%; width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; font-size: 24px;">×</button>
+                                        
+                                        <!-- LA CARD -->
+                                        <div id="ai-stack-card" style="background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 32px; width: 100%; max-width: 360px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;">
+                                            <!-- Effetto luce verde Koda -->
+                                            <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: var(--Koda-accent); filter: blur(80px); opacity: 0.15; z-index: 0;"></div>
+                                            <div style="position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: var(--Koda-accent); filter: blur(60px); opacity: 0.1; z-index: 0;"></div>
+                                            
+                                            <div style="text-align: center; margin-bottom: 32px; position: relative; z-index: 1;">
+                                                <h2 style="font-size: 22px; color: white; margin-bottom: 4px; font-weight: 700;">Lo Stack di ${nickname}</h2>
+                                                <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(29, 185, 84, 0.15); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(29, 185, 84, 0.3);">
+                                                    <span style="color: var(--Koda-accent); font-size: 12px; font-weight: 600;">Generato con Koda AI</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; position: relative; z-index: 1;">
+                                                ${gridHTML}
+                                            </div>
+                                        </div>
+
+                                        <div style="margin-top: 24px; color: white; font-weight: 600; font-size: 15px; background: rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 24px; backdrop-filter: blur(10px);">
+                                            ${translations[currentLanguage].myAiStackScreenshot}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            el.modalContainer.innerHTML = stackModalHTML;
+                            
+                            // Aggiungiamo alla cronologia per il tasto indietro
+                            history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                         case 'view-sent-reviews':
                             closeUserProfileDropdown();
@@ -18070,37 +18357,45 @@ ${filtersHTML}
 
     <!-- Modal recensioni rimosso -->
 
-    <!-- Privacy Modal -->
-    <div class="privacy-modal" id="privacy-modal">
-        <div class="privacy-modal-content">
-            <div class="privacy-modal-header">
-                <h2 class="privacy-modal-title" id="privacy-modal-title-text"></h2>
-                <button class="privacy-modal-close" id="privacy-modal-close">×</button>
-            </div>
-            <div class="privacy-modal-body" id="privacy-modal-body-content">
-            </div>
-        </div>
-    </div>
+    <!-- Modal recensioni rimosso -->
 
-    <!-- Privacy Reminder Modal -->
-    <div class="privacy-reminder-modal" id="privacy-reminder-modal">
-        <div class="privacy-reminder-content">
-            <div class="privacy-reminder-icon">🔒</div>
-            <h2 class="privacy-reminder-title" id="privacy-reminder-title-text"></h2>
-            <p class="privacy-reminder-message" id="privacy-reminder-message-text"></p>
-            <div class="privacy-reminder-checkbox">
-                <input type="checkbox" id="dont-show-again-checkbox">
-                <label for="dont-show-again-checkbox" id="privacy-reminder-checkbox-label"></label>
+    
+
+    <!-- Privacy Reminder Modal a tema Koda (Stile Spotify) -->
+    <div class="modal-overlay" id="privacy-reminder-modal" style="z-index: 10006; background: var(--Koda-bg); align-items: center; justify-content: center; padding: 20px;">
+        <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; padding: 40px 0;">
+            
+            <!-- Logo Koda in alto -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin-bottom: 32px; fill: var(--Koda-text);">
+                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="6" fill="none"/>
+                <text x="50" y="65" font-size="42" font-weight="900" text-anchor="middle" fill="currentColor">K</text>
+            </svg>
+
+            <!-- Titolo enorme -->
+            <h1 id="privacy-reminder-title-text" style="font-size: clamp(32px, 9vw, 42px); font-weight: 900; letter-spacing: -1.5px; text-align: center; line-height: 1.1; margin-bottom: 24px; color: var(--Koda-text);"></h1>
+            
+            <!-- Messaggio descrittivo -->
+            <p id="privacy-reminder-message-text" style="color: #a7a7a7; font-size: 15px; margin-bottom: 40px; line-height: 1.5; text-align: center;"></p>
+            
+            <div style="width: 100%; display: flex; flex-direction: column; gap: 16px;">
+                <!-- Bottone Verde Arrotondato (Continua) -->
+                <button id="privacy-continue-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#1ed760';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--Koda-accent)';"></button>
+
+                <!-- Bottone Secondario (Leggi Privacy) -->
+                <button id="privacy-read-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';"></button>
             </div>
-            <div class="privacy-reminder-actions">
-                <button class="privacy-read-btn" id="privacy-read-btn"></button>
-                <button class="privacy-continue-btn" id="privacy-continue-btn"></button>
+
+            <!-- Checkbox Non mostrare più -->
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 32px;">
+                <input type="checkbox" id="dont-show-again-checkbox" style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--Koda-accent);">
+                <label for="dont-show-again-checkbox" id="privacy-reminder-checkbox-label" style="font-size: 14px; color: #a7a7a7; cursor: pointer; user-select: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a7a7a7'"></label>
             </div>
+
         </div>
     </div>
 
     <script>
-        // Privacy Modal Functions
+        // Privacy Modal Functions Global
         (function () {
             const privacyModal = document.getElementById('privacy-modal');
             const privacyReminderModal = document.getElementById('privacy-reminder-modal');
@@ -18109,67 +18404,107 @@ ${filtersHTML}
             const privacyReadBtn = document.getElementById('privacy-read-btn');
             const privacyContinueBtn = document.getElementById('privacy-continue-btn');
 
-            // Function to update privacy modal content with current language
-            function updatePrivacyModalContent() {
-                // Get current language from localStorage or default to 'it'
+            window.showDynamicPrivacyModal = function() {
+    const currentLang = localStorage.getItem('koda-lang') || 'it';
+    const t = window.translations ? window.translations[currentLang] : null;
+    if (!t) return;
+    const modalContainer = document.getElementById('modal-container');
+    const bodyContent = `
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Termini di servizio</h3>
+        <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 1 Novembre 2025</strong></p>
+        <p style="margin-bottom: 16px;">Questa applicazione ("Koda AI") è fornita da Riccardo Giorgio Ponte e Davide Narracci.</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Titolare del trattamento dei dati</h3>
+        <p style="margin-bottom: 16px;"><strong>Riccardo Giorgio Ponte & Davide Narracci</strong><br>Indirizzo email di contatto del titolare: [koda.aihelp@gmail.com]</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Tipi di dati trattati</h3>
+        <p style="margin-bottom: 16px;">Questa applicazione non raccoglie dati personali identificativi come nome o email, né utilizza cookie di profilazione o strumenti di analisi statistica.</p>
+        <p style="margin-bottom: 16px;">Tuttavia, per fornire il suo servizio principale (il chatbot), l'applicazione interagisce con servizi di terze parti.</p>
+        <p style="margin-bottom: 16px;"><strong>Dati di navigazione:</strong> Durante il normale funzionamento, i sistemi informatici acquisiscono alcuni dati la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di internet. In questa categoria di dati rientra l'indirizzo IP dell'utente. Questo dato viene tecnicamente trasmesso per poter ricevere una risposta dal chatbot.</p>
+        <p style="margin-bottom: 16px;"><strong>Dati forniti volontariamente dall'utente:</strong> I messaggi, le domande o i testi che l'utente scrive volontariamente all'interno del chatbot.</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Archiviazione locale dei dati (Local Storage)</h3>
+        <p style="margin-bottom: 16px;">L'applicazione utilizza il local storage del browser per salvare alcune informazioni direttamente sul dispositivo dell'utente. Il local storage è una tecnologia che permette ai siti web di memorizzare dati nel browser, simile ai cookie ma con maggiore capacità di archiviazione.</p>
+        <p style="margin-bottom: 8px;"><strong>Cosa viene salvato nel local storage:</strong></p>
+        <p style="margin-bottom: 16px; line-height: 1.8;">• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.<br>• Cronologia delle conversazioni: i messaggi scambiati con il chatbot vengono salvati localmente per permetterti di ritrovare le tue conversazioni precedenti.<br>• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.<br>• Stato dell'applicazione: informazioni tecniche necessarie per il corretto funzionamento dell'app (es. se hai già visto il messaggio di benvenuto).</p>
+        <p style="margin-bottom: 8px;"><strong>Importante da sapere:</strong></p>
+        <p style="margin-bottom: 16px; line-height: 1.8;">• Tutti questi dati rimangono solo sul tuo dispositivo e non vengono mai inviati ai nostri server.<br>• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser.<br>• Se cancelli i dati del local storage, perderai le tue preferenze, la cronologia delle chat e le collezioni salvate.<br>• Questi dati sono accessibili solo da questa applicazione e solo sul browser e dispositivo che stai utilizzando.</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Finalità del trattamento</h3>
+        <p style="margin-bottom: 16px;">I dati sopra menzionati sono trattati per l'unica finalità di permettere il funzionamento del chatbot e fornire una risposta all'utente. L'indirizzo IP è necessario per stabilire la comunicazione tra il browser dell'utente e il servizio di intelligenza artificiale. I testi inseriti dall'utente sono necessari per generare una risposta pertinente. Noi, in qualità di titolari, non conserviamo né archiviamo le conversazioni o gli indirizzi IP degli utenti.</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Destinatari dei dati (terze parti)</h3>
+        <p style="margin-bottom: 16px;">Per poter funzionare, il chatbot invia i dati di navigazione (indirizzo IP) e i testi inseriti dall'utente al seguente fornitore di servizi di intelligenza artificiale:<br><strong>Google LLC (Google GenAI API)</strong><br>Il servizio è soggetto alle politiche sulla privacy di Google. Per maggiori informazioni, si prega di consultare la loro documentazione.<br>Luogo del trattamento: Stati Uniti – privacy policy di Google.</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Diritti dell'interessato</h3>
+        <p style="margin-bottom: 8px;">Ai sensi del regolamento europeo 679/2016 (GDPR), l'utente ha diritto di:</p>
+        <p style="margin-bottom: 16px; line-height: 1.8;">• Chiedere al titolare del trattamento l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione del trattamento.<br>• Opporsi al trattamento.<br>• Proporre reclamo a un'autorità di controllo.</p>
+        <h3 style="margin-top: 24px; margin-bottom: 8px;">Modifiche a questa privacy policy</h3>
+        <p style="margin-bottom: 16px;">Il titolare del trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli utenti su questa pagina.</p>
+    `;
+    modalContainer.innerHTML = `
+        <div class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10007; align-items: center; justify-content: center;">
+            <div style="width: 100%; max-width: 600px; height: 100vh; overflow-y: auto; text-align: left; padding: 24px; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; position: sticky; top: 0; background: var(--Koda-bg); padding: 10px 0; z-index: 2;">
+                    <h2 style="font-size: 28px; font-weight: 900; margin: 0;">Privacy Policy</h2>
+                    <button onclick="document.getElementById('modal-container').innerHTML = ''" style="background: none; border: none; color: var(--Koda-text); font-size: 32px; cursor: pointer;">&times;</button>
+                </div>
+                <div style="font-size: 15px; line-height: 1.6; color: var(--Koda-text-secondary);">
+                    ${bodyContent}
+                </div>
+                <button onclick="document.getElementById('modal-container').innerHTML = ''" class="button" style="width: 100%; margin-top: 40px; margin-bottom: 40px;">Ho Capito</button>
+            </div>
+        </div>
+    `;
+};
                 const currentLang = localStorage.getItem('language') || 'it';
                 const t = window.translations ? window.translations[currentLang] : null;
-
                 if (!t) return;
 
-                // Update modal title
                 document.getElementById('privacy-modal-title-text').textContent = t.privacyPolicyTitle;
 
-                // Update modal body content
                 const bodyContent = `
-                    <h3>${t.privacySubtitle}</h3>
-                    <p><strong>${t.privacyLastUpdate}</strong></p>
-                    <p>${t.privacyIntro}</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacySubtitle}</h3>
+                    <p style="margin-bottom: 16px;"><strong>${t.privacyLastUpdate}</strong></p>
+                    <p style="margin-bottom: 16px;">${t.privacyIntro}</p>
                     
-                    <h3>${t.privacyDataControllerTitle}</h3>
-                    <p><strong>${t.privacyDataController}</strong><br>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyDataControllerTitle}</h3>
+                    <p style="margin-bottom: 16px;"><strong>${t.privacyDataController}</strong><br>
                     ${t.privacyContactEmail}</p>
                     
-                    <h3>${t.privacyDataTypesTitle}</h3>
-                    <p>${t.privacyDataTypesIntro}</p>
-                    <p>${t.privacyDataTypesNote}</p>
-                    <p><strong>${t.privacyNavigationData}</strong> ${t.privacyNavigationDataDesc}</p>
-                    <p><strong>${t.privacyUserData}</strong> ${t.privacyUserDataDesc}</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyDataTypesTitle}</h3>
+                    <p style="margin-bottom: 8px;">${t.privacyDataTypesIntro}</p>
+                    <p style="margin-bottom: 16px;">${t.privacyDataTypesNote}</p>
+                    <p style="margin-bottom: 8px;"><strong>${t.privacyNavigationData}</strong> ${t.privacyNavigationDataDesc}</p>
+                    <p style="margin-bottom: 16px;"><strong>${t.privacyUserData}</strong> ${t.privacyUserDataDesc}</p>
                     
-                    <h3>${t.privacyLocalStorageTitle}</h3>
-                    <p>${t.privacyLocalStorageIntro}</p>
-                    <p><strong>${t.privacyLocalStorageWhatTitle}</strong></p>
-                    <p>${t.privacyLocalStoragePreferences}<br>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyLocalStorageTitle}</h3>
+                    <p style="margin-bottom: 16px;">${t.privacyLocalStorageIntro}</p>
+                    <p style="margin-bottom: 8px;"><strong>${t.privacyLocalStorageWhatTitle}</strong></p>
+                    <p style="margin-bottom: 16px; line-height: 1.8;">${t.privacyLocalStoragePreferences}<br>
                     ${t.privacyLocalStorageHistory}<br>
                     ${t.privacyLocalStorageCollections}<br>
                     ${t.privacyLocalStorageState}</p>
-                    <p><strong>${t.privacyLocalStorageImportantTitle}</strong></p>
-                    <p>${t.privacyLocalStoragePoint1}<br>
+                    <p style="margin-bottom: 8px;"><strong>${t.privacyLocalStorageImportantTitle}</strong></p>
+                    <p style="margin-bottom: 16px; line-height: 1.8;">${t.privacyLocalStoragePoint1}<br>
                     ${t.privacyLocalStoragePoint2}<br>
                     ${t.privacyLocalStoragePoint3}<br>
                     ${t.privacyLocalStoragePoint4}</p>
                     
-                    <h3>${t.privacyPurposeTitle}</h3>
-                    <p>${t.privacyPurposeDesc}</p>
-                    <p>${t.privacyPurposeNote}</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyPurposeTitle}</h3>
+                    <p style="margin-bottom: 8px;">${t.privacyPurposeDesc}</p>
+                    <p style="margin-bottom: 16px;">${t.privacyPurposeNote}</p>
                     
-                    <h3>${t.privacyThirdPartiesTitle}</h3>
-                    <p>${t.privacyThirdPartiesIntro}</p>
-                    <p><strong>${t.privacyThirdPartiesGoogle}</strong><br>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyThirdPartiesTitle}</h3>
+                    <p style="margin-bottom: 8px;">${t.privacyThirdPartiesIntro}</p>
+                    <p style="margin-bottom: 16px;"><strong>${t.privacyThirdPartiesGoogle}</strong><br>
                     ${t.privacyThirdPartiesGoogleDesc}<br>
                     ${t.privacyThirdPartiesLocation}</p>
                     
-                    <h3>${t.privacyRightsTitle}</h3>
-                    <p>${t.privacyRightsIntro}</p>
-                    <p>${t.privacyRightsList.replace(/\n/g, '<br>')}</p>
-                    <p>${t.privacyRightsNote}</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyRightsTitle}</h3>
+                    <p style="margin-bottom: 8px;">${t.privacyRightsIntro}</p>
+                    <p style="margin-bottom: 16px; line-height: 1.8;">${t.privacyRightsList.replace(/\n/g, '<br>')}</p>
+                    <p style="margin-bottom: 16px;">${t.privacyRightsNote}</p>
                     
-                    <h3>${t.privacyChangesTitle}</h3>
-                    <p>${t.privacyChangesDesc}</p>
+                    <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyChangesTitle}</h3>
+                    <p style="margin-bottom: 16px;">${t.privacyChangesDesc}</p>
                 `;
                 document.getElementById('privacy-modal-body-content').innerHTML = bodyContent;
 
-                // Update reminder modal
                 document.getElementById('privacy-reminder-title-text').textContent = t.privacyReminderTitle;
                 document.getElementById('privacy-reminder-message-text').textContent = t.privacyReminderMessage;
                 document.getElementById('privacy-reminder-checkbox-label').textContent = t.privacyReminderDontShow;
@@ -18177,65 +18512,41 @@ ${filtersHTML}
                 privacyContinueBtn.textContent = t.privacyReminderContinueBtn;
             }
 
-            // Function to show privacy modal
-            function showPrivacyModal() {
-                updatePrivacyModalContent();
-                privacyModal.classList.add('visible');
-            }
-
-            // Function to hide privacy modal
             function hidePrivacyModal() {
                 privacyModal.classList.remove('visible');
             }
 
-            // Function to show privacy reminder
             function showPrivacyReminder() {
                 updatePrivacyModalContent();
                 privacyReminderModal.classList.add('visible');
             }
 
-            // Function to hide privacy reminder
             function hidePrivacyReminder() {
                 privacyReminderModal.classList.remove('visible');
             }
 
-            // Check if user has seen the privacy reminder
             function checkPrivacyReminder() {
                 const hasSeenReminder = localStorage.getItem('privacyReminderSeen');
                 if (!hasSeenReminder) {
-                    // Show reminder after a short delay
-                    setTimeout(() => {
-                        showPrivacyReminder();
-                    }, 1000);
+                    setTimeout(() => showPrivacyReminder(), 1000);
                 }
             }
 
-            // Event listeners for privacy links
-            document.addEventListener('click', function (e) {
-                if (e.target && (e.target.id === 'privacy-link-top' || e.target.id === 'privacy-link-chat' || e.target.classList.contains('privacy-link'))) {
-                    e.preventDefault();
-                    showPrivacyModal();
-                }
-            });
-
-            // Close privacy modal
+            // Vecchi event listener <a> rimossi, ora gestito dal data-action nel main js
+            
             privacyModalClose.addEventListener('click', hidePrivacyModal);
             privacyModal.addEventListener('click', function (e) {
-                if (e.target === privacyModal) {
-                    hidePrivacyModal();
-                }
+                if (e.target === privacyModal) hidePrivacyModal();
             });
 
-            // Privacy reminder - Read button
             privacyReadBtn.addEventListener('click', function () {
                 hidePrivacyReminder();
-                showPrivacyModal();
+                window.showPrivacyModal();
                 if (dontShowAgainCheckbox.checked) {
                     localStorage.setItem('privacyReminderSeen', 'true');
                 }
             });
 
-            // Privacy reminder - Continue button
             privacyContinueBtn.addEventListener('click', function () {
                 if (dontShowAgainCheckbox.checked) {
                     localStorage.setItem('privacyReminderSeen', 'true');
@@ -18243,10 +18554,7 @@ ${filtersHTML}
                 hidePrivacyReminder();
             });
 
-            // Check and show privacy reminder on page load
             window.addEventListener('load', checkPrivacyReminder);
-
-            // Listen for language changes
             window.addEventListener('languageChanged', updatePrivacyModalContent);
         })();
 
@@ -18275,57 +18583,89 @@ ${filtersHTML}
                 return tools[randomIndex];
             }
 
-            // Function to show dice overlay and start animation
+            // Function to show dice overlay and start animation (Fixed)
             function rollDice() {
                 selectedTool = getRandomTool();
-                if (!selectedTool) {
-                    console.error('No tools available');
-                    return;
-                }
+                if (!selectedTool) return;
 
-                // Show overlay
+                // Reset degli stili del modale risultato (per evitare conflitti con la rotazione)
+                diceResultModal.classList.remove('visible');
+                diceResultModal.style.display = 'none';
+                
+                // Mostra overlay e contenitore dado
                 diceOverlay.classList.add('visible');
                 diceContainer.style.display = 'block';
-                diceResultModal.classList.remove('visible');
 
-                // Reset animation
+                // Forza il restart dell'animazione CSS
                 const dice = document.querySelector('.dice');
                 dice.style.animation = 'none';
-                setTimeout(() => {
-                    dice.style.animation = 'rollDice 2s ease-in-out';
-                }, 10);
+                dice.offsetHeight; // Trigger reflow per resettare animazione
+                dice.style.animation = 'rollDice 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards';
 
-                // Show result after animation
+                // Mostra il risultato dopo 2 secondi
                 setTimeout(() => {
                     showResult();
                 }, 2000);
             }
 
-            // Function to show result
+            // Function to show result (Spotify Discovery Style)
             function showResult() {
-                // Get current language - try multiple sources
                 const lang = window.currentLanguage || localStorage.getItem('language') || 'it';
-
-                console.log('Showing dice result with language:', lang);
-                console.log('window.currentLanguage:', window.currentLanguage);
-                console.log('localStorage language:', localStorage.getItem('language'));
-
-                // Hide dice, show result modal
                 diceContainer.style.display = 'none';
-                diceResultModal.classList.add('visible');
+                
+                // Applichiamo lo stile full screen direttamente al modale
+                Object.assign(diceResultModal.style, {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'fixed',
+                    inset: '0',
+                    width: '100vw',
+                    height: '100vh',
+                    background: 'var(--Koda-bg)',
+                    padding: '40px 24px',
+                    zIndex: '10008',
+                    border: 'none',
+                    borderRadius: '0',
+                    maxWidth: '100vw'
+                });
 
-                // Add history state for back button support
+                diceResultModal.classList.add('visible');
                 history.pushState({ modal: 'dice-result' }, '', window.location.href);
 
-                // Update content
-                diceResultTitle.textContent = lang === 'it' ? '🎲 Che fortuna!' : '🎲 How lucky!';
-                diceResultLogo.src = selectedTool.logoUrl || '';
-                diceResultLogo.alt = selectedTool.name;
-                diceResultName.textContent = selectedTool.name;
-                diceResultDesc.textContent = selectedTool.description || '';
-                diceCloseText.textContent = lang === 'it' ? 'Chiudi' : 'Close';
-                diceViewText.textContent = lang === 'it' ? 'Visita Sito Web' : 'Visit Website';
-            }
+                diceResultModal.innerHTML = `
+                    <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <h1 style="font-size: clamp(32px, 10vw, 48px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 40px; color: var(--Koda-accent);">
+                            ${lang === 'it' ? 'Ottima<br>scoperta!' : 'Great<br>discovery!'}
+                        </h1>
+
+                        <div style="width: 100%; aspect-ratio: 1/1; max-width: 280px; margin-bottom: 32px; position: relative;">
+                            <img src="${selectedTool.logoUrl || ''}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+                        </div>
+
+                        <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 8px; color: var(--Koda-text);">${selectedTool.name}</h2>
+                        <p style="color: #a7a7a7; font-size: 15px; margin-bottom: 40px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                            ${selectedTool.description || ''}
+                        </p>
+
+                        <div style="width: 100%; display: flex; flex-direction: column; gap: 16px;">
+                            <button id="dice-view-btn-new" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease;">
+                                ${lang === 'it' ? 'Visita Sito Web' : 'Visit Website'}
+                            </button>
+                            <button id="dice-close-btn-new" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;">
+                                ${lang === 'it' ? 'Chiudi' : 'Close'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Re-bind degli eventi perché abbiamo riscritto l'inner solo per questo stato
+                document.getElementById('dice-close-btn-new').onclick = closeDiceOverlay;
+                document.getElementById('dice-view-btn-new').onclick = () => {
+                    const websiteUrl = selectedTool.website || selectedTool.url || selectedTool.link;
+                    if (websiteUrl) window.open(websiteUrl, '_blank');
+                    closeDiceOverlay();
 
             // Function to close dice overlay
             function closeDiceOverlay() {
