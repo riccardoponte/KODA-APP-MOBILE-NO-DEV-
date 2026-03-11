@@ -4,7 +4,7 @@ const urlsToCache = [
     '/KODA-APP-MOBILE-NO-DEV-/index.html',
     // Aggiungi qui file se ne hai
     // Esempio: '/style.css', '/app.js', '/fonts/Inter-Regular.ttf'
-    // Per ora, lasciamo solo i file principali.
+    // Per ora, lasciamo i file principali.
 ];
 
 // Evento di installazione: apre la nostra cache e aggiunge i file principali.
