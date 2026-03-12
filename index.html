@@ -8032,15 +8032,6 @@
         }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@^19.1.0",
-        "react-dom/client": "https://esm.sh/react-dom@^19.1.0/client",
-        "@google/genai": "https://esm.sh/@google/genai@^1.6.0"
-      }
-    }
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
     <!-- PWA & Apple Meta Tags -->
     <link rel="manifest" href="manifest.json">
@@ -8135,9 +8126,9 @@
 
     <!-- SCRIPT DEL CHATBOT MIGLIORATO -->
     <script type="text/babel" data-type="module" id="chatbot-script" data-presets="react">
-        import React, { useState, useEffect, useRef, useCallback } from 'react';
-        import ReactDOMClient from 'react-dom/client';
-        import { GoogleGenAI } from '@google/genai';
+        import React, { useState, useEffect, useRef, useCallback } from 'https://esm.sh/react@18.3.1';
+        import ReactDOMClient from 'https://esm.sh/react-dom@18.3.1/client';
+        import { GoogleGenAI } from 'https://esm.sh/@google/genai@1.6.0';
 
         // Make GoogleGenAI available to the main script for the optimizer
         window.GoogleGenAI = GoogleGenAI;
@@ -11959,8 +11950,14 @@ ${knowledgeBaseFormatter(tools)}
                     el.mainContent.insertAdjacentHTML('beforeend', topBarHTML);
 
                     // Chatbot view handles its own header and global controls via React prop
-                    el.mainContent.innerHTML += `<div id="chatbot-container-wrapper"></div>`;
-                    const chatbotContainer = document.getElementById('chatbot-container-wrapper');
+                    const chatbotContainer = document.createElement('div');
+                    chatbotContainer.id = 'chatbot-container-wrapper';
+                    chatbotContainer.style.height = '100%';
+                    chatbotContainer.style.width = '100%';
+                    chatbotContainer.style.display = 'flex';
+                    chatbotContainer.style.flexDirection = 'column';
+                    el.mainContent.appendChild(chatbotContainer);
+                    
                     if (window.mountChatbotApp) {
                         reactRoot = window.mountChatbotApp(chatbotContainer, {
                             tools: allTools, // Pass all tools to chatbot for recommendations
@@ -11978,7 +11975,11 @@ ${knowledgeBaseFormatter(tools)}
                             globalControlsHTML: getGlobalControlsHTML() // Pass controls HTML to React app
                         });
                     } else {
-                        console.error("Chatbot mount function not found.");
+                        console.warn("React non è ancora pronto. Riprovo in automatico...");
+                        chatbotContainer.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%; color:var(--Koda-text-secondary); font-weight:bold; font-size:14px;">Caricamento AI in corso...⏳</div>';
+                        setTimeout(() => {
+                            if (currentView === 'home') renderView();
+                        }, 500);
                     }
                 } else if (currentView === 'top-ai') {
 
