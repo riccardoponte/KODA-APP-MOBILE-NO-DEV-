@@ -18664,65 +18664,61 @@ ${filtersHTML}
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                             
-                        // --- NUOVO: GENERAZIONE IMMAGINE E DOWNLOAD FORZATO VIA BLOB (PER MEDIAN) ---
+                        // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE (INSTAGRAM + NATIVO) ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
                             const originalBtnHTML = shareBtn.innerHTML;
                             const isITA = currentLanguage === 'it';
                             
-                            // UI Feedback: Mostra che sta caricando
-                            shareBtn.innerHTML = `<div class="chat-bubble loading" style="background:transparent; padding:0;"><span></span><span></span><span></span></div> <span style="margin-left:8px">${isITA ? 'Generazione...' : 'Generating...'}</span>`;
+                            shareBtn.innerHTML = `<div class="chat-bubble loading" style="background:transparent; padding:0;"><span></span><span></span><span></span></div> <span style="margin-left:8px">${isITA ? 'Elaborazione...' : 'Processing...'}</span>`;
                             shareBtn.disabled = true;
-                            if(window.triggerHaptic) window.triggerHaptic('medium');
 
                             setTimeout(async () => {
                                 try {
-                                    // 1. Scatta la "Foto" all'HTML
+                                    // 1. Genera immagine (scale 1.5 per stabilità)
                                     const canvas = await html2canvas(cardElement, {
-                                        backgroundColor: '#121212', 
-                                        scale: 1.5, // 1.5 per evitare problemi di memoria sui device più vecchi
-                                        useCORS: true, 
-                                        allowTaint: true
+                                        backgroundColor: '#121212',
+                                        scale: 1.5,
+                                        useCORS: true
                                     });
 
-                                    // 2. Convertiamo direttamente il canvas in un file fisico (Blob)
-                                    canvas.toBlob((blob) => {
-                                        // 3. Creiamo un URL locale per il blob (formato blob:https://...)
-                                        const blobUrl = URL.createObjectURL(blob);
-                                        
-                                        // 4. Creiamo un "finto click" per forzare il download del file
-                                        const downloadLink = document.createElement('a');
-                                        downloadLink.href = blobUrl;
-                                        downloadLink.download = 'koda_ai_stack.png';
-                                        
-                                        // Aggiungiamo al dom, clicchiamo, e rimuoviamo (necessario per molti browser/wrapper)
-                                        document.body.appendChild(downloadLink);
-                                        downloadLink.click();
-                                        document.body.removeChild(downloadLink);
-                                        
-                                        // Pulizia della memoria
-                                        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+                                    // 2. Converti in formato pronto per Median
+                                    const dataUrl = canvas.toDataURL('image/png');
 
-                                        // Ripristino Bottone
-                                        shareBtn.innerHTML = originalBtnHTML;
-                                        shareBtn.disabled = false;
+                                    // 3. Logica per App (Median/GoNative)
+                                    if (window.median && window.median.share) {
+                                        // Questa funzione Median apre il menu nativo di Android/iOS (Instagram, WhatsApp, ecc)
+                                        window.median.share.sharePage({
+                                            url: dataUrl,
+                                            message: isITA ? 'Ecco il mio AI Stack creato con Koda!' : 'Check out my AI Stack created with Koda!'
+                                        });
+                                    } 
+                                    // 4. Logica per Instagram specifico (solo se Median non è disponibile o come fallback)
+                                    else if (/android|iphone|ipad/i.test(navigator.userAgent)) {
+                                        // Tentativo di deep link per storie Instagram (funziona solo se il file è salvato localmente)
+                                        window.location.href = 'instagram-stories://share';
+                                    } 
+                                    else {
+                                        // 5. Fallback Web Standard
+                                        const a = document.createElement('a');
+                                        a.href = dataUrl;
+                                        a.download = 'koda-ai-stack.png';
+                                        a.click();
+                                        showToast(isITA ? 'Immagine scaricata, ora puoi condividerla!' : 'Image downloaded!');
+                                    }
 
-                                        // Testo di feedback. Median dovrebbe intercettare il click e aprire "Salva o Condividi" nativo
-                                        showToast(isITA ? 'Elaborazione file in corso...' : 'Processing file...');
-                                        if(window.triggerHaptic) window.triggerHaptic('success');
-                                        
-                                    }, 'image/png');
-
-                                } catch (err) {
-                                    console.error('Errore generazione screenshot:', err);
+                                    // Ripristina bottone
                                     shareBtn.innerHTML = originalBtnHTML;
                                     shareBtn.disabled = false;
-                                    showToast(isITA ? 'Errore durante la generazione dell\'immagine.' : 'Error generating image.');
+                                } catch (err) {
+                                    console.error(err);
+                                    shareBtn.innerHTML = originalBtnHTML;
+                                    shareBtn.disabled = false;
+                                    showToast(isITA ? 'Errore condivisione.' : 'Sharing error.');
                                 }
                             }, 50);
                             break;
-                        // --------------------------------------------------------
 
                         case 'view-sent-reviews':
                             closeUserProfileDropdown();
