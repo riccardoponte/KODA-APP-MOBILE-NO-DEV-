@@ -233,7 +233,8 @@
 
         .page-title {
             font-size: 22px;
-            font-weight: 900; /* Extra Bold */
+            font-weight: 900;
+            /* Extra Bold */
             letter-spacing: -0.5px;
             flex-grow: 1;
             color: var(--Koda-text);
@@ -344,6 +345,7 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+
         .profile-menu-overlay.visible {
             opacity: 1;
             visibility: visible;
@@ -359,7 +361,8 @@
             height: 100vh;
             background-color: var(--Koda-bg);
             box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
-            z-index: 10005; /* Z-index altissimo per coprire la chat e la navbar */
+            z-index: 10005;
+            /* Z-index altissimo per coprire la chat e la navbar */
             opacity: 0;
             visibility: hidden;
             transform: translateX(100%);
@@ -407,6 +410,7 @@
             line-height: 1;
             transition: color 0.2s;
         }
+
         .user-profile-close-btn:hover {
             color: var(--Koda-text);
         }
@@ -546,13 +550,16 @@
         }
 
         .pill-btn {
-            background-color: #2a2a2a; /* Grigio Spotify */
+            background-color: #2a2a2a;
+            /* Grigio Spotify */
             color: var(--Koda-text);
             border: none;
             border-radius: 500px;
             padding: 8px 16px;
-            font-size: 13px; /* Leggermente più piccolo */
-            font-weight: 700; /* Bold Spotify */
+            font-size: 13px;
+            /* Leggermente più piccolo */
+            font-weight: 700;
+            /* Bold Spotify */
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s ease;
@@ -675,7 +682,8 @@
 
         .tool-card-grid .tool-name {
             font-size: 13px;
-            font-weight: 700; /* Bold deciso */
+            font-weight: 700;
+            /* Bold deciso */
             color: var(--Koda-text);
             line-height: 1.2;
             margin-top: 4px;
@@ -1578,14 +1586,16 @@
             padding: 12px 16px;
             font-size: 14px;
             font-weight: 600;
-            background-color: #fff; /* Spotify mobile usa spesso search bar bianche o grigio chiarissimo */
+            background-color: #fff;
+            /* Spotify mobile usa spesso search bar bianche o grigio chiarissimo */
             border: none;
-            border-radius: 500px; /* Completamente pillola */
+            border-radius: 500px;
+            /* Completamente pillola */
             color: #000;
             font-family: 'Montserrat', sans-serif;
             transition: all 0.3s ease;
         }
-        
+
         body.light-mode #search-input {
             background-color: #e9e9e9;
         }
@@ -1647,15 +1657,17 @@
             background: none;
             border: none;
             color: var(--Koda-text-secondary);
-            font-size: 10px; /* Più piccolo, stile Spotify */
+            font-size: 10px;
+            /* Più piccolo, stile Spotify */
             font-weight: 600;
             text-transform: none;
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .nav-btn.active {
-            color: #fff; /* Spotify usa il bianco puro per l'icona attiva */
+            color: #fff;
+            /* Spotify usa il bianco puro per l'icona attiva */
         }
 
         .nav-btn .icon {
@@ -1760,11 +1772,14 @@
             color: #000;
             border: none;
             padding: 14px 28px;
-            border-radius: 500px; /* Massima rotondità */
+            border-radius: 500px;
+            /* Massima rotondità */
             font-size: 15px;
-            font-weight: 800; /* Molto bold */
+            font-weight: 800;
+            /* Molto bold */
             cursor: pointer;
-            text-transform: none; /* Spotify raramente usa il tutto maiuscolo nei bottoni moderni */
+            text-transform: none;
+            /* Spotify raramente usa il tutto maiuscolo nei bottoni moderni */
             letter-spacing: -0.2px;
             transition: all 0.3s ease;
         }
@@ -2484,9 +2499,10 @@
             font-weight: 500;
             letter-spacing: -0.2px;
         }
-        
+
         .chat-bubble.user {
-            font-weight: 700; /* Il testo dell'utente è più marcato */
+            font-weight: 700;
+            /* Il testo dell'utente è più marcato */
         }
 
         #chat-input:focus {
@@ -5451,6 +5467,55 @@
             }
         }
 
+        /* NUOVO: FAB fisso per aggiungere app custom (chiave inglese) */
+        #wrench-fab {
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 20px);
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background-color: var(--Koda-accent);
+            border: none;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #wrench-fab:hover {
+            background-color: #1ed760;
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        #wrench-fab:active {
+            transform: scale(0.95);
+        }
+
+        #wrench-fab svg {
+            width: 24px;
+            height: 24px;
+            fill: #000;
+        }
+
+        @media (max-width: 480px) {
+            #wrench-fab {
+                width: 52px;
+                height: 52px;
+                bottom: calc(var(--bottom-nav-height) + 16px);
+                right: 16px;
+            }
+
+            #wrench-fab svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
+
         .chat-search-container {
             padding: 16px;
             /* MODIFICATO: Aggiunto padding verticale per dare più spazio */
@@ -6285,6 +6350,103 @@
             }
         }
 
+        /* --- STILI PER FEED NEWS (STILE TIKTOK/REELS) --- */
+        .news-feed-container {
+            height: 100%;
+            width: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+            /* Per fluidità su iOS */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            background-color: #000;
+        }
+
+        .news-feed-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .news-item {
+            height: 100%;
+            width: 100%;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+
+            /* --- INIZIO EFFETTO PILA (CARTE) --- */
+            position: sticky;
+            top: 0;
+            box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.8);
+            /* Ombra per separare visivamente le carte sovrapposte */
+            /* --- FINE EFFETTO PILA --- */
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .news-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+            padding: 30px 20px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            color: #fff;
+        }
+
+        .news-date {
+            font-size: 12px;
+            color: var(--Koda-accent);
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .news-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .news-content {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            /* Mostra massimo 4 righe */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-read-more-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .news-read-more-btn:hover {
+            background-color: var(--Koda-accent);
+            color: #000;
+            border-color: var(--Koda-accent);
+        }
+
+        /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
         /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
         #video-catalog-modal.modal-overlay {
             padding: 0 !important;
@@ -7865,12 +8027,29 @@
         }
 
         @keyframes rollDice {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            20% { transform: rotateX(180deg) rotateY(90deg); }
-            40% { transform: rotateX(360deg) rotateY(180deg); }
-            60% { transform: rotateX(540deg) rotateY(270deg); }
-            80% { transform: rotateX(720deg) rotateY(450deg); }
-            100% { transform: rotateX(1080deg) rotateY(720deg); }
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+
+            20% {
+                transform: rotateX(180deg) rotateY(90deg);
+            }
+
+            40% {
+                transform: rotateX(360deg) rotateY(180deg);
+            }
+
+            60% {
+                transform: rotateX(540deg) rotateY(270deg);
+            }
+
+            80% {
+                transform: rotateX(720deg) rotateY(450deg);
+            }
+
+            100% {
+                transform: rotateX(1080deg) rotateY(720deg);
+            }
         }
 
         @keyframes rollDice {
@@ -8032,46 +8211,108 @@
         }
 
         /* --- UI/UX WOW EFFECTS --- */
-        
+
         /* 1. Active Touch States (Effetto pressione iOS/Spotify) */
-        .tool-card-grid, .tool-card-list, .playlist-item, .video-card-grid, .video-card-list, .button, .nav-btn-fab, .category-card {
+        .tool-card-grid,
+        .tool-card-list,
+        .playlist-item,
+        .video-card-grid,
+        .video-card-list,
+        .button,
+        .nav-btn-fab,
+        .category-card {
             transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease, box-shadow 0.2s ease;
         }
-        .tool-card-grid:active, .tool-card-list:active, .playlist-item:active, .video-card-grid:active, .video-card-list:active, .category-card:active {
+
+        .tool-card-grid:active,
+        .tool-card-list:active,
+        .playlist-item:active,
+        .video-card-grid:active,
+        .video-card-list:active,
+        .category-card:active {
             transform: scale(0.96);
             opacity: 0.8;
         }
 
         /* 2. Skeleton Loaders */
         @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
         }
+
         .skeleton-box {
             background: linear-gradient(90deg, var(--Koda-card) 25%, #383838 50%, var(--Koda-card) 75%);
             background-size: 1000px 100%;
             animation: shimmer 2s infinite linear;
             border-radius: 8px;
         }
+
         body.light-mode .skeleton-box {
             background: linear-gradient(90deg, #e9e9e9 25%, #f5f5f5 50%, #e9e9e9 75%);
             background-size: 1000px 100%;
         }
-        
+
         .skeleton-grid-card {
-            display: flex; flex-direction: column; gap: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .skeleton-grid-img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; }
-        .skeleton-grid-text { width: 80%; height: 14px; border-radius: 4px; }
-        .skeleton-grid-badge { width: 50%; height: 12px; border-radius: 4px; }
+
+        .skeleton-grid-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+        }
+
+        .skeleton-grid-text {
+            width: 80%;
+            height: 14px;
+            border-radius: 4px;
+        }
+
+        .skeleton-grid-badge {
+            width: 50%;
+            height: 12px;
+            border-radius: 4px;
+        }
 
         .skeleton-list-card {
-            display: flex; gap: 12px; align-items: center; padding: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 8px;
         }
-        .skeleton-list-img { width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0; }
-        .skeleton-list-content { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
-        .skeleton-list-title { width: 60%; height: 16px; border-radius: 4px; }
-        .skeleton-list-sub { width: 40%; height: 12px; border-radius: 4px; }
+
+        .skeleton-list-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .skeleton-list-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .skeleton-list-title {
+            width: 60%;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .skeleton-list-sub {
+            width: 40%;
+            height: 12px;
+            border-radius: 4px;
+        }
 
         /* 3. Ambient Glow per i Modali */
         .ambient-glow {
@@ -8092,17 +8333,18 @@
         /* --- VISUAL CUSTOMIZATION --- */
         /* Color Swatches per le Impostazioni */
         .color-swatch {
-            width: 36px; 
-            height: 36px; 
-            border-radius: 50%; 
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             cursor: pointer;
-            border: 3px solid transparent; 
+            border: 3px solid transparent;
             transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
-        .color-swatch.active { 
-            border-color: #fff; 
-            transform: scale(1.15); 
+
+        .color-swatch.active {
+            border-color: #fff;
+            transform: scale(1.15);
         }
 
         /* Layout Compatto (Density Toggle) */
@@ -8110,130 +8352,311 @@
             padding: 6px 12px;
             gap: 12px;
         }
+
         body.compact-mode .tool-card-list .logo-container {
-            width: 40px; 
+            width: 40px;
             height: 40px;
             border-radius: 6px;
         }
+
         body.compact-mode .tool-card-list .tool-subtext,
         body.compact-mode .tool-card-list .pricing-badge {
-            display: none !important; /* Nasconde descrizioni e badge per risparmiare spazio */
+            display: none !important;
+            /* Nasconde descrizioni e badge per risparmiare spazio */
         }
+
         body.compact-mode .tool-card-list .tool-name {
             font-size: 15px;
             margin: 0;
         }
+
         /* Compattezza anche per i video in formato lista */
         body.compact-mode .video-card-list {
             padding: 8px;
             gap: 12px;
         }
+
         body.compact-mode .video-card-list .video-thumbnail {
             width: 80px;
             min-width: 80px;
             border-radius: 6px;
         }
+
         body.compact-mode .video-card-list .video-description,
         body.compact-mode .video-card-list .video-date {
             display: none;
         }
+
         body.compact-mode .video-card-list .video-info h4 {
             font-size: 14px;
             margin: 0;
-            -webkit-line-clamp: 3; /* Permette più righe per il titolo video se manca la descrizione */
+            -webkit-line-clamp: 3;
+            /* Permette più righe per il titolo video se manca la descrizione */
         }
 
         /* --- POWER USER FEATURES --- */
-        
+
         /* 1. Global Spotlight Search */
         #spotlight-overlay {
-            position: fixed; inset: 0; background: rgba(18,18,18,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 100000; display: flex; flex-direction: column; align-items: center; padding-top: 15vh;
-            opacity: 0; visibility: hidden; transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 15vh;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        #spotlight-overlay.visible { opacity: 1; visibility: visible; }
-        .spotlight-input-container { width: 90%; max-width: 700px; position: relative; }
+
+        #spotlight-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spotlight-input-container {
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+        }
+
         .spotlight-input {
-            width: 100%; background: transparent; border: none; border-bottom: 3px solid var(--Koda-accent);
-            font-size: clamp(24px, 5vw, 42px); font-weight: 900; color: var(--Koda-text); padding: 10px 0; outline: none;
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid var(--Koda-accent);
+            font-size: clamp(24px, 5vw, 42px);
+            font-weight: 900;
+            color: var(--Koda-text);
+            padding: 10px 0;
+            outline: none;
         }
-        .spotlight-input::placeholder { color: rgba(255,255,255,0.2); }
-        .spotlight-results { width: 90%; max-width: 700px; margin-top: 30px; max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px;}
-        .spotlight-results::-webkit-scrollbar { display: none; }
-        .spotlight-group-title { font-size: 12px; font-weight: 800; color: var(--Koda-accent); text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 10px 0; }
+
+        .spotlight-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .spotlight-results {
+            width: 90%;
+            max-width: 700px;
+            margin-top: 30px;
+            max-height: 60vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 40px;
+        }
+
+        .spotlight-results::-webkit-scrollbar {
+            display: none;
+        }
+
+        .spotlight-group-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--Koda-accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 20px 0 10px 0;
+        }
+
         .spotlight-item {
-            display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: rgba(255,255,255,0.05);
-            border-radius: 12px; cursor: pointer; transition: background 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
         }
-        .spotlight-item:hover, .spotlight-item.keyboard-selected { background: rgba(255,255,255,0.1); transform: scale(1.02); }
-        .spotlight-item-img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
-        .spotlight-item-info { display: flex; flex-direction: column; }
-        .spotlight-item-title { font-size: 16px; font-weight: 700; color: var(--Koda-text); }
-        .spotlight-item-sub { font-size: 13px; color: var(--Koda-text-secondary); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .spotlight-hint { position: absolute; right: 0; top: 20px; font-size: 12px; color: #727272; font-weight: 700; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;}
+
+        .spotlight-item:hover,
+        .spotlight-item.keyboard-selected {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .spotlight-item-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .spotlight-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spotlight-item-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--Koda-text);
+        }
+
+        .spotlight-item-sub {
+            font-size: 13px;
+            color: var(--Koda-text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .spotlight-hint {
+            position: absolute;
+            right: 0;
+            top: 20px;
+            font-size: 12px;
+            color: #727272;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
 
         /* 2. Compare Mode Table */
-        .compare-table-wrapper { width: 100%; overflow-x: auto; margin-top: 20px; padding-bottom: 20px; }
-        .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 600px; }
-        .compare-table th, .compare-table td { padding: 16px; text-align: center; border-bottom: 1px solid rgba(128,128,128,0.2); border-right: 1px solid rgba(128,128,128,0.1); vertical-align: top;}
-        .compare-table th:last-child, .compare-table td:last-child { border-right: none; }
-        .compare-table th { background: rgba(0,0,0,0.2); }
-        .compare-table tr:first-child th { border-top: 1px solid rgba(128,128,128,0.2); }
-        .compare-table-img { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; margin-bottom: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
-        .compare-label { font-size: 11px; font-weight: 800; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
-        .compare-value { font-size: 15px; font-weight: 600; color: var(--Koda-text); }
-        .compare-desc { font-size: 13px; line-height: 1.5; color: var(--Koda-text-secondary); text-align: left; }
+        .compare-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 600px;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+            border-right: 1px solid rgba(128, 128, 128, 0.1);
+            vertical-align: top;
+        }
+
+        .compare-table th:last-child,
+        .compare-table td:last-child {
+            border-right: none;
+        }
+
+        .compare-table th {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .compare-table tr:first-child th {
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+        }
+
+        .compare-table-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .compare-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #a7a7a7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .compare-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--Koda-text);
+        }
+
+        .compare-desc {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--Koda-text-secondary);
+            text-align: left;
+        }
 
         /* --- 3. Mini-Player Cinema (PiP Locale) --- */
         #koda-mini-player {
             position: fixed;
-            bottom: calc(var(--bottom-nav-height) + 20px); /* Sta sopra la barra di navigazione */
+            bottom: calc(var(--bottom-nav-height) + 20px);
+            /* Sta sopra la barra di navigazione */
             right: 20px;
             width: 300px;
             aspect-ratio: 16/9;
             background: #000;
             border-radius: 12px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
-            z-index: 9000; /* Altissimo, ma sotto i modali a schermo intero */
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+            z-index: 9000;
+            /* Altissimo, ma sotto i modali a schermo intero */
             overflow: hidden;
-            display: none; /* Nascosto di default */
+            display: none;
+            /* Nascosto di default */
             transform: translateY(20px);
             opacity: 0;
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         #koda-mini-player.visible {
             display: block;
             transform: translateY(0);
             opacity: 1;
         }
+
         .mini-player-controls {
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             padding: 8px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
             display: flex;
             justify-content: space-between;
             opacity: 0;
             transition: opacity 0.2s ease;
-            pointer-events: none; /* Lascia passare i click al video se non sui bottoni */
+            pointer-events: none;
+            /* Lascia passare i click al video se non sui bottoni */
         }
+
         #koda-mini-player:hover .mini-player-controls {
             opacity: 1;
             pointer-events: auto;
         }
+
         .mini-player-btn {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
-            width: 28px; height: 28px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             backdrop-filter: blur(4px);
         }
-        .mini-player-btn:hover { background: var(--Koda-accent); color: black; }
-        
+
+        .mini-player-btn:hover {
+            background: var(--Koda-accent);
+            color: black;
+        }
+
         /* Responsive: Su mobile il player è più piccolo e sta leggermente più in alto */
         @media (max-width: 768px) {
             #koda-mini-player {
@@ -8241,7 +8664,200 @@
                 bottom: calc(var(--bottom-nav-height) + 10px);
                 right: 10px;
             }
-            .mini-player-controls { opacity: 1; pointer-events: auto; } /* Su touch sempre visibili i controlli */
+
+            .mini-player-controls {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            /* Su touch sempre visibili i controlli */
+        }
+
+        /* --- NUOVI STILI NEWS (AZIONI, NAVIGAZIONE, DOPPIO TOCCO) --- */
+        .news-top-nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 16px;
+            z-index: 20;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        }
+
+        .news-nav-tab {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .news-nav-tab.active {
+            color: #fff;
+        }
+
+        .news-nav-tab.active::after {
+            content: '';
+            display: block;
+            width: 50%;
+            height: 3px;
+            background: #fff;
+            margin: 4px auto 0;
+            border-radius: 2px;
+        }
+
+        .news-action-bar {
+            position: absolute;
+            right: 16px;
+            bottom: 120px;
+            /* Sopra la descrizione */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            z-index: 10;
+        }
+
+        .news-action-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+            transition: transform 0.2s;
+        }
+
+        .news-action-btn:active {
+            transform: scale(0.8);
+        }
+
+        .news-action-btn svg {
+            width: 32px;
+            height: 32px;
+            fill: currentColor;
+            transition: fill 0.2s, stroke 0.2s;
+        }
+
+        .news-action-btn.liked svg {
+            fill: #ff4444;
+            /* Rosso TikTok */
+            stroke: #ff4444;
+        }
+
+        .news-action-btn.saved svg {
+            fill: var(--Koda-accent);
+            /* Verde Koda */
+            stroke: var(--Koda-accent);
+        }
+
+        .news-action-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Animazione Cuore Doppio Tocco */
+        .double-tap-heart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            color: #ff4444;
+            font-size: 100px;
+            z-index: 100;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+        }
+
+        @keyframes popHeart {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+
+            15% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+
+            30% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -100%) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .double-tap-heart.animate {
+            animation: popHeart 1s ease-out forwards;
+        }
+
+        /* Contenitore per le altre tab (Ricerca, Salvati, Piaciuti) */
+        .news-alt-container {
+            padding: 80px 16px 20px 16px;
+            /* Spazio per la nav in alto */
+            height: calc(100vh - var(--bottom-nav-height) - 72px);
+            overflow-y: auto;
+            background: var(--Koda-bg);
+        }
+
+        /* Stile per l'input di ricerca nelle news */
+        #news-search-input:focus {
+            outline: none;
+            border: 2px solid var(--Koda-accent) !important;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .news-grid-card {
+            background-color: var(--Koda-card);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 9/16;
+            /* Formato verticale */
+            cursor: pointer;
+        }
+
+        .news-grid-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .news-grid-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
     <!-- SCRIPT AGGIUNTI PER REACT E BABEL -->
@@ -8268,7 +8884,7 @@
 
 <body>
 
-    
+
 
     <div id="auth-overlay">
         <!-- Authentication content will be dynamically generated here by JS -->
@@ -8332,7 +8948,20 @@
                         <path
                             d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
                     </svg></span><span data-translate="navLibrary">Libreria</span></button>
+            <button class="nav-btn" data-page="news"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg"
+                        height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                    </svg></span><span data-translate="navNews">Notizie</span></button>
         </nav>
+
+        <!-- NUOVO: FAB fisso per aggiungere app custom (chiave inglese) -->
+        <button id="wrench-fab" data-action="open-add-app-modal" title="Add Custom App">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+                <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path>
+            </svg>
+        </button>
     </div>
 
     <!-- NUOVO: Contenitore Mini-Player -->
@@ -8340,11 +8969,18 @@
         <div class="mini-player-controls">
             <!-- Torna al video intero -->
             <button class="mini-player-btn" onclick="window.restoreVideoDetail()" title="Espandi">
-                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                </svg>
             </button>
             <!-- Chiudi player -->
             <button class="mini-player-btn" onclick="window.closeMiniPlayer()" title="Chiudi">
-                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="currentColor">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                </svg>
             </button>
         </div>
         <div id="mini-player-iframe-container" style="width:100%; height:100%;"></div>
@@ -9113,8 +9749,8 @@ ${knowledgeBaseFormatter(tools)}
                     nicknameRequired: "Il nickname è obbligatorio.",
                     fullNameRequired: "Il nome completo è obbligatorio.",
                     // App
-                    navHome: "Home", navTopAI: "TOP AI", navSearch: "Cerca", navSearchUsers: "Utenti", navLibrary: "Libreria",
-                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Cerca", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema",
+                    navHome: "Home", navTopAI: "Classifiche", navSearch: "Catalogo", navSearchUsers: "Utenti", navLibrary: "Libreria",
+                    pageTitleHome: "Koda", pageTitleTopAI: "Classifiche", pageTitleSearch: "Catalogo", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema", pageTitleNews: "Notizie", navNews: "Notizie",
                     navCinemaVideos: "Video", navCinemaFavorites: "Preferiti", navCinemaPlaylists: "Playlist",
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
@@ -9242,6 +9878,11 @@ ${knowledgeBaseFormatter(tools)}
                     // NUOVE TRADUZIONI PER PROMPT CHAT
                     chatPromptTitle: "Chatta con altri utenti",
                     chatPromptText: "Accedi o registrati per iniziare a chattare e scoprire i suggerimenti degli altri.",
+                    newsForYou: "Per te",
+                    newsLiked: "Piaciuti",
+                    newsSaved: "Salvati",
+                    newsSearchPlaceholder: "Cerca tra i post...",
+                    noNewsFound: "Nessuna notizia trovata.",
                     // NUOVE TRADUZIONI PER PROMPT OPTIMIZER
                     optimizerTitle: "Prompt Optimizer",
                     originalPromptLabel: "Prompt originale",
@@ -9359,8 +10000,8 @@ ${knowledgeBaseFormatter(tools)}
                     nicknameRequired: "Nickname is required.",
                     fullNameRequired: "Full name is required.",
                     // App
-                    navHome: "Home", navTopAI: "TOP AI", navSearch: "Search", navSearchUsers: "Users", navLibrary: "Library",
-                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Search", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Your Library", pageTitleCinema: "Cinema",
+                    navHome: "Home", navTopAI: "TOP AI", navSearch: "Catalogue", navSearchUsers: "Users", navLibrary: "Library",
+                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Catalogue", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Library", pageTitleCinema: "Cinema", pageTitleNews: "News", navNews: "News",
                     navCinemaVideos: "Videos", navCinemaFavorites: "Favorites", navCinemaPlaylists: "Playlists",
                     logout: "Logout", featured: "Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
@@ -9635,6 +10276,7 @@ ${knowledgeBaseFormatter(tools)}
             let aiToolsData = []; // Questa variabile verrà popolata dinamicamente da Firestore
             let aiRankingsData = []; // NUOVO: Questa variabile conterrà i dati delle classifiche da Firestore
             let youtubeVideosData = []; // NUOVO: Conterrà i video da Firebase
+            let newsData = []; // NUOVO: Conterrà le news dal database
             // NUOVA FUNZIONE per caricare gli strumenti da Firestore
             const fetchToolsFromFirestore = async () => {
                 try {
@@ -9697,6 +10339,23 @@ ${knowledgeBaseFormatter(tools)}
                         return firestoreVideos;
                     }
                     console.error("Error fetching videos from Firestore:", error);
+                    return [];
+                }
+            };
+
+            // NUOVA FUNZIONE: Carica le news da Firebase
+            const fetchNewsFromFirestore = async () => {
+                try {
+                    const newsRef = collection(db, "news");
+                    const q = query(newsRef, orderBy("timestamp", "desc"));
+                    const querySnapshot = await getDocs(q);
+                    const firestoreNews = [];
+                    querySnapshot.forEach((doc) => {
+                        firestoreNews.push({ ...doc.data(), id: doc.id });
+                    });
+                    return firestoreNews;
+                } catch (error) {
+                    console.error("Errore nel caricamento delle news:", error);
                     return [];
                 }
             };
@@ -10312,19 +10971,19 @@ ${knowledgeBaseFormatter(tools)}
 
             // --- LOGICA MINI-PLAYER GLOBALE ---
             window.activeMiniPlayerVideoId = null; // Traccia quale video sta suonando
-            
+
             window.closeMiniPlayer = () => {
                 const player = document.getElementById('koda-mini-player');
                 const container = document.getElementById('mini-player-iframe-container');
-                if(player) player.classList.remove('visible');
+                if (player) player.classList.remove('visible');
                 // Aspetta l'animazione poi svuota per fermare l'audio
-                setTimeout(() => { if(container) container.innerHTML = ''; }, 300);
+                setTimeout(() => { if (container) container.innerHTML = ''; }, 300);
                 window.activeMiniPlayerVideoId = null;
             };
 
             window.restoreVideoDetail = () => {
                 // Chiude il mini player e riapre la pagina grande dello stesso video
-                if(!window.activeMiniPlayerVideoId) return;
+                if (!window.activeMiniPlayerVideoId) return;
                 const vidToRestore = window.activeMiniPlayerVideoId;
                 window.closeMiniPlayer();
                 window.openVideoDetailPage(vidToRestore);
@@ -10333,8 +10992,8 @@ ${knowledgeBaseFormatter(tools)}
             window.activateMiniPlayer = (videoIdFromUrl, fullVideoId) => {
                 const player = document.getElementById('koda-mini-player');
                 const container = document.getElementById('mini-player-iframe-container');
-                if(!player || !container) return;
-                
+                if (!player || !container) return;
+
                 // Crea un nuovo iframe autoplay per il mini player
                 container.innerHTML = `
                     <iframe 
@@ -10346,7 +11005,7 @@ ${knowledgeBaseFormatter(tools)}
                 `;
                 window.activeMiniPlayerVideoId = fullVideoId;
                 player.classList.add('visible');
-                if(window.triggerHaptic) window.triggerHaptic('light');
+                if (window.triggerHaptic) window.triggerHaptic('light');
             };
             // ----------------------------------
 
@@ -10354,9 +11013,9 @@ ${knowledgeBaseFormatter(tools)}
             // MODIFICATO: Ora apre una pagina invece di un modale
             window.openVideoDetailPage = (videoId, addToHistory = true) => {
                 console.log('openVideoDetailPage called with:', videoId);
-                
+
                 // Se apriamo un video a schermo intero, chiudiamo il mini player (se era acceso)
-                if(window.activeMiniPlayerVideoId) {
+                if (window.activeMiniPlayerVideoId) {
                     window.closeMiniPlayer();
                 }
 
@@ -10482,11 +11141,11 @@ ${knowledgeBaseFormatter(tools)}
                     const { title, message, icon = '', confirmText, cancelText } = options;
 
                     // Determina se è un'azione distruttiva per colorare il bottone
-                    const isDestructive = confirmText.toLowerCase().includes('elimina') || 
-                                          confirmText.toLowerCase().includes('delete') || 
-                                          confirmText.toLowerCase().includes('rimuovi') || 
-                                          confirmText.toLowerCase().includes('remove');
-                                          
+                    const isDestructive = confirmText.toLowerCase().includes('elimina') ||
+                        confirmText.toLowerCase().includes('delete') ||
+                        confirmText.toLowerCase().includes('rimuovi') ||
+                        confirmText.toLowerCase().includes('remove');
+
                     const btnColor = isDestructive ? '#ff4444' : 'var(--Koda-accent)';
                     const btnTextColor = isDestructive ? '#fff' : '#000';
 
@@ -11191,7 +11850,7 @@ ${knowledgeBaseFormatter(tools)}
             const openUserProfileDropdown = () => {
                 const dropdown = document.getElementById('user-profile-dropdown');
                 const overlay = document.getElementById('profile-menu-overlay');
-                
+
                 if (dropdown) {
                     // Close any other open dropdowns first
                     closeUserProfileDropdown();
@@ -11208,7 +11867,7 @@ ${knowledgeBaseFormatter(tools)}
                     if (emailElement) emailElement.textContent = currentUser.name;
                     // Se non ci sono immagini, lascia che sia l'HTML generato (che già ha l'img) a prevalere, oppure aggiorna il testo
                     if (avatarElement && !avatarElement.querySelector('img')) {
-                         avatarElement.textContent = currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : currentUser.name.charAt(0).toUpperCase();
+                        avatarElement.textContent = currentUser.nickname ? currentUser.nickname.charAt(0).toUpperCase() : currentUser.name.charAt(0).toUpperCase();
                     }
 
                     // Apply translations
@@ -11216,7 +11875,7 @@ ${knowledgeBaseFormatter(tools)}
 
                     // Mostra dropdown e overlay
                     dropdown.classList.add('visible');
-                    if(overlay) overlay.classList.add('visible');
+                    if (overlay) overlay.classList.add('visible');
                 }
             };
 
@@ -11225,7 +11884,7 @@ ${knowledgeBaseFormatter(tools)}
                 const overlay = document.getElementById('profile-menu-overlay');
                 if (dropdown) {
                     dropdown.classList.remove('visible');
-                    if(overlay) overlay.classList.remove('visible');
+                    if (overlay) overlay.classList.remove('visible');
                 }
             };
 
@@ -11240,11 +11899,11 @@ ${knowledgeBaseFormatter(tools)}
                 const defaultLogo = currentTheme === 'light'
                     ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
                     : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
-                    
+
                 // Recupera l'avatar dal local storage (Guest) o usa il default
                 const savedAvatar = localStorage.getItem('guest-avatar');
                 const userAvatar = savedAvatar || defaultLogo;
-                
+
                 const avatarContentHTML = `<img src="${userAvatar}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 
                 // The avatar is now always rendered in the top-bar, but its click action depends on login status
@@ -11311,7 +11970,7 @@ ${knowledgeBaseFormatter(tools)}
     </button>
 `;
 
-                
+
 
                 // NUOVO: Bottone Ricerca Globale Spotlight
                 otherControlsHTML += `
@@ -12063,35 +12722,43 @@ ${knowledgeBaseFormatter(tools)}
             // NUOVO: Funzione per aggiornare il pulsante FAB nella bottom nav
             const updateBottomNavFAB = (tab) => {
                 const fabBtn = document.getElementById('bottom-nav-fab');
+                const wrenchFab = document.getElementById('wrench-fab');
                 if (!fabBtn) return;
 
                 const t = translations[currentLanguage];
 
                 // Mostra il FAB solo nella pagina Library
                 if (currentView === 'favorites') {
-                    fabBtn.style.display = 'flex';
-
-                    // Se siamo dentro una collezione, mostra il pulsante per aggiungere AI
+                    // Se siamo dentro una collezione, mostra il pulsante per aggiungere AI nel FAB centrale
                     if (activeCollectionId) {
+                        fabBtn.style.display = 'flex';
                         fabBtn.dataset.action = 'add-tools-to-collection';
                         fabBtn.dataset.collectionId = activeCollectionId;
                         fabBtn.title = currentLanguage === 'it' ? 'Aggiungi AI' : 'Add AI';
                         fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
+                        // Nascondi il wrench FAB quando c'è il FAB centrale
+                        if (wrenchFab) wrenchFab.style.display = 'none';
                     }
-                    // Se siamo nel tab collezioni, mostra il pulsante per creare collezione
+                    // Se siamo nel tab collezioni, mostra il pulsante per creare collezione nel FAB centrale
                     else if (tab === 'collections') {
+                        fabBtn.style.display = 'flex';
                         fabBtn.dataset.action = 'create-collection';
                         fabBtn.title = t.createCollection;
                         fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 24 24" width="28" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
+                        // Nascondi il wrench FAB quando c'è il FAB centrale
+                        if (wrenchFab) wrenchFab.style.display = 'none';
                     } else {
-                        // Icona per aggiungere app custom
-                        fabBtn.dataset.action = 'open-add-app-modal';
-                        fabBtn.title = t.addCustomApp;
-                        fabBtn.querySelector('.fab-icon').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path></svg>`;
+                        // Nascondi il FAB centrale e mostra il wrench FAB fisso sulla destra
+                        fabBtn.style.display = 'none';
+                        if (wrenchFab) {
+                            wrenchFab.style.display = 'flex';
+                            wrenchFab.title = t.addCustomApp || 'Add Custom App';
+                        }
                     }
                 } else {
-                    // Nascondi il FAB nelle altre pagine
+                    // Nascondi entrambi i FAB nelle altre pagine
                     fabBtn.style.display = 'none';
+                    if (wrenchFab) wrenchFab.style.display = 'none';
                 }
             };
 
@@ -12187,6 +12854,9 @@ ${knowledgeBaseFormatter(tools)}
                     el.mainContent.style.paddingBottom = `var(--bottom-nav-height)`;
                 }
 
+                // Ripristina sempre l'overflow di default (necessario per resettare il blocco della pagina News)
+                el.mainContent.style.overflowY = 'auto';
+
                 // Close any open dropdowns when navigating
                 closeUserProfileDropdown();
                 unmountReactApp();
@@ -12198,7 +12868,7 @@ ${knowledgeBaseFormatter(tools)}
                 const isGuest = !currentUser.uid;
                 // Check privileged status loaded from Firestore
                 const isPrivileged = currentUser.uid && currentUser.isPrivileged;
-                const pageTitles = { home: t.pageTitleHome, 'top-ai': t.pageTitleTopAI, search: t.pageTitleSearch, 'search-users': t.pageTitleSearchUsers, 'user-chats': t.pageTitleUserChats, favorites: t.pageTitleLibrary, cinema: t.pageTitleCinema };
+                const pageTitles = { home: t.pageTitleHome, 'top-ai': t.pageTitleTopAI, explore: t.pageTitleSearch, 'search-users': t.pageTitleSearchUsers, 'user-chats': t.pageTitleUserChats, favorites: t.pageTitleLibrary, cinema: t.pageTitleCinema, news: t.pageTitleNews };
 
                 // Top bar is only rendered for non-home views
                 if (currentView !== 'home') {
@@ -12285,7 +12955,7 @@ ${knowledgeBaseFormatter(tools)}
                     chatbotContainer.style.display = 'flex';
                     chatbotContainer.style.flexDirection = 'column';
                     el.mainContent.appendChild(chatbotContainer);
-                    
+
                     if (window.mountChatbotApp) {
                         reactRoot = window.mountChatbotApp(chatbotContainer, {
                             tools: allTools, // Pass all tools to chatbot for recommendations
@@ -12313,10 +12983,10 @@ ${knowledgeBaseFormatter(tools)}
 
                     // --- LOGICA AI DEL GIORNO ---
                     // Calcoliamo l'indice in base al giorno dell'anno, così cambia ogni 24h
-                    const dayOfYear = Math.floor(Date.now() / 86400000); 
+                    const dayOfYear = Math.floor(Date.now() / 86400000);
                     const dailyAiIndex = dayOfYear % staticTools.length;
                     const aiOfTheDay = staticTools[dailyAiIndex] || staticTools[0];
-                    
+
                     const dailyAiHTML = `
                         <div style="margin-bottom: 32px; background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid var(--Koda-accent); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; cursor: pointer; box-shadow: 0 8px 24px rgba(29, 185, 84, 0.15);" data-action="open-detail-modal" data-id="${aiOfTheDay.id}">
                             <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.05;">🌟</div>
@@ -12401,6 +13071,186 @@ ${filtersHTML}
                             card.classList.remove('hidden'); // Ensure it's visible if filter matches or is 'All'
                         }
                     });
+
+                } else if (currentView === 'news') {
+                    // Inizializza tab corrente per le news (di default 'feed')
+                    window.currentNewsTab = window.currentNewsTab || 'feed';
+
+                    // Recupera Mi Piace e Salvataggi da localStorage
+                    const newsLiked = JSON.parse(localStorage.getItem('news-liked') || '[]');
+                    const newsSaved = JSON.parse(localStorage.getItem('news-saved') || '[]');
+
+                    // Sfondo scuro globale per la sezione news
+                    el.mainContent.style.backgroundColor = '#000';
+                    contentArea.style.padding = '0';
+                    contentArea.style.height = 'calc(100vh - var(--bottom-nav-height) - 72px)';
+
+                    // Definisci le etichette qui se l'oggetto 't' non è subito disponibile
+                    const labelForYou = currentLanguage === 'it' ? 'Per te' : 'For you';
+                    const labelLiked = currentLanguage === 'it' ? 'Piaciuti' : 'Liked';
+                    const labelSaved = currentLanguage === 'it' ? 'Salvati' : 'Saved';
+                    const searchPlaceholder = currentLanguage === 'it' ? 'Cerca tra i post...' : 'Search posts...';
+                    const noNewsFoundText = currentLanguage === 'it' ? 'Nessuna notizia trovata.' : 'No news found.';
+
+                    const tabs = [
+                        { id: 'feed', label: labelForYou },
+                        { id: 'liked', label: labelLiked },
+                        { id: 'saved', label: labelSaved }
+                    ];
+
+                    const topNavHTML = `
+                        <div class="news-top-nav">
+                            ${tabs.map(tab => `
+                                <div class="news-nav-tab ${window.currentNewsTab === tab.id ? 'active' : ''}" 
+                                     data-action="set-news-tab" 
+                                     data-tab="${tab.id}">
+                                     ${tab.label}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+
+                    let newsHTML = topNavHTML;
+
+                    if (window.currentNewsTab === 'feed') {
+                        // FIX TIKTOK STYLE: Blocca lo scroll del main per la sezione Feed
+                        el.mainContent.style.overflowY = 'hidden';
+
+                        if (newsData.length === 0) {
+                            newsHTML += `<div id="empty-state" style="color: white; height: 100%; display: flex; align-items: center; justify-content: center;">Nessuna notizia.</div>`;
+                        } else {
+                            newsHTML += `<div class="news-feed-container" id="news-feed-container">`;
+                            newsData.forEach(news => {
+                                const dateStr = news.timestamp ? new Date(news.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                                const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
+                                const isLiked = newsLiked.includes(news.id);
+                                const isSaved = newsSaved.includes(news.id);
+
+                                newsHTML += `
+                                    <div class="news-item" style="background-image: url('${news.imageUrl || fallbackImage}');" data-news-id="${news.id}">
+                                        <!-- Cuore animato per doppio tocco -->
+                                        <div class="double-tap-heart">❤️</div>
+                                        
+                                        <!-- Overlay testo -->
+                                        <div class="news-overlay">
+                                            <div class="news-date">${dateStr}</div>
+                                            <h2 class="news-title">${news.title}</h2>
+                                            <div class="news-content" style="padding-right: 50px;">${news.content}</div>
+                                            ${news.sourceUrl ? `<a href="${news.sourceUrl}" target="_blank" class="news-read-more-btn">Approfondisci</a>` : ''}
+                                        </div>
+
+                                        <!-- Barra laterale destra (Like, Salva) -->
+                                        <div class="news-action-bar">
+                                            <button class="news-action-btn ${isLiked ? 'liked' : ''}" data-action="toggle-news-like" data-id="${news.id}">
+                                                <svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="${isLiked ? '#ff4444' : 'rgba(0,0,0,0.5)'}">
+                                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                                </svg>
+                                            </button>
+                                            <button class="news-action-btn ${isSaved ? 'saved' : ''}" data-action="toggle-news-save" data-id="${news.id}">
+                                                <svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="${isSaved ? 'var(--Koda-accent)' : 'rgba(0,0,0,0.5)'}">
+                                                    <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            newsHTML += `</div>`;
+                        }
+                    } else {
+                        // TAB RICERCA O SALVATI (Scroll normale, vista a griglia)
+                        el.mainContent.style.overflowY = 'auto';
+                        let filteredNews = [];
+
+                        if (window.currentNewsTab === 'saved') {
+                            filteredNews = newsData.filter(n => newsSaved.includes(n.id));
+                        } else if (window.currentNewsTab === 'liked') {
+                            filteredNews = newsData.filter(n => newsLiked.includes(n.id));
+                        }
+
+                        const renderGrid = (newsList) => {
+                            return newsList.map(n => `
+                                <div class="news-grid-card" data-action="open-news-detail" data-id="${n.id}">
+                                    <img src="${n.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png'}">
+                                    <div class="news-grid-overlay">${n.title}</div>
+                                </div>
+                            `).join('');
+                        };
+
+                        newsHTML += `
+                            <div class="news-alt-container">
+                                <input type="text" id="news-search-input" placeholder="${searchPlaceholder}" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: none; background: #282828; color: white; margin-bottom: 20px; font-size: 14px;">
+                                <div class="news-grid" id="news-grid-container">
+                                    ${filteredNews.length > 0 ? renderGrid(filteredNews) : `<div id="empty-state" style="grid-column: 1/-1; color: #a7a7a7;">${noNewsFoundText}</div>`}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    contentArea.innerHTML = newsHTML;
+                    el.mainContent.appendChild(contentArea);
+
+                    // --- LOGICA EVENTI NEWS ---
+                    setTimeout(() => {
+                        // 1. Logica Doppio Tocco sul Feed
+                        if (window.currentNewsTab === 'feed') {
+                            const container = document.getElementById('news-feed-container');
+                            let lastTapTime = 0;
+
+                            if (container) {
+                                container.addEventListener('click', (e) => {
+                                    // Ignora i click diretti sui pulsanti
+                                    if (e.target.closest('.news-action-btn') || e.target.closest('.news-read-more-btn')) return;
+
+                                    const currentTime = new Date().getTime();
+                                    const tapLength = currentTime - lastTapTime;
+
+                                    if (tapLength < 300 && tapLength > 0) {
+                                        // Doppio Tocco Rilevato!
+                                        const item = e.target.closest('.news-item');
+                                        if (item) {
+                                            const newsId = item.dataset.newsId;
+                                            const heartAnim = item.querySelector('.double-tap-heart');
+                                            const likeBtn = item.querySelector('[data-action="toggle-news-like"]');
+
+                                            // Mostra animazione
+                                            heartAnim.classList.remove('animate');
+                                            void heartAnim.offsetWidth; // Trigger reflow
+                                            heartAnim.classList.add('animate');
+
+                                            // Feedback tattile
+                                            if (window.triggerHaptic) window.triggerHaptic('heavy');
+
+                                            // Attiva il like se non è già attivo
+                                            if (!likeBtn.classList.contains('liked')) {
+                                                likeBtn.click();
+                                            }
+                                        }
+                                    }
+                                    lastTapTime = currentTime;
+                                });
+                            }
+                        }
+
+                        // 2. Logica Ricerca
+                        const searchInput = document.getElementById('news-search-input');
+                        if (searchInput) {
+                            searchInput.addEventListener('input', (e) => {
+                                const query = e.target.value.toLowerCase();
+                                const gridContainer = document.getElementById('news-grid-container');
+                                const filtered = newsData.filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query));
+
+                                gridContainer.innerHTML = filtered.length > 0
+                                    ? filtered.map(n => `
+                                        <div class="news-grid-card" data-action="open-news-detail" data-id="${n.id}">
+                                            <img src="${n.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png'}">
+                                            <div class="news-grid-overlay">${n.title}</div>
+                                        </div>
+                                    `).join('')
+                                    : `<div id="empty-state" style="grid-column: 1/-1; color: #a7a7a7;">Nessun risultato.</div>`;
+                            });
+                        }
+                    }, 100);
 
                 } else if (currentView === 'cinema') {
                     // NUOVA PAGINA CINEMA - Stile identico a top-ai
@@ -13016,8 +13866,8 @@ ${filtersHTML}
                              <div style="display: flex; gap: 12px; justify-content: space-between; margin-bottom: 24px; padding: 0 8px;">
                                  <!-- Spotify Green, Twitch Purple, Twitter Blue, Orange, Pink -->
                                  ${[
-                                     {hex: '#1db954'}, {hex: '#9146FF'}, {hex: '#1DA1F2'}, {hex: '#FF7A00'}, {hex: '#FF4081'}
-                                 ].map(c => `
+                        { hex: '#1db954' }, { hex: '#9146FF' }, { hex: '#1DA1F2' }, { hex: '#FF7A00' }, { hex: '#FF4081' }
+                    ].map(c => `
                                      <div class="color-swatch ${currentAccentColor === c.hex ? 'active' : ''}" 
                                           style="background-color: ${c.hex};" 
                                           data-action="set-accent-color" data-color="${c.hex}"></div>
@@ -13117,7 +13967,7 @@ ${filtersHTML}
                         await updateDoc(userDocRef, { nickname: newNickname });
                         currentUser.nickname = newNickname;
                         showToast(t.nicknameUpdateSuccess);
-                        closeModal(); 
+                        closeModal();
                         renderView();
                     } catch (error) {
                         console.error("Error updating nickname:", error);
@@ -13127,7 +13977,7 @@ ${filtersHTML}
                     // Logica LOCAL STORAGE (Guest Mode)
                     localStorage.setItem('guest-nickname', newNickname);
                     currentUser.nickname = newNickname;
-                    currentUser.name = newNickname; 
+                    currentUser.name = newNickname;
                     showToast('Profilo aggiornato con successo!');
                     closeModal();
                     renderView(); // Aggiorna per mostrare la nuova foto/nome
@@ -14848,7 +15698,7 @@ ${filtersHTML}
             // FUNZIONE: Apre il modale della Policy (YouTube) Sovrascrivendo le impostazioni
             const openCinemaPolicyModal = () => {
                 const t = translations[currentLanguage];
-                
+
                 const originalPolicy = currentLanguage === 'it' ? `
                     <h3 style="margin-top: 24px; margin-bottom: 12px; font-weight: 800;">Uso di Video YouTube</h3>
                     <p style="margin-bottom: 16px;">La sezione <strong>Cinema</strong> utilizza video pubblici di YouTube incorporati tramite l'API ufficiale. Non ospitiamo né scarichiamo alcun contenuto video sui nostri server.</p>
@@ -16788,7 +17638,7 @@ ${filtersHTML}
                         </p>
                     </div>
                 </div>`;
-                
+
                 document.body.insertAdjacentHTML('beforeend', modalHTML);
 
                 // Gestione upload foto
@@ -16833,10 +17683,10 @@ ${filtersHTML}
                 document.getElementById('welcome-skip-btn').addEventListener('click', () => {
                     localStorage.setItem('guest-nickname', 'Ospite');
                     localStorage.setItem('koda-guest-registered', 'true');
-                    
+
                     currentUser.nickname = 'Ospite';
                     currentUser.name = 'Ospite';
-                    
+
                     document.getElementById('first-launch-modal').remove();
                     renderView();
                 });
@@ -16848,7 +17698,7 @@ ${filtersHTML}
                 const guestUserTools = JSON.parse(localStorage.getItem('guest-userTools')) || [];
                 const localNickname = localStorage.getItem('guest-nickname') || 'Ospite';
                 currentUser = { uid: null, name: localNickname, nickname: localNickname, favorites: guestFavorites, isPrivileged: false, userTools: guestUserTools, userFeaturedTools: [], userFeaturedReplacements: {}, aiSuggestions: [] };
-                
+
                 loadConversations();
                 unmountReactApp();
                 el.appContainer.style.display = 'flex';
@@ -17182,10 +18032,10 @@ ${filtersHTML}
             // 1. Modalità Confronta
             const openCompareModal = () => {
                 if (exploreSelectedTools.length < 2 || exploreSelectedTools.length > 3) return;
-                
+
                 const allTools = getAllToolsForCurrentUser();
                 const toolsToCompare = exploreSelectedTools.map(id => allTools.find(t => t.id === id)).filter(Boolean);
-                
+
                 const t = translations[currentLanguage];
                 const isIT = currentLanguage === 'it';
 
@@ -17197,7 +18047,7 @@ ${filtersHTML}
 
                 toolsToCompare.forEach(tool => {
                     const desc = typeof tool.description === 'object' ? (tool.description[currentLanguage] || tool.description['en']) : tool.description;
-                    
+
                     thHeaders += `
                         <th>
                             <img src="${tool.logoUrl}" class="compare-table-img"><br>
@@ -17231,10 +18081,10 @@ ${filtersHTML}
                         </div>
                     </div>
                 </div>`;
-                
+
                 el.modalContainer.innerHTML = modalHTML;
                 history.pushState({ modal: 'compare' }, '', '');
-                
+
                 // Disattiva la selezione multipla pulendo lo stato
                 exploreMultiSelectMode = false;
                 exploreSelectedTools = [];
@@ -17245,7 +18095,7 @@ ${filtersHTML}
             // 2. Ricerca Globale Spotlight
             const openSpotlightSearch = () => {
                 if (document.getElementById('spotlight-overlay')) return; // Già aperto
-                
+
                 const isIT = currentLanguage === 'it';
                 const modifierKey = navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'Cmd' : 'Ctrl';
 
@@ -17253,15 +18103,15 @@ ${filtersHTML}
                 <div id="spotlight-overlay" class="visible">
                     <div class="spotlight-input-container">
                         <input type="text" id="spotlight-input" class="spotlight-input" placeholder="${isIT ? 'Cerca AI o Video...' : 'Search AI or Videos...'}" autocomplete="off" spellcheck="false">
-                        <div class="spotlight-hint">${modifierKey} + K</div>
+                </div>
                     </div>
                     <div id="spotlight-results" class="spotlight-results">
                         <!-- Risultati iniettati qui -->
                     </div>
                 </div>`;
-                
+
                 document.body.insertAdjacentHTML('beforeend', modalHTML);
-                
+
                 const input = document.getElementById('spotlight-input');
                 const resultsContainer = document.getElementById('spotlight-results');
                 const overlay = document.getElementById('spotlight-overlay');
@@ -17274,9 +18124,9 @@ ${filtersHTML}
                     overlay.classList.remove('visible');
                     setTimeout(() => overlay.remove(), 200);
                 };
-                
+
                 overlay.addEventListener('click', (e) => {
-                    if(e.target === overlay) closeSpotlight();
+                    if (e.target === overlay) closeSpotlight();
                 });
 
                 // Motore di ricerca in tempo reale
@@ -17288,12 +18138,12 @@ ${filtersHTML}
                     }
 
                     let resultsHTML = '';
-                    
+
                     // 1. Cerca nei Tools AI
                     const allTools = getAllToolsForCurrentUser();
-                    const matchedTools = allTools.filter(t => 
-                        t.name.toLowerCase().includes(query) || 
-                        (typeof t.description === 'object' ? (t.description[currentLanguage]||'').toLowerCase() : t.description.toLowerCase()).includes(query)
+                    const matchedTools = allTools.filter(t =>
+                        t.name.toLowerCase().includes(query) ||
+                        (typeof t.description === 'object' ? (t.description[currentLanguage] || '').toLowerCase() : t.description.toLowerCase()).includes(query)
                     ).slice(0, 4);
 
                     if (matchedTools.length > 0) {
@@ -17310,9 +18160,9 @@ ${filtersHTML}
                     }
 
                     // 2. Cerca nei Video del Cinema
-                    const matchedVideos = youtubeVideosData.filter(v => 
-                        v.title.toLowerCase().includes(query) || 
-                        (v.description[currentLanguage]||'').toLowerCase().includes(query)
+                    const matchedVideos = youtubeVideosData.filter(v =>
+                        v.title.toLowerCase().includes(query) ||
+                        (v.description[currentLanguage] || '').toLowerCase().includes(query)
                     ).slice(0, 3);
 
                     if (matchedVideos.length > 0) {
@@ -17322,7 +18172,7 @@ ${filtersHTML}
                             try {
                                 const url = new URL(video.youtubeUrl);
                                 videoIdYT = url.hostname === 'youtu.be' ? url.pathname.slice(1) : url.searchParams.get('v');
-                            } catch(e) {}
+                            } catch (e) { }
                             return `
                             <div class="spotlight-item" onclick="document.getElementById('spotlight-overlay').remove(); window.openVideoDetailModal('${video.id}')">
                                 <img src="https://img.youtube.com/vi/${videoIdYT}/mqdefault.jpg" class="spotlight-item-img" style="aspect-ratio: 16/9; width: 85px;">
@@ -17336,8 +18186,8 @@ ${filtersHTML}
 
                     // 3. Cerca nei Prompt Salvati (Solo Locali per velocità)
                     const localPrompts = JSON.parse(localStorage.getItem('guest-savedPrompts')) || [];
-                    const matchedPrompts = localPrompts.filter(p => 
-                        p.originalPrompt.toLowerCase().includes(query) || 
+                    const matchedPrompts = localPrompts.filter(p =>
+                        p.originalPrompt.toLowerCase().includes(query) ||
                         p.optimizedPrompt.toLowerCase().includes(query)
                     ).slice(0, 2);
 
@@ -17371,7 +18221,7 @@ ${filtersHTML}
             document.addEventListener('keydown', (e) => {
                 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
                 const modifierPressed = isMac ? e.metaKey : e.ctrlKey;
-                
+
                 if (modifierPressed && e.key.toLowerCase() === 'k') {
                     e.preventDefault(); // Previene il focus della barra di ricerca del browser
                     openSpotlightSearch();
@@ -17387,7 +18237,7 @@ ${filtersHTML}
                     return;
                 }
 
-                
+
 
                 // 2. Gestisci i modali custom (review-modal, confirm-modal, sent-reviews-modal, etc.)
                 const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible');
@@ -17674,6 +18524,63 @@ ${filtersHTML}
                             renderView();
                             el.mainContent.scrollTop = 0;
                             break;
+                        // --- AZIONI NEWS ---
+                        case 'set-news-tab':
+                            window.currentNewsTab = actionTarget.dataset.tab;
+                            renderView();
+                            break;
+
+                        case 'toggle-news-like':
+                            event.stopPropagation();
+                            const newsLikeId = actionTarget.dataset.id;
+                            let likedNews = JSON.parse(localStorage.getItem('news-liked') || '[]');
+
+                            if (likedNews.includes(newsLikeId)) {
+                                likedNews = likedNews.filter(id => id !== newsLikeId);
+                                actionTarget.classList.remove('liked');
+                                actionTarget.querySelector('svg').setAttribute('fill', 'rgba(0,0,0,0.5)');
+                            } else {
+                                likedNews.push(newsLikeId);
+                                actionTarget.classList.add('liked');
+                                actionTarget.querySelector('svg').setAttribute('fill', '#ff4444');
+                                if (window.triggerHaptic) window.triggerHaptic('light');
+                            }
+                            localStorage.setItem('news-liked', JSON.stringify(likedNews));
+                            break;
+
+                        case 'toggle-news-save':
+                            event.stopPropagation();
+                            const newsSaveId = actionTarget.dataset.id;
+                            let savedNews = JSON.parse(localStorage.getItem('news-saved') || '[]');
+
+                            if (savedNews.includes(newsSaveId)) {
+                                savedNews = savedNews.filter(id => id !== newsSaveId);
+                                actionTarget.classList.remove('saved');
+                                actionTarget.querySelector('svg').setAttribute('fill', 'rgba(0,0,0,0.5)');
+                                showToast("Rimosso dai salvati");
+                            } else {
+                                savedNews.push(newsSaveId);
+                                actionTarget.classList.add('saved');
+                                actionTarget.querySelector('svg').setAttribute('fill', 'var(--Koda-accent)');
+                                showToast("Notizia salvata");
+                                if (window.triggerHaptic) window.triggerHaptic('success');
+                            }
+                            localStorage.setItem('news-saved', JSON.stringify(savedNews));
+                            break;
+
+                        case 'open-news-detail':
+                            // Riporta al feed posizionandosi idealmente sulla notizia (qui forziamo solo la vista feed per semplicità)
+                            window.currentNewsTab = 'feed';
+                            renderView();
+                            // Scorri all'elemento specifico se possibile
+                            setTimeout(() => {
+                                const targetNews = document.querySelector(`.news-item[data-news-id="${actionTarget.dataset.id}"]`);
+                                if (targetNews) {
+                                    document.getElementById('news-feed-container').scrollTop = targetNews.offsetTop;
+                                }
+                            }, 100);
+                            break;
+
                         // NUOVO: Torna al cinema dalla pagina video-detail
                         case 'back-to-cinema':
                             // LOGICA MINI PLAYER: Prima di uscire, attiviamo il PiP se stiamo guardando un video
@@ -17686,7 +18593,7 @@ ${filtersHTML}
                                         if (videoIdFromUrl) {
                                             window.activateMiniPlayer(videoIdFromUrl, window.currentVideoId);
                                         }
-                                    } catch(e) { console.error("MiniPlayer error:", e); }
+                                    } catch (e) { console.error("MiniPlayer error:", e); }
                                 }
                             }
 
@@ -17733,7 +18640,7 @@ ${filtersHTML}
                         // NUOVO: Chiudi Policy
                         case 'close-cinema-policy':
                             const cinemaPolicy = document.getElementById('cinema-policy-modal');
-                            if(cinemaPolicy) cinemaPolicy.remove();
+                            if (cinemaPolicy) cinemaPolicy.remove();
                             break;
                         // NUOVO: Toggle selezione multipla playlist
                         case 'toggle-playlist-multi-select':
@@ -18287,28 +19194,28 @@ ${filtersHTML}
                         case 'set-accent-color':
                             const newColor = actionTarget.dataset.color;
                             currentAccentColor = newColor;
-                            
+
                             // Salva e applica la variabile CSS root
                             localStorage.setItem('koda-accent-color', newColor);
                             document.documentElement.style.setProperty('--Koda-accent', newColor);
-                            
+
                             // Aggiorna l'UI del modale (sposta la classe active)
                             document.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active'));
                             actionTarget.classList.add('active');
-                            
+
                             // Feedback tattile se supportato (inserito nella modifica precedente)
-                            if(window.triggerHaptic) window.triggerHaptic('light');
+                            if (window.triggerHaptic) window.triggerHaptic('light');
                             break;
 
                         case 'toggle-compact-mode':
                             isCompactMode = !isCompactMode;
-                            
+
                             // Salva e applica la classe al body
                             localStorage.setItem('koda-compact-mode', isCompactMode);
                             document.body.classList.toggle('compact-mode', isCompactMode);
-                            
-                            if(window.triggerHaptic) window.triggerHaptic('light');
-                            
+
+                            if (window.triggerHaptic) window.triggerHaptic('light');
+
                             // Ri-renderizziamo il modale impostazioni per far aggiornare visivamente l'interruttore
                             window.openSettingsModal();
                             break;
@@ -18443,7 +19350,7 @@ ${filtersHTML}
                             exploreSelectedTools = [];
                             updateMultiSelectUI();
                             break;
-                            
+
                         // --- NUOVE POWER USER ACTIONS ---
                         case 'open-compare-modal':
                             openCompareModal();
@@ -18610,13 +19517,13 @@ ${filtersHTML}
                                 showToast(translations[currentLanguage].myAiStackEmpty);
                                 return;
                             }
-                            
+
                             // Prende massimo 9 strumenti per una griglia 3x3 perfetta
                             const allToolsForStack = window.getAllToolsForCurrentUser();
                             const stackTools = favIds.map(id => allToolsForStack.find(t => t.id === id)).filter(Boolean).slice(0, 9);
-                            
+
                             const nickname = currentUser.nickname || currentUser.name.split('@')[0];
-                            
+
                             const gridHTML = stackTools.map(tool => `
                                 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
                                     <div style="width: 64px; height: 64px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); background: #282828;">
@@ -18659,22 +19566,22 @@ ${filtersHTML}
                                 </div>
                             `;
                             el.modalContainer.innerHTML = stackModalHTML;
-                            
+
                             // Aggiungiamo alla cronologia per il tasto indietro
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
-                            
+
                         // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE NATIVA ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
                             const originalBtnHTML = shareBtn.innerHTML;
                             const isITA = currentLanguage === 'it';
-                            
+
                             // UI Feedback: Mostra che sta caricando
                             shareBtn.innerHTML = `<div class="chat-bubble loading" style="background:transparent; padding:0;"><span></span><span></span><span></span></div> <span style="margin-left:8px">${isITA ? 'Generazione...' : 'Generating...'}</span>`;
                             shareBtn.disabled = true;
-                            if(window.triggerHaptic) window.triggerHaptic('medium');
+                            if (window.triggerHaptic) window.triggerHaptic('medium');
 
                             try {
                                 // 1. Scatta la "Foto" all'HTML usando html2canvas
@@ -18692,13 +19599,13 @@ ${filtersHTML}
                                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                                         shareBtn.innerHTML = originalBtnHTML;
                                         shareBtn.disabled = false;
-                                        
+
                                         await navigator.share({
                                             title: 'Il mio AI Stack',
                                             text: isITA ? 'Ecco i tool di Intelligenza Artificiale che uso ogni giorno! Generato con Koda AI ✨' : 'Here are the AI tools I use every day! Generated with Koda AI ✨',
                                             files: [file]
                                         });
-                                        if(window.triggerHaptic) window.triggerHaptic('success');
+                                        if (window.triggerHaptic) window.triggerHaptic('success');
                                     } else {
                                         // 4. Fallback per PC/Browser non supportati: Scarica l'immagine
                                         const url = URL.createObjectURL(blob);
@@ -18707,14 +19614,14 @@ ${filtersHTML}
                                         a.download = 'il-mio-koda-stack.png';
                                         a.click();
                                         URL.revokeObjectURL(url);
-                                        
+
                                         shareBtn.innerHTML = originalBtnHTML;
                                         shareBtn.disabled = false;
                                         showToast(isITA ? 'Immagine scaricata! Ora puoi condividerla.' : 'Image downloaded! You can share it now.');
-                                        if(window.triggerHaptic) window.triggerHaptic('success');
+                                        if (window.triggerHaptic) window.triggerHaptic('success');
                                     }
                                 }, 'image/png');
-                                
+
                             } catch (err) {
                                 console.error('Errore generazione screenshot:', err);
                                 shareBtn.innerHTML = originalBtnHTML;
@@ -18943,10 +19850,11 @@ ${filtersHTML}
                 }
                 // --- END OF INSERTION ---
                 // Carica tutti i dati da Firestore PRIMA di inizializzare l'app
-                [aiToolsData, aiRankingsData, youtubeVideosData] = await Promise.all([
+                [aiToolsData, aiRankingsData, youtubeVideosData, newsData] = await Promise.all([
                     fetchToolsFromFirestore(),
                     fetchRankingsFromFirestore(),
-                    fetchVideosFromFirestore()
+                    fetchVideosFromFirestore(),
+                    fetchNewsFromFirestore()
                 ]);
 
                 // Aggiorna il badge di notifica del Cinema dopo aver caricato i video
@@ -19038,36 +19946,51 @@ ${filtersHTML}
 
     <!-- Modal recensioni rimosso -->
 
-    
+
 
     <!-- Privacy Reminder Modal a tema Koda (Stile Spotify) -->
-    <div class="modal-overlay" id="privacy-reminder-modal" style="z-index: 10006; background: var(--Koda-bg); align-items: center; justify-content: center; padding: 20px;">
-        <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; padding: 40px 0;">
-            
+    <div class="modal-overlay" id="privacy-reminder-modal"
+        style="z-index: 10006; background: var(--Koda-bg); align-items: center; justify-content: center; padding: 20px;">
+        <div
+            style="width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; padding: 40px 0;">
+
             <!-- Logo Koda in alto -->
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin-bottom: 32px; fill: var(--Koda-text);">
-                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="6" fill="none"/>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                style="width: 48px; height: 48px; margin-bottom: 32px; fill: var(--Koda-text);">
+                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="6" fill="none" />
                 <text x="50" y="65" font-size="42" font-weight="900" text-anchor="middle" fill="currentColor">K</text>
             </svg>
 
             <!-- Titolo enorme -->
-            <h1 id="privacy-reminder-title-text" style="font-size: clamp(32px, 9vw, 42px); font-weight: 900; letter-spacing: -1.5px; text-align: center; line-height: 1.1; margin-bottom: 24px; color: var(--Koda-text);"></h1>
-            
+            <h1 id="privacy-reminder-title-text"
+                style="font-size: clamp(32px, 9vw, 42px); font-weight: 900; letter-spacing: -1.5px; text-align: center; line-height: 1.1; margin-bottom: 24px; color: var(--Koda-text);">
+            </h1>
+
             <!-- Messaggio descrittivo -->
-            <p id="privacy-reminder-message-text" style="color: #a7a7a7; font-size: 15px; margin-bottom: 40px; line-height: 1.5; text-align: center;"></p>
-            
+            <p id="privacy-reminder-message-text"
+                style="color: #a7a7a7; font-size: 15px; margin-bottom: 40px; line-height: 1.5; text-align: center;"></p>
+
             <div style="width: 100%; display: flex; flex-direction: column; gap: 16px;">
                 <!-- Bottone Verde Arrotondato (Continua) -->
-                <button id="privacy-continue-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#1ed760';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--Koda-accent)';"></button>
+                <button id="privacy-continue-btn"
+                    style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;"
+                    onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#1ed760';"
+                    onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--Koda-accent)';"></button>
 
                 <!-- Bottone Secondario (Leggi Privacy) -->
-                <button id="privacy-read-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';"></button>
+                <button id="privacy-read-btn"
+                    style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;"
+                    onmouseover="this.style.borderColor='#fff';"
+                    onmouseout="this.style.borderColor='#727272';"></button>
             </div>
 
             <!-- Checkbox Non mostrare più -->
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 32px;">
-                <input type="checkbox" id="dont-show-again-checkbox" style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--Koda-accent);">
-                <label for="dont-show-again-checkbox" id="privacy-reminder-checkbox-label" style="font-size: 14px; color: #a7a7a7; cursor: pointer; user-select: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a7a7a7'"></label>
+                <input type="checkbox" id="dont-show-again-checkbox"
+                    style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--Koda-accent);">
+                <label for="dont-show-again-checkbox" id="privacy-reminder-checkbox-label"
+                    style="font-size: 14px; color: #a7a7a7; cursor: pointer; user-select: none; transition: color 0.2s;"
+                    onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a7a7a7'"></label>
             </div>
 
         </div>
@@ -19083,12 +20006,12 @@ ${filtersHTML}
             const privacyReadBtn = document.getElementById('privacy-read-btn');
             const privacyContinueBtn = document.getElementById('privacy-continue-btn');
 
-            window.showDynamicPrivacyModal = function() {
-    const currentLang = localStorage.getItem('koda-lang') || 'it';
-    const t = window.translations ? window.translations[currentLang] : null;
-    if (!t) return;
-    const modalContainer = document.getElementById('modal-container');
-    const bodyContent = `
+            window.showDynamicPrivacyModal = function () {
+                const currentLang = localStorage.getItem('koda-lang') || 'it';
+                const t = window.translations ? window.translations[currentLang] : null;
+                if (!t) return;
+                const modalContainer = document.getElementById('modal-container');
+                const bodyContent = `
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Termini di servizio</h3>
         <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 1 Novembre 2025</strong></p>
         <p style="margin-bottom: 16px;">Questa applicazione ("Koda AI") è fornita da Riccardo Giorgio Ponte e Davide Narracci.</p>
@@ -19115,7 +20038,7 @@ ${filtersHTML}
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Modifiche a questa privacy policy</h3>
         <p style="margin-bottom: 16px;">Il titolare del trattamento si riserva il diritto di apportare modifiche alla presente privacy policy in qualunque momento, dandone pubblicità agli utenti su questa pagina.</p>
     `;
-    modalContainer.innerHTML = `
+                modalContainer.innerHTML = `
         <div class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10007; align-items: center; justify-content: center;">
             <div style="width: 100%; max-width: 600px; height: 100vh; overflow-y: auto; text-align: left; padding: 24px; position: relative;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; position: sticky; top: 0; background: var(--Koda-bg); padding: 10px 0; z-index: 2;">
@@ -19129,14 +20052,14 @@ ${filtersHTML}
             </div>
         </div>
     `;
-};
-                const currentLang = localStorage.getItem('language') || 'it';
-                const t = window.translations ? window.translations[currentLang] : null;
-                if (!t) return;
+            };
+            const currentLang = localStorage.getItem('language') || 'it';
+            const t = window.translations ? window.translations[currentLang] : null;
+            if (!t) return;
 
-                document.getElementById('privacy-modal-title-text').textContent = t.privacyPolicyTitle;
+            document.getElementById('privacy-modal-title-text').textContent = t.privacyPolicyTitle;
 
-                const bodyContent = `
+            const bodyContent = `
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacySubtitle}</h3>
                     <p style="margin-bottom: 16px;"><strong>${t.privacyLastUpdate}</strong></p>
                     <p style="margin-bottom: 16px;">${t.privacyIntro}</p>
@@ -19182,60 +20105,60 @@ ${filtersHTML}
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">${t.privacyChangesTitle}</h3>
                     <p style="margin-bottom: 16px;">${t.privacyChangesDesc}</p>
                 `;
-                document.getElementById('privacy-modal-body-content').innerHTML = bodyContent;
+            document.getElementById('privacy-modal-body-content').innerHTML = bodyContent;
 
-                document.getElementById('privacy-reminder-title-text').textContent = t.privacyReminderTitle;
-                document.getElementById('privacy-reminder-message-text').textContent = t.privacyReminderMessage;
-                document.getElementById('privacy-reminder-checkbox-label').textContent = t.privacyReminderDontShow;
-                privacyReadBtn.textContent = t.privacyReminderReadBtn;
-                privacyContinueBtn.textContent = t.privacyReminderContinueBtn;
-            }
+            document.getElementById('privacy-reminder-title-text').textContent = t.privacyReminderTitle;
+            document.getElementById('privacy-reminder-message-text').textContent = t.privacyReminderMessage;
+            document.getElementById('privacy-reminder-checkbox-label').textContent = t.privacyReminderDontShow;
+            privacyReadBtn.textContent = t.privacyReminderReadBtn;
+            privacyContinueBtn.textContent = t.privacyReminderContinueBtn;
+        }
 
             function hidePrivacyModal() {
-                privacyModal.classList.remove('visible');
+            privacyModal.classList.remove('visible');
+        }
+
+        function showPrivacyReminder() {
+            updatePrivacyModalContent();
+            privacyReminderModal.classList.add('visible');
+        }
+
+        function hidePrivacyReminder() {
+            privacyReminderModal.classList.remove('visible');
+        }
+
+        function checkPrivacyReminder() {
+            const hasSeenReminder = localStorage.getItem('privacyReminderSeen');
+            if (!hasSeenReminder) {
+                setTimeout(() => showPrivacyReminder(), 1000);
             }
+        }
 
-            function showPrivacyReminder() {
-                updatePrivacyModalContent();
-                privacyReminderModal.classList.add('visible');
+        // Vecchi event listener <a> rimossi, ora gestito dal data-action nel main js
+
+        privacyModalClose.addEventListener('click', hidePrivacyModal);
+        privacyModal.addEventListener('click', function (e) {
+            if (e.target === privacyModal) hidePrivacyModal();
+        });
+
+        privacyReadBtn.addEventListener('click', function () {
+            hidePrivacyReminder();
+            window.showPrivacyModal();
+            if (dontShowAgainCheckbox.checked) {
+                localStorage.setItem('privacyReminderSeen', 'true');
             }
+        });
 
-            function hidePrivacyReminder() {
-                privacyReminderModal.classList.remove('visible');
+        privacyContinueBtn.addEventListener('click', function () {
+            if (dontShowAgainCheckbox.checked) {
+                localStorage.setItem('privacyReminderSeen', 'true');
             }
+            hidePrivacyReminder();
+        });
 
-            function checkPrivacyReminder() {
-                const hasSeenReminder = localStorage.getItem('privacyReminderSeen');
-                if (!hasSeenReminder) {
-                    setTimeout(() => showPrivacyReminder(), 1000);
-                }
-            }
-
-            // Vecchi event listener <a> rimossi, ora gestito dal data-action nel main js
-            
-            privacyModalClose.addEventListener('click', hidePrivacyModal);
-            privacyModal.addEventListener('click', function (e) {
-                if (e.target === privacyModal) hidePrivacyModal();
-            });
-
-            privacyReadBtn.addEventListener('click', function () {
-                hidePrivacyReminder();
-                window.showPrivacyModal();
-                if (dontShowAgainCheckbox.checked) {
-                    localStorage.setItem('privacyReminderSeen', 'true');
-                }
-            });
-
-            privacyContinueBtn.addEventListener('click', function () {
-                if (dontShowAgainCheckbox.checked) {
-                    localStorage.setItem('privacyReminderSeen', 'true');
-                }
-                hidePrivacyReminder();
-            });
-
-            window.addEventListener('load', checkPrivacyReminder);
-            window.addEventListener('languageChanged', updatePrivacyModalContent);
-        })();
+        window.addEventListener('load', checkPrivacyReminder);
+        window.addEventListener('languageChanged', updatePrivacyModalContent);
+        }) ();
 
         // Dice Roll Functionality
         (function () {
@@ -19270,7 +20193,7 @@ ${filtersHTML}
                 // Reset degli stili del modale risultato (per evitare conflitti con la rotazione)
                 diceResultModal.classList.remove('visible');
                 diceResultModal.style.display = 'none';
-                
+
                 // Mostra overlay e contenitore dado
                 diceOverlay.classList.add('visible');
                 diceContainer.style.display = 'block';
@@ -19291,7 +20214,7 @@ ${filtersHTML}
             function showResult() {
                 const lang = window.currentLanguage || localStorage.getItem('language') || 'it';
                 diceContainer.style.display = 'none';
-                
+
                 // Applichiamo lo stile full screen direttamente al modale
                 Object.assign(diceResultModal.style, {
                     display: 'flex',
