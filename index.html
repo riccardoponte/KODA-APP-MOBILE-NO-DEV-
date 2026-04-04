@@ -18664,59 +18664,89 @@ ${filtersHTML}
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                             
-                        // --- NUOVO: GENERAZIONE IMMAGINE E LONG-PRESS ---
+                        // --- NUOVO: APERTURA IMMAGINE IN NUOVA SCHEDA DEL BROWSER ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
                             const originalBtnHTML = shareBtn.innerHTML;
                             const isITA = currentLanguage === 'it';
                             
-                            // UI Feedback: Mostra che sta caricando
                             shareBtn.innerHTML = `<div class="chat-bubble loading" style="background:transparent; padding:0;"><span></span><span></span><span></span></div> <span style="margin-left:8px">${isITA ? 'Generazione...' : 'Generating...'}</span>`;
                             shareBtn.disabled = true;
-                            if(window.triggerHaptic) window.triggerHaptic('medium');
 
-                            // Diamo tempo all'interfaccia di mostrare il loader prima di bloccare la CPU
                             setTimeout(async () => {
                                 try {
-                                    // 1. Scatta la "Foto" all'HTML
+                                    // 1. Scatta la foto all'HTML
                                     const canvas = await html2canvas(cardElement, {
-                                        backgroundColor: '#121212', // Sfondo scuro per evitare trasparenze errate
-                                        scale: 2, // Alta risoluzione
-                                        useCORS: true, // Necessario per Firebase
+                                        backgroundColor: '#121212',
+                                        scale: 2, 
+                                        useCORS: true,
                                         allowTaint: true
                                     });
 
-                                    // 2. Converti in Immagine Base64
                                     const dataUrl = canvas.toDataURL('image/png');
 
-                                    // 3. Troviamo il contenitore del modale
-                                    const modalContent = document.querySelector('#ai-stack-modal .modal-content');
-                                    
-                                    // 4. Sostituiamo l'interno del modale con l'immagine generata
-                                    // Nota: -webkit-touch-callout: default è fondamentale per iOS/Safari WebView
-                                    modalContent.innerHTML = `
-                                        <button class="modal-close-btn" data-action="close-modal" style="color: white; position: absolute; right: 10px; top: -50px; background: rgba(0,0,0,0.5); border-radius: 50%; width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; font-size: 24px; z-index: 100;">×</button>
-                                        
-                                        <div style="text-align: center; margin-bottom: 20px; animation: cardFadeInUp 0.4s ease-out forwards;">
-                                            <div style="background: var(--Koda-accent); color: #000; padding: 12px 20px; border-radius: 500px; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);">
-                                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
-                                                ${isITA ? 'Tieni premuto sull\'immagine per Condividerla!' : 'Long press the image to Share it!'}
-                                            </div>
-                                        </div>
+                                    // 2. Creiamo una pagina web al volo da zero!
+                                    const htmlContent = `
+                                    <!DOCTYPE html>
+                                    <html>
+                                    <head>
+                                        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+                                        <title>Koda AI Stack</title>
+                                        <style>
+                                            body { background: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
+                                            img { max-width: 85%; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); margin-bottom: 40px; }
+                                            button { background: #1db954; color: black; border: none; padding: 18px 40px; font-size: 18px; font-weight: 900; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(29,185,84,0.4); display: flex; align-items: center; gap: 10px; }
+                                        </style>
+                                    </head>
+                                    <body>
+                                        <img src="${dataUrl}" alt="Koda Stack">
+                                        <button id="share">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                                            ${isITA ? 'Condividi' : 'Share'}
+                                        </button>
+                                        <script>
+                                            // Questo script gira nella nuova pagina
+                                            document.getElementById('share').onclick = async () => {
+                                                try {
+                                                    const res = await fetch("${dataUrl}");
+                                                    const blob = await res.blob();
+                                                    const file = new File([blob], 'koda-stack.png', { type: 'image/png' });
+                                                    
+                                                    if (navigator.share) {
+                                                        await navigator.share({
+                                                            title: 'Il mio AI Stack',
+                                                            files: [file]
+                                                        });
+                                                    } else {
+                                                        // Se Web Share non è supportato, scarica l'immagine
+                                                        const a = document.createElement('a');
+                                                        a.href = "${dataUrl}";
+                                                        a.download = 'koda-stack.png';
+                                                        a.click();
+                                                    }
+                                                } catch(e) {
+                                                    console.log('Condivisione annullata o fallita', e);
+                                                }
+                                            };
+                                        <\/script>
+                                    </body>
+                                    </html>`;
 
-                                        <div style="position: relative; animation: pageSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; padding-bottom: 20px;">
-                                            <img src="${dataUrl}" style="width: 100%; max-width: 360px; border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); pointer-events: auto; -webkit-touch-callout: default;" alt="Il mio AI Stack" />
-                                        </div>
-                                    `;
+                                    // 3. Trasformiamo il codice HTML in un "Sito Web in miniatura" racchiuso in un link
+                                    const blobUrl = URL.createObjectURL(new Blob([htmlContent], { type: 'text/html' }));
                                     
-                                    if(window.triggerHaptic) window.triggerHaptic('success');
-
-                                } catch (err) {
-                                    console.error('Errore generazione screenshot:', err);
+                                    // 4. Ripristiniamo il bottone della pagina principale
                                     shareBtn.innerHTML = originalBtnHTML;
                                     shareBtn.disabled = false;
-                                    showToast(isITA ? 'Errore durante la generazione dell\'immagine.' : 'Error generating image.');
+
+                                    // 5. Apriamo la pagina. Median aprirà il suo In-App browser isolato e perfetto.
+                                    window.open(blobUrl, '_blank');
+
+                                } catch (err) {
+                                    console.error('Errore:', err);
+                                    shareBtn.innerHTML = originalBtnHTML;
+                                    shareBtn.disabled = false;
                                 }
                             }, 50);
                             break;
