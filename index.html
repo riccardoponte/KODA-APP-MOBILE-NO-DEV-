@@ -18664,7 +18664,7 @@ ${filtersHTML}
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                             
-                        // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE NATIVA (Fix Median) ---
+                        // --- NUOVO: GENERAZIONE IMMAGINE E LONG-PRESS ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
@@ -18676,74 +18676,49 @@ ${filtersHTML}
                             shareBtn.disabled = true;
                             if(window.triggerHaptic) window.triggerHaptic('medium');
 
-                            // Usiamo setTimeout per permettere all'interfaccia di aggiornare il bottone prima che la CPU si blocchi
+                            // Diamo tempo all'interfaccia di mostrare il loader prima di bloccare la CPU
                             setTimeout(async () => {
                                 try {
-                                    // 1. Scatta la "Foto" all'HTML usando html2canvas
+                                    // 1. Scatta la "Foto" all'HTML
                                     const canvas = await html2canvas(cardElement, {
-                                        backgroundColor: '#121212', // Forza sfondo scuro per sicurezza
-                                        scale: 2, // Genera in alta risoluzione (Retina)
-                                        useCORS: true // Fondamentale per loghi Firebase/URL esterni
+                                        backgroundColor: '#121212', // Sfondo scuro per evitare trasparenze errate
+                                        scale: 2, // Alta risoluzione
+                                        useCORS: true, // Necessario per Firebase
+                                        allowTaint: true
                                     });
 
-                                    // 2. Converti in Blob (File temporaneo). Molto più sicuro per le app Android rispetto a stringhe Base64 enormi
-                                    canvas.toBlob(async (blob) => {
-                                        const file = new File([blob], 'il-mio-koda-stack.png', { type: 'image/png' });
-                                        
-                                        // Funzione di ripristino per sbloccare il bottone in ogni caso
-                                        const resetButton = () => {
-                                            shareBtn.innerHTML = originalBtnHTML;
-                                            shareBtn.disabled = false;
-                                        };
+                                    // 2. Converti in Immagine Base64
+                                    const dataUrl = canvas.toDataURL('image/png');
 
-                                        try {
-                                            // TENTATIVO 1: Usa Web Share API (Supportata su Safari, PC e WebView recenti)
-                                            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                                                await navigator.share({
-                                                    title: 'Il mio AI Stack',
-                                                    text: isITA ? 'Ecco i tool di Intelligenza Artificiale che uso ogni giorno! Generato con Koda AI ✨' : 'Here are the AI tools I use every day! Generated with Koda AI ✨',
-                                                    files: [file]
-                                                });
-                                                resetButton();
-                                                if(window.triggerHaptic) window.triggerHaptic('success');
-                                            } 
-                                            // TENTATIVO 2: Scaricamento. Su Median questo viene intercettato aprendo il menu nativo
-                                            else {
-                                                const url = URL.createObjectURL(blob);
-                                                const a = document.createElement('a');
-                                                a.href = url;
-                                                a.download = 'il-mio-koda-stack.png';
-                                                document.body.appendChild(a); // Necessario per farlo funzionare nelle WebView Android
-                                                a.click();
-                                                document.body.removeChild(a);
-                                                URL.revokeObjectURL(url);
-                                                
-                                                resetButton();
-                                                
-                                                // Se è Median/App mostriamo un Toast adeguato, altrimenti quello per Browser
-                                                const isMedianApp = navigator.userAgent.toLowerCase().includes('median') || navigator.userAgent.toLowerCase().includes('gonative') || window.median;
-                                                if (isMedianApp) {
-                                                    showToast(isITA ? 'Apertura file in corso...' : 'Opening file...');
-                                                } else {
-                                                    showToast(isITA ? 'Immagine scaricata! Ora puoi condividerla.' : 'Image downloaded! You can share it now.');
-                                                }
-                                                if(window.triggerHaptic) window.triggerHaptic('success');
-                                            }
-                                        } catch (shareError) {
-                                            // L'utente ha annullato la condivisione (es. ha premuto indietro). Sblocchiamo il bottone.
-                                            console.log("Condivisione annullata o non permessa:", shareError);
-                                            resetButton();
-                                        }
-
-                                    }, 'image/png');
+                                    // 3. Troviamo il contenitore del modale
+                                    const modalContent = document.querySelector('#ai-stack-modal .modal-content');
                                     
+                                    // 4. Sostituiamo l'interno del modale con l'immagine generata
+                                    // Nota: -webkit-touch-callout: default è fondamentale per iOS/Safari WebView
+                                    modalContent.innerHTML = `
+                                        <button class="modal-close-btn" data-action="close-modal" style="color: white; position: absolute; right: 10px; top: -50px; background: rgba(0,0,0,0.5); border-radius: 50%; width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; font-size: 24px; z-index: 100;">×</button>
+                                        
+                                        <div style="text-align: center; margin-bottom: 20px; animation: cardFadeInUp 0.4s ease-out forwards;">
+                                            <div style="background: var(--Koda-accent); color: #000; padding: 12px 20px; border-radius: 500px; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                                                ${isITA ? 'Tieni premuto sull\'immagine per Condividerla!' : 'Long press the image to Share it!'}
+                                            </div>
+                                        </div>
+
+                                        <div style="position: relative; animation: pageSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; padding-bottom: 20px;">
+                                            <img src="${dataUrl}" style="width: 100%; max-width: 360px; border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); pointer-events: auto; -webkit-touch-callout: default;" alt="Il mio AI Stack" />
+                                        </div>
+                                    `;
+                                    
+                                    if(window.triggerHaptic) window.triggerHaptic('success');
+
                                 } catch (err) {
                                     console.error('Errore generazione screenshot:', err);
                                     shareBtn.innerHTML = originalBtnHTML;
                                     shareBtn.disabled = false;
                                     showToast(isITA ? 'Errore durante la generazione dell\'immagine.' : 'Error generating image.');
                                 }
-                            }, 50); // Piccolo ritardo di 50ms
+                            }, 50);
                             break;
                         // --------------------------------------------------------
 
