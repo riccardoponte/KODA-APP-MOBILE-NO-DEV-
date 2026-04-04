@@ -2,7 +2,7 @@ const CACHE_NAME = 'koda-ai-cache-v1';
 const urlsToCache = [
     '/KODA-APP-MOBILE-NO-DEV-/',
     '/KODA-APP-MOBILE-NO-DEV-/index.html',
-    // Aggiungi qui dei file se li hai
+    // Aggiungi qui dei file se ne hai
     // Esempio: '/style.css', '/app.js', '/fonts/Inter-Regular.ttf'
     // Per ora, lasciamo i file principali.
 ];
