@@ -18664,7 +18664,7 @@ ${filtersHTML}
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                             
-                        // --- NUOVO: APERTURA IMMAGINE COME LINK (PER MEDIAN IN-APP BROWSER) ---
+                        // --- NUOVO: GENERAZIONE IMMAGINE E DOWNLOAD FORZATO VIA BLOB (PER MEDIAN) ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
@@ -18672,36 +18672,47 @@ ${filtersHTML}
                             const isITA = currentLanguage === 'it';
                             
                             // UI Feedback: Mostra che sta caricando
-                            shareBtn.innerHTML = `<div class="chat-bubble loading" style="background:transparent; padding:0;"><span></span><span></span><span></span></div> <span style="margin-left:8px">${isITA ? 'Apertura...' : 'Opening...'}</span>`;
+                            shareBtn.innerHTML = `<div class="chat-bubble loading" style="background:transparent; padding:0;"><span></span><span></span><span></span></div> <span style="margin-left:8px">${isITA ? 'Generazione...' : 'Generating...'}</span>`;
                             shareBtn.disabled = true;
                             if(window.triggerHaptic) window.triggerHaptic('medium');
 
                             setTimeout(async () => {
                                 try {
                                     // 1. Scatta la "Foto" all'HTML
-                                    // Usiamo scale: 1.5 per evitare crash di memoria che bloccano la CPU
                                     const canvas = await html2canvas(cardElement, {
-                                        backgroundColor: '#121212',
-                                        scale: 1.5, 
-                                        useCORS: true,
+                                        backgroundColor: '#121212', 
+                                        scale: 1.5, // 1.5 per evitare problemi di memoria sui device più vecchi
+                                        useCORS: true, 
                                         allowTaint: true
                                     });
 
-                                    // 2. Converti in URL immagine Base64
-                                    const dataUrl = canvas.toDataURL('image/png');
+                                    // 2. Convertiamo direttamente il canvas in un file fisico (Blob)
+                                    canvas.toBlob((blob) => {
+                                        // 3. Creiamo un URL locale per il blob (formato blob:https://...)
+                                        const blobUrl = URL.createObjectURL(blob);
+                                        
+                                        // 4. Creiamo un "finto click" per forzare il download del file
+                                        const downloadLink = document.createElement('a');
+                                        downloadLink.href = blobUrl;
+                                        downloadLink.download = 'koda_ai_stack.png';
+                                        
+                                        // Aggiungiamo al dom, clicchiamo, e rimuoviamo (necessario per molti browser/wrapper)
+                                        document.body.appendChild(downloadLink);
+                                        downloadLink.click();
+                                        document.body.removeChild(downloadLink);
+                                        
+                                        // Pulizia della memoria
+                                        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
 
-                                    // 3. Creiamo un finto link e lo "clicchiamo" dicendogli di aprirsi in un nuovo tab.
-                                    // Median intercetterà target="_blank" e aprirà il suo In-App Browser (come da tuo screenshot)
-                                    const a = document.createElement('a');
-                                    a.href = dataUrl;
-                                    a.target = '_blank';
-                                    document.body.appendChild(a); // Necessario per farlo funzionare
-                                    a.click();
-                                    document.body.removeChild(a); // Pulizia
+                                        // Ripristino Bottone
+                                        shareBtn.innerHTML = originalBtnHTML;
+                                        shareBtn.disabled = false;
 
-                                    // 4. Ripristina il bottone
-                                    shareBtn.innerHTML = originalBtnHTML;
-                                    shareBtn.disabled = false;
+                                        // Testo di feedback. Median dovrebbe intercettare il click e aprire "Salva o Condividi" nativo
+                                        showToast(isITA ? 'Elaborazione file in corso...' : 'Processing file...');
+                                        if(window.triggerHaptic) window.triggerHaptic('success');
+                                        
+                                    }, 'image/png');
 
                                 } catch (err) {
                                     console.error('Errore generazione screenshot:', err);
