@@ -18664,7 +18664,7 @@ ${filtersHTML}
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                             
-                        // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE NATIVA (Compatibile con Median) ---
+                        // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE NATIVA (Fix Median) ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
@@ -18676,70 +18676,74 @@ ${filtersHTML}
                             shareBtn.disabled = true;
                             if(window.triggerHaptic) window.triggerHaptic('medium');
 
-                            try {
-                                // 1. Scatta la "Foto" all'HTML usando html2canvas
-                                const canvas = await html2canvas(cardElement, {
-                                    backgroundColor: '#121212', // Forza sfondo scuro per sicurezza
-                                    scale: 2, // Genera in alta risoluzione (Retina)
-                                    useCORS: true // Fondamentale per non far sparire i loghi caricati da Firebase/URL esterni
-                                });
+                            // Usiamo setTimeout per permettere all'interfaccia di aggiornare il bottone prima che la CPU si blocchi
+                            setTimeout(async () => {
+                                try {
+                                    // 1. Scatta la "Foto" all'HTML usando html2canvas
+                                    const canvas = await html2canvas(cardElement, {
+                                        backgroundColor: '#121212', // Forza sfondo scuro per sicurezza
+                                        scale: 2, // Genera in alta risoluzione (Retina)
+                                        useCORS: true // Fondamentale per loghi Firebase/URL esterni
+                                    });
 
-                                // 2. Estraiamo la versione Base64 (DataURL) dell'immagine per Median
-                                const dataUrl = canvas.toDataURL('image/png');
+                                    // 2. Converti in Blob (File temporaneo). Molto più sicuro per le app Android rispetto a stringhe Base64 enormi
+                                    canvas.toBlob(async (blob) => {
+                                        const file = new File([blob], 'il-mio-koda-stack.png', { type: 'image/png' });
+                                        
+                                        // Funzione di ripristino per sbloccare il bottone in ogni caso
+                                        const resetButton = () => {
+                                            shareBtn.innerHTML = originalBtnHTML;
+                                            shareBtn.disabled = false;
+                                        };
 
-                                // 3. CONTROLLO MEDIAN (APP NATIVA APK/IOS)
-                                if (navigator.userAgent.toLowerCase().includes('median') || navigator.userAgent.toLowerCase().includes('gonative') || window.median) {
+                                        try {
+                                            // TENTATIVO 1: Usa Web Share API (Supportata su Safari, PC e WebView recenti)
+                                            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                                                await navigator.share({
+                                                    title: 'Il mio AI Stack',
+                                                    text: isITA ? 'Ecco i tool di Intelligenza Artificiale che uso ogni giorno! Generato con Koda AI ✨' : 'Here are the AI tools I use every day! Generated with Koda AI ✨',
+                                                    files: [file]
+                                                });
+                                                resetButton();
+                                                if(window.triggerHaptic) window.triggerHaptic('success');
+                                            } 
+                                            // TENTATIVO 2: Scaricamento. Su Median questo viene intercettato aprendo il menu nativo
+                                            else {
+                                                const url = URL.createObjectURL(blob);
+                                                const a = document.createElement('a');
+                                                a.href = url;
+                                                a.download = 'il-mio-koda-stack.png';
+                                                document.body.appendChild(a); // Necessario per farlo funzionare nelle WebView Android
+                                                a.click();
+                                                document.body.removeChild(a);
+                                                URL.revokeObjectURL(url);
+                                                
+                                                resetButton();
+                                                
+                                                // Se è Median/App mostriamo un Toast adeguato, altrimenti quello per Browser
+                                                const isMedianApp = navigator.userAgent.toLowerCase().includes('median') || navigator.userAgent.toLowerCase().includes('gonative') || window.median;
+                                                if (isMedianApp) {
+                                                    showToast(isITA ? 'Apertura file in corso...' : 'Opening file...');
+                                                } else {
+                                                    showToast(isITA ? 'Immagine scaricata! Ora puoi condividerla.' : 'Image downloaded! You can share it now.');
+                                                }
+                                                if(window.triggerHaptic) window.triggerHaptic('success');
+                                            }
+                                        } catch (shareError) {
+                                            // L'utente ha annullato la condivisione (es. ha premuto indietro). Sblocchiamo il bottone.
+                                            console.log("Condivisione annullata o non permessa:", shareError);
+                                            resetButton();
+                                        }
+
+                                    }, 'image/png');
+                                    
+                                } catch (err) {
+                                    console.error('Errore generazione screenshot:', err);
                                     shareBtn.innerHTML = originalBtnHTML;
                                     shareBtn.disabled = false;
-                                    
-                                    // Bridge JS nativo di Median per condividere l'immagine Base64
-                                    if (window.median && window.median.share) {
-                                        window.median.share.sharePage({ url: dataUrl });
-                                    } else {
-                                        window.location.href = 'gonative://share/sharePage?url=' + encodeURIComponent(dataUrl);
-                                    }
-                                    
-                                    if(window.triggerHaptic) window.triggerHaptic('success');
-                                    break; // Esce dallo switch, il lavoro dell'app è finito
+                                    showToast(isITA ? 'Errore durante la generazione dell\'immagine.' : 'Error generating image.');
                                 }
-
-                                // 4. LOGICA PER BROWSER WEB STANDARD (Chrome, Safari, PC)
-                                canvas.toBlob(async (blob) => {
-                                    const file = new File([blob], 'il-mio-koda-stack.png', { type: 'image/png' });
-
-                                    // Prova ad usare la Web Share API nativa del browser
-                                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                                        shareBtn.innerHTML = originalBtnHTML;
-                                        shareBtn.disabled = false;
-                                        
-                                        await navigator.share({
-                                            title: 'Il mio AI Stack',
-                                            text: isITA ? 'Ecco i tool di Intelligenza Artificiale che uso ogni giorno! Generato con Koda AI ✨' : 'Here are the AI tools I use every day! Generated with Koda AI ✨',
-                                            files: [file]
-                                        });
-                                        if(window.triggerHaptic) window.triggerHaptic('success');
-                                    } else {
-                                        // Fallback: Scarica l'immagine
-                                        const url = URL.createObjectURL(blob);
-                                        const a = document.createElement('a');
-                                        a.href = url;
-                                        a.download = 'il-mio-koda-stack.png';
-                                        a.click();
-                                        URL.revokeObjectURL(url);
-                                        
-                                        shareBtn.innerHTML = originalBtnHTML;
-                                        shareBtn.disabled = false;
-                                        showToast(isITA ? 'Immagine scaricata! Ora puoi condividerla.' : 'Image downloaded! You can share it now.');
-                                        if(window.triggerHaptic) window.triggerHaptic('success');
-                                    }
-                                }, 'image/png');
-                                
-                            } catch (err) {
-                                console.error('Errore generazione screenshot:', err);
-                                shareBtn.innerHTML = originalBtnHTML;
-                                shareBtn.disabled = false;
-                                showToast(isITA ? 'Errore durante la generazione dell\'immagine.' : 'Error generating image.');
-                            }
+                            }, 50); // Piccolo ritardo di 50ms
                             break;
                         // --------------------------------------------------------
 
