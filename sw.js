@@ -7,7 +7,7 @@ const urlsToCache = [
     // Per ora, lasciamo i file principali.
 ];
 
-// Evento di installazione: apre la nostra cache e aggiunge file principali.
+// Evento di installazione: apre la nostra cache e aggiunge file.
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
