@@ -18685,44 +18685,35 @@ ${filtersHTML}
                                 });
 
                                 // 2. Converti in file PNG
-canvas.toBlob(async (blob) => {
-    const file = new File([blob], 'il-mio-koda-stack.png', { type: 'image/png' });
+                                canvas.toBlob(async (blob) => {
+                                    const file = new File([blob], 'il-mio-koda-stack.png', { type: 'image/png' });
 
-    // Funzione helper per il download
-    const triggerDownload = () => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'il-mio-koda-stack.png';
-        a.click();
-        URL.revokeObjectURL(url);
-        
-        shareBtn.innerHTML = originalBtnHTML;
-        shareBtn.disabled = false;
-        showToast(isITA ? 'Immagine salvata!' : 'Image saved!');
-        if(window.triggerHaptic) window.triggerHaptic('success');
-    };
-
-    // 3. Prova ad usare la Web Share API nativa
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: 'Il mio AI Stack',
-                text: isITA ? 'Ecco i tool di Intelligenza Artificiale che uso ogni giorno! Generato con Koda AI ✨' : 'Here are the AI tools I use every day! Generated with Koda AI ✨',
-                files: [file]
-            });
-            if(window.triggerHaptic) window.triggerHaptic('success');
-            shareBtn.innerHTML = originalBtnHTML;
-            shareBtn.disabled = false;
-        } catch (err) {
-            console.error('Share failed, falling back to download:', err);
-            triggerDownload();
-        }
-    } else {
-        // Se non supportato, scarica direttamente
-        triggerDownload();
-    }
-}, 'image/png');
+                                    // 3. Prova ad usare la Web Share API nativa (iOS/Android/MacOS)
+                                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                                        shareBtn.innerHTML = originalBtnHTML;
+                                        shareBtn.disabled = false;
+                                        
+                                        await navigator.share({
+                                            title: 'Il mio AI Stack',
+                                            text: isITA ? 'Ecco i tool di Intelligenza Artificiale che uso ogni giorno! Generato con Koda AI ✨' : 'Here are the AI tools I use every day! Generated with Koda AI ✨',
+                                            files: [file]
+                                        });
+                                        if(window.triggerHaptic) window.triggerHaptic('success');
+                                    } else {
+                                        // 4. Fallback per PC/Browser non supportati: Scarica l'immagine
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = 'il-mio-koda-stack.png';
+                                        a.click();
+                                        URL.revokeObjectURL(url);
+                                        
+                                        shareBtn.innerHTML = originalBtnHTML;
+                                        shareBtn.disabled = false;
+                                        showToast(isITA ? 'Immagine scaricata! Ora puoi condividerla.' : 'Image downloaded! You can share it now.');
+                                        if(window.triggerHaptic) window.triggerHaptic('success');
+                                    }
+                                }, 'image/png');
                                 
                             } catch (err) {
                                 console.error('Errore generazione screenshot:', err);
