@@ -18664,7 +18664,7 @@ ${filtersHTML}
                             history.pushState({ modal: 'ai-stack' }, '', '');
                             break;
                             
-                        // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE NATIVA ---
+                        // --- NUOVO: GENERAZIONE IMMAGINE E CONDIVISIONE NATIVA (Compatibile con Median) ---
                         case 'share-ai-stack':
                             const shareBtn = actionTarget;
                             const cardElement = document.getElementById('ai-stack-card');
@@ -18684,11 +18684,30 @@ ${filtersHTML}
                                     useCORS: true // Fondamentale per non far sparire i loghi caricati da Firebase/URL esterni
                                 });
 
-                                // 2. Converti in file PNG
+                                // 2. Estraiamo la versione Base64 (DataURL) dell'immagine per Median
+                                const dataUrl = canvas.toDataURL('image/png');
+
+                                // 3. CONTROLLO MEDIAN (APP NATIVA APK/IOS)
+                                if (navigator.userAgent.toLowerCase().includes('median') || navigator.userAgent.toLowerCase().includes('gonative') || window.median) {
+                                    shareBtn.innerHTML = originalBtnHTML;
+                                    shareBtn.disabled = false;
+                                    
+                                    // Bridge JS nativo di Median per condividere l'immagine Base64
+                                    if (window.median && window.median.share) {
+                                        window.median.share.sharePage({ url: dataUrl });
+                                    } else {
+                                        window.location.href = 'gonative://share/sharePage?url=' + encodeURIComponent(dataUrl);
+                                    }
+                                    
+                                    if(window.triggerHaptic) window.triggerHaptic('success');
+                                    break; // Esce dallo switch, il lavoro dell'app è finito
+                                }
+
+                                // 4. LOGICA PER BROWSER WEB STANDARD (Chrome, Safari, PC)
                                 canvas.toBlob(async (blob) => {
                                     const file = new File([blob], 'il-mio-koda-stack.png', { type: 'image/png' });
 
-                                    // 3. Prova ad usare la Web Share API nativa (iOS/Android/MacOS)
+                                    // Prova ad usare la Web Share API nativa del browser
                                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                                         shareBtn.innerHTML = originalBtnHTML;
                                         shareBtn.disabled = false;
@@ -18700,7 +18719,7 @@ ${filtersHTML}
                                         });
                                         if(window.triggerHaptic) window.triggerHaptic('success');
                                     } else {
-                                        // 4. Fallback per PC/Browser non supportati: Scarica l'immagine
+                                        // Fallback: Scarica l'immagine
                                         const url = URL.createObjectURL(blob);
                                         const a = document.createElement('a');
                                         a.href = url;
