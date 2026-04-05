@@ -340,7 +340,7 @@
             width: 100vw;
             height: 100vh;
             background: rgba(0, 0, 0, 0.6);
-            z-index: 10004;
+            z-index: 99998;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -361,8 +361,8 @@
             height: 100vh;
             background-color: var(--Koda-bg);
             box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
-            z-index: 10005;
-            /* Z-index altissimo per coprire la chat e la navbar */
+            z-index: 99999;
+            /* Z-index altissimo per coprire tutto */
             opacity: 0;
             visibility: hidden;
             transform: translateX(100%);
@@ -498,10 +498,6 @@
                 font-size: 14px;
             }
 
-            .user-profile-dropdown {
-                max-height: 70vh;
-            }
-
             .user-profile-header {
                 padding: 16px;
             }
@@ -575,6 +571,16 @@
         .pill-btn:hover:not(.active) {
             background-color: #3e3e3e;
             transform: scale(1.04);
+        }
+
+        /* NUOVO: Sfondo chiaro per i pulsanti inattivi in Light Mode */
+        body.light-mode .pill-btn {
+            background-color: var(--Koda-card);
+            color: var(--Koda-text);
+        }
+
+        body.light-mode .pill-btn:hover:not(.active) {
+            background-color: #d5d5d5;
         }
 
         body.light-mode .pill-btn.active {
@@ -2405,7 +2411,14 @@
             /* Z-index alto per stare sopra tutto ma sotto la nav */
             flex-shrink: 0;
             /* Impedisce che si ridimensioni */
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* NUOVO: Nascondi il chat input quando il menu profilo è aperto */
+        body:has(.profile-menu-overlay.visible) #chat-input-container {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         #chat-input-container:focus-within {
@@ -6383,67 +6396,100 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            background-size: cover;
-            background-position: center;
+            background: var(--Koda-bg);
+            transition: transform 0.3s ease;
+            padding: 20px;
+        }
+
+        /* NUOVO: Container per l'immagine nel reel */
+        .news-image-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            aspect-ratio: 1/1;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .news-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .news-overlay {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
-            padding: 30px 20px;
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.95) 0%, 
+                rgba(0, 0, 0, 0.7) 40%,
+                transparent 100%);
+            padding: 40px 24px 30px 24px;
             width: 100%;
             position: absolute;
             bottom: 0;
             left: 0;
             color: #fff;
+            z-index: 2;
         }
 
         .news-date {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--Koda-accent);
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-weight: 800;
+            margin-bottom: 12px;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
         .news-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 12px;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 16px;
             line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9);
+            letter-spacing: -0.5px;
         }
 
         .news-content {
             font-size: 15px;
-            line-height: 1.5;
-            color: #e0e0e0;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #f0f0f0;
+            margin-bottom: 4px;
             display: -webkit-box;
-            -webkit-line-clamp: 4;
-            /* Mostra massimo 4 righe */
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            transition: max-height 0.3s ease;
         }
 
-        .news-read-more-btn {
-            background-color: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+        .news-content.expanded {
+            -webkit-line-clamp: unset;
+            max-height: 50vh;
+            overflow-y: auto;
+            pointer-events: auto; /* Permette lo scroll del testo */
+            margin-bottom: 12px;
+        }
+
+        .news-inline-read-more {
+            font-size: 15px;
+            font-weight: 800;
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            margin-bottom: 24px;
             display: inline-block;
-            text-decoration: none;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            opacity: 0.9;
         }
 
-        .news-read-more-btn:hover {
-            background-color: var(--Koda-accent);
-            color: #000;
-            border-color: var(--Koda-accent);
+        .news-inline-read-more:hover {
+            opacity: 1;
+            text-decoration: underline;
         }
 
         /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
@@ -8211,6 +8257,17 @@
         }
 
         /* --- UI/UX WOW EFFECTS --- */
+        
+        /* Effetto per il Drag and Drop del Menu */
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: var(--Koda-bg-light) !important;
+            border: 2px dashed var(--Koda-accent) !important;
+            transform: scale(0.98);
+        }
+        .drag-handle {
+            touch-action: none; /* Fondamentale per non far scrollare la pagina su mobile mentre si trascina */
+        }
 
         /* 1. Active Touch States (Effetto pressione iOS/Spotify) */
         .tool-card-grid,
@@ -8400,7 +8457,7 @@
         #spotlight-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(18, 18, 18, 0.85);
+            background: var(--Koda-bg);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             z-index: 100000;
@@ -8437,7 +8494,7 @@
         }
 
         .spotlight-input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
+            color: var(--Koda-text-secondary);
         }
 
         .spotlight-results {
@@ -8470,7 +8527,7 @@
             align-items: center;
             gap: 16px;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--Koda-bg-light);
             border-radius: 12px;
             cursor: pointer;
             transition: background 0.2s, transform 0.2s;
@@ -8478,7 +8535,7 @@
 
         .spotlight-item:hover,
         .spotlight-item.keyboard-selected {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--Koda-card);
             transform: scale(1.02);
         }
 
@@ -8712,54 +8769,91 @@
 
         .news-action-bar {
             position: absolute;
-            right: 16px;
-            bottom: 120px;
+            right: 20px;
+            bottom: 140px;
             /* Sopra la descrizione */
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
             z-index: 10;
         }
 
         .news-action-btn {
-            background: none;
-            border: none;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 4px;
             cursor: pointer;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-            transition: transform 0.2s;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .news-action-btn:hover {
+            transform: scale(1.1);
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .news-action-btn:active {
-            transform: scale(0.8);
+            transform: scale(0.9);
         }
 
         .news-action-btn svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             fill: currentColor;
-            transition: fill 0.2s, stroke 0.2s;
+            transition: all 0.3s;
+        }
+
+        .news-action-btn.liked {
+            background: rgba(255, 68, 68, 0.2);
+            border-color: #ff4444;
         }
 
         .news-action-btn.liked svg {
             fill: #ff4444;
-            /* Rosso TikTok */
             stroke: #ff4444;
+            filter: drop-shadow(0 0 8px rgba(255, 68, 68, 0.6));
+        }
+
+        .news-action-btn.saved {
+            background: rgba(29, 185, 84, 0.2);
+            border-color: var(--Koda-accent);
         }
 
         .news-action-btn.saved svg {
             fill: var(--Koda-accent);
-            /* Verde Koda */
             stroke: var(--Koda-accent);
+            filter: drop-shadow(0 0 8px rgba(29, 185, 84, 0.6));
         }
 
         .news-action-label {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* NUOVO: Stile per il pulsante dello strumento nel reel */
+        .news-tool-btn {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .news-tool-btn img {
+            transition: transform 0.3s;
+        }
+
+        .news-tool-btn:hover img {
+            transform: scale(1.1);
         }
 
         /* Animazione Cuore Doppio Tocco */
@@ -8807,6 +8901,189 @@
             animation: popHeart 1s ease-out forwards;
         }
 
+        /* NUOVO: Modale dettaglio news */
+        .news-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--Koda-bg);
+            z-index: 100000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .news-detail-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .news-detail-header {
+            position: sticky;
+            top: 0;
+            background: var(--Koda-bg);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid var(--Koda-card);
+            z-index: 10;
+        }
+
+        .news-detail-back-btn {
+            background: none;
+            border: none;
+            color: var(--Koda-text);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .news-detail-back-btn:hover {
+            color: var(--Koda-accent);
+        }
+
+        .news-detail-title-header {
+            font-size: 16px;
+            font-weight: 700;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .news-detail-content {
+            padding: 24px 20px;
+        }
+
+        .news-detail-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .news-detail-date {
+            font-size: 12px;
+            color: var(--Koda-accent);
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .news-detail-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+
+        .news-detail-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--Koda-text);
+            margin-bottom: 24px;
+            white-space: pre-wrap;
+        }
+
+        .news-detail-source-btn {
+            background: linear-gradient(135deg, var(--Koda-accent) 0%, #1ed760 100%);
+            color: #000;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(29, 185, 84, 0.4);
+        }
+
+        .news-detail-source-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(29, 185, 84, 0.6);
+        }
+
+        /* NUOVO: Pulsante strumento menzionato */
+        .news-mentioned-tool-btn {
+            background: var(--Koda-card);
+            border: 2px solid rgba(128, 128, 128, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--Koda-text);
+        }
+
+        .news-mentioned-tool-btn:hover {
+            background: var(--Koda-bg-light);
+            border-color: var(--Koda-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .news-mentioned-tool-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: var(--Koda-bg);
+        }
+
+        .news-mentioned-tool-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .news-mentioned-tool-label {
+            font-size: 11px;
+            color: var(--Koda-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .news-mentioned-tool-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--Koda-text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .news-mentioned-tool-arrow {
+            color: var(--Koda-text-secondary);
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .news-mentioned-tool-btn:hover .news-mentioned-tool-arrow {
+            transform: translateX(4px);
+            color: var(--Koda-accent);
+        }
+
         /* Contenitore per le altre tab (Ricerca, Salvati, Piaciuti) */
         .news-alt-container {
             padding: 80px 16px 20px 16px;
@@ -8833,8 +9110,8 @@
             border-radius: 12px;
             overflow: hidden;
             position: relative;
-            aspect-ratio: 9/16;
-            /* Formato verticale */
+            aspect-ratio: 1/1;
+            /* Formato quadrato */
             cursor: pointer;
         }
 
@@ -8864,6 +9141,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
     <!-- SCRIPT PER GENERAZIONE IMMAGINI (AI Stack) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- SCRIPT PER DRAG & DROP (Menu personalizzabile) -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <!-- PWA & Apple Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
@@ -10418,6 +10697,17 @@ ${knowledgeBaseFormatter(tools)}
             let currentAccentColor = localStorage.getItem('koda-accent-color') || '#1db954';
             let isCompactMode = localStorage.getItem('koda-compact-mode') === 'true';
 
+            // NUOVO: Configurazione personalizzata della Barra di Navigazione (salvata nel browser)
+            const defaultNavConfig = [
+                { id: 'home', icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none" /><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>', translateKey: 'navHome', visible: true },
+                { id: 'top-ai', icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none" /><path d="M5 9.2h3V19H5zM10.6 5h3v14h-3zm5.6 8H19v6h-2.8z" /></svg>', translateKey: 'navTopAI', visible: true },
+                { id: 'explore', icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none" /><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" /></svg>', translateKey: 'navSearch', visible: true },
+                { id: 'favorites', icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none" /><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" /></svg>', translateKey: 'navLibrary', visible: true },
+                { id: 'news', icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none" /><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" /></svg>', translateKey: 'navNews', visible: true }
+            ];
+            let userNavConfig = JSON.parse(localStorage.getItem('koda-nav-config')) || defaultNavConfig;
+            if (!Array.isArray(userNavConfig) || userNavConfig.length === 0) userNavConfig = defaultNavConfig; // Sicurezza extra
+
             // Applica subito Colore e Layout al caricamento della pagina
             document.documentElement.style.setProperty('--Koda-accent', currentAccentColor);
             if (isCompactMode) document.body.classList.add('compact-mode');
@@ -11942,6 +12232,13 @@ ${knowledgeBaseFormatter(tools)}
                             </svg>
                             <span data-translate="changeNicknameTitle">Cambia nickname</span>
                         </div>
+                        <div class="user-profile-divider"></div>
+                        <div class="user-profile-item user-profile-logout" data-action="logout">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                            </svg>
+                            <span data-translate="logout">Logout</span>
+                        </div>
                         
                     </div>
                 </div>
@@ -13080,8 +13377,8 @@ ${filtersHTML}
                     const newsLiked = JSON.parse(localStorage.getItem('news-liked') || '[]');
                     const newsSaved = JSON.parse(localStorage.getItem('news-saved') || '[]');
 
-                    // Sfondo scuro globale per la sezione news
-                    el.mainContent.style.backgroundColor = '#000';
+                    // Sfondo globale per la sezione news
+                    el.mainContent.style.backgroundColor = 'var(--Koda-bg)';
                     contentArea.style.padding = '0';
                     contentArea.style.height = 'calc(100vh - var(--bottom-nav-height) - 72px)';
 
@@ -13126,8 +13423,57 @@ ${filtersHTML}
                                 const isLiked = newsLiked.includes(news.id);
                                 const isSaved = newsSaved.includes(news.id);
 
+                                // NUOVO: Cerca lo strumento menzionato nel testo (con Normalizzazione)
+                                let mentionedToolHTML = '';
+                                const allTools = getAllToolsForCurrentUser();
+                                const fullNewsText = (news.title + ' ' + news.content);
+                                
+                                let mentionedTool = null;
+                                if (news.mentionedToolId) {
+                                    mentionedTool = allTools.find(t => t.id === news.mentionedToolId);
+                                } else {
+                                    // Dizionario di alias per nomi scritti male o abbreviati
+                                    const aliases = {
+                                        'chat gpt': 'ChatGPT', 'gpt': 'ChatGPT',
+                                        'mid journey': 'Midjourney', 'mid-journey': 'Midjourney',
+                                        'claude 3': 'Claude', 'claude 3.5': 'Claude',
+                                        'dall e': 'DALL-E', 'dalle': 'DALL-E', 'dall-e': 'DALL-E'
+                                    };
+                                    
+                                    // 1. Cerca prima tramite gli alias (parole intere)
+                                    for (const [alias, realName] of Object.entries(aliases)) {
+                                        if (new RegExp('\\b' + alias + '\\b', 'i').test(fullNewsText)) {
+                                            mentionedTool = allTools.find(t => t.name.toLowerCase() === realName.toLowerCase());
+                                            if (mentionedTool) break;
+                                        }
+                                    }
+                                    
+                                    // 2. Se non trovato tramite alias, cerca il nome esatto
+                                    if (!mentionedTool) {
+                                        mentionedTool = allTools.find(t => {
+                                            if (!t.name) return false;
+                                            const safeName = t.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                            return new RegExp('\\b' + safeName + '\\b', 'i').test(fullNewsText);
+                                        });
+                                    }
+                                }
+                                
+                                if (mentionedTool) {
+                                    // Usa un <a> tag per il redirect e logoUrl al posto di logo
+                                    mentionedToolHTML = `
+                                        <a href="${mentionedTool.website}" target="_blank" class="news-action-btn news-tool-btn" title="Visita ${mentionedTool.name}" style="text-decoration: none;">
+                                            <img src="${mentionedTool.logoUrl}" alt="${mentionedTool.name}" style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover; background: var(--Koda-card);">
+                                        </a>
+                                    `;
+                                }
+
                                 newsHTML += `
-                                    <div class="news-item" style="background-image: url('${news.imageUrl || fallbackImage}');" data-news-id="${news.id}">
+                                    <div class="news-item" data-news-id="${news.id}">
+                                        <!-- Container immagine -->
+                                        <div class="news-image-container">
+                                            <img src="${news.imageUrl || fallbackImage}" alt="${news.title}">
+                                        </div>
+                                        
                                         <!-- Cuore animato per doppio tocco -->
                                         <div class="double-tap-heart">❤️</div>
                                         
@@ -13135,11 +13481,11 @@ ${filtersHTML}
                                         <div class="news-overlay">
                                             <div class="news-date">${dateStr}</div>
                                             <h2 class="news-title">${news.title}</h2>
-                                            <div class="news-content" style="padding-right: 50px;">${news.content}</div>
-                                            ${news.sourceUrl ? `<a href="${news.sourceUrl}" target="_blank" class="news-read-more-btn">Approfondisci</a>` : ''}
+                                            <div class="news-content" id="news-content-${news.id}" style="padding-right: 50px;">${news.content}</div>
+                                            <div class="news-inline-read-more" data-action="open-news-detail" data-id="${news.id}">${currentLanguage === 'it' ? '...leggi altro' : '...read more'}</div>
                                         </div>
 
-                                        <!-- Barra laterale destra (Like, Salva) -->
+                                        <!-- Barra laterale destra (Like, Salva, Strumento) -->
                                         <div class="news-action-bar">
                                             <button class="news-action-btn ${isLiked ? 'liked' : ''}" data-action="toggle-news-like" data-id="${news.id}">
                                                 <svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="${isLiked ? '#ff4444' : 'rgba(0,0,0,0.5)'}">
@@ -13151,6 +13497,7 @@ ${filtersHTML}
                                                     <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
                                                 </svg>
                                             </button>
+                                            ${mentionedToolHTML}
                                         </div>
                                     </div>
                                 `;
@@ -13179,9 +13526,9 @@ ${filtersHTML}
 
                         newsHTML += `
                             <div class="news-alt-container">
-                                <input type="text" id="news-search-input" placeholder="${searchPlaceholder}" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: none; background: #282828; color: white; margin-bottom: 20px; font-size: 14px;">
+                                <input type="text" id="news-search-input" placeholder="${searchPlaceholder}" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: none; background: var(--Koda-card); color: var(--Koda-text); margin-bottom: 20px; font-size: 14px;">
                                 <div class="news-grid" id="news-grid-container">
-                                    ${filteredNews.length > 0 ? renderGrid(filteredNews) : `<div id="empty-state" style="grid-column: 1/-1; color: #a7a7a7;">${noNewsFoundText}</div>`}
+                                    ${filteredNews.length > 0 ? renderGrid(filteredNews) : `<div id="empty-state" style="grid-column: 1/-1; color: var(--Koda-text-secondary);">${noNewsFoundText}</div>`}
                                 </div>
                             </div>
                         `;
@@ -13199,8 +13546,8 @@ ${filtersHTML}
 
                             if (container) {
                                 container.addEventListener('click', (e) => {
-                                    // Ignora i click diretti sui pulsanti
-                                    if (e.target.closest('.news-action-btn') || e.target.closest('.news-read-more-btn')) return;
+                                    // Ignora i click diretti sui pulsanti o se stiamo scrollando/aprendo il testo
+                                    if (e.target.closest('.news-action-btn') || e.target.closest('.news-inline-read-more') || e.target.closest('.news-content')) return;
 
                                     const currentTime = new Date().getTime();
                                     const tapLength = currentTime - lastTapTime;
@@ -13640,7 +13987,41 @@ ${filtersHTML}
                 setTimeout(() => updateCinemaNotificationBadge(), 100);
             };
 
-            const updateNavActiveState = () => el.bottomNav.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.page === currentView));
+            const renderBottomNav = () => {
+                const t = translations[currentLanguage];
+                let html = '';
+                const visibleItems = userNavConfig.filter(i => i.visible);
+                // Calcoliamo la metà esatta per posizionare in modo corretto il bottone tondo (FAB)
+                const middleIndex = Math.ceil(visibleItems.length / 2);
+
+                const fabHtml = `<button class="nav-btn-fab" id="bottom-nav-fab" data-action="" style="display: none;"><span class="fab-icon"></span></button>`;
+
+                let itemRenderedCount = 0;
+                userNavConfig.forEach((item) => {
+                    if (!item.visible) return;
+                    
+                    // Inserisce il FAB al centro
+                    if (itemRenderedCount === middleIndex) html += fabHtml;
+                    
+                    html += `
+                        <button class="nav-btn ${item.id === currentView ? 'active' : ''}" data-page="${item.id}">
+                            <span class="icon">${item.icon}</span>
+                            <span data-translate="${item.translateKey}">${t[item.translateKey]}</span>
+                        </button>
+                    `;
+                    itemRenderedCount++;
+                });
+                
+                // Fallback nel caso ci siano pochissimi bottoni
+                if (itemRenderedCount <= middleIndex) html += fabHtml;
+
+                el.bottomNav.innerHTML = html;
+                updateBottomNavFAB(libraryTab); // Riaggancia il FAB al nuovo DOM
+            };
+
+            const updateNavActiveState = () => {
+                renderBottomNav(); // Ricrea la nav dinamicamente basandosi sull'ordine e visibilità dell'utente
+            };
 
             // --- AUTHENTICATION FUNCTIONS (Copied from index.html and adapted) ---
 
@@ -13816,12 +14197,6 @@ ${filtersHTML}
                         </div>
                 `;
 
-                const logoutSectionHTML = isGuest ? '' : `
-                         <div style="margin-top: 60px; width: 100%; display: flex; justify-content: center;">
-                             <button id="logout-btn-modal" data-action="logout" style="width: 100%; max-width: 350px; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#fff'">${t.logout}</button>
-                         </div>
-                `;
-
                 // Layout full screen immersivo e centrato
                 const modalHTML = `
                 <div id="settings-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10006; align-items: center; justify-content: center; overflow-y: auto; padding: 0;">
@@ -13839,7 +14214,7 @@ ${filtersHTML}
                         <!-- Box Profilo Centrato -->
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; margin-bottom: 48px;">
                             <div style="position: relative; width: 120px; height: 120px; cursor: pointer;" onclick="document.getElementById('settings-avatar-upload').click()">
-                                <img id="settings-avatar-preview" src="${localStorage.getItem('guest-avatar') || (currentTheme === 'light' ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png')}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #727272; transition: transform 0.2s;">
+                                <img id="settings-avatar-preview" src="${localStorage.getItem('guest-avatar') || (currentTheme === 'light' ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png' : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png')}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--Koda-text-secondary); transition: transform 0.2s;">
                                 <input type="file" id="settings-avatar-upload" accept="image/*" style="display: none;">
                                 <div style="position: absolute; right: 4px; bottom: 4px; background: var(--Koda-accent); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: 2px solid var(--Koda-bg);">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="black"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -13847,8 +14222,8 @@ ${filtersHTML}
                             </div>
                             
                             <div style="width: 100%; max-width: 350px;">
-                                <label for="profile-nickname" style="display: block; font-size: 11px; font-weight: 800; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; text-align: left;">Nickname</label>
-                                <input type="text" id="profile-nickname" placeholder="${t.registerNicknamePlaceholder}" value="${currentUser.nickname || ''}" style="width: 100%; padding: 16px; font-size: 16px; background-color: #282828; border: 1px solid transparent; border-radius: 8px; color: var(--Koda-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#fff'">
+                                <label for="profile-nickname" style="display: block; font-size: 11px; font-weight: 800; color: var(--Koda-text-secondary); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; text-align: left;">Nickname</label>
+                                <input type="text" id="profile-nickname" placeholder="${t.registerNicknamePlaceholder}" value="${currentUser.nickname || ''}" style="width: 100%; padding: 16px; font-size: 16px; background-color: var(--Koda-bg-light); border: 1px solid transparent; border-radius: 8px; color: var(--Koda-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--Koda-text)'" onblur="this.style.borderColor='transparent'">
                             </div>
 
                             <button id="update-profile-btn" style="width: 100%; max-width: 350px; padding: 16px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 800; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
@@ -13862,7 +14237,7 @@ ${filtersHTML}
                          <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto; text-align: left;">
                              <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 20px;">${currentLanguage === 'it' ? 'Aspetto' : 'Appearance'}</h3>
                              
-                             <label style="display: block; font-size: 12px; font-weight: 800; color: #a7a7a7; text-transform: uppercase; margin-bottom: 12px;">${currentLanguage === 'it' ? 'Colore App' : 'App Color'}</label>
+                             <label style="display: block; font-size: 12px; font-weight: 800; color: var(--Koda-text-secondary); text-transform: uppercase; margin-bottom: 12px;">${currentLanguage === 'it' ? 'Colore App' : 'App Color'}</label>
                              <div style="display: flex; gap: 12px; justify-content: space-between; margin-bottom: 24px; padding: 0 8px;">
                                  <!-- Spotify Green, Twitch Purple, Twitter Blue, Orange, Pink -->
                                  ${[
@@ -13878,7 +14253,7 @@ ${filtersHTML}
                              <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(128,128,128,0.1); border-radius: 12px; cursor: pointer; transition: background 0.2s;" data-action="toggle-compact-mode" onmouseover="this.style.background='rgba(128,128,128,0.15)'" onmouseout="this.style.background='rgba(128,128,128,0.1)'">
                                  <div>
                                      <div style="font-weight: 700; font-size: 15px; color: var(--Koda-text);">${currentLanguage === 'it' ? 'Layout Compatto' : 'Compact Layout'}</div>
-                                     <div style="font-size: 12px; color: #a7a7a7; margin-top: 4px; line-height: 1.3;">${currentLanguage === 'it' ? 'Nascondi le descrizioni per mostrare più elementi' : 'Hide descriptions to show more items'}</div>
+                                     <div style="font-size: 12px; color: var(--Koda-text-secondary); margin-top: 4px; line-height: 1.3;">${currentLanguage === 'it' ? 'Nascondi le descrizioni per mostrare più elementi' : 'Hide descriptions to show more items'}</div>
                                  </div>
                                  <!-- Switch visivo -->
                                  <div style="width: 48px; height: 28px; background: ${isCompactMode ? 'var(--Koda-accent)' : '#3e3e3e'}; border-radius: 14px; position: relative; transition: background 0.3s cubic-bezier(0.25, 1, 0.5, 1); flex-shrink: 0;">
@@ -13887,17 +14262,42 @@ ${filtersHTML}
                              </div>
                          </div>
 
+                         <!-- NUOVO: Personalizzazione Menu Navigazione -->
+                         <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto; text-align: left;">
+                             <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 12px;">${currentLanguage === 'it' ? 'Personalizza Menu' : 'Customize Menu'}</h3>
+                             <p style="font-size: 13px; color: var(--Koda-text-secondary); margin-bottom: 20px; line-height: 1.4;">${currentLanguage === 'it' ? 'Riordina (▲/▼) o nascondi le sezioni in basso.' : 'Reorder (▲/▼) or hide bottom sections.'}</p>
+                             
+                             <div id="nav-customization-list" style="display: flex; flex-direction: column; gap: 8px;">
+                                 ${userNavConfig.map((item, index) => `
+                                     <div data-nav-id="${item.id}" style="display: flex; align-items: center; justify-content: space-between; background: rgba(128,128,128,0.1); padding: 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.05); transition: background 0.2s;">
+                                         <div style="display: flex; align-items: center; gap: 16px;">
+                                             <div class="drag-handle" style="cursor: grab; display: flex; align-items: center; color: var(--Koda-text-secondary);">
+                                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z"/></svg>
+                                             </div>
+                                             <div style="display: flex; align-items: center; gap: 12px; color: ${item.visible ? 'var(--Koda-text)' : 'var(--Koda-text-secondary)'}; transition: color 0.3s;">
+                                                 <span style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">${item.icon}</span>
+                                                 <span style="font-weight: 700; font-size: 15px;">${t[item.translateKey]}</span>
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Toggle Switch Visibilità -->
+                                         <div data-action="nav-toggle-visible" data-id="${item.id}" style="width: 48px; height: 28px; background: ${item.visible ? 'var(--Koda-accent)' : '#3e3e3e'}; border-radius: 14px; position: relative; transition: background 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; flex-shrink: 0;">
+                                              <div style="width: 24px; height: 24px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: ${item.visible ? '22px' : '2px'}; transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.2); pointer-events: none;"></div>
+                                         </div>
+                                     </div>
+                                 `).join('')}
+                             </div>
+                         </div>
+
                          <!-- Sezione Info Legali Centrata -->
                          <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto;">
                              <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: left;">${currentLanguage === 'it' ? 'Informazioni' : 'About'}</h3>
                              <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <button data-action="open-cinema-policy" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                                    Policy <span style="pointer-events: none; color: #a7a7a7; font-size: 20px;">›</span>
+                                    Policy <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
                                 </button>
                              </div>
                          </div>
-
-                         ${logoutSectionHTML}
 
                     </div>
                 </div>`;
@@ -13937,11 +14337,28 @@ ${filtersHTML}
                         showToast(currentLanguage === 'it' ? 'Chiave API rimossa' : 'API Key removed');
                     }
                 });
-                // Attach listener to the logout button inside the modal
-                document.getElementById('logout-btn-modal')?.addEventListener('click', () => {
-                    handleLogout(); // Usa la nuova funzione centralizzata
-                    closeModal();
-                });
+
+                // NUOVO: Inizializza il Drag and Drop per la NavBar tramite SortableJS
+                const navListEl = document.getElementById('nav-customization-list');
+                if (navListEl && window.Sortable) {
+                    new Sortable(navListEl, {
+                        handle: '.drag-handle', // Trascina solo se premi sull'icona a 3 linee
+                        animation: 200,         // Animazione fluida stile iOS
+                        ghostClass: 'sortable-ghost',
+                        onEnd: function () {
+                            // Legge il nuovo ordine dal DOM
+                            const newOrderIds = Array.from(navListEl.children).map(child => child.dataset.navId);
+                            // Ricostruisce l'array salvando l'ordine
+                            userNavConfig = newOrderIds.map(id => userNavConfig.find(item => item.id === id));
+                            
+                            localStorage.setItem('koda-nav-config', JSON.stringify(userNavConfig));
+                            if (window.triggerHaptic) window.triggerHaptic('light');
+                            
+                            // Aggiorna istantaneamente la navbar in basso
+                            updateNavActiveState();
+                        }
+                    });
+                }
             };
 
             const handleNicknameUpdate = async () => {
@@ -14022,8 +14439,8 @@ ${filtersHTML}
                     // Firebase User: URL Input styled like Spotify
                     logoInputHTML = `
                         <div style="margin-bottom: 32px;">
-                            <label for="add-app-logo-url" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; margin-bottom: 8px;">${t.logoURLLabel}</label>
-                            <input type="url" id="add-app-logo-url" placeholder="${t.logoURLPlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;">
+                            <label for="add-app-logo-url" style="display: block; font-size: 12px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; margin-bottom: 8px;">${t.logoURLLabel}</label>
+                            <input type="url" id="add-app-logo-url" placeholder="${t.logoURLPlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--Koda-text)';" onblur="this.style.borderColor='var(--Koda-text-secondary)';">
                         </div>
                     `;
                 } else {
@@ -14031,10 +14448,10 @@ ${filtersHTML}
                     logoInputHTML = `
                         <div style="margin-bottom: 40px; text-align: center;">
                             <div style="position: relative; width: 120px; height: 120px; cursor: pointer; transition: transform 0.2s ease; margin: 0 auto;" id="add-app-logo-container" onclick="document.getElementById('add-app-logo').click()">
-                                <img id="add-app-logo-preview" src="" alt="Logo Preview" style="display: none; width: 100%; height: 100%; border-radius: 24px; object-fit: cover; border: 1px solid #727272;">
-                                <div id="add-app-logo-placeholder" style="width: 100%; height: 100%; border-radius: 24px; background: #282828; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #727272;">
+                                <img id="add-app-logo-preview" src="" alt="Logo Preview" style="display: none; width: 100%; height: 100%; border-radius: 24px; object-fit: cover; border: 1px solid var(--Koda-text-secondary);">
+                                <div id="add-app-logo-placeholder" style="width: 100%; height: 100%; border-radius: 24px; background: var(--Koda-card); display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--Koda-text-secondary);">
                                     <span style="font-size: 32px; margin-bottom: 4px;">🖼️</span>
-                                    <span style="font-size: 11px; font-weight: 700; color: #a7a7a7; text-transform: uppercase;">Carica Logo</span>
+                                    <span style="font-size: 11px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase;">Carica Logo</span>
                                 </div>
                                 <input type="file" id="add-app-logo" accept="image/*" style="display: none;">
                             </div>
@@ -14058,18 +14475,18 @@ ${filtersHTML}
 
                              <div style="display: flex; flex-direction: column; gap: 24px;">
                                  <div>
-                                     <label for="add-app-name" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appNameLabel}</label>
-                                     <input type="text" id="add-app-name" placeholder="${t.appNamePlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='#fff';" onblur="this.style.borderColor='#727272';">
+                                     <label for="add-app-name" style="display: block; font-size: 12px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appNameLabel}</label>
+                                     <input type="text" id="add-app-name" placeholder="${t.appNamePlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--Koda-text)';" onblur="this.style.borderColor='var(--Koda-text-secondary)';">
                                  </div>
 
                                  <div>
-                                     <label for="add-app-description" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appDescriptionLabel}</label>
-                                     <textarea id="add-app-description" placeholder="${t.appDescriptionPlaceholder}" rows="3" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; resize: vertical; font-family: var(--font-family); transition: border-color 0.2s ease;" onfocus="this.style.borderColor='#fff';" onblur="this.style.borderColor='#727272';"></textarea>
+                                     <label for="add-app-description" style="display: block; font-size: 12px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appDescriptionLabel}</label>
+                                     <textarea id="add-app-description" placeholder="${t.appDescriptionPlaceholder}" rows="3" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); border-radius: 4px; color: var(--Koda-text); outline: none; resize: vertical; font-family: var(--font-family); transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--Koda-text)';" onblur="this.style.borderColor='var(--Koda-text-secondary)';"></textarea>
                                  </div>
 
                                  <div>
-                                     <label for="add-app-website" style="display: block; font-size: 12px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appWebsiteLabel}</label>
-                                     <input type="url" id="add-app-website" placeholder="${t.appWebsitePlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='#fff';" onblur="this.style.borderColor='#727272';">
+                                     <label for="add-app-website" style="display: block; font-size: 12px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">${t.appWebsiteLabel}</label>
+                                     <input type="url" id="add-app-website" placeholder="${t.appWebsitePlaceholder}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); border-radius: 4px; color: var(--Koda-text); outline: none; transition: border-color 0.2s ease;" onfocus="this.style.borderColor='var(--Koda-text)';" onblur="this.style.borderColor='var(--Koda-text-secondary)';">
                                  </div>
                              </div>
                          </div>
@@ -14079,7 +14496,7 @@ ${filtersHTML}
                              <button id="add-app-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#1ed760';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='var(--Koda-accent)';">
                                  ${t.addAppButton}
                              </button>
-                             <button data-action="close-modal" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                             <button data-action="close-modal" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='var(--Koda-text)';" onmouseout="this.style.borderColor='var(--Koda-text-secondary)';">
                                  ${t.cancel}
                              </button>
                          </div>
@@ -17597,7 +18014,7 @@ ${filtersHTML}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
                                 </div>
                             </div>
-                            <span style="font-size: 11px; font-weight: 700; color: #a7a7a7; text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 12px;">Foto Profilo</span>
+                            <span style="font-size: 11px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 12px;">Foto Profilo</span>
                         </div>
 
                         <!-- Input Testo Stile Spotify -->
@@ -17605,10 +18022,10 @@ ${filtersHTML}
                             <label for="welcome-nickname" style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--Koda-text);">
                                 ${currentLanguage === 'it' ? 'Nome utente' : 'Username'}
                             </label>
-                            <input type="text" id="welcome-nickname" placeholder="${currentLanguage === 'it' ? 'es. KodaUser' : 'e.g. KodaUser'}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid #727272; border-radius: 4px; color: var(--Koda-text); font-family: var(--font-family); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;">
+                            <input type="text" id="welcome-nickname" placeholder="${currentLanguage === 'it' ? 'es. KodaUser' : 'e.g. KodaUser'}" style="width: 100%; padding: 14px; font-size: 16px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); border-radius: 4px; color: var(--Koda-text); font-family: var(--font-family); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;">
                             <style>
-                                #welcome-nickname:hover { border-color: #fff; }
-                                #welcome-nickname:focus { border-color: #fff; box-shadow: inset 0 0 0 1px #fff; }
+                                #welcome-nickname:hover { border-color: var(--Koda-text); }
+                                #welcome-nickname:focus { border-color: var(--Koda-text); box-shadow: inset 0 0 0 1px var(--Koda-text); }
                                 #welcome-avatar-container:hover { transform: scale(1.05); }
                                 #welcome-avatar-container:hover #welcome-avatar-hover { opacity: 1; }
                             </style>
@@ -17621,18 +18038,18 @@ ${filtersHTML}
 
                         <!-- Divisore "oppure" -->
                         <div style="display: flex; align-items: center; width: 100%; margin: 32px 0;">
-                            <div style="flex: 1; height: 1px; background: #292929;"></div>
+                            <div style="flex: 1; height: 1px; background: var(--Koda-text-secondary); opacity: 0.3;"></div>
                             <span style="padding: 0 16px; color: var(--Koda-text); font-size: 14px; font-weight: 700;">oppure</span>
-                            <div style="flex: 1; height: 1px; background: #292929;"></div>
+                            <div style="flex: 1; height: 1px; background: var(--Koda-text-secondary); opacity: 0.3;"></div>
                         </div>
 
                         <!-- Bottone Secondario -->
-                        <button id="welcome-skip-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid #727272; color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='#fff';" onmouseout="this.style.borderColor='#727272';">
+                        <button id="welcome-skip-btn" style="width: 100%; padding: 14px; border-radius: 500px; background-color: transparent; border: 1px solid var(--Koda-text-secondary); color: var(--Koda-text); font-size: 16px; font-weight: 700; cursor: pointer; transition: border-color 0.2s ease;" onmouseover="this.style.borderColor='var(--Koda-text)';" onmouseout="this.style.borderColor='var(--Koda-text-secondary)';">
                             ${currentLanguage === 'it' ? 'Continua come Anonimo' : 'Continue as Guest'}
                         </button>
 
                         <!-- Footer Legale -->
-                        <p style="margin-top: 40px; font-size: 11px; color: #a7a7a7; text-align: center; line-height: 1.5;">
+                        <p style="margin-top: 40px; font-size: 11px; color: var(--Koda-text-secondary); text-align: center; line-height: 1.5;">
                             This site is protected by reCAPTCHA and the Google <br>
                             <span style="text-decoration: underline; cursor: pointer;">Privacy Policy</span> and <span style="text-decoration: underline; cursor: pointer;">Terms of Service</span> apply.
                         </p>
@@ -18102,8 +18519,7 @@ ${filtersHTML}
                 const modalHTML = `
                 <div id="spotlight-overlay" class="visible">
                     <div class="spotlight-input-container">
-                        <input type="text" id="spotlight-input" class="spotlight-input" placeholder="${isIT ? 'Cerca AI o Video...' : 'Search AI or Videos...'}" autocomplete="off" spellcheck="false">
-                </div>
+                        <input type="text" id="spotlight-input" class="spotlight-input" placeholder="${isIT ? 'Cerca AI, Video o Notizie...' : 'Search AI, Videos or News...'}" autocomplete="off" spellcheck="false">
                     </div>
                     <div id="spotlight-results" class="spotlight-results">
                         <!-- Risultati iniettati qui -->
@@ -18140,10 +18556,10 @@ ${filtersHTML}
                     let resultsHTML = '';
 
                     // 1. Cerca nei Tools AI
-                    const allTools = getAllToolsForCurrentUser();
+                    const allTools = window.getAllToolsForCurrentUser ? window.getAllToolsForCurrentUser() : [];
                     const matchedTools = allTools.filter(t =>
-                        t.name.toLowerCase().includes(query) ||
-                        (typeof t.description === 'object' ? (t.description[currentLanguage] || '').toLowerCase() : t.description.toLowerCase()).includes(query)
+                        (t.name || '').toLowerCase().includes(query) ||
+                        (typeof t.description === 'object' ? (t.description[currentLanguage] || '').toLowerCase() : (t.description || '').toLowerCase()).includes(query)
                     ).slice(0, 4);
 
                     if (matchedTools.length > 0) {
@@ -18161,8 +18577,8 @@ ${filtersHTML}
 
                     // 2. Cerca nei Video del Cinema
                     const matchedVideos = youtubeVideosData.filter(v =>
-                        v.title.toLowerCase().includes(query) ||
-                        (v.description[currentLanguage] || '').toLowerCase().includes(query)
+                        (v.title || '').toLowerCase().includes(query) ||
+                        (v.description && v.description[currentLanguage] ? v.description[currentLanguage] : '').toLowerCase().includes(query)
                     ).slice(0, 3);
 
                     if (matchedVideos.length > 0) {
@@ -18204,6 +18620,30 @@ ${filtersHTML}
                         `).join('');
                     }
 
+                    // 4. Cerca nelle News (Fuzzy search per spazi e trattini es. "chat gpt" = "chatgpt")
+                    const normalizedQuery = query.replace(/[\s\-_]/g, '');
+                    const matchedNews = newsData.filter(news => {
+                        const normalizedTitle = (news.title || '').toLowerCase().replace(/[\s\-_]/g, '');
+                        const normalizedContent = (news.content || '').toLowerCase().replace(/[\s\-_]/g, '');
+                        return normalizedTitle.includes(normalizedQuery) || normalizedContent.includes(normalizedQuery);
+                    }).slice(0, 3); // Mostra al massimo 3 news
+
+                    if (matchedNews.length > 0) {
+                        resultsHTML += `<div class="spotlight-group-title">News & Articoli</div>`;
+                        resultsHTML += matchedNews.map(news => {
+                            const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
+                            const dateStr = news.timestamp ? new Date(news.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+                            return `
+                            <div class="spotlight-item" data-action="open-news-detail" data-id="${news.id}" onclick="document.getElementById('spotlight-overlay').remove();">
+                                <img src="${news.imageUrl || fallbackImage}" class="spotlight-item-img" style="aspect-ratio: 1/1; object-fit: cover;">
+                                <div class="spotlight-item-info">
+                                    <span class="spotlight-item-title" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${news.title}</span>
+                                    <span class="spotlight-item-sub" style="color: var(--Koda-accent); margin-top: 2px;">📰 ${dateStr}</span>
+                                </div>
+                            </div>
+                        `}).join('');
+                    }
+
                     if (resultsHTML === '') {
                         resultsHTML = `<div style="text-align: center; padding: 40px; color: #727272;">Nessun risultato trovato per "${query}"</div>`;
                     }
@@ -18240,7 +18680,7 @@ ${filtersHTML}
 
 
                 // 2. Gestisci i modali custom (review-modal, confirm-modal, sent-reviews-modal, etc.)
-                const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible');
+                const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible, .news-detail-modal.visible');
                 if (customModals.length > 0) {
                     customModals.forEach(modal => {
                         modal.classList.remove('visible');
@@ -18569,16 +19009,91 @@ ${filtersHTML}
                             break;
 
                         case 'open-news-detail':
-                            // Riporta al feed posizionandosi idealmente sulla notizia (qui forziamo solo la vista feed per semplicità)
-                            window.currentNewsTab = 'feed';
-                            renderView();
-                            // Scorri all'elemento specifico se possibile
-                            setTimeout(() => {
-                                const targetNews = document.querySelector(`.news-item[data-news-id="${actionTarget.dataset.id}"]`);
-                                if (targetNews) {
-                                    document.getElementById('news-feed-container').scrollTop = targetNews.offsetTop;
+                            event.stopPropagation();
+                            const newsDetailId = actionTarget.dataset.id;
+                            const newsItem = newsData.find(n => n.id === newsDetailId);
+                            
+                            if (newsItem) {
+                                const dateStr = newsItem.timestamp ? new Date(newsItem.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                                const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
+                                
+                                // Cerca lo strumento menzionato nel testo (con Normalizzazione)
+                                let mentionedToolHTML = '';
+                                const allTools = getAllToolsForCurrentUser();
+                                const fullNewsText = (newsItem.title + ' ' + newsItem.content);
+                                
+                                let mentionedTool = null;
+                                if (newsItem.mentionedToolId) {
+                                    mentionedTool = allTools.find(t => t.id === newsItem.mentionedToolId);
+                                } else {
+                                    const aliases = {
+                                        'chat gpt': 'ChatGPT', 'gpt': 'ChatGPT',
+                                        'mid journey': 'Midjourney', 'mid-journey': 'Midjourney',
+                                        'claude 3': 'Claude', 'claude 3.5': 'Claude',
+                                        'dall e': 'DALL-E', 'dalle': 'DALL-E', 'dall-e': 'DALL-E'
+                                    };
+                                    
+                                    for (const [alias, realName] of Object.entries(aliases)) {
+                                        if (new RegExp('\\b' + alias + '\\b', 'i').test(fullNewsText)) {
+                                            mentionedTool = allTools.find(t => t.name.toLowerCase() === realName.toLowerCase());
+                                            if (mentionedTool) break;
+                                        }
+                                    }
+                                    
+                                    if (!mentionedTool) {
+                                        mentionedTool = allTools.find(t => {
+                                            if (!t.name) return false;
+                                            const safeName = t.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                            return new RegExp('\\b' + safeName + '\\b', 'i').test(fullNewsText);
+                                        });
+                                    }
                                 }
-                            }, 100);
+                                
+                                if (mentionedTool) {
+                                    // Sostituito il div/bottone con un <a> che manda al sito. Aggiornato logoUrl
+                                    mentionedToolHTML = `
+                                        <a href="${mentionedTool.website}" target="_blank" class="news-mentioned-tool-btn" style="text-decoration: none;">
+                                            <img src="${mentionedTool.logoUrl}" alt="${mentionedTool.name}" class="news-mentioned-tool-logo">
+                                            <div class="news-mentioned-tool-info">
+                                                <div class="news-mentioned-tool-label">${currentLanguage === 'it' ? 'Visita sito web' : 'Visit Website'}</div>
+                                                <div class="news-mentioned-tool-name">${mentionedTool.name}</div>
+                                            </div>
+                                            <div class="news-mentioned-tool-arrow">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                            </div>
+                                        </a>
+                                    `;
+                                }
+                                
+                                const modalHTML = `
+                                    <div class="news-detail-modal visible" id="news-detail-modal">
+                                        <div class="news-detail-header">
+                                            <button class="news-detail-back-btn" data-action="close-news-detail">←</button>
+                                            <div class="news-detail-title-header">${newsItem.title}</div>
+                                        </div>
+                                        <div class="news-detail-content">
+                                            <img src="${newsItem.imageUrl || fallbackImage}" alt="${newsItem.title}" class="news-detail-image">
+                                            <div class="news-detail-date">${dateStr}</div>
+                                            <h1 class="news-detail-title">${newsItem.title}</h1>
+                                            <div class="news-detail-text">${newsItem.content}</div>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                                history.pushState({ modal: 'news-detail', newsId: newsDetailId }, '', '');
+                            }
+                            break;
+
+                        case 'close-news-detail':
+                            const newsDetailModal = document.getElementById('news-detail-modal');
+                            if (newsDetailModal) {
+                                newsDetailModal.classList.remove('visible');
+                                setTimeout(() => newsDetailModal.remove(), 300);
+                            }
+                            if (history.state?.modal === 'news-detail') {
+                                history.back();
+                            }
                             break;
 
                         // NUOVO: Torna al cinema dalla pagina video-detail
@@ -19218,6 +19733,36 @@ ${filtersHTML}
 
                             // Ri-renderizziamo il modale impostazioni per far aggiornare visivamente l'interruttore
                             window.openSettingsModal();
+                            break;
+
+                        // --- NUOVO: LOGICA VISIBILITA' MENU ---
+                        case 'nav-toggle-visible':
+                            const targetId = actionTarget.dataset.id;
+                            const itemIndex = userNavConfig.findIndex(i => i.id === targetId);
+                            if (itemIndex === -1) break;
+                            
+                            // Controllo di sicurezza: Evita che l'utente nasconda TUTTE le sezioni
+                            const visibleCount = userNavConfig.filter(i => i.visible).length;
+                            if(userNavConfig[itemIndex].visible && visibleCount <= 1) {
+                                showToast(currentLanguage === 'it' ? 'Devi lasciare almeno una sezione visibile.' : 'You must leave at least one section visible.');
+                                break;
+                            }
+                            
+                            // Inverti visibilità
+                            userNavConfig[itemIndex].visible = !userNavConfig[itemIndex].visible;
+                            localStorage.setItem('koda-nav-config', JSON.stringify(userNavConfig));
+                            if (window.triggerHaptic) window.triggerHaptic('light');
+                            
+                            // Se l'utente nasconde la pagina esatta in cui si trova attualmente, mandalo altrove
+                            if (!userNavConfig[itemIndex].visible && currentView === userNavConfig[itemIndex].id) {
+                                const firstVisible = userNavConfig.find(i => i.visible);
+                                currentView = firstVisible.id;
+                                history.pushState({ page: currentView }, '', `#${currentView}`);
+                                renderView(); // Re-renderizza tutto
+                            } else {
+                                window.openSettingsModal(); // Ricarica solo l'UI delle impostazioni
+                                updateNavActiveState(); // Ricrea la navbar in basso
+                            }
                             break;
                         // ---------------------------------------
 
