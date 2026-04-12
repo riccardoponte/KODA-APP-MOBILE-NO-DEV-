@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Koda AI</title>
-    <!-- Font Montserrat (Alternativa Spotify) -->
+    <!-- Font Montserrat (Alternativa Koda) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         @font-face {
@@ -547,7 +547,7 @@
 
         .pill-btn {
             background-color: #2a2a2a;
-            /* Grigio Spotify */
+            /* Grigio Koda */
             color: var(--Koda-text);
             border: none;
             border-radius: 500px;
@@ -555,7 +555,7 @@
             font-size: 13px;
             /* Leggermente più piccolo */
             font-weight: 700;
-            /* Bold Spotify */
+            /* Bold Koda */
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s ease;
@@ -1593,7 +1593,7 @@
             font-size: 14px;
             font-weight: 600;
             background-color: #fff;
-            /* Spotify mobile usa spesso search bar bianche o grigio chiarissimo */
+            /* Koda mobile usa spesso search bar bianche o grigio chiarissimo */
             border: none;
             border-radius: 500px;
             /* Completamente pillola */
@@ -1664,7 +1664,7 @@
             border: none;
             color: var(--Koda-text-secondary);
             font-size: 10px;
-            /* Più piccolo, stile Spotify */
+            /* Più piccolo, stile Koda */
             font-weight: 600;
             text-transform: none;
             cursor: pointer;
@@ -1673,7 +1673,7 @@
 
         .nav-btn.active {
             color: #fff;
-            /* Spotify usa il bianco puro per l'icona attiva */
+            /* Koda usa il bianco puro per l'icona attiva */
         }
 
         .nav-btn .icon {
@@ -1785,7 +1785,7 @@
             /* Molto bold */
             cursor: pointer;
             text-transform: none;
-            /* Spotify raramente usa il tutto maiuscolo nei bottoni moderni */
+            /* Koda raramente usa il tutto maiuscolo nei bottoni moderni */
             letter-spacing: -0.2px;
             transition: all 0.3s ease;
         }
@@ -5832,6 +5832,29 @@
             object-fit: cover;
         }
 
+        /* NUOVO: Stile per il badge "Nuovo" sulle card */
+        .new-badge-overlay {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background-color: var(--Koda-accent);
+            color: #000;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            z-index: 10;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         .tool-item-name {
             font-size: 14px;
             font-weight: 600;
@@ -8269,7 +8292,7 @@
             touch-action: none; /* Fondamentale per non far scrollare la pagina su mobile mentre si trascina */
         }
 
-        /* 1. Active Touch States (Effetto pressione iOS/Spotify) */
+        /* 1. Active Touch States (Effetto pressione iOS/Koda) */
         .tool-card-grid,
         .tool-card-list,
         .playlist-item,
@@ -9086,8 +9109,8 @@
 
         /* Contenitore per le altre tab (Ricerca, Salvati, Piaciuti) */
         .news-alt-container {
-            padding: 80px 16px 20px 16px;
-            /* Spazio per la nav in alto */
+            padding: 120px 16px 20px 16px;
+            /* Spazio per la nav in alto + pillole filtro tempo */
             height: calc(100vh - var(--bottom-nav-height) - 72px);
             overflow-y: auto;
             background: var(--Koda-bg);
@@ -10031,7 +10054,7 @@ ${knowledgeBaseFormatter(tools)}
                     pageTitleHome: "Koda", pageTitleTopAI: "Classifiche", pageTitleSearch: "Catalogo", pageTitleSearchUsers: "Utenti", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema", pageTitleNews: "Notizie", navNews: "Notizie",
                     navCinemaVideos: "Video", navCinemaFavorites: "Preferiti", navCinemaPlaylists: "Playlist",
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
-                    searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità",
+                    searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità", newArrivals: "Nuovi Arrivi", newBadge: "NUOVO",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "Indietro", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
                     pricingFree: "Gratuito", pricingFreemium: "Freemium", pricingPaid: "A Pagamento",
@@ -10279,7 +10302,7 @@ ${knowledgeBaseFormatter(tools)}
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Catalogue", pageTitleSearchUsers: "Search Users", pageTitleLibrary: "Library", pageTitleCinema: "Cinema", pageTitleNews: "News", navNews: "News",
                     navCinemaVideos: "Videos", navCinemaFavorites: "Favorites", navCinemaPlaylists: "Playlists",
                     logout: "Logout", featured: "Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
-                    searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County",
+                    searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County", newArrivals: "New Arrivals", newBadge: "NEW",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
                     backToSearch: "Back", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
                     pricingFree: "Free", pricingFreemium: "Freemium", pricingPaid: "Paid",
@@ -10631,6 +10654,30 @@ ${knowledgeBaseFormatter(tools)}
                     return [];
                 }
             };
+            // NUOVO: Funzione per controllare se un tool è stato aggiunto negli ultimi 7 giorni
+            const isToolNew = (tool) => {
+                let toolTimeMs = 0;
+                
+                // 1. Formato Firestore Timestamp (usato dall'Admin)
+                if (tool.createdAt && tool.createdAt.seconds) {
+                    toolTimeMs = tool.createdAt.seconds * 1000;
+                } else if (tool.timestamp && tool.timestamp.seconds) {
+                    toolTimeMs = tool.timestamp.seconds * 1000;
+                } 
+                // 2. Formato JS Millisecondi (usato per le app custom aggiunte dall'utente)
+                else if (typeof tool.createdAt === 'number') {
+                    toolTimeMs = tool.createdAt;
+                } else if (typeof tool.timestamp === 'number') {
+                    toolTimeMs = tool.timestamp;
+                }
+
+                // Se lo strumento nel database non ha una data salvata, non è considerato "Nuovo"
+                if (!toolTimeMs) return false;
+
+                const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+                return (Date.now() - toolTimeMs) <= sevenDaysInMs;
+            };
+
             // Funzione globale accessibile anche dallo script React
             window.getLocalizedToolsData = (lang) => {
                 return aiToolsData.map(tool => ({ ...tool, description: tool.description[lang] || tool.description['en'] }));
@@ -11066,7 +11113,8 @@ ${knowledgeBaseFormatter(tools)}
 
                 const cardClass = selectionMode && context === 'collection' ? 'tool-card-grid stagger-item selectable' : 'tool-card-grid stagger-item';
                 const pricingHTML = getPricingBadgeHTML(tool.pricing);
-                return `<div class="${cardClass}" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div>${pricingHTML}</div>`;
+                const newBadgeHTML = isToolNew(tool) ? `<div class="new-badge-overlay">${t.newBadge || 'NEW'}</div>` : '';
+                return `<div class="${cardClass}" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${newBadgeHTML}${selectionCheckboxHTML}${removeIconHTML}${editIconHTML}</div><div class="tool-name">${tool.name}</div>${pricingHTML}</div>`;
             };
 
             const createListCard = (tool, context) => {
@@ -11113,7 +11161,8 @@ ${knowledgeBaseFormatter(tools)}
                 }
 
                 const pricingHTML = getPricingBadgeHTML(tool.pricing);
-                return `<div class="tool-card-list stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div>${pricingHTML}</div></div>${favoriteIconHTML}</div>`;
+                const newBadgeHTML = isToolNew(tool) ? `<div class="new-badge-overlay" style="font-size: 8px; padding: 1px 4px; top: 4px; left: 4px;">${t.newBadge || 'NEW'}</div>` : '';
+                return `<div class="tool-card-list stagger-item" data-id="${tool.id}"><div class="logo-container"><img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">${newBadgeHTML}${editIconHTML}</div><div class="info"><div class="tool-name">${tool.name}</div><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div>${pricingHTML}</div></div>${favoriteIconHTML}</div>`;
             };
 
             const createCategoryCard = (category) => {
@@ -11418,7 +11467,7 @@ ${knowledgeBaseFormatter(tools)}
                 `;
             };
 
-            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda (Spotify Style)
+            // NUOVO: Funzione per mostrare un modale di conferma custom in stile Koda (Koda Style)
             const showConfirmModal = (options) => {
                 return new Promise((resolve) => {
                     const { title, message, icon = '', confirmText, cancelText } = options;
@@ -13121,6 +13170,46 @@ ${knowledgeBaseFormatter(tools)}
                 }
             };
 
+            // NUOVO: Funzione per aggiornare il badge di notifica del Catalogo
+            const updateExploreNotificationBadge = () => {
+                const badge = document.getElementById('explore-notification-badge');
+                if (!badge) return;
+
+                const lastVisit = parseInt(localStorage.getItem('lastExploreVisit') || '0');
+                const newToolsCount = aiToolsData.filter(tool => {
+                    // Controlla se lo strumento ha un timestamp (quelli vecchi potrebbero non averlo)
+                    const toolTime = tool.createdAt?.seconds || tool.timestamp?.seconds;
+                    if (!toolTime) return false;
+                    return (toolTime * 1000) > lastVisit;
+                }).length;
+
+                if (newToolsCount > 0) {
+                    badge.textContent = newToolsCount > 99 ? '99+' : newToolsCount.toString();
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            };
+
+            // NUOVO: Funzione per aggiornare il badge di notifica delle News
+            const updateNewsNotificationBadge = () => {
+                const badge = document.getElementById('news-notification-badge');
+                if (!badge) return;
+
+                const lastVisit = parseInt(localStorage.getItem('lastNewsVisit') || '0');
+                const newNewsCount = newsData.filter(news => {
+                    if (!news.timestamp || !news.timestamp.seconds) return false;
+                    return (news.timestamp.seconds * 1000) > lastVisit;
+                }).length;
+
+                if (newNewsCount > 0) {
+                    badge.textContent = newNewsCount > 99 ? '99+' : newNewsCount.toString();
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            };
+
             const renderView = () => {
                 const initialLoader = document.getElementById('initial-loader');
                 if (initialLoader) {
@@ -13356,8 +13445,9 @@ ${filtersHTML}
                     });
 
                 } else if (currentView === 'news') {
-                    // Inizializza tab corrente per le news (di default 'feed')
+                    // Inizializza tab e filtro temporale corrente per le news
                     window.currentNewsTab = window.currentNewsTab || 'feed';
+                    window.currentNewsTimeFilter = window.currentNewsTimeFilter || 'all';
 
                     // Recupera Mi Piace e Salvataggi da localStorage
                     const newsLiked = JSON.parse(localStorage.getItem('news-liked') || '[]');
@@ -13381,6 +13471,15 @@ ${filtersHTML}
                         { id: 'saved', label: labelSaved }
                     ];
 
+                    const timeFiltersHTML = `
+                        <div style="position: absolute; top: 70px; left: 0; width: 100%; display: flex; justify-content: center; gap: 8px; z-index: 20; padding: 0 16px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;">
+                            <button class="pill-btn ${window.currentNewsTimeFilter === 'all' ? 'active' : ''}" data-action="set-news-time-filter" data-filter="all" style="padding: 6px 12px; font-size: 12px; background: ${window.currentNewsTimeFilter === 'all' ? 'var(--Koda-accent)' : 'rgba(0,0,0,0.6)'}; border: 1px solid rgba(255,255,255,0.2); color: ${window.currentNewsTimeFilter === 'all' ? '#000' : '#fff'};">${currentLanguage === 'it' ? 'Tutti' : 'All'}</button>
+                            <button class="pill-btn ${window.currentNewsTimeFilter === 'today' ? 'active' : ''}" data-action="set-news-time-filter" data-filter="today" style="padding: 6px 12px; font-size: 12px; background: ${window.currentNewsTimeFilter === 'today' ? 'var(--Koda-accent)' : 'rgba(0,0,0,0.6)'}; border: 1px solid rgba(255,255,255,0.2); color: ${window.currentNewsTimeFilter === 'today' ? '#000' : '#fff'};">${currentLanguage === 'it' ? 'Oggi' : 'Today'}</button>
+                            <button class="pill-btn ${window.currentNewsTimeFilter === 'week' ? 'active' : ''}" data-action="set-news-time-filter" data-filter="week" style="padding: 6px 12px; font-size: 12px; background: ${window.currentNewsTimeFilter === 'week' ? 'var(--Koda-accent)' : 'rgba(0,0,0,0.6)'}; border: 1px solid rgba(255,255,255,0.2); color: ${window.currentNewsTimeFilter === 'week' ? '#000' : '#fff'};">${currentLanguage === 'it' ? 'Ultima sett.' : 'Last week'}</button>
+                            <button class="pill-btn ${window.currentNewsTimeFilter === 'month' ? 'active' : ''}" data-action="set-news-time-filter" data-filter="month" style="padding: 6px 12px; font-size: 12px; background: ${window.currentNewsTimeFilter === 'month' ? 'var(--Koda-accent)' : 'rgba(0,0,0,0.6)'}; border: 1px solid rgba(255,255,255,0.2); color: ${window.currentNewsTimeFilter === 'month' ? '#000' : '#fff'};">${currentLanguage === 'it' ? 'Ultimo mese' : 'Last month'}</button>
+                        </div>
+                    `;
+
                     const topNavHTML = `
                         <div class="news-top-nav">
                             ${tabs.map(tab => `
@@ -13391,19 +13490,37 @@ ${filtersHTML}
                                 </div>
                             `).join('')}
                         </div>
+                        ${timeFiltersHTML}
                     `;
 
                     let newsHTML = topNavHTML;
+
+                    // Funzione per filtrare l'array delle news in base al tempo
+                    window.filterNewsByTime = (newsArray) => {
+                        if (!window.currentNewsTimeFilter || window.currentNewsTimeFilter === 'all') return newsArray;
+                        const now = Date.now();
+                        const dayInMs = 86400000;
+                        return newsArray.filter(n => {
+                            if (!n.timestamp || !n.timestamp.seconds) return false;
+                            const newsTime = n.timestamp.seconds * 1000;
+                            if (window.currentNewsTimeFilter === 'today') return (now - newsTime) <= dayInMs;
+                            if (window.currentNewsTimeFilter === 'week') return (now - newsTime) <= (7 * dayInMs);
+                            if (window.currentNewsTimeFilter === 'month') return (now - newsTime) <= (30 * dayInMs);
+                            return true;
+                        });
+                    };
 
                     if (window.currentNewsTab === 'feed') {
                         // FIX TIKTOK STYLE: Blocca lo scroll del main per la sezione Feed
                         el.mainContent.style.overflowY = 'hidden';
 
-                        if (newsData.length === 0) {
-                            newsHTML += `<div id="empty-state" style="color: white; height: 100%; display: flex; align-items: center; justify-content: center;">Nessuna notizia.</div>`;
+                        const timeFilteredNews = window.filterNewsByTime(newsData);
+
+                        if (timeFilteredNews.length === 0) {
+                            newsHTML += `<div id="empty-state" style="color: white; height: 100%; display: flex; align-items: center; justify-content: center;">${noNewsFoundText}</div>`;
                         } else {
                             newsHTML += `<div class="news-feed-container" id="news-feed-container">`;
-                            newsData.forEach(news => {
+                            timeFilteredNews.forEach(news => {
                                 const dateStr = news.timestamp ? new Date(news.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
                                 const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
                                 const isLiked = newsLiked.includes(news.id);
@@ -13495,11 +13612,15 @@ ${filtersHTML}
                         el.mainContent.style.overflowY = 'auto';
                         let filteredNews = [];
 
+                        // Prima filtriamo per Piaciuti/Salvati
                         if (window.currentNewsTab === 'saved') {
                             filteredNews = newsData.filter(n => newsSaved.includes(n.id));
                         } else if (window.currentNewsTab === 'liked') {
                             filteredNews = newsData.filter(n => newsLiked.includes(n.id));
                         }
+                        
+                        // Poi applichiamo il filtro temporale
+                        filteredNews = window.filterNewsByTime(filteredNews);
 
                         const renderGrid = (newsList) => {
                             return newsList.map(n => `
@@ -13571,7 +13692,15 @@ ${filtersHTML}
                             searchInput.addEventListener('input', (e) => {
                                 const query = e.target.value.toLowerCase();
                                 const gridContainer = document.getElementById('news-grid-container');
-                                const filtered = newsData.filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query));
+                                
+                                // Riapplica i filtri correnti (tab + tempo) prima della ricerca testo
+                                let baseNews = newsData;
+                                if (window.currentNewsTab === 'saved') baseNews = newsData.filter(n => newsSaved.includes(n.id));
+                                else if (window.currentNewsTab === 'liked') baseNews = newsData.filter(n => newsLiked.includes(n.id));
+                                
+                                const timeFilteredBaseNews = window.filterNewsByTime ? window.filterNewsByTime(baseNews) : baseNews;
+                                
+                                const filtered = timeFilteredBaseNews.filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query));
 
                                 gridContainer.innerHTML = filtered.length > 0
                                     ? filtered.map(n => `
@@ -13679,6 +13808,30 @@ ${filtersHTML}
                         });
 
                         let feedHTML = '';
+                        
+                        // NUOVO: Sezione "Nuovi Arrivi"
+                        const newTools = allTools.filter(t => isToolNew(t));
+                        if (newTools.length > 0) {
+                            feedHTML += `
+                                <div class="feed-section">
+                                    <div class="feed-section-header">
+                                        <h2 class="feed-section-title" style="color: var(--Koda-accent);">✨ ${t.newArrivals || 'Nuovi Arrivi'}</h2>
+                                    </div>
+                                    <div class="horizontal-scroll-container">
+                                        ${newTools.map(tool => `
+                                            <div class="tool-item-horizontal stagger-item" data-id="${tool.id}">
+                                                <div class="tool-item-logo-container" style="position: relative;">
+                                                    <div class="new-badge-overlay">${t.newBadge || 'NEW'}</div>
+                                                    <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">
+                                                </div>
+                                                <div class="tool-item-name">${tool.name}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+
                         categories.forEach(category => {
                             const categoryId = category.id;
                             const categoryName = getTranslatedCategoryName(categoryId);
@@ -13969,8 +14122,12 @@ ${filtersHTML}
                 // NUOVO: Aggiorna il pulsante FAB nella bottom nav
                 updateBottomNavFAB(libraryTab);
 
-                // NUOVO: Aggiorna sempre il badge di notifica del Cinema dopo ogni cambio di vista
-                setTimeout(() => updateCinemaNotificationBadge(), 100);
+                // NUOVO: Aggiorna sempre i badge di notifica dopo ogni cambio di vista
+                setTimeout(() => {
+                    updateCinemaNotificationBadge();
+                    updateExploreNotificationBadge();
+                    updateNewsNotificationBadge();
+                }, 100);
             };
 
             const renderBottomNav = () => {
@@ -13989,9 +14146,17 @@ ${filtersHTML}
                     // Inserisce il FAB al centro
                     if (itemRenderedCount === middleIndex) html += fabHtml;
                     
+                    // Aggiunge dinamicamente il badge html se la pagina è explore o news
+                    let badgeHtml = '';
+                    if (item.id === 'explore') badgeHtml = '<span id="explore-notification-badge" class="notification-badge hidden">0</span>';
+                    if (item.id === 'news') badgeHtml = '<span id="news-notification-badge" class="notification-badge hidden">0</span>';
+
                     html += `
                         <button class="nav-btn ${item.id === currentView ? 'active' : ''}" data-page="${item.id}">
-                            <span class="icon">${item.icon}</span>
+                            <span class="icon">
+                                ${item.icon}
+                                ${badgeHtml}
+                            </span>
                             <span data-translate="${item.translateKey}">${t[item.translateKey]}</span>
                         </button>
                     `;
@@ -14343,14 +14508,14 @@ ${filtersHTML}
                 }
             };
 
-            // NEW FUNCTION: Open Add App Modal (Stile Spotify)
+            // NEW FUNCTION: Open Add App Modal (Stile Koda)
             const openAddAppModal = () => {
                 const t = translations[currentLanguage];
                 history.pushState({ modal: 'add-app', page: currentView }, '', '');
 
                 let logoInputHTML = '';
                 if (currentUser.uid) {
-                    // Firebase User: URL Input styled like Spotify
+                    // Firebase User: URL Input styled like Koda
                     logoInputHTML = `
                         <div style="margin-bottom: 32px;">
                             <label for="add-app-logo-url" style="display: block; font-size: 12px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; margin-bottom: 8px;">${t.logoURLLabel}</label>
@@ -14642,7 +14807,7 @@ ${filtersHTML}
                 }
             };
 
-            // NUOVA FUNZIONE: Apre il modale per creare una collezione (Stile Spotify)
+            // NUOVA FUNZIONE: Apre il modale per creare una collezione (Stile Koda)
             const openCreateCollectionModal = () => {
                 const t = translations[currentLanguage];
                 const modalHTML = `
@@ -17948,7 +18113,7 @@ ${filtersHTML}
 
             // --- INITIALIZATION LOGIC ---
 
-            // NUOVO: Funzione per il modale di registrazione obbligatorio al primo avvio (Stile Spotify)
+            // NUOVO: Funzione per il modale di registrazione obbligatorio al primo avvio (Stile Koda)
             const showFirstLaunchRegistration = () => {
                 const modalHTML = `
                 <div id="first-launch-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 99999; align-items: flex-start; overflow-y: auto; padding: 40px 20px;">
@@ -17960,7 +18125,7 @@ ${filtersHTML}
                             <text x="50" y="65" font-size="42" font-weight="900" text-anchor="middle" fill="currentColor">K</text>
                         </svg>
 
-                        <!-- Titolo enorme stile Spotify -->
+                        <!-- Titolo enorme stile Koda -->
                         <h1 style="font-size: clamp(32px, 9vw, 42px); font-weight: 900; letter-spacing: -1.5px; text-align: center; line-height: 1.1; margin-bottom: 40px; color: var(--Koda-text);">
                             ${currentLanguage === 'it' ? 'Crea il profilo<br>per iniziare<br>a esplorare' : 'Create profile<br>to start<br>exploring'}
                         </h1>
@@ -17977,7 +18142,7 @@ ${filtersHTML}
                             <span style="font-size: 11px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 12px;">Foto Profilo</span>
                         </div>
 
-                        <!-- Input Testo Stile Spotify -->
+                        <!-- Input Testo Stile Koda -->
                         <div style="width: 100%; margin-bottom: 24px; text-align: left;">
                             <label for="welcome-nickname" style="display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--Koda-text);">
                                 ${currentLanguage === 'it' ? 'Nome utente' : 'Username'}
@@ -18372,7 +18537,8 @@ ${filtersHTML}
                     logoUrl: document.getElementById('global-tool-logo').value.trim(),
                     category: document.getElementById('global-tool-category').value,
                     country: document.getElementById('global-tool-country').value.trim(),
-                    isFeatured: false // Valore di default per i nuovi strumenti
+                    isFeatured: false, // Valore di default per i nuovi strumenti
+                    createdAt: serverTimestamp() // NUOVO: Necessario per il badge delle notifiche
                 };
 
                 // Validazione base
@@ -18776,6 +18942,16 @@ ${filtersHTML}
                     const newView = navBtn.dataset.page;
                     currentView = newView;
 
+                    // NUOVO: Reset dei badge di notifica
+                    if (newView === 'explore') {
+                        localStorage.setItem('lastExploreVisit', Date.now().toString());
+                        updateExploreNotificationBadge();
+                    }
+                    if (newView === 'news') {
+                        localStorage.setItem('lastNewsVisit', Date.now().toString());
+                        updateNewsNotificationBadge();
+                    }
+
                     // Reset activeCollectionId e activePlaylistId quando si cambia vista
                     if (newView !== 'favorites') {
                         activeCollectionId = null;
@@ -18925,6 +19101,10 @@ ${filtersHTML}
                             el.mainContent.scrollTop = 0;
                             break;
                         // --- AZIONI NEWS ---
+                        case 'set-news-time-filter':
+                            window.currentNewsTimeFilter = actionTarget.dataset.filter;
+                            renderView();
+                            break;
                         case 'set-news-tab':
                             window.currentNewsTab = actionTarget.dataset.tab;
                             renderView();
@@ -20111,6 +20291,30 @@ ${filtersHTML}
                 });
 
                 let feedHTML = '';
+
+                // NUOVO: Sezione "Nuovi Arrivi" (Ripristino quando si cancella la ricerca)
+                const newTools = allTools.filter(t => isToolNew(t));
+                if (newTools.length > 0) {
+                    feedHTML += `
+                        <div class="feed-section">
+                            <div class="feed-section-header">
+                                <h2 class="feed-section-title" style="color: var(--Koda-accent);">✨ ${t.newArrivals || 'Nuovi Arrivi'}</h2>
+                            </div>
+                            <div class="horizontal-scroll-container">
+                                ${newTools.map(tool => `
+                                    <div class="tool-item-horizontal stagger-item" data-id="${tool.id}">
+                                        <div class="tool-item-logo-container" style="position: relative;">
+                                            <div class="new-badge-overlay">${t.newBadge || 'NEW'}</div>
+                                            <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">
+                                        </div>
+                                        <div class="tool-item-name">${tool.name}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
                 categories.forEach(category => {
                     const categoryId = category.id;
                     const categoryName = getTranslatedCategoryName(categoryId);
@@ -20228,8 +20432,12 @@ ${filtersHTML}
                     fetchNewsFromFirestore()
                 ]);
 
-                // Aggiorna il badge di notifica del Cinema dopo aver caricato i video
-                setTimeout(() => updateCinemaNotificationBadge(), 100);
+                // Aggiorna i badge di notifica dopo aver caricato i dati da Firebase
+                setTimeout(() => {
+                    updateCinemaNotificationBadge();
+                    updateExploreNotificationBadge();
+                    updateNewsNotificationBadge();
+                }, 100);
 
                 // Rimuovi la playlist predefinita "Guarda più tardi" se esiste nel localStorage
                 const removeDefaultPlaylist = () => {
@@ -20319,7 +20527,7 @@ ${filtersHTML}
 
 
 
-    <!-- Privacy Reminder Modal a tema Koda (Stile Spotify) -->
+    <!-- Privacy Reminder Modal a tema Koda (Stile Koda) -->
     <div class="modal-overlay" id="privacy-reminder-modal"
         style="z-index: 10006; background: var(--Koda-bg); align-items: center; justify-content: center; padding: 20px;">
         <div
@@ -20581,7 +20789,7 @@ ${filtersHTML}
                 }, 2000);
             }
 
-            // Function to show result (Spotify Discovery Style)
+            // Function to show result (Koda Discovery Style)
             function showResult() {
                 const lang = window.currentLanguage || localStorage.getItem('language') || 'it';
                 diceContainer.style.display = 'none';
