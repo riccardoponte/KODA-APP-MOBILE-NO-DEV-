@@ -846,33 +846,6 @@
             border-radius: 8px;
         }
 
-        /* NUOVO: Stili per il sistema di recensioni e valutazioni */
-        .rating-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .stars-display {
-            display: flex;
-            gap: 2px;
-        }
-
-        .star {
-            font-size: 14px;
-            color: #ffd700;
-        }
-
-        .star.empty {
-            color: var(--Koda-text-secondary);
-        }
-
-        .rating-text {
-            font-size: 12px;
-            color: var(--Koda-text-secondary);
-        }
-
         /* NUOVO: Stili per i badge di prezzo */
         .pricing-badge {
             display: inline-flex;
@@ -935,24 +908,6 @@
             color: #dc143c;
         }
 
-        .reviews-section {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(128, 128, 128, 0.2);
-        }
-
-        .reviews-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .reviews-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
         .add-review-btn {
             background-color: var(--Koda-accent);
             color: #000;
@@ -972,73 +927,6 @@
         .add-review-btn:disabled {
             background-color: var(--Koda-text-secondary);
             cursor: not-allowed;
-        }
-
-        .review-item {
-            background-color: var(--Koda-bg-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(128, 128, 128, 0.1);
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
-
-        .review-user {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .review-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--Koda-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: #000;
-        }
-
-        .review-user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .review-username {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .review-date {
-            font-size: 12px;
-            color: var(--Koda-text-secondary);
-        }
-
-        .review-rating {
-            display: flex;
-            gap: 2px;
-        }
-
-        .review-text {
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--Koda-text);
-        }
-
-        .no-reviews {
-            text-align: center;
-            color: var(--Koda-text-secondary);
-            padding: 24px;
-            font-style: italic;
         }
 
         /* Modal per aggiungere recensione */
@@ -1092,63 +980,6 @@
             font-size: 24px;
             cursor: pointer;
             padding: 4px;
-        }
-
-        .rating-input-container {
-            margin-bottom: 20px;
-        }
-
-        .rating-input-label {
-            display: block;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .stars-input {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 8px;
-        }
-
-        .star-input {
-            font-size: 24px;
-            color: var(--Koda-text-secondary);
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .star-input:hover,
-        .star-input.active {
-            color: #ffd700;
-        }
-
-        .review-text-container {
-            margin-bottom: 24px;
-        }
-
-        .review-text-label {
-            display: block;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .review-text-input {
-            width: 100%;
-            min-height: 100px;
-            padding: 12px;
-            border: 1px solid rgba(128, 128, 128, 0.2);
-            border-radius: 8px;
-            background-color: var(--Koda-bg-light);
-            color: var(--Koda-text);
-            font-family: inherit;
-            font-size: 14px;
-            resize: vertical;
-        }
-
-        .review-text-input::placeholder {
-            color: var(--Koda-text-secondary);
         }
 
         .review-modal-actions {
@@ -1325,176 +1156,6 @@
             .confirm-ok-btn {
                 max-width: 100%;
             }
-        }
-
-        /* Sent Reviews Modal Styles */
-        .sent-reviews-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-
-        .sent-reviews-modal.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sent-reviews-modal-content {
-            background: var(--Koda-card);
-            padding: 24px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .sent-reviews-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.2);
-        }
-
-        .sent-reviews-modal-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .sent-reviews-modal-close {
-            background: none;
-            border: none;
-            color: var(--Koda-text-secondary);
-            font-size: 24px;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .sent-review-item {
-            background-color: var(--Koda-bg-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(128, 128, 128, 0.1);
-        }
-
-        .sent-review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .sent-review-tool-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sent-review-tool-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            object-fit: cover;
-            background-color: var(--Koda-card);
-        }
-
-        .sent-review-tool-name {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .sent-review-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .sent-review-edit-btn,
-        .sent-review-delete-btn {
-            background: none;
-            border: 1px solid var(--Koda-text-secondary);
-            color: var(--Koda-text);
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .sent-review-edit-btn:hover {
-            background-color: var(--Koda-accent);
-            border-color: var(--Koda-accent);
-            color: #000;
-        }
-
-        .sent-review-delete-btn:hover {
-            background-color: #ff6b6b;
-            border-color: #ff6b6b;
-            color: #fff;
-        }
-
-        .sent-review-rating {
-            display: flex;
-            gap: 2px;
-            margin-bottom: 8px;
-        }
-
-        .sent-review-text {
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--Koda-text);
-        }
-
-        .sent-review-date {
-            font-size: 12px;
-            color: var(--Koda-text-secondary);
-            margin-top: 8px;
-        }
-
-        .no-sent-reviews {
-            text-align: center;
-            color: var(--Koda-text-secondary);
-            padding: 40px 20px;
-            font-style: italic;
-        }
-
-        /* View All Reviews Link */
-        .view-all-reviews-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--Koda-accent);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 12px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .view-all-reviews-link:hover {
-            color: #1ed760;
-            text-decoration: underline;
-        }
-
-        .view-all-reviews-link svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
         }
 
         .tool-card-list .edit-icon {
@@ -2590,6 +2251,7 @@
             display: flex;
             flex-direction: column;
             padding: 16px;
+            overflow-y: auto;
         }
 
         #side-menu.visible {
@@ -2654,10 +2316,226 @@
             color: var(--Koda-text);
         }
 
+        /* ===== Sezione Strumenti/Utility nel menu laterale ===== */
+        .utility-tools-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .utility-tools-section::-webkit-scrollbar { display: none; }
+        .utility-tools-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--Koda-text-secondary);
+            margin: 2px 2px 4px;
+        }
+        .utility-tool-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--Koda-card);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            color: var(--Koda-text);
+            text-align: left;
+            width: 100%;
+            transition: background-color .2s, transform .1s;
+        }
+        .utility-tool-item:active { transform: scale(.97); }
+        .utility-tool-item .uti-ic {
+            width: 34px; height: 34px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(128,128,128,.15);
+            flex-shrink: 0;
+        }
+        .utility-tool-item .uti-ic svg { width: 18px; height: 18px; color: var(--Koda-accent); }
+        .utility-tool-item .uti-tx b { font-size: 13px; font-weight: 700; display: block; }
+        .utility-tool-item .uti-tx small { font-size: 11px; color: var(--Koda-text-secondary); }
+
+        /* ===== Modale Strumenti/Utility ===== */
+        .utility-modal-overlay {
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(130% 55% at 50% -8%, color-mix(in srgb, var(--Koda-accent) 16%, transparent) 0%, transparent 62%),
+                var(--Koda-bg);
+            z-index: 10010;
+            opacity: 0;
+            transition: opacity .25s;
+            overflow-y: auto;
+        }
+        .utility-modal-overlay.visible { opacity: 1; }
+        .utility-modal-content {
+            max-width: 600px; margin: 0 auto;
+            min-height: 100%;
+            display: flex; flex-direction: column;
+        }
+        .utility-modal-header {
+            position: sticky; top: 0;
+            background: color-mix(in srgb, var(--Koda-bg) 85%, transparent);
+            backdrop-filter: saturate(160%) blur(12px);
+            -webkit-backdrop-filter: saturate(160%) blur(12px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(128,128,128,.12);
+            z-index: 5;
+        }
+        .utility-modal-header h2 { font-size: 17px; font-weight: 800; margin: 0; text-align: center; flex: 1; }
+        .utility-back-btn { background: none; border: none; color: var(--Koda-text); font-size: 24px; cursor: pointer; width: 36px; }
+        .utility-modal-body { padding: 20px 16px 48px; display: flex; flex-direction: column; flex: 1; }
+
+        /* Intestazione "hero" del tool */
+        .util-hero { display: flex; align-items: center; gap: 14px; padding: 4px 2px 18px; }
+        .util-hero-ic {
+            width: 58px; height: 58px; border-radius: 18px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(145deg, color-mix(in srgb, var(--Koda-accent) 78%, #fff), var(--Koda-accent));
+            box-shadow: 0 10px 24px color-mix(in srgb, var(--Koda-accent) 38%, transparent);
+        }
+        .util-hero-ic svg { width: 28px; height: 28px; color: #000; }
+        .util-hero-tx h3 { margin: 0; font-size: 21px; font-weight: 900; letter-spacing: -.4px; }
+        .util-hero-tx p { margin: 3px 0 0; font-size: 13px; color: var(--Koda-text-secondary); }
+
+        /* Pannello contenuto */
+        .util-card {
+            background: var(--Koda-card);
+            border: 1px solid rgba(128,128,128,.14);
+            border-radius: 20px;
+            padding: 18px 16px 22px;
+            box-shadow: 0 14px 34px rgba(0,0,0,.20);
+            flex: 1;
+            display: flex; flex-direction: column;
+        }
+        .util-label { font-size: 13px; font-weight: 700; color: var(--Koda-text-secondary); margin: 16px 0 7px; display: block; }
+        .util-label:first-child { margin-top: 2px; }
+        .util-input {
+            width: 100%;
+            background: var(--Koda-bg);
+            border: 1.5px solid rgba(128,128,128,.2);
+            border-radius: 12px;
+            padding: 13px 14px;
+            color: var(--Koda-text);
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .util-input:focus {
+            outline: none;
+            border-color: var(--Koda-accent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--Koda-accent) 22%, transparent);
+        }
+        textarea.util-input { resize: vertical; }
+        .util-btn-primary {
+            width: 100%; margin-top: auto;
+            padding: 15px; border-radius: 500px;
+            background: linear-gradient(135deg, color-mix(in srgb, var(--Koda-accent) 80%, #fff), var(--Koda-accent));
+            color: #000;
+            font-size: 15px; font-weight: 800;
+            border: none; cursor: pointer;
+            box-shadow: 0 8px 22px color-mix(in srgb, var(--Koda-accent) 32%, transparent);
+            transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+        }
+        .util-btn-primary:active { transform: translateY(1px) scale(.99); box-shadow: 0 4px 14px color-mix(in srgb, var(--Koda-accent) 26%, transparent); }
+        .util-btn-primary:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+        .util-btn-secondary {
+            padding: 10px 16px; border-radius: 500px;
+            background: var(--Koda-bg); color: var(--Koda-text);
+            font-weight: 700; border: 1.5px solid rgba(128,128,128,.22); cursor: pointer;
+            transition: border-color .15s, background .15s;
+        }
+        .util-btn-secondary:active { border-color: var(--Koda-accent); }
+        .util-dropzone {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 6px;
+            border: 2px dashed color-mix(in srgb, var(--Koda-accent) 42%, rgba(128,128,128,.4));
+            border-radius: 16px;
+            padding: 30px 16px;
+            cursor: pointer; text-align: center;
+            margin-top: 6px;
+            background: color-mix(in srgb, var(--Koda-accent) 6%, transparent);
+            transition: background .15s, border-color .15s;
+        }
+        .util-dropzone:active { background: color-mix(in srgb, var(--Koda-accent) 13%, transparent); border-color: var(--Koda-accent); }
+        .util-dropzone span { font-size: 15px; font-weight: 700; color: var(--Koda-text); }
+        .util-dropzone small { font-size: 12px; color: var(--Koda-text-secondary); }
+        .util-result { margin-top: 18px; display: flex; flex-direction: column; align-items: center; }
+        .util-result img { max-width: 100%; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+        .util-thumb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 12px; width: 100%; }
+        .util-thumb { position: relative; border-radius: 12px; overflow: hidden; background: var(--Koda-bg); border: 1px solid rgba(128,128,128,.14); }
+        .util-thumb img { width: 100%; display: block; }
+        .util-thumb > span { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 6px; }
+        .util-thumb-dl { display: flex; flex-direction: column; }
+        .util-mini-dl { border: none; background: var(--Koda-accent); color: #000; font-size: 11px; font-weight: 700; padding: 6px; cursor: pointer; }
+        .util-file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .util-file-row { background: var(--Koda-bg); border: 1px solid rgba(128,128,128,.14); border-radius: 12px; padding: 12px 14px; font-size: 13px; word-break: break-all; }
+        /* Riordino + eliminazione singola */
+        .util-reorder-item { cursor: grab; }
+        .util-reorder-item:active { cursor: grabbing; }
+        .util-thumb-idx { position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 6px; z-index: 2; }
+        .util-thumb-del {
+            position: absolute; top: 4px; right: 4px;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: rgba(0,0,0,.65); color: #fff;
+            border: none; cursor: pointer;
+            font-size: 16px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3; padding: 0;
+        }
+        .util-drag-badge { color: var(--Koda-text-secondary); font-size: 16px; cursor: grab; user-select: none; }
+        .util-thumb .util-drag-badge { position: absolute; bottom: 4px; right: 6px; color: #fff; opacity: .85; text-shadow: 0 1px 2px rgba(0,0,0,.6); z-index: 2; }
+        .util-file-row { display: flex; align-items: center; gap: 10px; }
+        .util-file-name { flex: 1; min-width: 0; }
+        .util-row-del { position: static; flex-shrink: 0; }
+        .sortable-ghost { opacity: .4; }
+        .util-spinner { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px; color: var(--Koda-text-secondary); }
+        .util-error { color: #e2556a; font-size: 13px; }
+        .util-hint { font-size: 13px; color: var(--Koda-text-secondary); }
+        .util-steps {
+            margin: 0 0 16px; padding: 12px 14px 12px 32px;
+            font-size: 13px; color: var(--Koda-text-secondary); line-height: 1.8;
+            list-style-position: inside;
+            background: color-mix(in srgb, var(--Koda-accent) 7%, transparent);
+            border: 1px solid color-mix(in srgb, var(--Koda-accent) 18%, transparent);
+            border-radius: 12px;
+        }
+        .util-sign-pad { width: 100%; height: 150px; background: #fff; border-radius: 10px; border: 1px solid rgba(128,128,128,.25); touch-action: none; cursor: crosshair; display: block; }
+        .util-sign-preview { margin-top: 10px; width: 100%; }
+        .util-sign-canvas-holder canvas { width: 100%; display: block; border-radius: 8px; cursor: crosshair; }
+
         .menu-footer {
             margin-top: auto;
             padding-top: 16px;
             border-top: 1px solid var(--Koda-card);
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        .menu-footer-link {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--Koda-text-secondary);
+            font-size: 12px;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .menu-footer-link:hover { color: var(--Koda-accent); }
+
+        .menu-section-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--Koda-text-secondary);
+            margin: 4px 2px 8px;
+            flex-shrink: 0;
         }
 
         #delete-all-btn {
@@ -6390,6 +6268,9 @@
         .news-feed-container {
             height: 100%;
             width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             -webkit-overflow-scrolling: touch;
@@ -6406,21 +6287,18 @@
         .news-item {
             height: 100%;
             width: 100%;
+            flex: 0 0 100%;
             scroll-snap-align: start;
             scroll-snap-stop: always;
 
-            /* --- INIZIO EFFETTO PILA (CARTE) --- */
-            position: sticky;
-            top: 0;
-            box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.8);
-            /* Ombra per separare visivamente le carte sovrapposte */
-            /* --- FINE EFFETTO PILA --- */
+            /* Ogni notizia occupa il proprio spazio nel flusso normale
+               per evitare che le card si sovrappongano durante lo scroll */
+            position: relative;
 
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             background: var(--Koda-bg);
-            transition: transform 0.3s ease;
             padding: 20px;
         }
 
@@ -6513,6 +6391,150 @@
         .news-inline-read-more:hover {
             opacity: 1;
             text-decoration: underline;
+        }
+
+        /* --- STILI ONBOARDING INTERATTIVO (COACH MARKS) --- */
+        #koda-onboarding-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            pointer-events: auto;
+        }
+
+        .koda-onboarding-highlight {
+            position: absolute;
+            border-radius: 16px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.78);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            border: 2px solid var(--Koda-accent);
+        }
+
+        .koda-onboarding-highlight.no-target {
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
+            border: none;
+            width: 0;
+            height: 0;
+            top: 50%;
+            left: 50%;
+        }
+
+        .koda-onboarding-tooltip {
+            position: absolute;
+            max-width: 320px;
+            width: calc(100% - 48px);
+            background: var(--Koda-card);
+            color: var(--Koda-text);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100001;
+        }
+
+        .koda-onboarding-tooltip h3 {
+            margin: 0 0 8px 0;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .koda-onboarding-tooltip p {
+            margin: 0 0 16px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--Koda-text-secondary);
+        }
+
+        .koda-onboarding-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .koda-onboarding-lang {
+            display: flex;
+            gap: 10px;
+            margin: 4px 0 14px;
+        }
+
+        .koda-onboarding-lang-btn {
+            flex: 1;
+            padding: 12px 10px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(128,128,128,.25);
+            background: var(--Koda-bg);
+            color: var(--Koda-text);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: border-color .15s ease, background .15s ease, transform .12s ease;
+        }
+
+        .koda-onboarding-lang-btn:active { transform: scale(.97); }
+
+        .koda-onboarding-lang-btn.active {
+            border-color: var(--Koda-accent);
+            background: color-mix(in srgb, var(--Koda-accent) 16%, transparent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--Koda-accent) 18%, transparent);
+        }
+
+        .koda-onboarding-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .koda-onboarding-dots span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--Koda-text-secondary);
+            opacity: 0.4;
+            transition: all 0.2s ease;
+        }
+
+        .koda-onboarding-dots span.active {
+            opacity: 1;
+            background: var(--Koda-accent);
+            width: 18px;
+            border-radius: 4px;
+        }
+
+        .koda-onboarding-btns {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .koda-onboarding-skip {
+            background: none;
+            border: none;
+            color: var(--Koda-text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .koda-onboarding-next {
+            background: var(--Koda-accent);
+            color: #000;
+            border: none;
+            border-radius: 500px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .koda-onboarding-next:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
@@ -9195,18 +9217,18 @@
     <div id="side-menu-overlay" class="hidden">
         <div id="side-menu" class="hidden">
             <div class="menu-header">
-                <h3 data-translate="history">Cronologia</h3>
+                <h3>Menu</h3>
                 <button class="new-chat-btn" data-action="new-chat" data-translate="newChat">Nuova chat</button>
             </div>
+            <div id="utility-tools-container" class="utility-tools-section"></div>
+            <div class="menu-section-title" id="history-section-title" data-translate="history">Cronologia</div>
             <div id="conversation-list-container" class="conversation-list">
                 <!-- Le conversazioni verranno popolate da JS -->
             </div>
-            <div class="menu-footer" style="text-align: center; padding-bottom: 10px;">
+            <div class="menu-footer">
                 <a href="https://mega.nz/file/ohYS0CYB#oLZnprvBFxWQpDqPDiqWzqHo6yTA_P1a34Qk_VAgqxA" target="_blank"
-                    style="color: var(--Koda-accent); font-weight: bold; text-decoration: underline; display: block; margin-bottom: 12px;"
-                    data-translate="discoverMoreLink">Clicca per scoprire di piu'</a>
-                <button id="delete-all-btn" data-action="delete-all-chats" data-translate="deleteAll">Elimina
-                    tutto</button>
+                    class="menu-footer-link" data-translate="discoverMoreLink">Clicca per scoprire di piu'</a>
+                <button id="delete-all-btn" data-action="delete-all-chats" data-translate="deleteAll">Elimina tutto</button>
             </div>
         </div>
     </div>
@@ -10069,7 +10091,6 @@ ${knowledgeBaseFormatter(tools)}
                     visitWebsite: "Visita Sito Web", alternativeSuggestion: "In alternativa prova:",
                     // Settings Modal
                     settingsTitle: "Impostazioni account", changePasswordTitle: "Cambia password", newPasswordLabel: "Nuova password",
-                    sentReviews: "Recensioni inviate", noSentReviews: "Non hai ancora inviato recensioni.", viewAllUserReviews: "Visualizza tutte le recensioni utente", allUserReviews: "Tutte le recensioni utente",
                     newPasswordPlaceholder: "Minimo 6 caratteri", confirmPasswordLabel: "Conferma password", confirmPasswordPlaceholder: "Reinserisci la Nuova password",
                     savePasswordButton: "Salva Password", passwordUpdateSuccess: "Password aggiornata con successo!",
                     passwordTooShort: "La password deve contenere almeno 6 caratteri.", passwordsDoNotMatch: "Le password non coincidono.",
@@ -10317,7 +10338,6 @@ ${knowledgeBaseFormatter(tools)}
                     visitWebsite: "Visit Website", alternativeSuggestion: "Alternatively, try:",
                     // Settings Modal
                     settingsTitle: "Account Settings", changePasswordTitle: "Change Password", newPasswordLabel: "New Password",
-                    sentReviews: "Sent Reviews", noSentReviews: "You haven't sent any reviews yet.", viewAllUserReviews: "View all user reviews", allUserReviews: "All User Reviews",
                     newPasswordPlaceholder: "Minimum 6 characters", confirmPasswordLabel: "Confirm Password", confirmPasswordPlaceholder: "Re-enter new password",
                     savePasswordButton: "Save Password", passwordUpdateSuccess: "Password updated successfully!",
                     passwordTooShort: "Password must be at least 6 characters long.", passwordsDoNotMatch: "Passwords do not match.",
@@ -10678,6 +10698,213 @@ ${knowledgeBaseFormatter(tools)}
                 return (Date.now() - toolTimeMs) <= sevenDaysInMs;
             };
 
+            // NUOVO: Cronologia "Visti di recente" (max 20, salvata in localStorage)
+            const RECENTLY_VIEWED_KEY = 'koda-recently-viewed';
+            const RECENTLY_VIEWED_MAX = 20;
+
+            const trackRecentlyViewed = (toolId) => {
+                if (!toolId) return;
+                try {
+                    let history = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || '[]');
+                    history = history.filter(id => id !== toolId);
+                    history.unshift(toolId);
+                    if (history.length > RECENTLY_VIEWED_MAX) history = history.slice(0, RECENTLY_VIEWED_MAX);
+                    localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(history));
+                } catch (e) {
+                    console.error('Errore nel salvataggio della cronologia:', e);
+                }
+                // Gamification: traccia i tool unici visti per il badge Esploratore
+                recordToolViewed(toolId);
+                checkAchievements();
+            };
+
+            const getRecentlyViewedTools = () => {
+                try {
+                    const history = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || '[]');
+                    const allTools = getAllToolsForCurrentUser();
+                    return history
+                        .map(id => allTools.find(t => t.id === id))
+                        .filter(Boolean);
+                } catch (e) {
+                    return [];
+                }
+            };
+
+            // ===========================================================
+            // GAMIFICATION: Streak giornaliero + Badge/Achievement
+            // (interamente basato su localStorage, funziona anche da ospite)
+            // ===========================================================
+            const GK = {
+                STREAK: 'koda-streak',                 // { count, lastDate }
+                VIEWED_SET: 'koda-viewed-tools-set',   // array di id tool unici visti
+                UNLOCKED: 'koda-achievements-unlocked' // array di id achievement sbloccati
+            };
+
+            const getTodayKey = () => {
+                const d = new Date();
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            };
+
+            // Aggiorna lo streak all'avvio dell'app. Ritorna il numero di giorni consecutivi.
+            const updateDailyStreak = () => {
+                let data;
+                try {
+                    data = JSON.parse(localStorage.getItem(GK.STREAK) || 'null');
+                } catch (e) { data = null; }
+
+                const today = getTodayKey();
+
+                if (!data || !data.lastDate) {
+                    data = { count: 1, lastDate: today };
+                } else if (data.lastDate === today) {
+                    // Già aperto oggi: nessun cambiamento
+                } else {
+                    // Calcola se l'ultima apertura era ieri
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const yKey = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+                    if (data.lastDate === yKey) {
+                        data.count = (data.count || 0) + 1; // Continua la serie
+                    } else {
+                        data.count = 1; // Serie interrotta
+                    }
+                    data.lastDate = today;
+                }
+
+                localStorage.setItem(GK.STREAK, JSON.stringify(data));
+                return data.count;
+            };
+
+            const getStreakCount = () => {
+                try {
+                    const data = JSON.parse(localStorage.getItem(GK.STREAK) || 'null');
+                    return data && data.count ? data.count : 0;
+                } catch (e) { return 0; }
+            };
+
+            // Registra un tool unico visto (per il badge Esploratore)
+            const recordToolViewed = (toolId) => {
+                if (!toolId) return;
+                try {
+                    let set = JSON.parse(localStorage.getItem(GK.VIEWED_SET) || '[]');
+                    if (!set.includes(toolId)) {
+                        set.push(toolId);
+                        localStorage.setItem(GK.VIEWED_SET, JSON.stringify(set));
+                    }
+                } catch (e) { /* no-op */ }
+            };
+
+            const getViewedToolsCount = () => {
+                try { return JSON.parse(localStorage.getItem(GK.VIEWED_SET) || '[]').length; }
+                catch (e) { return 0; }
+            };
+
+            // Definizione degli achievement
+            const getAchievementsDefs = () => {
+                const isIT = currentLanguage === 'it';
+                return [
+                    {
+                        id: 'esploratore',
+                        icon: '🧭',
+                        name: isIT ? 'Esploratore' : 'Explorer',
+                        desc: isIT ? 'Apri 10 strumenti diversi' : 'Open 10 different tools',
+                        current: getViewedToolsCount(),
+                        target: 10
+                    },
+                    {
+                        id: 'curatore',
+                        icon: '🗂️',
+                        name: isIT ? 'Curatore' : 'Curator',
+                        desc: isIT ? 'Crea la tua prima collezione' : 'Create your first collection',
+                        current: (collections ? collections.length : 0),
+                        target: 1
+                    }
+                ];
+            };
+
+            const getUnlockedAchievements = () => {
+                try { return JSON.parse(localStorage.getItem(GK.UNLOCKED) || '[]'); }
+                catch (e) { return []; }
+            };
+
+            // Controlla i progressi e mostra una notifica per i nuovi achievement sbloccati
+            const checkAchievements = () => {
+                const defs = getAchievementsDefs();
+                const unlocked = getUnlockedAchievements();
+                let changed = false;
+
+                defs.forEach(a => {
+                    const isComplete = a.current >= a.target;
+                    if (isComplete && !unlocked.includes(a.id)) {
+                        unlocked.push(a.id);
+                        changed = true;
+                        const isIT = currentLanguage === 'it';
+                        showToast(`${a.icon} ${isIT ? 'Traguardo sbloccato' : 'Achievement unlocked'}: ${a.name}!`);
+                        if (window.triggerHaptic) window.triggerHaptic('heavy');
+                    }
+                });
+
+                if (changed) {
+                    localStorage.setItem(GK.UNLOCKED, JSON.stringify(unlocked));
+                    // Aggiorna l'eventuale badge sull'avatar
+                    if (typeof updateAchievementsIndicator === 'function') updateAchievementsIndicator();
+                }
+            };
+
+            // Modale Traguardi: streak + badge
+            const openAchievementsModal = () => {
+                const isIT = currentLanguage === 'it';
+                const streak = getStreakCount();
+                const defs = getAchievementsDefs();
+                const unlocked = getUnlockedAchievements();
+
+                const badgesHTML = defs.map(a => {
+                    const done = a.current >= a.target || unlocked.includes(a.id);
+                    const pct = Math.min(100, Math.round((a.current / a.target) * 100));
+                    const shown = Math.min(a.current, a.target);
+                    return `
+                        <div style="display:flex; align-items:center; gap:14px; background:var(--Koda-bg); border:1px solid rgba(128,128,128,0.15); border-radius:14px; padding:14px; margin-bottom:12px; opacity:${done ? '1' : '0.85'};">
+                            <div style="width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:26px; background:${done ? 'var(--Koda-accent)' : 'var(--Koda-card)'}; filter:${done ? 'none' : 'grayscale(1)'};">${a.icon}</div>
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-weight:800; font-size:16px;">${a.name}</span>
+                                    ${done ? `<span style="font-size:11px; font-weight:800; color:var(--Koda-accent);">${isIT ? 'SBLOCCATO' : 'UNLOCKED'}</span>` : ''}
+                                </div>
+                                <div style="font-size:13px; color:var(--Koda-text-secondary); margin:2px 0 8px;">${a.desc}</div>
+                                <div style="height:6px; background:rgba(128,128,128,0.2); border-radius:3px; overflow:hidden;">
+                                    <div style="height:100%; width:${pct}%; background:var(--Koda-accent); border-radius:3px; transition:width .3s ease;"></div>
+                                </div>
+                                <div style="font-size:11px; color:var(--Koda-text-secondary); margin-top:4px;">${shown}/${a.target}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const modalHTML = `
+                <div id="achievements-modal" class="modal-overlay visible" style="z-index:10006;">
+                    <div class="modal-content" style="max-width:440px; width:100%; max-height:85vh; overflow-y:auto; background:var(--Koda-card); border-radius:20px; padding:24px; position:relative;">
+                        <button class="modal-close-btn" data-action="close-modal" style="z-index:10;">×</button>
+                        <h2 style="font-size:26px; font-weight:900; letter-spacing:-0.5px; margin:0 0 4px;">${isIT ? 'I tuoi traguardi' : 'Your achievements'}</h2>
+                        <p style="font-size:13px; color:var(--Koda-text-secondary); margin:0 0 20px;">${isIT ? 'Continua a usare Koda per sbloccarli tutti.' : 'Keep using Koda to unlock them all.'}</p>
+
+                        <div style="display:flex; align-items:center; gap:16px; background:linear-gradient(135deg, rgba(255,140,0,0.15) 0%, rgba(0,0,0,0) 100%); border:1px solid #ff8c00; border-radius:16px; padding:18px; margin-bottom:24px;">
+                            <div style="font-size:42px; line-height:1;">🔥</div>
+                            <div>
+                                <div style="font-size:28px; font-weight:900; line-height:1;">${streak} ${isIT ? (streak === 1 ? 'giorno' : 'giorni') : (streak === 1 ? 'day' : 'days')}</div>
+                                <div style="font-size:13px; color:var(--Koda-text-secondary); margin-top:2px;">${isIT ? 'Serie di accessi consecutivi' : 'Daily login streak'}</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--Koda-text-secondary); margin-bottom:12px;">${isIT ? 'Distintivi' : 'Badges'}</div>
+                        ${badgesHTML}
+                    </div>
+                </div>`;
+
+                el.modalContainer.innerHTML = modalHTML;
+                history.pushState({ modal: 'achievements' }, '', '');
+            };
+
+
             // Funzione globale accessibile anche dallo script React
             window.getLocalizedToolsData = (lang) => {
                 return aiToolsData.map(tool => ({ ...tool, description: tool.description[lang] || tool.description['en'] }));
@@ -10891,6 +11118,8 @@ ${knowledgeBaseFormatter(tools)}
                 };
                 collections.push(newCollection);
                 saveCollections();
+                // Gamification: badge Curatore (prima collezione)
+                if (typeof checkAchievements === 'function') checkAchievements();
                 return newCollection;
             };
 
@@ -11019,7 +11248,706 @@ ${knowledgeBaseFormatter(tools)}
                 return collections.find(c => c.id === collectionId);
             };
 
-            // Helper function to generate pricing badge HTML
+            // ===========================================================
+            // SOCIAL LEGGERO: Condivisione tramite link (senza Firestore)
+            // - Deep link a un tool:      ?tool=<id>
+            // - Collezione condivisibile: ?c=<base64 del payload>
+            // ===========================================================
+
+            // URL base pulito (senza query/hash), per costruire i link condivisibili
+            const getShareBaseUrl = () => `${window.location.origin}${window.location.pathname}`;
+
+            // Codifica/decodifica base64 sicura per UTF-8
+            const b64EncodeUnicode = (str) => {
+                try { return btoa(unescape(encodeURIComponent(str))); }
+                catch (e) { return ''; }
+            };
+            const b64DecodeUnicode = (str) => {
+                try { return decodeURIComponent(escape(atob(str))); }
+                catch (e) { return ''; }
+            };
+
+            // Link diretto alla scheda di un tool
+            const buildToolShareLink = (toolId) => `${getShareBaseUrl()}?tool=${encodeURIComponent(toolId)}`;
+
+            // Link di sola lettura di una collezione (dati incorporati nel link)
+            const buildCollectionShareLink = (collection) => {
+                const payload = { v: 1, n: collection.name, t: collection.toolIds || [] };
+                if (collection.coverImage && !String(collection.coverImage).startsWith('data:')) {
+                    payload.c = collection.coverImage; // includi cover solo se è un URL (non base64 pesante)
+                }
+                const encoded = b64EncodeUnicode(JSON.stringify(payload));
+                return `${getShareBaseUrl()}?c=${encodeURIComponent(encoded)}`;
+            };
+
+            // Condivisione tramite Web Share API con fallback su clipboard
+            const shareViaSystem = async (title, text, url) => {
+                const isIT = currentLanguage === 'it';
+                try {
+                    if (navigator.share) {
+                        await navigator.share({ title, text, url });
+                        return;
+                    }
+                } catch (e) {
+                    // L'utente ha annullato la condivisione nativa: non mostrare errori
+                    if (e && e.name === 'AbortError') return;
+                }
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(url);
+                        showToast(isIT ? '🔗 Link copiato negli appunti!' : '🔗 Link copied to clipboard!');
+                        return;
+                    }
+                } catch (e) { /* fallthrough */ }
+                // Fallback finale: prompt manuale
+                window.prompt(isIT ? 'Copia il link:' : 'Copy the link:', url);
+            };
+
+            // Azione: condividi un tool
+            const shareTool = (toolId) => {
+                const tool = getAllToolsForCurrentUser().find(t => t.id === toolId);
+                const isIT = currentLanguage === 'it';
+                const name = tool ? tool.name : 'AI';
+                const title = `Koda · ${name}`;
+                const text = isIT ? `Dai un'occhiata a ${name} su Koda` : `Check out ${name} on Koda`;
+                if (window.triggerHaptic) window.triggerHaptic('light');
+                shareViaSystem(title, text, buildToolShareLink(toolId));
+            };
+
+            // Azione: condividi una collezione (link di sola lettura)
+            const shareCollection = (collectionId) => {
+                const collection = getCollectionById(collectionId);
+                if (!collection) return;
+                const isIT = currentLanguage === 'it';
+                const title = `Koda · ${collection.name}`;
+                const text = isIT ? `Guarda la mia collezione "${collection.name}" su Koda` : `Check out my "${collection.name}" collection on Koda`;
+                if (window.triggerHaptic) window.triggerHaptic('light');
+                shareViaSystem(title, text, buildCollectionShareLink(collection));
+            };
+
+            // Decodifica i dati di una collezione condivisa dal parametro URL
+            const decodeSharedCollection = (encoded) => {
+                const json = b64DecodeUnicode(decodeURIComponent(encoded));
+                if (!json) return null;
+                try {
+                    const data = JSON.parse(json);
+                    if (!data || typeof data.n !== 'string' || !Array.isArray(data.t)) return null;
+                    // Sanifica: accetta solo stringhe come id
+                    data.t = data.t.filter(id => typeof id === 'string').slice(0, 200);
+                    return data;
+                } catch (e) { return null; }
+            };
+
+            // Modale di sola lettura per una collezione condivisa
+            const openSharedCollectionModal = (data) => {
+                const isIT = currentLanguage === 'it';
+                const allTools = getAllToolsForCurrentUser();
+                const sharedTools = data.t.map(id => allTools.find(t => t.id === id)).filter(Boolean);
+                const count = sharedTools.length;
+                const countText = count === 1
+                    ? (isIT ? '1 strumento' : '1 tool')
+                    : `${count} ${isIT ? 'strumenti' : 'tools'}`;
+
+                const logoUrl = currentTheme === 'light'
+                    ? 'https://i.postimg.cc/15Fy64s4/LOGO-KODA.png'
+                    : 'https://i.postimg.cc/d03sh61v/LOGO-KODA-Copia-1.png';
+                const coverHTML = data.c
+                    ? `<img src="${data.c}" alt="${data.n}" style="width: 100%; height: 100%; object-fit: cover;">`
+                    : `<img src="${logoUrl}" alt="Koda" style="width: 100%; height: 100%; object-fit: cover; background: var(--Koda-card);">`;
+
+                const toolsHTML = sharedTools.length > 0
+                    ? sharedTools.map(tool => createListCard(tool, 'shared-collection')).join('')
+                    : `<div id="empty-state" style="padding: 40px 20px; text-align: center; color: var(--Koda-text-secondary);">${isIT ? 'Nessuno strumento disponibile in questa collezione.' : 'No available tools in this collection.'}</div>`;
+
+                // Salva i dati in attesa di un eventuale salvataggio dell'utente
+                window.pendingSharedCollection = data;
+
+                const modalHTML = `
+                <div id="shared-collection-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10007; align-items: flex-start; padding: 0; overflow-y: auto;">
+                    <div style="width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column;">
+                        <div style="position: sticky; top: 0; background: var(--Koda-bg); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 10; border-bottom: 1px solid rgba(128,128,128,0.1);">
+                            <span style="font-size: 12px; font-weight: 800; color: var(--Koda-accent); text-transform: uppercase; letter-spacing: 1px;">${isIT ? '🔗 Collezione condivisa' : '🔗 Shared collection'}</span>
+                            <button data-action="close-shared-collection" style="background: none; border: none; color: var(--Koda-text-secondary); font-size: 32px; cursor: pointer; line-height: 1;">&times;</button>
+                        </div>
+                        <div style="padding: 24px 20px 12px;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div style="width: 88px; height: 88px; border-radius: 12px; overflow: hidden; flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.3);">${coverHTML}</div>
+                                <div style="min-width: 0;">
+                                    <h1 style="font-size: 26px; font-weight: 900; margin: 0 0 4px 0; color: var(--Koda-text); word-break: break-word;">${data.n}</h1>
+                                    <div style="font-size: 13px; color: var(--Koda-text-secondary);">${countText}</div>
+                                </div>
+                            </div>
+                            <button data-action="save-shared-collection" style="width: 100%; margin-top: 20px; padding: 14px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 15px; font-weight: 800; border: none; cursor: pointer;">
+                                ${isIT ? '➕ Salva nelle mie collezioni' : '➕ Save to my collections'}
+                            </button>
+                        </div>
+                        <div class="list-container" style="padding: 8px 16px 40px;">
+                            ${toolsHTML}
+                        </div>
+                    </div>
+                </div>`;
+                el.modalContainer.insertAdjacentHTML('beforeend', modalHTML);
+                history.pushState({ modal: 'shared-collection' }, '', '');
+            };
+
+            // Salva una collezione condivisa tra le proprie
+            const saveSharedCollection = () => {
+                const data = window.pendingSharedCollection;
+                if (!data) return;
+                const isIT = currentLanguage === 'it';
+                const newCollection = createCollection(data.n, data.c || null);
+                newCollection.toolIds = Array.from(new Set(data.t));
+                saveCollections();
+                window.pendingSharedCollection = null;
+                if (window.triggerHaptic) window.triggerHaptic('medium');
+                showToast(isIT ? `✅ "${data.n}" salvata nelle tue collezioni!` : `✅ "${data.n}" saved to your collections!`);
+                const modal = document.getElementById('shared-collection-modal');
+                if (modal) modal.remove();
+            };
+
+            // Gestione dei deep link all'avvio dell'app
+            const handleDeepLinks = () => {
+                const params = new URLSearchParams(window.location.search);
+                const toolId = params.get('tool');
+                const sharedCollection = params.get('c');
+
+                // Pulisci i parametri dall'URL per non riaprire i modali al refresh/navigazione
+                const cleanUrl = () => {
+                    const url = getShareBaseUrl() + (window.location.hash || '');
+                    history.replaceState(history.state, '', url);
+                };
+
+                if (toolId) {
+                    cleanUrl();
+                    setTimeout(() => window.openDetailModal(toolId), 300);
+                    return;
+                }
+                if (sharedCollection) {
+                    const data = decodeSharedCollection(sharedCollection);
+                    cleanUrl();
+                    if (data) {
+                        setTimeout(() => openSharedCollectionModal(data), 300);
+                    } else {
+                        showToast(currentLanguage === 'it' ? 'Link della collezione non valido.' : 'Invalid collection link.');
+                    }
+                }
+            };
+
+            /* =====================================================================
+               STRUMENTI / UTILITY (QR, PDF) — librerie caricate da CDN on-demand
+               ===================================================================== */
+            const UTIL_CDN = {
+                jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+                pdflib: 'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js',
+                pdfjs: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+                pdfjsWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+                qrcode: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+            };
+            const _utilLoadedScripts = {};
+            const utilLoadScript = (src) => {
+                if (_utilLoadedScripts[src]) return _utilLoadedScripts[src];
+                _utilLoadedScripts[src] = new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = src;
+                    s.async = true;
+                    s.onload = () => resolve();
+                    s.onerror = () => { delete _utilLoadedScripts[src]; reject(new Error('load failed: ' + src)); };
+                    document.head.appendChild(s);
+                });
+                return _utilLoadedScripts[src];
+            };
+            const ensureJsPDF = async () => { await utilLoadScript(UTIL_CDN.jspdf); return window.jspdf.jsPDF; };
+            const ensurePDFLib = async () => { await utilLoadScript(UTIL_CDN.pdflib); return window.PDFLib; };
+            const ensurePdfJs = async () => {
+                await utilLoadScript(UTIL_CDN.pdfjs);
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = UTIL_CDN.pdfjsWorker;
+                return window.pdfjsLib;
+            };
+            const ensureQRCode = async () => { await utilLoadScript(UTIL_CDN.qrcode); return window.QRCode; };
+
+            // Helper file/download
+            const readFileAsDataURL = (file) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+            const readFileAsArrayBuffer = (file) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsArrayBuffer(file); });
+            const loadImageEl = (src) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+            const downloadBlob = (blob, filename) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = filename;
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1500);
+            };
+            const downloadDataUrl = (dataUrl, filename) => {
+                const a = document.createElement('a');
+                a.href = dataUrl; a.download = filename;
+                document.body.appendChild(a); a.click(); a.remove();
+            };
+            const utilSpinner = (text) => `<div class="util-spinner"><div class="chat-bubble loading"><span></span><span></span><span></span></div><p>${text || ''}</p></div>`;
+
+            // Definizione degli strumenti per il menu laterale
+            const getUtilityToolsDefs = () => {
+                const it = currentLanguage === 'it';
+                return [
+                    { id: 'qr', label: it ? 'QR Code' : 'QR Code', desc: it ? 'Genera codici QR' : 'Generate QR codes', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM21 13h-2v2h2v-2zM15 13h-2v2h2v-2zM17 15h-2v2h2v-2zM13 17h2v2h-2zM15 19h2v2h-2zM17 17h2v2h-2zM19 19h2v2h-2zM19 15h2v2h-2z"/></svg>' },
+                    { id: 'img2pdf', label: it ? 'Immagini → PDF' : 'Images → PDF', desc: it ? 'Crea un PDF dalle foto' : 'Build a PDF from photos', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>' },
+                    { id: 'signpdf', label: it ? 'Firma PDF' : 'Sign PDF', desc: it ? 'Aggiungi la tua firma' : 'Add your signature', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' },
+                    { id: 'mergepdf', label: it ? 'Unisci PDF' : 'Merge PDF', desc: it ? 'Combina più PDF' : 'Combine multiple PDFs', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4v-2H5V6h4V4zm10 0h-4v2h4v12h-4v2h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-7 3h2v4h4v2h-4v4h-2v-4H8v-2h4V7z"/></svg>' },
+                    { id: 'pdf2img', label: it ? 'PDF → Immagini' : 'PDF → Images', desc: it ? 'Estrai le pagine come PNG' : 'Export pages as PNG', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-2 14l1.79 2.15L16 14l3 4H7l3-4 2 2zM13 9V3.5L18.5 9H13z"/></svg>' }
+                ];
+            };
+
+            // Render della sezione Strumenti nel menu laterale
+            const renderUtilityToolsMenu = () => {
+                const container = document.getElementById('utility-tools-container');
+                if (!container) return;
+                const it = currentLanguage === 'it';
+                const items = getUtilityToolsDefs().map(t => `
+                    <button class="utility-tool-item" data-action="open-utility-tool" data-utility="${t.id}">
+                        <span class="uti-ic">${t.icon}</span>
+                        <span class="uti-tx"><b>${t.label}</b><small>${t.desc}</small></span>
+                    </button>`).join('');
+                container.innerHTML = `<div class="utility-tools-title">🧰 ${it ? 'Strumenti' : 'Tools'}</div>${items}`;
+            };
+
+            // Shell generico del modale Strumenti
+            const closeUtilityModal = () => {
+                const m = document.getElementById('utility-modal');
+                if (m) m.remove();
+            };
+            const openUtilityShell = (titleHTML, toolId) => {
+                closeUtilityModal();
+                const it = currentLanguage === 'it';
+                const def = (getUtilityToolsDefs().find(t => t.id === toolId)) || null;
+                const heroHTML = def ? `
+                        <div class="util-hero">
+                            <div class="util-hero-ic">${def.icon}</div>
+                            <div class="util-hero-tx">
+                                <h3>${def.label}</h3>
+                                <p>${def.desc}</p>
+                            </div>
+                        </div>` : '';
+                const html = `
+                <div id="utility-modal" class="utility-modal-overlay visible">
+                    <div class="utility-modal-content">
+                        <div class="utility-modal-header">
+                            <button class="utility-back-btn" data-action="close-utility" aria-label="Chiudi">&larr;</button>
+                            <h2>${titleHTML}</h2>
+                            <span style="width:36px"></span>
+                        </div>
+                        <div class="utility-modal-body" id="utility-body">${heroHTML}<div class="util-card" id="utility-card"></div></div>
+                    </div>
+                </div>`;
+                el.modalContainer.insertAdjacentHTML('beforeend', html);
+                history.pushState({ modal: 'utility' }, '', '');
+                return document.getElementById('utility-card');
+            };
+
+            const openUtilityTool = (type) => {
+                switch (type) {
+                    case 'qr': return openQRTool();
+                    case 'img2pdf': return openImagesToPdfTool();
+                    case 'mergepdf': return openMergePdfTool();
+                    case 'pdf2img': return openPdfToImagesTool();
+                    case 'signpdf': return openSignPdfTool();
+                }
+            };
+
+            // --- Strumento: QR Code Generator ---
+            const openQRTool = () => {
+                const it = currentLanguage === 'it';
+                const body = openUtilityShell('🔳 QR Code', 'qr');
+                body.innerHTML = `
+                    <label class="util-label">${it ? 'Testo o URL' : 'Text or URL'}</label>
+                    <textarea id="qr-input" class="util-input" rows="3" placeholder="https://..."></textarea>
+                    <label class="util-label">${it ? 'Dimensione' : 'Size'}</label>
+                    <select id="qr-size" class="util-input">
+                        <option value="256">256 px</option>
+                        <option value="512" selected>512 px</option>
+                        <option value="1024">1024 px</option>
+                    </select>
+                    <button id="qr-generate" class="util-btn-primary">${it ? 'Genera QR' : 'Generate QR'}</button>
+                    <div id="qr-result" class="util-result"></div>`;
+                body.querySelector('#qr-generate').addEventListener('click', async () => {
+                    const text = body.querySelector('#qr-input').value.trim();
+                    if (!text) { showToast(it ? 'Inserisci un testo o URL' : 'Enter text or URL'); return; }
+                    const size = parseInt(body.querySelector('#qr-size').value, 10);
+                    const result = body.querySelector('#qr-result');
+                    result.innerHTML = utilSpinner(it ? 'Generazione...' : 'Generating...');
+                    try {
+                        const QRCode = await ensureQRCode();
+                        result.innerHTML = '<div id="qr-holder"></div>';
+                        const holder = result.querySelector('#qr-holder');
+                        new QRCode(holder, { text, width: size, height: size, correctLevel: QRCode.CorrectLevel.H });
+                        setTimeout(() => {
+                            const canvas = holder.querySelector('canvas');
+                            const img = holder.querySelector('img');
+                            const dataUrl = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+                            if (!dataUrl) return;
+                            result.insertAdjacentHTML('beforeend', `<button id="qr-download" class="util-btn-primary">${it ? '⬇️ Scarica PNG' : '⬇️ Download PNG'}</button>`);
+                            result.querySelector('#qr-download').addEventListener('click', () => {
+                                downloadDataUrl(dataUrl, 'koda-qrcode.png');
+                                if (window.triggerHaptic) window.triggerHaptic('light');
+                            });
+                        }, 120);
+                    } catch (e) {
+                        result.innerHTML = `<p class="util-error">${it ? 'Errore nel caricamento della libreria QR.' : 'Failed to load QR library.'}</p>`;
+                    }
+                });
+            };
+
+            // --- Strumento: Immagini → PDF ---
+            const openImagesToPdfTool = () => {
+                const it = currentLanguage === 'it';
+                const body = openUtilityShell(`🖼️ ${it ? 'Immagini → PDF' : 'Images → PDF'}`, 'img2pdf');
+                body.innerHTML = `
+                    <label class="util-dropzone" for="img2pdf-input">
+                        <span>📂 ${it ? 'Aggiungi immagini' : 'Add images'}</span>
+                        <small>${it ? 'JPG, PNG · trascina per riordinare' : 'JPG, PNG · drag to reorder'}</small>
+                    </label>
+                    <input type="file" id="img2pdf-input" accept="image/*" multiple hidden>
+                    <div id="img2pdf-list" class="util-thumb-grid util-reorder-grid"></div>
+                    <label class="util-label">${it ? 'Formato pagina' : 'Page size'}</label>
+                    <select id="img2pdf-size" class="util-input">
+                        <option value="a4" selected>A4</option>
+                        <option value="fit">${it ? "Adatta all'immagine" : 'Fit to image'}</option>
+                    </select>
+                    <button id="img2pdf-generate" class="util-btn-primary" disabled>${it ? 'Crea PDF' : 'Create PDF'}</button>`;
+                let items = [];
+                let uid = 0;
+                const input = body.querySelector('#img2pdf-input');
+                const list = body.querySelector('#img2pdf-list');
+                const genBtn = body.querySelector('#img2pdf-generate');
+
+                const render = () => {
+                    list.innerHTML = items.map((it2, i) => `
+                        <div class="util-thumb util-reorder-item" data-uid="${it2.id}">
+                            <img src="${it2.url}">
+                            <span class="util-thumb-idx">${i + 1}</span>
+                            <button class="util-thumb-del" data-del="${it2.id}" title="${it ? 'Rimuovi' : 'Remove'}">&times;</button>
+                            <span class="util-drag-badge">⠿</span>
+                        </div>`).join('');
+                    genBtn.disabled = items.length === 0;
+                };
+                list.addEventListener('click', (e) => {
+                    const del = e.target.closest('[data-del]');
+                    if (!del) return;
+                    const id = parseInt(del.dataset.del, 10);
+                    const idx = items.findIndex(x => x.id === id);
+                    if (idx > -1) { URL.revokeObjectURL(items[idx].url); items.splice(idx, 1); render(); }
+                });
+                if (window.Sortable) {
+                    new Sortable(list, {
+                        animation: 150, ghostClass: 'sortable-ghost', delay: 120, delayOnTouchOnly: true,
+                        onEnd: () => {
+                            const order = Array.from(list.children).map(c => parseInt(c.dataset.uid, 10));
+                            items.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+                            render();
+                        }
+                    });
+                }
+                input.addEventListener('change', () => {
+                    Array.from(input.files || []).forEach(f => items.push({ id: ++uid, file: f, url: URL.createObjectURL(f) }));
+                    input.value = '';
+                    render();
+                });
+                genBtn.addEventListener('click', async () => {
+                    if (!items.length) return;
+                    genBtn.disabled = true; genBtn.textContent = it ? 'Creazione...' : 'Creating...';
+                    try {
+                        const jsPDF = await ensureJsPDF();
+                        const sizeMode = body.querySelector('#img2pdf-size').value;
+                        let pdf = null;
+                        for (let i = 0; i < items.length; i++) {
+                            const dataUrl = await readFileAsDataURL(items[i].file);
+                            const img = await loadImageEl(dataUrl);
+                            const fmt = dataUrl.indexOf('image/png') > -1 ? 'PNG' : 'JPEG';
+                            if (sizeMode === 'fit') {
+                                const orient = img.width >= img.height ? 'l' : 'p';
+                                if (i === 0) pdf = new jsPDF({ orientation: orient, unit: 'px', format: [img.width, img.height] });
+                                else pdf.addPage([img.width, img.height], orient);
+                                pdf.addImage(dataUrl, fmt, 0, 0, img.width, img.height);
+                            } else {
+                                if (i === 0) pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+                                else pdf.addPage('a4', 'p');
+                                const pw = pdf.internal.pageSize.getWidth();
+                                const ph = pdf.internal.pageSize.getHeight();
+                                const margin = 20;
+                                const ratio = Math.min((pw - margin * 2) / img.width, (ph - margin * 2) / img.height);
+                                const w = img.width * ratio, h = img.height * ratio;
+                                pdf.addImage(dataUrl, fmt, (pw - w) / 2, (ph - h) / 2, w, h);
+                            }
+                        }
+                        pdf.save('koda-immagini.pdf');
+                        if (window.triggerHaptic) window.triggerHaptic('medium');
+                        showToast(it ? '✅ PDF creato!' : '✅ PDF created!');
+                    } catch (e) {
+                        showToast(it ? 'Errore nella creazione del PDF.' : 'Error creating PDF.');
+                    }
+                    genBtn.disabled = false; genBtn.textContent = it ? 'Crea PDF' : 'Create PDF';
+                });
+            };
+
+            // --- Strumento: Unisci PDF ---
+            const openMergePdfTool = () => {
+                const it = currentLanguage === 'it';
+                const body = openUtilityShell(`🔗 ${it ? 'Unisci PDF' : 'Merge PDF'}`, 'mergepdf');
+                body.innerHTML = `
+                    <label class="util-dropzone" for="merge-input">
+                        <span>📂 ${it ? 'Aggiungi PDF' : 'Add PDFs'}</span>
+                        <small>${it ? '2 o più file · trascina per riordinare' : '2+ files · drag to reorder'}</small>
+                    </label>
+                    <input type="file" id="merge-input" accept="application/pdf" multiple hidden>
+                    <div id="merge-list" class="util-file-list"></div>
+                    <button id="merge-generate" class="util-btn-primary" disabled>${it ? 'Unisci' : 'Merge'}</button>`;
+                let items = [];
+                let uid = 0;
+                const input = body.querySelector('#merge-input');
+                const list = body.querySelector('#merge-list');
+                const genBtn = body.querySelector('#merge-generate');
+
+                const render = () => {
+                    list.innerHTML = items.map((it2, i) => `
+                        <div class="util-file-row util-reorder-item" data-uid="${it2.id}">
+                            <span class="util-drag-badge">⠿</span>
+                            <span class="util-file-name">📄 ${i + 1}. ${it2.file.name}</span>
+                            <button class="util-thumb-del util-row-del" data-del="${it2.id}" title="${it ? 'Rimuovi' : 'Remove'}">&times;</button>
+                        </div>`).join('');
+                    genBtn.disabled = items.length < 2;
+                };
+                list.addEventListener('click', (e) => {
+                    const del = e.target.closest('[data-del]');
+                    if (!del) return;
+                    const id = parseInt(del.dataset.del, 10);
+                    const idx = items.findIndex(x => x.id === id);
+                    if (idx > -1) { items.splice(idx, 1); render(); }
+                });
+                if (window.Sortable) {
+                    new Sortable(list, {
+                        animation: 150, ghostClass: 'sortable-ghost', handle: '.util-drag-badge',
+                        onEnd: () => {
+                            const order = Array.from(list.children).map(c => parseInt(c.dataset.uid, 10));
+                            items.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+                            render();
+                        }
+                    });
+                }
+                input.addEventListener('change', () => {
+                    Array.from(input.files || []).forEach(f => items.push({ id: ++uid, file: f }));
+                    input.value = '';
+                    render();
+                });
+                genBtn.addEventListener('click', async () => {
+                    if (items.length < 2) { showToast(it ? 'Seleziona almeno 2 PDF' : 'Select at least 2 PDFs'); return; }
+                    genBtn.disabled = true; genBtn.textContent = it ? 'Unione...' : 'Merging...';
+                    try {
+                        const PDFLib = await ensurePDFLib();
+                        const merged = await PDFLib.PDFDocument.create();
+                        for (const it2 of items) {
+                            const buf = await readFileAsArrayBuffer(it2.file);
+                            const src = await PDFLib.PDFDocument.load(buf);
+                            const pages = await merged.copyPages(src, src.getPageIndices());
+                            pages.forEach(p => merged.addPage(p));
+                        }
+                        const bytes = await merged.save();
+                        downloadBlob(new Blob([bytes], { type: 'application/pdf' }), 'koda-unione.pdf');
+                        if (window.triggerHaptic) window.triggerHaptic('medium');
+                        showToast(it ? '✅ PDF uniti!' : '✅ PDFs merged!');
+                    } catch (e) {
+                        showToast(it ? "Errore durante l'unione." : 'Merge error.');
+                    }
+                    genBtn.disabled = false; genBtn.textContent = it ? 'Unisci' : 'Merge';
+                });
+            };
+
+            // --- Strumento: PDF → Immagini ---
+            const openPdfToImagesTool = () => {
+                const it = currentLanguage === 'it';
+                const body = openUtilityShell(`🖼️ ${it ? 'PDF → Immagini' : 'PDF → Images'}`, 'pdf2img');
+                body.innerHTML = `
+                    <label class="util-dropzone" for="pdf2img-input"><span>📂 ${it ? 'Seleziona un PDF' : 'Select a PDF'}</span></label>
+                    <input type="file" id="pdf2img-input" accept="application/pdf" hidden>
+                    <div id="pdf2img-result" class="util-result"></div>`;
+                const input = body.querySelector('#pdf2img-input');
+                const result = body.querySelector('#pdf2img-result');
+                input.addEventListener('change', async () => {
+                    const file = input.files && input.files[0];
+                    if (!file) return;
+                    result.innerHTML = utilSpinner(it ? 'Elaborazione PDF...' : 'Processing PDF...');
+                    try {
+                        const pdfjsLib = await ensurePdfJs();
+                        const buf = await readFileAsArrayBuffer(file);
+                        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+                        result.innerHTML = `<p class="util-hint" id="pdf2img-count">${pdf.numPages} ${it ? 'pagine' : 'pages'}</p><div id="pdf2img-pages" class="util-thumb-grid"></div>`;
+                        const pagesEl = result.querySelector('#pdf2img-pages');
+                        const countEl = result.querySelector('#pdf2img-count');
+                        const updateCount = () => {
+                            const n = pagesEl.children.length;
+                            countEl.textContent = `${n} ${n === 1 ? (it ? 'pagina' : 'page') : (it ? 'pagine' : 'pages')}`;
+                        };
+                        for (let n = 1; n <= pdf.numPages; n++) {
+                            const page = await pdf.getPage(n);
+                            const viewport = page.getViewport({ scale: 2 });
+                            const canvas = document.createElement('canvas');
+                            canvas.width = viewport.width; canvas.height = viewport.height;
+                            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+                            const dataUrl = canvas.toDataURL('image/png');
+                            const wrap = document.createElement('div');
+                            wrap.className = 'util-thumb util-thumb-dl';
+                            wrap.innerHTML = `
+                                <button class="util-thumb-del" title="${it ? 'Rimuovi' : 'Remove'}">&times;</button>
+                                <img src="${dataUrl}">
+                                <button class="util-mini-dl">⬇️ ${it ? 'Pag.' : 'Pg.'} ${n}</button>`;
+                            wrap.querySelector('.util-mini-dl').addEventListener('click', () => downloadDataUrl(dataUrl, `koda-pagina-${n}.png`));
+                            wrap.querySelector('.util-thumb-del').addEventListener('click', () => { wrap.remove(); updateCount(); });
+                            pagesEl.appendChild(wrap);
+                        }
+                        if (window.triggerHaptic) window.triggerHaptic('light');
+                    } catch (e) {
+                        result.innerHTML = `<p class="util-error">${it ? 'Errore nella lettura del PDF.' : 'Error reading PDF.'}</p>`;
+                    }
+                });
+            };
+
+            // --- Strumento: Firma PDF ---
+            const openSignPdfTool = () => {
+                const it = currentLanguage === 'it';
+                const body = openUtilityShell(`✍️ ${it ? 'Firma PDF' : 'Sign PDF'}`, 'signpdf');
+                body.innerHTML = `
+                    <ol class="util-steps">
+                        <li>${it ? 'Carica il PDF' : 'Upload the PDF'}</li>
+                        <li>${it ? 'Disegna la firma' : 'Draw your signature'}</li>
+                        <li>${it ? 'Tocca sulla pagina dove posizionarla' : 'Tap on the page where to place it'}</li>
+                    </ol>
+                    <label class="util-dropzone" for="sign-input"><span>📂 ${it ? 'Seleziona un PDF' : 'Select a PDF'}</span></label>
+                    <input type="file" id="sign-input" accept="application/pdf" hidden>
+                    <div id="sign-config" style="display:none">
+                        <label class="util-label">${it ? 'Disegna qui la firma' : 'Draw your signature here'}</label>
+                        <canvas id="sign-pad" class="util-sign-pad"></canvas>
+                        <div style="margin-top:8px"><button id="sign-clear" class="util-btn-secondary">${it ? 'Cancella firma' : 'Clear'}</button></div>
+                        <label class="util-label">${it ? 'Pagina' : 'Page'}</label>
+                        <select id="sign-page" class="util-input"></select>
+                        <label class="util-label">${it ? 'Dimensione firma' : 'Signature size'}: <span id="sign-size-val">160</span> px</label>
+                        <input type="range" id="sign-size" class="util-input" min="60" max="320" value="160" style="padding:6px 0">
+                        <div id="sign-preview-wrap" class="util-sign-preview"></div>
+                        <button id="sign-apply" class="util-btn-primary" disabled>${it ? 'Applica e scarica' : 'Apply & download'}</button>
+                    </div>`;
+
+                let pdfBytes = null, pdfjsDoc = null, currentPageNum = 1, placeRel = null, previewScale = 1, previewCanvas = null;
+
+                const input = body.querySelector('#sign-input');
+                const config = body.querySelector('#sign-config');
+
+                const setupPad = () => {
+                    const canvas = body.querySelector('#sign-pad');
+                    canvas.width = (canvas.clientWidth || 300) * 2;
+                    canvas.height = 150 * 2;
+                    const ctx = canvas.getContext('2d');
+                    ctx.scale(2, 2);
+                    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111';
+                    let drawing = false, last = null, hasInk = false;
+                    const pos = (e) => { const r = canvas.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; return { x: p.clientX - r.left, y: p.clientY - r.top }; };
+                    const start = (e) => { drawing = true; last = pos(e); e.preventDefault(); };
+                    const move = (e) => { if (!drawing) return; const p = pos(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; hasInk = true; e.preventDefault(); };
+                    const end = () => { drawing = false; };
+                    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+                    canvas.addEventListener('touchstart', start, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); canvas.addEventListener('touchend', end);
+                    body.querySelector('#sign-clear').addEventListener('click', () => { ctx.clearRect(0, 0, canvas.width, canvas.height); hasInk = false; });
+                    canvas._hasInk = () => hasInk;
+                };
+
+                const drawPlacementMarker = (holder, relx, rely) => {
+                    holder.querySelectorAll('.util-sign-marker').forEach(n => n.remove());
+                    const pad = body.querySelector('#sign-pad');
+                    const signWidthPt = parseInt(body.querySelector('#sign-size').value, 10);
+                    const aspect = pad.height / pad.width;
+                    const wCss = signWidthPt * previewScale;
+                    const hCss = wCss * aspect;
+                    const marker = document.createElement('div');
+                    marker.className = 'util-sign-marker';
+                    marker.style.cssText = `position:absolute;left:${relx * 100}%;top:${rely * 100}%;transform:translate(-50%,-50%);width:${wCss}px;height:${hCss}px;background-image:url(${pad.toDataURL('image/png')});background-size:contain;background-repeat:no-repeat;background-position:center;border:1px dashed var(--Koda-accent);pointer-events:none;`;
+                    holder.appendChild(marker);
+                };
+
+                const renderSignPreview = async (pageNum) => {
+                    currentPageNum = pageNum; placeRel = null;
+                    const wrap = body.querySelector('#sign-preview-wrap');
+                    wrap.innerHTML = utilSpinner(it ? 'Caricamento pagina...' : 'Loading page...');
+                    body.querySelector('#sign-apply').disabled = true;
+                    const page = await pdfjsDoc.getPage(pageNum);
+                    const containerW = wrap.clientWidth || 320;
+                    const base = page.getViewport({ scale: 1 });
+                    previewScale = containerW / base.width;
+                    const viewport = page.getViewport({ scale: previewScale });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width; canvas.height = viewport.height;
+                    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+                    wrap.innerHTML = '';
+                    const holder = document.createElement('div');
+                    holder.className = 'util-sign-canvas-holder';
+                    holder.style.position = 'relative';
+                    holder.appendChild(canvas);
+                    wrap.appendChild(holder);
+                    previewCanvas = canvas;
+                    holder.addEventListener('click', (e) => {
+                        const r = canvas.getBoundingClientRect();
+                        placeRel = { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height };
+                        drawPlacementMarker(holder, placeRel.x, placeRel.y);
+                        body.querySelector('#sign-apply').disabled = false;
+                    });
+                };
+
+                input.addEventListener('change', async () => {
+                    const file = input.files && input.files[0];
+                    if (!file) return;
+                    config.style.display = 'block';
+                    body.querySelector('#sign-preview-wrap').innerHTML = utilSpinner(it ? 'Caricamento PDF...' : 'Loading PDF...');
+                    try {
+                        const ab = await readFileAsArrayBuffer(file);
+                        pdfBytes = new Uint8Array(ab);
+                        const pdfjsLib = await ensurePdfJs();
+                        pdfjsDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice() }).promise;
+                        const sel = body.querySelector('#sign-page');
+                        sel.innerHTML = Array.from({ length: pdfjsDoc.numPages }, (_, i) => `<option value="${i + 1}">${(it ? 'Pagina ' : 'Page ') + (i + 1)}</option>`).join('');
+                        setupPad();
+                        await renderSignPreview(1);
+                    } catch (e) {
+                        body.querySelector('#sign-preview-wrap').innerHTML = `<p class="util-error">${it ? 'Errore nella lettura del PDF.' : 'Error reading PDF.'}</p>`;
+                    }
+                });
+
+                body.querySelector('#sign-page').addEventListener('change', (e) => renderSignPreview(parseInt(e.target.value, 10)));
+                body.querySelector('#sign-size').addEventListener('input', (e) => {
+                    body.querySelector('#sign-size-val').textContent = e.target.value;
+                    if (placeRel && previewCanvas) drawPlacementMarker(previewCanvas.parentElement, placeRel.x, placeRel.y);
+                });
+
+                body.querySelector('#sign-apply').addEventListener('click', async () => {
+                    const pad = body.querySelector('#sign-pad');
+                    if (!placeRel) { showToast(it ? 'Tocca dove posizionare la firma' : 'Tap to place the signature'); return; }
+                    if (pad._hasInk && !pad._hasInk()) { showToast(it ? 'Disegna prima la firma' : 'Draw a signature first'); return; }
+                    const applyBtn = body.querySelector('#sign-apply');
+                    applyBtn.disabled = true; applyBtn.textContent = it ? 'Elaborazione...' : 'Processing...';
+                    try {
+                        const PDFLib = await ensurePDFLib();
+                        const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes.slice());
+                        const page = pdfDoc.getPage(currentPageNum - 1);
+                        const { width: pw, height: ph } = page.getSize();
+                        const pngImage = await pdfDoc.embedPng(pad.toDataURL('image/png'));
+                        const sigW = parseInt(body.querySelector('#sign-size').value, 10);
+                        const sigH = sigW * (pngImage.height / pngImage.width);
+                        const cx = placeRel.x * pw;
+                        const cy = ph - placeRel.y * ph;
+                        page.drawImage(pngImage, { x: cx - sigW / 2, y: cy - sigH / 2, width: sigW, height: sigH });
+                        const bytes = await pdfDoc.save();
+                        downloadBlob(new Blob([bytes], { type: 'application/pdf' }), 'koda-firmato.pdf');
+                        if (window.triggerHaptic) window.triggerHaptic('medium');
+                        showToast(it ? '✅ PDF firmato!' : '✅ PDF signed!');
+                    } catch (e) {
+                        showToast(it ? 'Errore durante la firma.' : 'Signing error.');
+                    }
+                    applyBtn.disabled = false; applyBtn.textContent = it ? 'Applica e scarica' : 'Apply & download';
+                });
+            };
+
             const getPricingBadgeHTML = (pricing) => {
                 if (!pricing) return '';
                 const t = translations[currentLanguage];
@@ -11226,6 +12154,9 @@ ${knowledgeBaseFormatter(tools)}
                     return;
                 }
 
+                // NUOVO: Registra lo strumento nella cronologia "Visti di recente"
+                trackRecentlyViewed(toolId);
+
                 // 4. Ora che abbiamo lo strumento, costruisci e renderizza il modale completo
                 const t = translations[currentLanguage];
                 const isFavorited = currentUser.favorites.includes(toolId);
@@ -11277,6 +12208,10 @@ ${knowledgeBaseFormatter(tools)}
                                 <button class="button" data-action="toggle-favorite" data-id="${tool.id}">${isFavorited ? t.detailModalRemoveFavorite : t.detailModalAddFavorite}</button>
                                 <button class="button" data-action="add-to-collection" data-tool-id="${tool.id}" style="background: white; color: #000;">${t.addToCollection}</button>
                                 <a href="${tool.website}" target="_blank" class="button" style="text-decoration: none; display: flex; justify-content: center; align-items: center; background: #8b5cf6; color: white;">${t.visitWebsite}</a>
+                                <button class="button" data-action="share-tool" data-id="${tool.id}" style="display: flex; justify-content: center; align-items: center; gap: 8px; background: rgba(128,128,128,0.18); color: var(--Koda-text);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                                    ${currentLanguage === 'it' ? 'Condividi' : 'Share'}
+                                </button>
                             </div>
                             ${recommendationHTML}
                         </div>
@@ -11287,7 +12222,6 @@ ${knowledgeBaseFormatter(tools)}
                 // NUOVO: Inizializza lo stato del pulsante "Aggiungi a collezione"
                 setTimeout(() => {
                     updateAddToCollectionButton(toolId);
-                    loadReviews(toolId);
                 }, 100);
             };
 
@@ -12138,13 +13072,18 @@ ${knowledgeBaseFormatter(tools)}
             };
 
             const renderSideMenu = () => {
-                const sortedConversations = Object.values(conversations).sort((a, b) => b.timestamp - a.timestamp);
+                const sortedConversations = Object.values(conversations)
+                    .filter(conv => conv.messages && conv.messages.length > 0) // Nascondi le chat vuote (evita doppione "Nuova chat")
+                    .sort((a, b) => b.timestamp - a.timestamp);
                 el.conversationListContainer.innerHTML = sortedConversations.map(conv => `
                 <button class="conversation-item" data-action="select-conversation" data-id="${conv.id}">
                     ${conv.title}
                 </button>
             `).join('');
+                const histTitle = document.getElementById('history-section-title');
+                if (histTitle) histTitle.style.display = sortedConversations.length ? '' : 'none';
                 el.conversationListContainer.querySelector(`[data-id="${activeConversationId}"]`)?.classList.add('active');
+                renderUtilityToolsMenu(); // NUOVO: sezione Strumenti/Utility
                 applyTranslations(currentLanguage); // Apply translations to menu items
             };
 
@@ -12255,6 +13194,12 @@ ${knowledgeBaseFormatter(tools)}
                     </div>
                     <div class="user-profile-menu">
                         
+                        <div class="user-profile-item" data-action="open-achievements">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" fill="currentColor"/>
+                            </svg>
+                            <span>${currentLanguage === 'it' ? 'Traguardi' : 'Achievements'}</span>
+                        </div>
                         <div class="user-profile-item" data-action="open-settings">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
@@ -12955,6 +13900,10 @@ ${knowledgeBaseFormatter(tools)}
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                             ${t.changeCover}
                         </div>
+                        <div class="collection-context-menu-item" data-action="share-collection" data-collection-id="${collectionId}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                            ${currentLanguage === 'it' ? 'Condividi' : 'Share'}
+                        </div>
                         <div class="collection-context-menu-item danger" data-action="delete-collection" data-collection-id="${collectionId}">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                             ${t.deleteCollection}
@@ -13210,6 +14159,275 @@ ${knowledgeBaseFormatter(tools)}
                 }
             };
 
+            // ===========================================================
+            // NOTIFICHE PUSH/LOCALI + BADGE SULL'ICONA APP
+            // (notifica quando i cataloghi video/AI/notizie vengono aggiornati)
+            // ===========================================================
+            const NOTIF = {
+                ENABLED: 'koda-notif-enabled',     // master: '1' attivo
+                VIDEO: 'koda-notif-video',         // categoria: '0' = off
+                AI: 'koda-notif-ai',
+                NEWS: 'koda-notif-news',
+                LAST_VIDEO: 'koda-notif-last-video', // ms ultimo elemento già notificato
+                LAST_AI: 'koda-notif-last-ai',
+                LAST_NEWS: 'koda-notif-last-news'
+            };
+            const isNotifMasterOn = () => localStorage.getItem(NOTIF.ENABLED) === '1';
+            const isNotifCategoryOn = (cat) => {
+                if (!isNotifMasterOn()) return false;
+                const key = cat === 'video' ? NOTIF.VIDEO : cat === 'ai' ? NOTIF.AI : NOTIF.NEWS;
+                return localStorage.getItem(key) !== '0'; // default attivo
+            };
+
+            // Calcola, per ogni categoria, il numero di nuovi elementi (rispetto alla visita)
+            // e il timestamp massimo presente nel catalogo.
+            const computeNotifStats = () => {
+                const vLast = parseInt(localStorage.getItem('lastCinemaVisit') || '0');
+                const aLast = parseInt(localStorage.getItem('lastExploreVisit') || '0');
+                const nLast = parseInt(localStorage.getItem('lastNewsVisit') || '0');
+                let vNew = 0, vMax = 0, aNew = 0, aMax = 0, nNew = 0, nMax = 0;
+                (youtubeVideosData || []).forEach(v => {
+                    const ts = v.createdAt && v.createdAt.seconds ? v.createdAt.seconds * 1000 : 0;
+                    if (ts > vMax) vMax = ts;
+                    if (ts > vLast) vNew++;
+                });
+                (aiToolsData || []).forEach(t => {
+                    const s = (t.createdAt && t.createdAt.seconds) || (t.timestamp && t.timestamp.seconds) || 0;
+                    const ts = s * 1000;
+                    if (ts > aMax) aMax = ts;
+                    if (ts > aLast) aNew++;
+                });
+                (newsData || []).forEach(n => {
+                    const ts = n.timestamp && n.timestamp.seconds ? n.timestamp.seconds * 1000 : 0;
+                    if (ts > nMax) nMax = ts;
+                    if (ts > nLast) nNew++;
+                });
+                return { video: { new: vNew, max: vMax }, ai: { new: aNew, max: aMax }, news: { new: nNew, max: nMax } };
+            };
+
+            // Aggiorna il badge numerico sull'icona dell'app installata (Badging API)
+            const updateAppIconBadge = () => {
+                if (!('setAppBadge' in navigator)) return;
+                if (!isNotifMasterOn()) { navigator.clearAppBadge && navigator.clearAppBadge().catch(() => {}); return; }
+                const s = computeNotifStats();
+                let total = 0;
+                if (isNotifCategoryOn('video')) total += s.video.new;
+                if (isNotifCategoryOn('ai')) total += s.ai.new;
+                if (isNotifCategoryOn('news')) total += s.news.new;
+                if (total > 0) navigator.setAppBadge(total).catch(() => {});
+                else navigator.clearAppBadge && navigator.clearAppBadge().catch(() => {});
+            };
+
+            // Mostra una notifica di sistema (preferendo il Service Worker)
+            const showSystemNotification = async (title, body, tag, url) => {
+                if (!('Notification' in window) || Notification.permission !== 'granted') return;
+                const options = {
+                    body, tag, renotify: true,
+                    icon: 'icons/icon-192x192.png',
+                    badge: 'icons/icon-96x96.png',
+                    data: { url }
+                };
+                try {
+                    const reg = navigator.serviceWorker && await navigator.serviceWorker.ready;
+                    if (reg) { await reg.showNotification(title, options); return; }
+                } catch (e) { /* fallthrough */ }
+                try { new Notification(title, options); } catch (e) { /* noop */ }
+            };
+
+            // Controlla gli aggiornamenti dei cataloghi e notifica (con dedup via timestamp)
+            const runContentNotificationCheck = (silent = false) => {
+                if (!isNotifMasterOn()) { updateAppIconBadge(); return; }
+                const it = currentLanguage === 'it';
+                const s = computeNotifStats();
+                const cats = [
+                    { on: isNotifCategoryOn('video'), stat: s.video, key: NOTIF.LAST_VIDEO, title: it ? 'Nuovi video 🎬' : 'New videos 🎬', body: (c) => it ? `${c} nuovi contenuti nel catalogo video` : `${c} new items in the video catalog`, tag: 'koda-video', url: '#cinema' },
+                    { on: isNotifCategoryOn('ai'), stat: s.ai, key: NOTIF.LAST_AI, title: it ? 'Nuovi strumenti AI 🤖' : 'New AI tools 🤖', body: (c) => it ? `${c} nuovi strumenti AI disponibili` : `${c} new AI tools available`, tag: 'koda-ai', url: '#explore' },
+                    { on: isNotifCategoryOn('news'), stat: s.news, key: NOTIF.LAST_NEWS, title: it ? 'Nuove notizie 📰' : 'Fresh news 📰', body: (c) => it ? `${c} nuove notizie da leggere` : `${c} new stories to read`, tag: 'koda-news', url: '#news' }
+                ];
+                cats.forEach(c => {
+                    if (!c.on || c.stat.max <= 0) return;
+                    const last = parseInt(localStorage.getItem(c.key) || '0');
+                    if (last === 0) { localStorage.setItem(c.key, String(c.stat.max)); return; } // baseline, non notificare al primo avvio
+                    if (c.stat.max > last) {
+                        if (!silent && c.stat.new > 0) showSystemNotification(c.title, c.body(c.stat.new), c.tag, c.url);
+                        localStorage.setItem(c.key, String(c.stat.max));
+                    }
+                });
+                updateAppIconBadge();
+            };
+
+            // Invia le preferenze correnti al Service Worker (per il controllo in background)
+            const sendNotifPrefsToSW = () => {
+                try {
+                    const ctrl = navigator.serviceWorker && navigator.serviceWorker.controller;
+                    if (!ctrl) return;
+                    ctrl.postMessage({
+                        type: 'koda-notif-prefs',
+                        prefs: {
+                            enabled: isNotifMasterOn(),
+                            video: isNotifCategoryOn('video'),
+                            ai: isNotifCategoryOn('ai'),
+                            news: isNotifCategoryOn('news'),
+                            lang: currentLanguage,
+                            projectId: 'n8n-riccardo-29-aprile',
+                            apiKey: 'AIzaSyDLouTZcRN28riyxBY06XYkWCsGkYbYm-o'
+                        }
+                    });
+                } catch (e) { /* noop */ }
+            };
+
+            // Registra / rimuove il Periodic Background Sync per il controllo ad app chiusa
+            const registerPeriodicContentSync = async () => {
+                try {
+                    const reg = navigator.serviceWorker && await navigator.serviceWorker.ready;
+                    if (reg && 'periodicSync' in reg) {
+                        const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+                        if (status.state === 'granted') {
+                            await reg.periodicSync.register('koda-content-check', { minInterval: 6 * 60 * 60 * 1000 });
+                        }
+                    }
+                } catch (e) { /* non supportato: si userà il controllo all'apertura */ }
+            };
+            const unregisterPeriodicContentSync = async () => {
+                try {
+                    const reg = navigator.serviceWorker && await navigator.serviceWorker.ready;
+                    if (reg && 'periodicSync' in reg) await reg.periodicSync.unregister('koda-content-check');
+                } catch (e) { /* noop */ }
+            };
+
+            // Richiede il permesso per le notifiche
+            const requestNotifPermission = async () => {
+                const it = currentLanguage === 'it';
+                if (!('Notification' in window)) {
+                    showToast(it ? 'Notifiche non supportate da questo browser.' : 'Notifications not supported.');
+                    return false;
+                }
+                if (Notification.permission === 'granted') return true;
+                if (Notification.permission === 'denied') {
+                    showToast(it ? 'Notifiche bloccate: abilitale dalle impostazioni del browser.' : 'Notifications blocked: enable them in browser settings.');
+                    return false;
+                }
+                const perm = await Notification.requestPermission();
+                return perm === 'granted';
+            };
+
+            // Attiva/disattiva il master delle notifiche
+            const toggleNotifMaster = async () => {
+                const it = currentLanguage === 'it';
+                if (!isNotifMasterOn()) {
+                    const ok = await requestNotifPermission();
+                    if (!ok) return;
+                    localStorage.setItem(NOTIF.ENABLED, '1');
+                    if (window.triggerHaptic) window.triggerHaptic('light');
+                    await registerPeriodicContentSync();
+                    runContentNotificationCheck(true); // baseline silenzioso
+                    sendNotifPrefsToSW();
+                    showToast(it ? '🔔 Notifiche attivate' : '🔔 Notifications enabled');
+                } else {
+                    localStorage.setItem(NOTIF.ENABLED, '0');
+                    if (window.triggerHaptic) window.triggerHaptic('light');
+                    await unregisterPeriodicContentSync();
+                    navigator.clearAppBadge && navigator.clearAppBadge().catch(() => {});
+                    sendNotifPrefsToSW();
+                    showToast(it ? '🔕 Notifiche disattivate' : '🔕 Notifications disabled');
+                }
+                if (document.getElementById('notifications-modal')) openNotificationsModal();
+            };
+
+            // Attiva/disattiva una singola categoria
+            const toggleNotifCategory = (cat) => {
+                const key = cat === 'video' ? NOTIF.VIDEO : cat === 'ai' ? NOTIF.AI : NOTIF.NEWS;
+                const current = localStorage.getItem(key) !== '0';
+                localStorage.setItem(key, current ? '0' : '1');
+                if (window.triggerHaptic) window.triggerHaptic('light');
+                updateAppIconBadge();
+                sendNotifPrefsToSW();
+                if (document.getElementById('notifications-modal')) openNotificationsModal();
+            };
+
+            // Inizializza le notifiche all'avvio dell'app
+            const initNotifications = () => {
+                // Sincronizza le preferenze con il SW quando prende il controllo
+                if (navigator.serviceWorker) {
+                    if (navigator.serviceWorker.controller) sendNotifPrefsToSW();
+                    navigator.serviceWorker.addEventListener('controllerchange', sendNotifPrefsToSW);
+                }
+                // Ricontrolla gli aggiornamenti quando l'app torna in primo piano
+                if (!window._kodaNotifVisibilityBound) {
+                    window._kodaNotifVisibilityBound = true;
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'visible') runContentNotificationCheck(false);
+                    });
+                    // Messaggio dal Service Worker (click su notifica) → naviga alla sezione
+                    if (navigator.serviceWorker) {
+                        navigator.serviceWorker.addEventListener('message', (event) => {
+                            const d = event.data || {};
+                            if (d.type === 'koda-open' && d.url && d.url.startsWith('#')) {
+                                const page = d.url.substring(1);
+                                const validPages = ['home', 'top-ai', 'explore', 'favorites', 'news', 'cinema'];
+                                if (validPages.includes(page)) {
+                                    currentView = page;
+                                    if (page === 'explore') { localStorage.setItem('lastExploreVisit', Date.now().toString()); updateExploreNotificationBadge(); }
+                                    if (page === 'news') { localStorage.setItem('lastNewsVisit', Date.now().toString()); updateNewsNotificationBadge(); }
+                                    if (page === 'cinema') { localStorage.setItem('lastCinemaVisit', Date.now().toString()); updateCinemaNotificationBadge(); }
+                                    try { renderView(); } catch (e) { window.location.hash = d.url; }
+                                    updateAppIconBadge();
+                                }
+                            }
+                        });
+                    }
+                }
+                runContentNotificationCheck(false);
+            };
+
+            // Modale impostazioni notifiche
+            const openNotificationsModal = () => {
+                const it = currentLanguage === 'it';
+                const masterOn = isNotifMasterOn();
+                const supported = ('Notification' in window);
+                const denied = supported && Notification.permission === 'denied';
+
+                const row = (titleTxt, descTxt, isOn, action, dataAttr = '', disabled = false) => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;background:rgba(128,128,128,0.1);border-radius:12px;${disabled ? 'opacity:0.5;pointer-events:none;' : 'cursor:pointer;'}" ${disabled ? '' : `data-action="${action}" ${dataAttr}`}>
+                        <div style="text-align:left;">
+                            <div style="font-weight:700;font-size:15px;color:var(--Koda-text);">${titleTxt}</div>
+                            <div style="font-size:12px;color:var(--Koda-text-secondary);margin-top:4px;line-height:1.3;">${descTxt}</div>
+                        </div>
+                        <div style="width:48px;height:28px;background:${isOn ? 'var(--Koda-accent)' : '#3e3e3e'};border-radius:14px;position:relative;transition:background 0.3s;flex-shrink:0;">
+                            <div style="width:24px;height:24px;background:#fff;border-radius:50%;position:absolute;top:2px;left:${isOn ? '22px' : '2px'};transition:left 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2);"></div>
+                        </div>
+                    </div>`;
+
+                const categoriesHTML = masterOn ? `
+                    <label style="display:block;font-size:12px;font-weight:800;color:var(--Koda-text-secondary);text-transform:uppercase;margin:24px 0 12px;text-align:left;">${it ? 'Categorie' : 'Categories'}</label>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        ${row(it ? '🎬 Video' : '🎬 Videos', it ? 'Nuovi video nel catalogo' : 'New videos in the catalog', isNotifCategoryOn('video'), 'toggle-notif-video')}
+                        ${row(it ? '🤖 Strumenti AI' : '🤖 AI Tools', it ? 'Nuovi strumenti AI aggiunti' : 'New AI tools added', isNotifCategoryOn('ai'), 'toggle-notif-ai')}
+                        ${row(it ? '📰 Notizie' : '📰 News', it ? 'Nuove notizie pubblicate' : 'New stories published', isNotifCategoryOn('news'), 'toggle-notif-news')}
+                    </div>` : '';
+
+                const deniedHTML = denied ? `<div style="margin-top:16px;padding:14px;border-radius:10px;background:rgba(226,85,106,0.12);color:#e2556a;font-size:13px;text-align:left;">${it ? '⚠️ Le notifiche sono bloccate nel browser. Abilitale dalle impostazioni del sito per riceverle.' : '⚠️ Notifications are blocked. Enable them in your browser site settings.'}</div>` : '';
+                const unsupportedHTML = !supported ? `<div style="margin-top:16px;padding:14px;border-radius:10px;background:rgba(128,128,128,0.12);color:var(--Koda-text-secondary);font-size:13px;text-align:left;">${it ? 'Questo browser non supporta le notifiche.' : 'This browser does not support notifications.'}</div>` : '';
+
+                const modalHTML = `
+                <div id="notifications-modal" class="modal-overlay visible" style="background:var(--Koda-bg);z-index:10006;align-items:flex-start;padding:0;overflow-y:auto;">
+                    <div class="modal-content" style="text-align:left;width:100%;max-width:500px;min-height:100vh;border-radius:0;margin:0 auto;padding:40px 24px;">
+                        <button class="modal-close-btn" data-action="close-modal" style="top:20px;right:24px;font-size:36px;">×</button>
+                        <h2 style="margin-bottom:8px;">${it ? '🔔 Notifiche' : '🔔 Notifications'}</h2>
+                        <p style="font-size:13px;color:var(--Koda-text-secondary);margin-bottom:28px;line-height:1.4;">${it ? "Ricevi un avviso sull'icona dell'app quando vengono aggiunti nuovi video, strumenti AI o notizie." : 'Get an alert on the app icon when new videos, AI tools or news are added.'}</p>
+                        ${row(it ? 'Abilita notifiche' : 'Enable notifications', it ? 'Attiva gli avvisi di aggiornamento' : 'Turn on update alerts', masterOn, 'toggle-notif-master', '', !supported || denied)}
+                        ${categoriesHTML}
+                        ${deniedHTML}
+                        ${unsupportedHTML}
+                    </div>
+                </div>`;
+                if (!document.getElementById('notifications-modal')) {
+                    history.pushState({ modal: 'notifications', page: currentView }, '', '');
+                }
+                el.modalContainer.innerHTML = modalHTML;
+            };
+            window.openNotificationsModal = openNotificationsModal;
+
             const renderView = () => {
                 const initialLoader = document.getElementById('initial-loader');
                 if (initialLoader) {
@@ -13359,11 +14577,20 @@ ${knowledgeBaseFormatter(tools)}
                     const dailyAiIndex = dayOfYear % staticTools.length;
                     const aiOfTheDay = staticTools[dailyAiIndex] || staticTools[0];
 
+                    // Streak per incentivare il ritorno quotidiano
+                    const streakDays = getStreakCount();
+                    const streakChipHTML = streakDays > 1
+                        ? `<div style="display: inline-flex; align-items: center; gap: 4px; background: rgba(255,140,0,0.15); border: 1px solid #ff8c00; color: #ff8c00; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 500px;">🔥 ${streakDays} ${currentLanguage === 'it' ? (streakDays === 1 ? 'giorno' : 'giorni') : (streakDays === 1 ? 'day' : 'days')}</div>`
+                        : '';
+
                     const dailyAiHTML = `
                         <div style="margin-bottom: 32px; background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid var(--Koda-accent); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; cursor: pointer; box-shadow: 0 8px 24px rgba(29, 185, 84, 0.15);" data-action="open-detail-modal" data-id="${aiOfTheDay.id}">
                             <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.05;">🌟</div>
-                            <div style="font-size: 12px; font-weight: 700; color: var(--Koda-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-                                <span>✨</span> ${currentLanguage === 'it' ? 'La Scoperta di Oggi' : 'App of the Day'}
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px;">
+                                <div style="font-size: 12px; font-weight: 700; color: var(--Koda-accent); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+                                    <span>✨</span> ${currentLanguage === 'it' ? 'La Scoperta di Oggi' : 'App of the Day'}
+                                </div>
+                                ${streakChipHTML}
                             </div>
                             <div style="display: flex; align-items: center; gap: 16px;">
                                 <img src="${aiOfTheDay.logoUrl}" style="width: 64px; height: 64px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
@@ -13371,6 +14598,9 @@ ${knowledgeBaseFormatter(tools)}
                                     <h3 style="font-size: 20px; margin: 0 0 4px 0;">${aiOfTheDay.name}</h3>
                                     <p style="font-size: 14px; color: var(--Koda-text-secondary); margin: 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${aiOfTheDay.description}</p>
                                 </div>
+                            </div>
+                            <div style="font-size: 11px; color: var(--Koda-text-secondary); margin-top: 14px; display: flex; align-items: center; gap: 6px; opacity: 0.8;">
+                                <span>🔄</span> ${currentLanguage === 'it' ? 'Nuova scoperta ogni giorno · Torna domani!' : 'A new discovery every day · Come back tomorrow!'}
                             </div>
                         </div>
                     `;
@@ -13520,6 +14750,7 @@ ${filtersHTML}
                             newsHTML += `<div id="empty-state" style="color: white; height: 100%; display: flex; align-items: center; justify-content: center;">${noNewsFoundText}</div>`;
                         } else {
                             newsHTML += `<div class="news-feed-container" id="news-feed-container">`;
+                            newsHTML += `<div id="news-pull-refresh-indicator" style="position: absolute; top: 0; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 0; overflow: hidden; color: #fff; opacity: 0; pointer-events: none; z-index: 30; transition: opacity 0.2s ease;"><div id="news-pull-refresh-spinner" style="width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.3); border-top-color: var(--Koda-accent); border-radius: 50%; margin-bottom: 8px;"></div><span id="news-pull-refresh-label" style="font-size: 12px; font-weight: 700;"></span></div>`;
                             timeFilteredNews.forEach(news => {
                                 const dateStr = news.timestamp ? new Date(news.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
                                 const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
@@ -13683,6 +14914,82 @@ ${filtersHTML}
                                     }
                                     lastTapTime = currentTime;
                                 });
+
+                                // --- PULL-TO-REFRESH: trascina verso il basso in cima per mescolare le notizie ---
+                                const indicator = document.getElementById('news-pull-refresh-indicator');
+                                const label = document.getElementById('news-pull-refresh-label');
+                                const spinner = document.getElementById('news-pull-refresh-spinner');
+                                const isIT = currentLanguage === 'it';
+                                const PULL_THRESHOLD = 80;
+                                const MAX_PULL = 120;
+                                let pullStartY = 0;
+                                let pulling = false;
+                                let isRefreshing = false;
+
+                                const setIndicator = (dist) => {
+                                    if (!indicator) return;
+                                    const h = Math.min(dist, MAX_PULL);
+                                    indicator.style.height = h + 'px';
+                                    indicator.style.opacity = Math.min(dist / PULL_THRESHOLD, 1);
+                                    if (label) {
+                                        label.textContent = dist >= PULL_THRESHOLD
+                                            ? (isIT ? 'Rilascia per aggiornare' : 'Release to refresh')
+                                            : (isIT ? 'Trascina per aggiornare' : 'Pull to refresh');
+                                    }
+                                    if (spinner) spinner.style.transform = `rotate(${dist * 2.5}deg)`;
+                                };
+
+                                const resetIndicator = () => {
+                                    if (!indicator) return;
+                                    indicator.style.height = '0';
+                                    indicator.style.opacity = '0';
+                                    if (spinner) spinner.style.animation = '';
+                                };
+
+                                const doRefresh = () => {
+                                    isRefreshing = true;
+                                    if (label) label.textContent = isIT ? 'Aggiornamento…' : 'Refreshing…';
+                                    if (spinner) spinner.style.animation = 'spin 0.8s linear infinite';
+                                    if (window.triggerHaptic) window.triggerHaptic('medium');
+                                    // Mescola le notizie (Fisher-Yates) e ri-renderizza
+                                    for (let i = newsData.length - 1; i > 0; i--) {
+                                        const j = Math.floor(Math.random() * (i + 1));
+                                        [newsData[i], newsData[j]] = [newsData[j], newsData[i]];
+                                    }
+                                    setTimeout(() => { renderView(); }, 600);
+                                };
+
+                                container.addEventListener('touchstart', (e) => {
+                                    if (container.scrollTop <= 0 && !isRefreshing) {
+                                        pullStartY = e.touches[0].clientY;
+                                        pulling = true;
+                                    } else {
+                                        pulling = false;
+                                    }
+                                }, { passive: true });
+
+                                container.addEventListener('touchmove', (e) => {
+                                    if (!pulling || isRefreshing) return;
+                                    const dist = e.touches[0].clientY - pullStartY;
+                                    if (dist > 0 && container.scrollTop <= 0) {
+                                        setIndicator(dist * 0.5);
+                                    } else {
+                                        pulling = false;
+                                        resetIndicator();
+                                    }
+                                }, { passive: true });
+
+                                container.addEventListener('touchend', (e) => {
+                                    if (!pulling || isRefreshing) return;
+                                    const dist = (e.changedTouches[0].clientY - pullStartY) * 0.5;
+                                    pulling = false;
+                                    if (dist >= PULL_THRESHOLD) {
+                                        setIndicator(PULL_THRESHOLD);
+                                        doRefresh();
+                                    } else {
+                                        resetIndicator();
+                                    }
+                                });
                             }
                         }
 
@@ -13808,7 +15115,32 @@ ${filtersHTML}
                         });
 
                         let feedHTML = '';
-                        
+
+                        // NUOVO: Sezione "Visti di recente"
+                        const recentTools = getRecentlyViewedTools();
+                        if (recentTools.length > 0) {
+                            feedHTML += `
+                                <div class="feed-section">
+                                    <div class="feed-section-header">
+                                        <h2 class="feed-section-title">🕘 ${currentLanguage === 'it' ? 'Visti di recente' : 'Recently viewed'}</h2>
+                                        <button class="see-all-btn" data-action="clear-recently-viewed">
+                                            ${currentLanguage === 'it' ? 'Cancella' : 'Clear'}
+                                        </button>
+                                    </div>
+                                    <div class="horizontal-scroll-container">
+                                        ${recentTools.map(tool => `
+                                            <div class="tool-item-horizontal stagger-item" data-id="${tool.id}">
+                                                <div class="tool-item-logo-container">
+                                                    <img src="${tool.logoUrl}" class="tool-logo" alt="${tool.name}" loading="lazy">
+                                                </div>
+                                                <div class="tool-item-name">${tool.name}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+
                         // NUOVO: Sezione "Nuovi Arrivi"
                         const newTools = allTools.filter(t => isToolNew(t));
                         if (newTools.length > 0) {
@@ -13948,6 +15280,10 @@ ${filtersHTML}
                                     <button class="pill-btn" data-action="back-to-collections" style="display: inline-flex; align-items: center; gap: 8px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                                         ${currentLanguage === 'it' ? 'Indietro' : 'Back'}
+                                    </button>
+                                    <button class="pill-btn" data-action="share-collection" data-collection-id="${collection.id}" style="display: inline-flex; align-items: center; gap: 8px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Condividi' : 'Share'}
                                     </button>
                                 ` : ''}
                                 ${collection.toolIds.length > 0 && selectionMode ? `
@@ -14392,6 +15728,9 @@ ${filtersHTML}
                          <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto;">
                              <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: left;">${currentLanguage === 'it' ? 'Informazioni' : 'About'}</h3>
                              <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <button data-action="open-notifications-modal" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                                    ${currentLanguage === 'it' ? '🔔 Notifiche' : '🔔 Notifications'} <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
+                                </button>
                                 <button data-action="open-cinema-policy" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                                     Policy <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
                                 </button>
@@ -14629,7 +15968,7 @@ ${filtersHTML}
                         <h2 style="margin-bottom: 32px;">${currentLanguage === 'it' ? 'Personalizza aspetto' : 'Appearance'}</h2>
                         
                         <label style="display: block; font-size: 12px; font-weight: 800; color: var(--Koda-text-secondary); text-transform: uppercase; margin-bottom: 12px;">${currentLanguage === 'it' ? 'Colore App' : 'App Color'}</label>
-                        <div style="display: flex; gap: 12px; justify-content: space-between; margin-bottom: 32px; padding: 0 8px;">
+                        <div style="display: flex; gap: 12px; justify-content: space-between; margin-bottom: 24px; padding: 0 8px;">
                             ${[
                                 { hex: '#1db954' }, { hex: '#9146FF' }, { hex: '#1DA1F2' }, { hex: '#FF7A00' }, { hex: '#FF4081' }
                             ].map(c => `
@@ -14637,6 +15976,17 @@ ${filtersHTML}
                                      style="background-color: ${c.hex};" 
                                      data-action="set-accent-color" data-color="${c.hex}"></div>
                             `).join('')}
+                        </div>
+
+                        <label style="display: block; font-size: 12px; font-weight: 800; color: var(--Koda-text-secondary); text-transform: uppercase; margin-bottom: 12px;">${currentLanguage === 'it' ? 'Colore personalizzato' : 'Custom color'}</label>
+                        <div style="display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: rgba(128,128,128,0.1); border-radius: 12px; margin-bottom: 32px;">
+                            <label for="custom-accent-picker" style="position: relative; width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; cursor: pointer; border: 3px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3); background-color: ${currentAccentColor};">
+                                <input type="color" id="custom-accent-picker" value="${currentAccentColor}" style="position: absolute; top: -8px; left: -8px; width: 64px; height: 64px; border: none; padding: 0; cursor: pointer; opacity: 0;">
+                            </label>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 700; font-size: 15px; color: var(--Koda-text);">${currentLanguage === 'it' ? 'Scegli un colore' : 'Pick a color'}</div>
+                                <div id="custom-accent-value" style="font-size: 13px; color: var(--Koda-text-secondary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">${currentAccentColor}</div>
+                            </div>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(128,128,128,0.1); border-radius: 12px; cursor: pointer; transition: background 0.2s;" data-action="toggle-compact-mode" onmouseover="this.style.background='rgba(128,128,128,0.15)'" onmouseout="this.style.background='rgba(128,128,128,0.1)'">
@@ -14651,6 +16001,26 @@ ${filtersHTML}
                     </div>
                 </div>`;
                 el.modalContainer.innerHTML = modalHTML;
+
+                // Color picker personalizzato: applica e salva il colore scelto in tempo reale
+                const customPicker = document.getElementById('custom-accent-picker');
+                if (customPicker) {
+                    const applyCustomColor = (color) => {
+                        currentAccentColor = color;
+                        localStorage.setItem('koda-accent-color', color);
+                        document.documentElement.style.setProperty('--Koda-accent', color);
+                        const swatchLabel = customPicker.closest('label');
+                        if (swatchLabel) swatchLabel.style.backgroundColor = color;
+                        const valueEl = document.getElementById('custom-accent-value');
+                        if (valueEl) valueEl.textContent = color;
+                        // Aggiorna lo stato attivo dei preset
+                        document.querySelectorAll('.color-swatch').forEach(sw => {
+                            sw.classList.toggle('active', sw.dataset.color && sw.dataset.color.toLowerCase() === color.toLowerCase());
+                        });
+                    };
+                    customPicker.addEventListener('input', (e) => applyCustomColor(e.target.value));
+                    customPicker.addEventListener('change', () => { if (window.triggerHaptic) window.triggerHaptic('light'); });
+                }
             };
 
             // NEW FUNCTION: Open Menu Customization Modal
@@ -14668,7 +16038,15 @@ ${filtersHTML}
                         <div id="nav-customization-list" style="display: flex; flex-direction: column; gap: 8px;">
                             ${userNavConfig.map((item, index) => `
                                 <div data-nav-id="${item.id}" style="display: flex; align-items: center; justify-content: space-between; background: rgba(128,128,128,0.1); padding: 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.05); transition: background 0.2s;">
-                                    <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                                            <button data-action="nav-move-up" data-id="${item.id}" ${index === 0 ? 'disabled' : ''} aria-label="${currentLanguage === 'it' ? 'Sposta su' : 'Move up'}" style="background: none; border: none; padding: 2px; cursor: ${index === 0 ? 'default' : 'pointer'}; color: ${index === 0 ? 'rgba(128,128,128,0.3)' : 'var(--Koda-text-secondary)'}; display: flex; align-items: center; justify-content: center;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+                                            </button>
+                                            <button data-action="nav-move-down" data-id="${item.id}" ${index === userNavConfig.length - 1 ? 'disabled' : ''} aria-label="${currentLanguage === 'it' ? 'Sposta giù' : 'Move down'}" style="background: none; border: none; padding: 2px; cursor: ${index === userNavConfig.length - 1 ? 'default' : 'pointer'}; color: ${index === userNavConfig.length - 1 ? 'rgba(128,128,128,0.3)' : 'var(--Koda-text-secondary)'}; display: flex; align-items: center; justify-content: center;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
+                                            </button>
+                                        </div>
                                         <div class="drag-handle" style="cursor: grab; display: flex; align-items: center; color: var(--Koda-text-secondary);">
                                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z"/></svg>
                                         </div>
@@ -14856,325 +16234,6 @@ ${filtersHTML}
                 </div>`;
                 el.modalContainer.innerHTML = modalHTML;
                 document.getElementById('rename-collection-name')?.focus();
-            };
-
-            // NEW FUNCTION: Open Sent Reviews Modal
-            const openSentReviewsModal = async () => {
-                if (!currentUser.uid) return;
-                const t = translations[currentLanguage];
-
-                // Aggiungi alla cronologia del browser
-                history.pushState({ modal: 'sent-reviews', page: currentView }, '', '');
-
-                const modalHTML = `
-                <div id="sent-reviews-modal" class="sent-reviews-modal visible">
-                    <div class="sent-reviews-modal-content">
-                        <div class="sent-reviews-modal-header">
-                            <h2 class="sent-reviews-modal-title" data-translate="sentReviews">Recensioni inviate</h2>
-                            <button class="sent-reviews-modal-close" data-action="close-modal">×</button>
-                        </div>
-                        <div id="sent-reviews-container">
-                            <div class="loading-reviews">${t.loadingReviews || 'Caricamento recensioni...'}</div>
-                        </div>
-                    </div>
-                </div>`;
-
-                el.modalContainer.innerHTML = modalHTML;
-                await loadSentReviews();
-            };
-
-            // NEW FUNCTION: Load Sent Reviews (CORRECTED AND OPTIMIZED)
-            const loadSentReviews = async () => {
-                const container = document.getElementById('sent-reviews-container');
-                if (!container || !currentUser.uid) return;
-
-                const t = translations[currentLanguage];
-                container.innerHTML = `<div class="loading-reviews">${t.loadingReviews || 'Caricamento recensioni...'}</div>`;
-
-                try {
-                    // Step 1: Use a Collection Group Query to find all reviews by the current user
-                    const reviewsQuery = query(collectionGroup(db, 'reviews'), where('userId', '==', currentUser.uid));
-                    const reviewsSnapshot = await getDocs(reviewsQuery);
-
-                    if (reviewsSnapshot.empty) {
-                        container.innerHTML = `<div class="no-sent-reviews">${t.noSentReviews || 'Non hai ancora inviato recensioni.'}</div>`;
-                        return;
-                    }
-
-                    // Step 2: Prepare to fetch the tool data for each review
-                    const reviewsWithToolData = [];
-                    for (const reviewDoc of reviewsSnapshot.docs) {
-                        const reviewData = reviewDoc.data();
-                        const toolId = reviewDoc.ref.parent.parent.id; // Get the parent tool ID
-
-                        // Find the tool in the local list (static + custom)
-                        const tool = getAllToolsForCurrentUser().find(t => t.id === toolId);
-
-                        if (tool) {
-                            reviewsWithToolData.push({
-                                id: reviewDoc.id,
-                                toolId: toolId,
-                                toolName: tool.name, // Use name from local data
-                                toolLogoUrl: tool.logoUrl, // Use logo from local data
-                                ...reviewData
-                            });
-                        }
-                    }
-
-                    // Step 3: Sort and render the reviews
-                    reviewsWithToolData.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-                    const reviewsHTML = reviewsWithToolData.map(review => {
-                        const starsHTML = Array.from({ length: 5 }, (_, i) =>
-                            `<span class="star ${i < review.rating ? '' : 'empty'}">★</span>`
-                        ).join('');
-                        const reviewDate = review.createdAt ? new Date(review.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
-
-                        return `
-                        <div class="sent-review-item">
-                            <div class="sent-review-header">
-                                <div class="sent-review-tool-info">
-                                    <img src="${review.toolLogoUrl}" alt="${review.toolName}" class="sent-review-tool-logo">
-                                    <div class="sent-review-tool-name">${review.toolName}</div>
-                                </div>
-                                <div class="sent-review-actions">
-                                    <button class="sent-review-edit-btn" data-action="edit-review" data-tool-id="${review.toolId}" data-review-id="${review.id}">Modifica</button>
-                                    <button class="sent-review-delete-btn" data-action="delete-review" data-tool-id="${review.toolId}" data-review-id="${review.id}">Elimina</button>
-                                </div>
-                            </div>
-                            <div class="sent-review-rating">${starsHTML}</div>
-                            <div class="sent-review-text">${review.text}</div>
-                            <div class="sent-review-date">${reviewDate}</div>
-                        </div>`;
-                    }).join('');
-
-                    container.innerHTML = reviewsHTML;
-
-                } catch (error) {
-                    console.error('Error loading sent reviews:', error);
-                    container.innerHTML = `<div class="no-sent-reviews">Errore nel caricamento delle recensioni.</div>`;
-                    // Firestore often gives a helpful error message in the console with a link to create the required index for collection group queries.
-                    if (error.message.includes('index')) {
-                        container.innerHTML += `<p style="font-size:12px; color: #ff6b6b; margin-top: 10px;">Questo errore potrebbe richiedere la creazione di un indice in Firestore. Controlla la console del browser per un link di creazione automatica.</p>`;
-                    }
-                }
-            };
-
-            // NEW FUNCTION: Open All User Reviews Modal
-            const openAllUserReviewsModal = async (toolId) => {
-                const t = translations[currentLanguage];
-
-                // Aggiungi alla cronologia del browser
-                history.pushState({ modal: 'all-user-reviews', page: currentView }, '', '');
-
-                const modalHTML = `
-                <div id="all-user-reviews-modal" class="sent-reviews-modal visible">
-                    <div class="sent-reviews-modal-content">
-                        <div class="sent-reviews-modal-header">
-                            <h2 class="sent-reviews-modal-title" data-translate="allUserReviews">Tutte le recensioni utente</h2>
-                            <button class="sent-reviews-modal-close" data-action="close-modal">×</button>
-                        </div>
-                        <div id="all-user-reviews-container">
-                            <div class="loading-reviews">${t.loadingReviews || 'Caricamento recensioni...'}</div>
-                        </div>
-                    </div>
-                </div>`;
-
-                el.modalContainer.innerHTML = modalHTML;
-                await loadAllUserReviews(toolId);
-            };
-
-            // NEW FUNCTION: Load All User Reviews for a specific tool
-            const loadAllUserReviews = async (toolId) => {
-                const container = document.getElementById('all-user-reviews-container');
-                if (!container) return;
-
-                try {
-                    const t = translations[currentLanguage];
-                    const reviewsRef = collection(db, 'tools', toolId, 'reviews');
-                    const reviewsQuery = query(reviewsRef, orderBy('createdAt', 'desc'));
-                    const reviewsSnapshot = await getDocs(reviewsQuery);
-
-                    if (reviewsSnapshot.empty) {
-                        container.innerHTML = `<div class="no-reviews">${t.noReviews}</div>`;
-                        return;
-                    }
-
-                    let reviewsHTML = '';
-                    for (const reviewDoc of reviewsSnapshot.docs) {
-                        const review = reviewDoc.data();
-                        let username = 'Utente Anonimo';
-                        let userInitial = 'U';
-
-                        if (review.userId) {
-                            try {
-                                const userDoc = await getDoc(doc(db, 'users', review.userId));
-                                if (userDoc.exists()) {
-                                    const userData = userDoc.data();
-                                    username = userData.nickname || userData.name || 'Utente';
-                                    userInitial = username.charAt(0).toUpperCase();
-                                }
-                            } catch (error) {
-                                console.error('Error fetching user data:', error);
-                            }
-                        }
-
-                        const starsHTML = Array.from({ length: 5 }, (_, i) =>
-                            `<span class="star ${i < review.rating ? '' : 'empty'}">★</span>`
-                        ).join('');
-
-                        reviewsHTML += `
-                        <div class="review-item">
-                            <div class="review-header">
-                                <div class="review-user">
-                                    <div class="review-avatar">${userInitial}</div>
-                                    <div class="review-user-info">
-                                        <div class="review-username">${username}</div>
-                                        <div class="review-date">${review.createdAt?.toDate().toLocaleDateString()}</div>
-                                    </div>
-                                </div>
-                                <div class="review-rating">${starsHTML}</div>
-                            </div>
-                            <div class="review-text">${review.text}</div>
-                        </div>`;
-                    }
-
-                    container.innerHTML = reviewsHTML;
-                } catch (error) {
-                    console.error('Error loading all user reviews:', error);
-                    container.innerHTML = '<div class="no-reviews">Errore nel caricamento delle recensioni.</div>';
-                }
-            };
-
-            // NEW FUNCTION: Open Edit Review Modal
-            const openEditReviewModal = async (toolId, reviewId) => {
-                if (!currentUser.uid) return;
-
-                // Aggiungi alla cronologia del browser
-                history.pushState({ modal: 'edit-review', page: currentView }, '', '');
-
-                try {
-                    const reviewDoc = await getDoc(doc(db, 'tools', toolId, 'reviews', reviewId));
-                    if (!reviewDoc.exists()) {
-                        showToast('Recensione non trovata');
-                        return;
-                    }
-
-                    const reviewData = reviewDoc.data();
-                    const t = translations[currentLanguage];
-
-                    const modalHTML = `
-                    <div id="edit-review-modal" class="review-modal visible">
-                        <div class="review-modal-content">
-                            <div class="review-modal-header">
-                                <h2 class="review-modal-title">Modifica Recensione</h2>
-                                <button class="review-modal-close" data-action="close-modal">×</button>
-                            </div>
-                            <div class="rating-input-container">
-                                <label class="rating-input-label">Valutazione</label>
-                                <div class="stars-input">
-                                    ${Array.from({ length: 5 }, (_, i) =>
-                        `<span class="star-input ${i < reviewData.rating ? 'active' : ''}" data-rating="${i + 1}">★</span>`
-                    ).join('')}
-                                </div>
-                            </div>
-                            <div class="review-text-container">
-                                <label class="review-text-label">Recensione</label>
-                                <textarea class="review-text-input" id="edit-review-text" placeholder="Scrivi la tua recensione...">${reviewData.text}</textarea>
-                            </div>
-                            <div class="review-modal-actions">
-                                <button class="review-cancel-btn" data-action="close-modal">Annulla</button>
-                                <button class="review-submit-btn" id="update-review-btn" data-tool-id="${toolId}" data-review-id="${reviewId}">Aggiorna Recensione</button>
-                            </div>
-                        </div>
-                    </div>`;
-
-                    el.modalContainer.innerHTML = modalHTML;
-
-                    // Set current rating
-                    window.currentEditRating = reviewData.rating;
-
-                    // Attach event listener for update
-                    document.getElementById('update-review-btn')?.addEventListener('click', handleUpdateReview);
-                } catch (error) {
-                    console.error('Error opening edit review modal:', error);
-                    showToast('Errore nel caricamento della recensione');
-                }
-            };
-
-            // NEW FUNCTION: Handle Update Review
-            const handleUpdateReview = async (event) => {
-                const toolId = event.target.dataset.toolId;
-                const reviewId = event.target.dataset.reviewId;
-                const reviewText = document.getElementById('edit-review-text').value.trim();
-                const rating = window.currentEditRating || 1;
-
-                if (!reviewText) {
-                    showToast('Inserisci il testo della recensione');
-                    return;
-                }
-
-                try {
-                    const reviewRef = doc(db, 'tools', toolId, 'reviews', reviewId);
-                    await updateDoc(reviewRef, {
-                        text: reviewText,
-                        rating: rating,
-                        updatedAt: new Date()
-                    });
-
-                    showToast('Recensione aggiornata con successo');
-                    closeModal();
-
-                    // Refresh the sent reviews modal if it's open
-                    if (document.getElementById('sent-reviews-modal')) {
-                        await loadSentReviews();
-                    }
-                } catch (error) {
-                    console.error('Error updating review:', error);
-                    showToast('Errore nell\'aggiornamento della recensione');
-                }
-            };
-
-            // NEW FUNCTION: Confirm Delete Review
-            const confirmDeleteReview = (toolId, reviewId) => {
-                const t = translations[currentLanguage];
-
-                const modalHTML = `
-                <div id="confirm-delete-review-modal" class="modal-overlay visible">
-                    <div class="modal-content">
-                        <h2>Conferma Eliminazione</h2>
-                        <p>Sei sicuro di voler eliminare questa recensione? Questa azione non può essere annullata.</p>
-                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-                            <button class="review-cancel-btn" data-action="close-modal">Annulla</button>
-                            <button class="review-submit-btn" id="confirm-delete-review-btn" data-tool-id="${toolId}" data-review-id="${reviewId}" style="background-color: #ff6b6b;">Elimina</button>
-                        </div>
-                    </div>
-                </div>`;
-
-                el.modalContainer.innerHTML = modalHTML;
-
-                // Attach event listener for delete confirmation
-                document.getElementById('confirm-delete-review-btn')?.addEventListener('click', handleDeleteReview);
-            };
-
-            // NEW FUNCTION: Handle Delete Review
-            const handleDeleteReview = async (event) => {
-                const toolId = event.target.dataset.toolId;
-                const reviewId = event.target.dataset.reviewId;
-
-                try {
-                    await deleteDoc(doc(db, 'tools', toolId, 'reviews', reviewId));
-                    showToast('Recensione eliminata con successo');
-                    closeModal();
-
-                    // Refresh the sent reviews modal if it's open
-                    if (document.getElementById('sent-reviews-modal')) {
-                        await loadSentReviews();
-                    }
-                } catch (error) {
-                    console.error('Error deleting review:', error);
-                    showToast('Errore nell\'eliminazione della recensione');
-                }
             };
 
             // NEW FUNCTION: Open Replace Featured Modal
@@ -18114,6 +19173,211 @@ ${filtersHTML}
             // --- INITIALIZATION LOGIC ---
 
             // NUOVO: Funzione per il modale di registrazione obbligatorio al primo avvio (Stile Koda)
+            // --- ONBOARDING INTERATTIVO (COACH MARKS) ---
+            const showOnboarding = () => {
+                if (document.getElementById('koda-onboarding-overlay')) return;
+
+                // Gli step vengono ricostruiti dinamicamente così da riflettere
+                // la lingua scelta nel primo passo del tutorial.
+                const getSteps = () => {
+                    const isIT = currentLanguage === 'it';
+                    return [
+                        {
+                            lang: true,
+                            target: null,
+                            title: isIT ? 'Scegli la lingua 🌐' : 'Choose your language 🌐',
+                            text: isIT
+                                ? 'Seleziona la lingua dell\'app. Potrai cambiarla quando vuoi dalle impostazioni.'
+                                : 'Pick the app language. You can change it anytime in settings.'
+                        },
+                        {
+                            target: null,
+                            title: isIT ? 'Benvenuto su Koda 👋' : 'Welcome to Koda 👋',
+                            text: isIT
+                                ? 'Scopri, confronta e salva i migliori strumenti AI. Ti mostriamo tutte le sezioni in pochi secondi.'
+                                : 'Discover, compare and save the best AI tools. Here is a quick tour of every section.'
+                        },
+                        {
+                            target: '#bottom-nav .nav-btn[data-page="home"]',
+                            title: isIT ? 'Home' : 'Home',
+                            text: isIT
+                                ? 'La tua schermata iniziale: strumenti in evidenza, novità e suggerimenti del giorno.'
+                                : 'Your starting screen: featured tools, highlights and daily picks.'
+                        },
+                        {
+                            target: '#bottom-nav .nav-btn[data-page="top-ai"]',
+                            title: isIT ? 'Top AI · Classifiche' : 'Top AI · Rankings',
+                            text: isIT
+                                ? 'Le classifiche dei migliori strumenti AI, aggiornate e divise per categoria.'
+                                : 'Rankings of the best AI tools, updated and split by category.'
+                        },
+                        {
+                            target: '#bottom-nav .nav-btn[data-page="explore"]',
+                            title: isIT ? 'Cerca strumenti' : 'Search tools',
+                            text: isIT
+                                ? 'Esplora il catalogo per categoria e prezzo, oppure cerca direttamente lo strumento che ti serve.'
+                                : 'Browse the catalog by category and price, or search directly for the tool you need.'
+                        },
+                        {
+                            target: '#bottom-nav .nav-btn[data-page="favorites"]',
+                            title: isIT ? 'La tua Libreria' : 'Your Library',
+                            text: isIT
+                                ? 'Salva i tuoi strumenti preferiti e organizzali in collezioni personali.'
+                                : 'Save your favorite tools and organize them into personal collections.'
+                        },
+                        {
+                            target: '#bottom-nav .nav-btn[data-page="news"]',
+                            title: isIT ? 'Notizie AI' : 'AI News',
+                            text: isIT
+                                ? 'Rimani aggiornato con un feed di notizie in stile reel. Scorri verso il basso per leggerle tutte.'
+                                : 'Stay up to date with a reel-style news feed. Scroll down to read them all.'
+                        },
+                        {
+                            target: '#menu-toggle-btn',
+                            title: isIT ? 'Menu e Strumenti' : 'Menu & Tools',
+                            text: isIT
+                                ? 'Apri il menu per usare gli strumenti utili (QR, PDF, firma…) e ritrovare la cronologia delle chat.'
+                                : 'Open the menu to use the utility tools (QR, PDF, sign…) and find your chat history.'
+                        },
+                        {
+                            target: '#wrench-fab',
+                            title: isIT ? 'Aggiungi una tua app' : 'Add your own app',
+                            text: isIT
+                                ? 'Aggiungi al catalogo uno strumento AI personalizzato con questo pulsante.'
+                                : 'Add a custom AI tool to the catalog with this button.'
+                        }
+                    ];
+                };
+
+                let current = 0;
+
+                const overlay = document.createElement('div');
+                overlay.id = 'koda-onboarding-overlay';
+                overlay.innerHTML = `
+                    <div class="koda-onboarding-highlight" id="onboarding-highlight"></div>
+                    <div class="koda-onboarding-tooltip" id="onboarding-tooltip">
+                        <h3 id="onboarding-title"></h3>
+                        <p id="onboarding-text"></p>
+                        <div class="koda-onboarding-lang" id="onboarding-lang" style="display:none;">
+                            <button type="button" class="koda-onboarding-lang-btn" data-lang="it">🇮🇹 Italiano</button>
+                            <button type="button" class="koda-onboarding-lang-btn" data-lang="en">🇬🇧 English</button>
+                        </div>
+                        <div class="koda-onboarding-footer">
+                            <div class="koda-onboarding-dots" id="onboarding-dots"></div>
+                            <div class="koda-onboarding-btns">
+                                <button class="koda-onboarding-skip" id="onboarding-skip"></button>
+                                <button class="koda-onboarding-next" id="onboarding-next"></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+
+                const highlightEl = overlay.querySelector('#onboarding-highlight');
+                const tooltipEl = overlay.querySelector('#onboarding-tooltip');
+                const titleEl = overlay.querySelector('#onboarding-title');
+                const textEl = overlay.querySelector('#onboarding-text');
+                const dotsEl = overlay.querySelector('#onboarding-dots');
+                const langEl = overlay.querySelector('#onboarding-lang');
+                const nextBtn = overlay.querySelector('#onboarding-next');
+                const skipBtn = overlay.querySelector('#onboarding-skip');
+
+                dotsEl.innerHTML = getSteps().map(() => '<span></span>').join('');
+
+                const finishOnboarding = () => {
+                    localStorage.setItem('koda-onboarding-done', 'true');
+                    overlay.style.transition = 'opacity 0.3s ease';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 300);
+                };
+
+                const renderStep = () => {
+                    const steps = getSteps();
+                    const isIT = currentLanguage === 'it';
+                    const step = steps[current];
+                    titleEl.textContent = step.title;
+                    textEl.textContent = step.text;
+                    skipBtn.textContent = isIT ? 'Salta' : 'Skip';
+                    nextBtn.textContent = current === steps.length - 1
+                        ? (isIT ? 'Inizia' : 'Get started')
+                        : (isIT ? 'Avanti' : 'Next');
+
+                    // Mostra i pulsanti lingua solo nello step dedicato
+                    langEl.style.display = step.lang ? 'flex' : 'none';
+                    langEl.querySelectorAll('.koda-onboarding-lang-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.lang === currentLanguage);
+                    });
+
+                    dotsEl.querySelectorAll('span').forEach((d, i) => d.classList.toggle('active', i === current));
+
+                    const targetEl = step.target ? document.querySelector(step.target) : null;
+                    if (targetEl) {
+                        const rect = targetEl.getBoundingClientRect();
+                        const pad = 8;
+                        highlightEl.classList.remove('no-target');
+                        highlightEl.style.width = (rect.width + pad * 2) + 'px';
+                        highlightEl.style.height = (rect.height + pad * 2) + 'px';
+                        highlightEl.style.top = (rect.top - pad) + 'px';
+                        highlightEl.style.left = (rect.left - pad) + 'px';
+
+                        tooltipEl.style.left = '50%';
+                        tooltipEl.style.transform = 'translateX(-50%)';
+                        // Se il target è nella metà alta dello schermo, mostra il tooltip sotto; altrimenti sopra
+                        if (rect.top < window.innerHeight / 2) {
+                            tooltipEl.style.top = (rect.bottom + 16) + 'px';
+                            tooltipEl.style.bottom = 'auto';
+                        } else {
+                            tooltipEl.style.bottom = (window.innerHeight - rect.top + 16) + 'px';
+                            tooltipEl.style.top = 'auto';
+                        }
+                    } else {
+                        highlightEl.classList.add('no-target');
+                        tooltipEl.style.left = '50%';
+                        tooltipEl.style.bottom = 'auto';
+                        tooltipEl.style.top = '50%';
+                        tooltipEl.style.transform = 'translate(-50%, -50%)';
+                    }
+                };
+
+                // Selezione della lingua dal tutorial
+                langEl.querySelectorAll('.koda-onboarding-lang-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (window.triggerHaptic) window.triggerHaptic('light');
+                        const lang = btn.dataset.lang;
+                        if (lang !== currentLanguage) {
+                            currentLanguage = lang;
+                            localStorage.setItem('koda-lang', currentLanguage);
+                            localStorage.setItem('language', currentLanguage);
+                            applyTranslations(currentLanguage);
+                            window.dispatchEvent(new Event('languageChanged'));
+                            try { renderView(); } catch (e) { /* noop */ }
+                        }
+                        renderStep();
+                    });
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    if (window.triggerHaptic) window.triggerHaptic('light');
+                    if (current < getSteps().length - 1) {
+                        current++;
+                        renderStep();
+                    } else {
+                        finishOnboarding();
+                    }
+                });
+                skipBtn.addEventListener('click', finishOnboarding);
+                window.addEventListener('resize', renderStep);
+
+                renderStep();
+            };
+
+            // Mostra l'onboarding solo al primo avvio (dopo la registrazione ospite)
+            const maybeShowOnboarding = () => {
+                if (localStorage.getItem('koda-onboarding-done')) return;
+                // Attendi che la vista sia renderizzata e la nav sia visibile
+                setTimeout(() => showOnboarding(), 400);
+            };
+
             const showFirstLaunchRegistration = () => {
                 const modalHTML = `
                 <div id="first-launch-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 99999; align-items: flex-start; overflow-y: auto; padding: 40px 20px;">
@@ -18219,6 +19483,7 @@ ${filtersHTML}
                     // Chiudi modale e ricarica vista
                     document.getElementById('first-launch-modal').remove();
                     renderView();
+                    maybeShowOnboarding();
                 });
 
                 // Gestione "Continua come Anonimo"
@@ -18231,6 +19496,7 @@ ${filtersHTML}
 
                     document.getElementById('first-launch-modal').remove();
                     renderView();
+                    maybeShowOnboarding();
                 });
             };
 
@@ -18257,7 +19523,19 @@ ${filtersHTML}
                     showFirstLaunchRegistration();
                 }
 
+                // Gamification: aggiorna lo streak giornaliero e controlla i traguardi
+                updateDailyStreak();
+                checkAchievements();
+
                 renderView();
+
+                // Utente già registrato ma che non ha ancora visto l'onboarding
+                if (isRegistered) {
+                    maybeShowOnboarding();
+                }
+
+                // Social leggero: gestisci eventuali deep link (?tool / ?c)
+                handleDeepLinks();
             };
 
             const initializeAppWithUser = async (user) => {
@@ -18314,7 +19592,14 @@ ${filtersHTML}
                     history.replaceState({ page: currentView }, '', `#${currentView}`);
                 }
 
+                // Gamification: aggiorna lo streak giornaliero e controlla i traguardi
+                updateDailyStreak();
+                checkAchievements();
+
                 renderView(); // Render the app view
+
+                // Social leggero: gestisci eventuali deep link (?tool / ?c)
+                handleDeepLinks();
             };
 
             // Apply theme on initial load
@@ -18610,7 +19895,13 @@ ${filtersHTML}
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: bottom;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                                 ${isIT ? 'Confronto AI' : 'AI Compare'}
                             </h2>
-                            <button data-action="close-modal" style="background: none; border: none; color: var(--Koda-text); font-size: 36px; cursor: pointer; line-height: 1;">&times;</button>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <button id="compare-share-btn" title="${isIT ? 'Condividi confronto' : 'Share comparison'}" style="background: var(--Koda-accent); border: none; color: #000; border-radius: 500px; padding: 10px 18px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                    ${isIT ? 'Condividi' : 'Share'}
+                                </button>
+                                <button data-action="close-modal" style="background: none; border: none; color: var(--Koda-text); font-size: 36px; cursor: pointer; line-height: 1;">&times;</button>
+                            </div>
                         </div>
                         
                         <div class="compare-table-wrapper" style="flex: 1;">
@@ -18627,6 +19918,59 @@ ${filtersHTML}
 
                 el.modalContainer.innerHTML = modalHTML;
                 history.pushState({ modal: 'compare' }, '', '');
+
+                // NUOVO: Condivisione del confronto (Web Share API o copia negli appunti)
+                const shareBtn = document.getElementById('compare-share-btn');
+                if (shareBtn) {
+                    shareBtn.addEventListener('click', async () => {
+                        const lines = [];
+                        lines.push(isIT ? '🔍 Confronto strumenti AI (via Koda)' : '🔍 AI Tools Comparison (via Koda)');
+                        lines.push('');
+                        toolsToCompare.forEach(tool => {
+                            const desc = typeof tool.description === 'object'
+                                ? (tool.description[currentLanguage] || tool.description['en'])
+                                : tool.description;
+                            const pricingText = tool.pricing ? tool.pricing.charAt(0).toUpperCase() + tool.pricing.slice(1) : '-';
+                            lines.push(`• ${tool.name}`);
+                            lines.push(`  ${isIT ? 'Categoria' : 'Category'}: ${getTranslatedCategoryName(tool.category)}`);
+                            lines.push(`  ${isIT ? 'Prezzo' : 'Pricing'}: ${pricingText}`);
+                            if (tool.country) lines.push(`  ${isIT ? 'Paese' : 'Country'}: ${tool.country}`);
+                            if (desc) lines.push(`  ${desc}`);
+                            if (tool.website) lines.push(`  🔗 ${tool.website}`);
+                            lines.push('');
+                        });
+                        const shareText = lines.join('\n').trim();
+                        const shareTitle = isIT ? 'Confronto AI - Koda' : 'AI Comparison - Koda';
+
+                        try {
+                            if (navigator.share) {
+                                await navigator.share({ title: shareTitle, text: shareText });
+                            } else if (navigator.clipboard) {
+                                await navigator.clipboard.writeText(shareText);
+                                showToast(isIT ? 'Confronto copiato negli appunti' : 'Comparison copied to clipboard');
+                            } else {
+                                throw new Error('no-share');
+                            }
+                            if (window.triggerHaptic) window.triggerHaptic('light');
+                        } catch (err) {
+                            if (err && err.name === 'AbortError') return; // L'utente ha annullato la condivisione
+                            // Fallback: copia manuale tramite textarea
+                            try {
+                                const ta = document.createElement('textarea');
+                                ta.value = shareText;
+                                ta.style.position = 'fixed';
+                                ta.style.opacity = '0';
+                                document.body.appendChild(ta);
+                                ta.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(ta);
+                                showToast(isIT ? 'Confronto copiato negli appunti' : 'Comparison copied to clipboard');
+                            } catch (e) {
+                                showToast(isIT ? 'Impossibile condividere il confronto' : 'Unable to share comparison');
+                            }
+                        }
+                    });
+                }
 
                 // Disattiva la selezione multipla pulendo lo stato
                 exploreMultiSelectMode = false;
@@ -18803,10 +20147,15 @@ ${filtersHTML}
                     return;
                 }
 
+                // 1b. Gestisci il modale Strumenti/Utility
+                const utilityModal = document.getElementById('utility-modal');
+                if (utilityModal) {
+                    utilityModal.remove();
+                    return;
+                }
 
-
-                // 2. Gestisci i modali custom (review-modal, confirm-modal, sent-reviews-modal, etc.)
-                const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .sent-reviews-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible, .news-detail-modal.visible');
+                // 2. Gestisci i modali custom (review-modal, confirm-modal, etc.)
+                const customModals = document.querySelectorAll('.review-modal.visible, .confirm-modal.visible, .privacy-modal.visible, .privacy-reminder-modal.visible, .playlist-modal.visible, .category-modal.visible, .add-to-collection-modal.visible, .news-detail-modal.visible');
                 if (customModals.length > 0) {
                     customModals.forEach(modal => {
                         modal.classList.remove('visible');
@@ -19737,6 +21086,31 @@ ${filtersHTML}
                         case 'delete-collection':
                             handleDeleteCollection(actionTarget.dataset.collectionId);
                             break;
+                        case 'share-tool':
+                            shareTool(actionTarget.dataset.id);
+                            break;
+                        case 'share-collection':
+                            if (activeContextMenu) { activeContextMenu.remove(); activeContextMenu = null; }
+                            shareCollection(actionTarget.dataset.collectionId);
+                            break;
+                        case 'save-shared-collection':
+                            saveSharedCollection();
+                            break;
+                        case 'close-shared-collection': {
+                            const sharedModal = document.getElementById('shared-collection-modal');
+                            if (sharedModal) sharedModal.remove();
+                            window.pendingSharedCollection = null;
+                            if (window.history.state && window.history.state.modal === 'shared-collection') window.history.back();
+                            break;
+                        }
+                        case 'open-utility-tool':
+                            toggleSideMenu(false);
+                            openUtilityTool(actionTarget.dataset.utility);
+                            break;
+                        case 'close-utility':
+                            if (window.history.state && window.history.state.modal === 'utility') window.history.back();
+                            else closeUtilityModal();
+                            break;
                         case 'back-to-collections':
                             activeCollectionId = null;
                             selectionMode = false;
@@ -19877,6 +21251,23 @@ ${filtersHTML}
                             }
                             break;
 
+                        // --- NUOVO: NOTIFICHE ---
+                        case 'open-notifications-modal':
+                            openNotificationsModal();
+                            break;
+                        case 'toggle-notif-master':
+                            toggleNotifMaster();
+                            break;
+                        case 'toggle-notif-video':
+                            toggleNotifCategory('video');
+                            break;
+                        case 'toggle-notif-ai':
+                            toggleNotifCategory('ai');
+                            break;
+                        case 'toggle-notif-news':
+                            toggleNotifCategory('news');
+                            break;
+
                         // --- NUOVO: LOGICA VISIBILITA' MENU ---
                         case 'nav-toggle-visible':
                             const targetId = actionTarget.dataset.id;
@@ -19908,6 +21299,28 @@ ${filtersHTML}
                                 updateNavActiveState(); // Ricrea la navbar in basso
                             }
                             break;
+                        // ---------------------------------------
+
+                        // --- NUOVO: RIORDINO MENU CON FRECCE (▲/▼) ---
+                        case 'nav-move-up':
+                        case 'nav-move-down': {
+                            const moveId = actionTarget.dataset.id;
+                            const fromIndex = userNavConfig.findIndex(i => i.id === moveId);
+                            if (fromIndex === -1) break;
+                            const toIndex = action === 'nav-move-up' ? fromIndex - 1 : fromIndex + 1;
+                            if (toIndex < 0 || toIndex >= userNavConfig.length) break;
+
+                            // Scambia gli elementi
+                            [userNavConfig[fromIndex], userNavConfig[toIndex]] = [userNavConfig[toIndex], userNavConfig[fromIndex]];
+                            localStorage.setItem('koda-nav-config', JSON.stringify(userNavConfig));
+                            if (window.triggerHaptic) window.triggerHaptic('light');
+
+                            if (document.getElementById('menu-customization-modal')) {
+                                openMenuCustomizationModal(); // Ricarica il modale aggiornato
+                            }
+                            updateNavActiveState(); // Aggiorna la navbar in basso
+                            break;
+                        }
                         // ---------------------------------------
 
                         case 'toggle-lang':
@@ -20023,6 +21436,11 @@ ${filtersHTML}
                         case 'open-compare-modal':
                             openCompareModal();
                             break;
+                        case 'clear-recently-viewed':
+                            localStorage.removeItem(RECENTLY_VIEWED_KEY);
+                            showToast(currentLanguage === 'it' ? 'Cronologia cancellata' : 'History cleared');
+                            renderView();
+                            break;
                         case 'open-spotlight':
                             openSpotlightSearch();
                             break;
@@ -20060,10 +21478,6 @@ ${filtersHTML}
                             break;
                         // Modals (Detail, Settings, Add App, Replace Featured)
                         case 'close-modal': closeModal(); break;
-                        // NUOVO: Gestione recensioni
-                        case 'add-review': openReviewModal(actionTarget.dataset.toolId); break;
-                        case 'close-review-modal': closeReviewModal(); break;
-                        case 'submit-review': submitReview(); break;
                         case 'open-detail-modal': // For recommendation box in detail modal
                             window.openDetailModal(actionTarget.dataset.id);
                             break;
@@ -20170,6 +21584,10 @@ ${filtersHTML}
                             closeUserProfileDropdown();
                             window.openSettingsModal();
                             break;
+                        case 'open-achievements':
+                            closeUserProfileDropdown();
+                            openAchievementsModal();
+                            break;
                         case 'open-appearance':
                             closeUserProfileDropdown();
                             openAppearanceModal();
@@ -20183,33 +21601,7 @@ ${filtersHTML}
                             closeUserProfileDropdown();
                             openChangePasswordModal();
                             break;
-                        
 
-                        case 'view-sent-reviews':
-                            closeUserProfileDropdown();
-                            openSentReviewsModal();
-                            break;
-                        case 'view-all-user-reviews':
-                            const reviewToolId = actionTarget.dataset.toolId;
-                            if (reviewToolId) {
-                                openAllUserReviewsModal(reviewToolId);
-                            }
-                            break;
-                        case 'edit-review':
-                            const editToolId = actionTarget.dataset.toolId;
-                            const editReviewId = actionTarget.dataset.reviewId;
-                            if (editToolId && editReviewId) {
-                                openEditReviewModal(editToolId, editReviewId);
-                            }
-                            break;
-                        case 'delete-review':
-                            const deleteToolId = actionTarget.dataset.toolId;
-                            const deleteReviewId = actionTarget.dataset.reviewId;
-                            if (deleteToolId && deleteReviewId) {
-                                confirmDeleteReview(deleteToolId, deleteReviewId);
-                            }
-                            break;
-                        
                     }
                     // Prevent default for any element with data-action
                     e.preventDefault();
@@ -20251,31 +21643,6 @@ ${filtersHTML}
                 closeUserProfileDropdown();
 
                 // If none of the above were clicked, let the default behavior happen
-            });
-
-            // NUOVO: Event listeners per le stelle del rating
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('star-input')) {
-                    const rating = parseInt(e.target.dataset.rating);
-                    // Check if we're in edit mode
-                    if (document.getElementById('edit-review-modal')) {
-                        window.currentEditRating = rating;
-                        const starsInput = document.querySelectorAll('.star-input');
-                        starsInput.forEach((star, index) => {
-                            star.classList.toggle('active', index < rating);
-                        });
-                    } else {
-                        setRating(rating);
-                    }
-                }
-            });
-
-            // NUOVO: Event listener per chiudere il modal delle recensioni cliccando fuori
-            document.addEventListener('click', (e) => {
-                const reviewModal = document.getElementById('review-modal');
-                if (e.target === reviewModal) {
-                    closeReviewModal();
-                }
             });
 
             const getExploreFeedHTML = () => {
@@ -20420,8 +21787,8 @@ ${filtersHTML}
                 if (initialHash && validPages.includes(initialHash) && initialHash !== 'home') {
                     currentView = initialHash;
                 } else {
-                    currentView = 'top-ai';
-                    history.replaceState({ page: 'top-ai' }, '', '#top-ai');
+                    currentView = 'home';
+                    history.replaceState({ page: 'home' }, '', '#home');
                 }
                 // --- END OF INSERTION ---
                 // Carica tutti i dati da Firestore PRIMA di inizializzare l'app
@@ -20437,6 +21804,8 @@ ${filtersHTML}
                     updateCinemaNotificationBadge();
                     updateExploreNotificationBadge();
                     updateNewsNotificationBadge();
+                    // NUOVO: Notifiche di sistema + badge sull'icona app per i cataloghi aggiornati
+                    initNotifications();
                 }, 100);
 
                 // Rimuovi la playlist predefinita "Guarda più tardi" se esiste nel localStorage
@@ -20912,7 +22281,7 @@ ${filtersHTML}
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/KODA-APP-MOBILE-NO-DEV-/sw.js')
+                navigator.serviceWorker.register('sw.js')
                     .then(registration => {
                         console.log('Service Worker registrato con successo:', registration);
                     })
