@@ -1221,6 +1221,26 @@
             animation: emptyStateFloat 3.5s ease-in-out infinite;
         }
 
+        /* Koda custom themed icons (replace traditional emojis) */
+        .koda-icon {
+            width: 1em;
+            height: 1em;
+            display: inline-block;
+            vertical-align: -0.14em;
+            flex-shrink: 0;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .koda-icon.koda-icon-fill { fill: currentColor; stroke: none; }
+        .empty-state-rich .empty-state-icon .koda-icon {
+            width: 54px;
+            height: 54px;
+            color: var(--Koda-accent);
+        }
+
         @keyframes emptyStateFloat {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-7px); }
@@ -9143,21 +9163,23 @@ ${knowledgeBaseFormatter(tools)}
             return (
                 <div className="chat-msg-actions" style={{ display: 'flex', gap: '2px', alignItems: 'center', margin: '-2px 0 12px 4px', flexWrap: 'wrap', opacity: 0.92 }}>
                     <button type="button" style={btnStyle} onClick={handleCopy} aria-label={lang === 'it' ? 'Copia' : 'Copy'}>
-                        <span style={{ fontSize: '13px' }}>{copied ? '✅' : '📋'}</span>
+                        <span style={{ display: 'inline-flex' }}>{copied
+                            ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>}</span>
                         {copied ? (lang === 'it' ? 'Copiato' : 'Copied') : (lang === 'it' ? 'Copia' : 'Copy')}
                     </button>
                     {canRegenerate && (
                         <button type="button" style={{ ...btnStyle, opacity: isLoading ? 0.4 : 1 }} onClick={() => !isLoading && onRegenerate(message.id)} disabled={isLoading} aria-label={lang === 'it' ? 'Rigenera' : 'Regenerate'}>
-                            <span style={{ fontSize: '13px' }}>🔄</span>
+                            <span style={{ display: 'inline-flex' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
                             {lang === 'it' ? 'Rigenera' : 'Regenerate'}
                         </button>
                     )}
                     <span style={{ width: '1px', height: '14px', background: 'rgba(128,128,128,0.25)', margin: '0 3px' }}></span>
                     <button type="button" style={{ ...btnStyle, color: feedback === 'up' ? 'var(--accent-color, #22c55e)' : 'var(--text-secondary, #888)' }} onClick={() => saveFeedback('up')} aria-label={lang === 'it' ? 'Mi piace' : 'Like'} title={lang === 'it' ? 'Risposta utile' : 'Helpful'}>
-                        <span style={{ fontSize: '13px' }}>👍</span>
+                        <span style={{ display: 'inline-flex' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span>
                     </button>
                     <button type="button" style={{ ...btnStyle, color: feedback === 'down' ? '#e74c3c' : 'var(--text-secondary, #888)' }} onClick={() => saveFeedback('down')} aria-label={lang === 'it' ? 'Non mi piace' : 'Dislike'} title={lang === 'it' ? 'Risposta da migliorare' : 'Needs improvement'}>
-                        <span style={{ fontSize: '13px' }}>👎</span>
+                        <span style={{ display: 'inline-flex' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg></span>
                     </button>
                 </div>
             );
@@ -9570,7 +9592,7 @@ ${knowledgeBaseFormatter(tools)}
                     navHome: "Home", navTopAI: "Classifiche", navSearch: "Catalogo", navLibrary: "Libreria",
                     pageTitleHome: "Koda", pageTitleTopAI: "Classifiche", pageTitleSearch: "Catalogo", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema", pageTitleNews: "Notizie", navNews: "Notizie",
                     navCinemaVideos: "Video", navCinemaFavorites: "Preferiti", navCinemaPlaylists: "Playlist",
-                    logout: "Logout", featured: "💎 In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
+                    logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità", newArrivals: "Nuovi Arrivi", newBadge: "NUOVO",
                     multiSelect: "Selezione", cancelSelection: "Annulla", addToFavorites: "Aggiungi ai preferiti", addToCollection: "Aggiungi a collezione", itemsSelected: "%d selezionati",
                     backToSearch: "Indietro", toolsFrom: "Strumenti da", libraryPromptTitle: "Salva i tuoi preferiti",
@@ -9783,7 +9805,7 @@ ${knowledgeBaseFormatter(tools)}
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Catalogue", navLibrary: "Library",
                     pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Catalogue", pageTitleLibrary: "Library", pageTitleCinema: "Cinema", pageTitleNews: "News", navNews: "News",
                     navCinemaVideos: "Videos", navCinemaFavorites: "Favorites", navCinemaPlaylists: "Playlists",
-                    logout: "Logout", featured: "💎 Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
+                    logout: "Logout", featured: "Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County", newArrivals: "New Arrivals", newBadge: "NEW",
                     multiSelect: "Multi-select", cancelSelection: "Cancel", addToFavorites: "Add to favorites", addToCollection: "Add to collection", itemsSelected: "%d selected",
                     backToSearch: "Back", toolsFrom: "Tools from", libraryPromptTitle: "Save your favorites",
@@ -10323,21 +10345,59 @@ ${knowledgeBaseFormatter(tools)}
                 return category ? category.name[currentLanguage] : categoryId;
             };
 
-            // NUOVO: Emoji a tema per ogni categoria (coerenti con il modale dei filtri)
-            const categoryEmojiMap = {
-                'Multimodali': '🧩',
-                'Testo': '📝',
-                'Immagini': '🖼️',
-                'Video': '🎬',
-                'Presentazioni': '📊',
-                'Codice': '💻',
-                'Audio': '🎵',
-                'Automation Tools': '⚙️',
-                'Browser AI': '🌐',
-                'AI Playground': '🎮',
-                'Agenti AI': '🤖'
+            // NUOVO: Set di icone SVG custom a tema Koda AI (sostituiscono le emoji tradizionali)
+            const KODA_ICON_PATHS = {
+                multimodali: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+                testo: '<line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/>',
+                immagini: '<rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/>',
+                video: '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2.5"/>',
+                presentazioni: '<path d="M2 3h20"/><path d="M3 3v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3"/><path d="M12 16v5"/><path d="M8 21h8"/>',
+                codice: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+                audio: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+                automation: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+                browser: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+                playground: '<rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/>',
+                agente: '<rect x="4" y="8" width="16" height="12" rx="2.5"/><path d="M12 8V4.5"/><circle cx="12" cy="3.5" r="1.2"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9.5 17h5"/>',
+                star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+                library: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+                featured: '<path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/>',
+                sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/>',
+                clock: '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>',
+                free: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+                freemium: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+                paid: '<rect x="1" y="4" width="22" height="16" rx="2.5"/><line x1="1" y1="10" x2="23" y2="10"/>',
+                tutorial: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+                education: '<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+                news: '<path d="M4 22a2 2 0 0 1-2-2v-9a1 1 0 0 1 1-1h3"/><path d="M6 22h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2"/><line x1="10" y1="7" x2="18" y2="7"/><line x1="10" y1="11" x2="18" y2="11"/><line x1="10" y1="15" x2="14" y2="15"/>',
+                tools: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.1 2.1-2.2-.5-.5-2.2 2.2-2.1z"/>',
+                compass: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+                bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+                globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+                dot: '<circle cx="12" cy="12" r="4"/>'
             };
-            const getCategoryEmoji = (categoryId) => categoryEmojiMap[categoryId] || '🔹';
+            // categoryId -> nome icona Koda
+            const categoryEmojiMap = {
+                'Multimodali': 'multimodali',
+                'Testo': 'testo',
+                'Immagini': 'immagini',
+                'Video': 'video',
+                'Presentazioni': 'presentazioni',
+                'Codice': 'codice',
+                'Audio': 'audio',
+                'Automation Tools': 'automation',
+                'Browser AI': 'browser',
+                'AI Playground': 'playground',
+                'Agenti AI': 'agente'
+            };
+            // Restituisce il markup SVG di un'icona Koda (size in px opzionale)
+            const kodaIcon = (name, size) => {
+                const paths = KODA_ICON_PATHS[name] || KODA_ICON_PATHS.dot;
+                const dim = size ? ` width="${size}" height="${size}"` : '';
+                return `<svg class="koda-icon" viewBox="0 0 24 24"${dim} aria-hidden="true">${paths}</svg>`;
+            };
+            window.kodaIcon = kodaIcon;
+            const getCategoryEmoji = (categoryId) => kodaIcon(categoryEmojiMap[categoryId] || 'dot');
+
 
             // NEW FUNCTION: Get all tools (static + user's)
             window.getAllToolsForCurrentUser = () => { // Make it globally accessible for React
@@ -10756,7 +10816,7 @@ ${knowledgeBaseFormatter(tools)}
                         <span class="uti-ic">${t.icon}</span>
                         <span class="uti-tx"><b>${t.label}</b><small>${t.desc}</small></span>
                     </button>`).join('');
-                container.innerHTML = `<div class="utility-tools-title">🧰 ${it ? 'Strumenti' : 'Tools'}</div>${items}`;
+                container.innerHTML = `<div class="utility-tools-title">${kodaIcon('tools')} ${it ? 'Strumenti' : 'Tools'}</div>${items}`;
             };
 
             // Shell generico del modale Strumenti
@@ -11197,9 +11257,9 @@ ${knowledgeBaseFormatter(tools)}
                 if (!pricing) return '';
                 const t = translations[currentLanguage];
                 const icons = {
-                    free: '✅',
-                    freemium: '💰',
-                    paid: '💵'
+                    free: kodaIcon('free'),
+                    freemium: kodaIcon('freemium'),
+                    paid: kodaIcon('paid')
                 };
                 const labels = {
                     free: t.pricingFree,
@@ -11214,10 +11274,10 @@ ${knowledgeBaseFormatter(tools)}
                 if (!category) return '';
                 const t = translations[currentLanguage];
                 const icons = {
-                    tutorial: '📚',
-                    education: '🎓',
-                    development: '💻',
-                    news: '📰'
+                    tutorial: kodaIcon('tutorial'),
+                    education: kodaIcon('education'),
+                    development: kodaIcon('codice'),
+                    news: kodaIcon('news')
                 };
                 const labels = {
                     tutorial: t.categoryTutorial,
@@ -11410,7 +11470,7 @@ ${knowledgeBaseFormatter(tools)}
                             <h2>${tool.name}</h2>
                             <p>${tool.description}</p>
                             <div class="detail-tags">
-                                <span class="tag">🌍 ${tool.country || 'N/A'}</span>
+                                <span class="tag" style="display:inline-flex;align-items:center;gap:5px;">${kodaIcon('globe')} ${tool.country || 'N/A'}</span>
                                 <span class="tag">${getTranslatedCategoryName(tool.category || 'N/A')}</span>
                                 ${tool.pricing ? getPricingBadgeHTML(tool.pricing) : ''}
                             </div>
@@ -13339,7 +13399,7 @@ ${knowledgeBaseFormatter(tools)}
                 banner.setAttribute('tabindex', '0');
                 banner.style.cssText = 'position:fixed; top:14px; left:50%; transform:translateX(-50%) translateY(-160%); z-index:9000; display:flex; align-items:center; gap:10px; max-width:calc(100% - 28px); width:max-content; background:var(--Koda-card); color:var(--Koda-text); border:1px solid color-mix(in srgb, var(--Koda-accent) 40%, transparent); border-radius:500px; padding:11px 14px 11px 16px; box-shadow:0 8px 28px rgba(0,0,0,0.45); cursor:pointer; transition:transform 0.4s cubic-bezier(0.25,1,0.5,1), opacity 0.3s ease; font-family:var(--font-family);';
                 banner.innerHTML = `
-                    <span style="font-size:18px; line-height:1;">✨</span>
+                    <span style="display:inline-flex; color:var(--Koda-accent); font-size:18px;">${kodaIcon('sparkle')}</span>
                     <span style="font-size:13.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${text}</span>
                     <button type="button" id="koda-novita-close" aria-label="${it ? 'Chiudi' : 'Close'}" style="background:none; border:none; color:var(--Koda-text-secondary); font-size:20px; line-height:1; cursor:pointer; padding:0 2px; margin-left:2px;">&times;</button>
                 `;
@@ -13516,9 +13576,9 @@ ${knowledgeBaseFormatter(tools)}
                 const categoriesHTML = masterOn ? `
                     <label style="display:block;font-size:12px;font-weight:800;color:var(--Koda-text-secondary);text-transform:uppercase;margin:24px 0 12px;text-align:left;">${it ? 'Categorie' : 'Categories'}</label>
                     <div style="display:flex;flex-direction:column;gap:10px;">
-                        ${row(it ? '🎬 Video' : '🎬 Videos', it ? 'Nuovi video nel catalogo' : 'New videos in the catalog', isNotifCategoryOn('video'), 'toggle-notif-video')}
-                        ${row(it ? '🤖 Strumenti AI' : '🤖 AI Tools', it ? 'Nuovi strumenti AI aggiunti' : 'New AI tools added', isNotifCategoryOn('ai'), 'toggle-notif-ai')}
-                        ${row(it ? '📰 Notizie' : '📰 News', it ? 'Nuove notizie pubblicate' : 'New stories published', isNotifCategoryOn('news'), 'toggle-notif-news')}
+                        ${row(`<span style="display:inline-flex;align-items:center;gap:8px;">${kodaIcon('video')} ${it ? 'Video' : 'Videos'}</span>`, it ? 'Nuovi video nel catalogo' : 'New videos in the catalog', isNotifCategoryOn('video'), 'toggle-notif-video')}
+                        ${row(`<span style="display:inline-flex;align-items:center;gap:8px;">${kodaIcon('agente')} ${it ? 'Strumenti AI' : 'AI Tools'}</span>`, it ? 'Nuovi strumenti AI aggiunti' : 'New AI tools added', isNotifCategoryOn('ai'), 'toggle-notif-ai')}
+                        ${row(`<span style="display:inline-flex;align-items:center;gap:8px;">${kodaIcon('news')} ${it ? 'Notizie' : 'News'}</span>`, it ? 'Nuove notizie pubblicate' : 'New stories published', isNotifCategoryOn('news'), 'toggle-notif-news')}
                     </div>` : '';
 
                 const deniedHTML = denied ? `<div style="margin-top:16px;padding:14px;border-radius:10px;background:rgba(226,85,106,0.12);color:#e2556a;font-size:13px;text-align:left;">${it ? '⚠️ Le notifiche sono bloccate nel browser. Abilitale dalle impostazioni del sito per riceverle.' : '⚠️ Notifications are blocked. Enable them in your browser site settings.'}</div>` : '';
@@ -13528,7 +13588,7 @@ ${knowledgeBaseFormatter(tools)}
                 <div id="notifications-modal" class="modal-overlay visible" style="background:var(--Koda-bg);z-index:10006;align-items:flex-start;padding:0;overflow-y:auto;">
                     <div class="modal-content" style="text-align:left;width:100%;max-width:500px;min-height:100vh;border-radius:0;margin:0 auto;padding:40px 24px;">
                         <button class="modal-close-btn" data-action="close-modal" style="top:20px;right:24px;font-size:36px;">×</button>
-                        <h2 style="margin-bottom:8px;">${it ? '🔔 Notifiche' : '🔔 Notifications'}</h2>
+                        <h2 style="margin-bottom:8px;display:flex;align-items:center;gap:10px;"><span style="display:inline-flex;color:var(--Koda-accent);">${kodaIcon('bell')}</span> ${it ? 'Notifiche' : 'Notifications'}</h2>
                         <p style="font-size:13px;color:var(--Koda-text-secondary);margin-bottom:28px;line-height:1.4;">${it ? "Ricevi un avviso sull'icona dell'app quando vengono aggiunti nuovi video, strumenti AI o notizie." : 'Get an alert on the app icon when new videos, AI tools or news are added.'}</p>
                         ${row(it ? 'Abilita notifiche' : 'Enable notifications', it ? 'Attiva gli avvisi di aggiornamento' : 'Turn on update alerts', masterOn, 'toggle-notif-master', '', !supported || denied)}
                         ${categoriesHTML}
@@ -13573,7 +13633,7 @@ ${knowledgeBaseFormatter(tools)}
                 const isGuest = !currentUser.uid;
                 // Check privileged status loaded from Firestore
                 const isPrivileged = currentUser.uid && currentUser.isPrivileged;
-                const pageTitles = { home: t.pageTitleHome, 'top-ai': `🏆 ${t.pageTitleTopAI}`, explore: `🧭 ${t.pageTitleSearch}`, favorites: `📚 ${t.pageTitleLibrary}`, cinema: `🎬 ${t.pageTitleCinema}`, news: `📰 ${t.pageTitleNews}` };
+                const pageTitles = { home: t.pageTitleHome, 'top-ai': t.pageTitleTopAI, explore: t.pageTitleSearch, favorites: t.pageTitleLibrary, cinema: t.pageTitleCinema, news: t.pageTitleNews };
 
                 // Top bar is only rendered for non-home views
                 if (currentView !== 'home') {
@@ -13694,10 +13754,10 @@ ${knowledgeBaseFormatter(tools)}
 
                     const dailyAiHTML = `
                         <div style="margin-bottom: 32px; background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, rgba(0,0,0,0) 100%); border: 1px solid var(--Koda-accent); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; cursor: pointer; box-shadow: 0 8px 24px rgba(29, 185, 84, 0.15);" data-action="open-detail-modal" data-id="${aiOfTheDay.id}">
-                            <div style="position: absolute; top: -20px; right: -20px; font-size: 100px; opacity: 0.05;">🌟</div>
+                            <div style="position: absolute; top: -20px; right: -20px; opacity: 0.06; color: var(--Koda-accent);">${kodaIcon('sparkle', 120)}</div>
                             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px;">
                                 <div style="font-size: 12px; font-weight: 700; color: var(--Koda-accent); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
-                                    <span>✨</span> ${currentLanguage === 'it' ? 'La Scoperta di Oggi' : 'App of the Day'}
+                                    <span style="display:inline-flex;">${kodaIcon('sparkle')}</span> ${currentLanguage === 'it' ? 'La Scoperta di Oggi' : 'App of the Day'}
                                 </div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 16px;">
@@ -13708,7 +13768,7 @@ ${knowledgeBaseFormatter(tools)}
                                 </div>
                             </div>
                             <div style="font-size: 11px; color: var(--Koda-text-secondary); margin-top: 14px; display: flex; align-items: center; gap: 6px; opacity: 0.8;">
-                                <span>🔄</span> ${currentLanguage === 'it' ? 'Nuova scoperta ogni giorno · Torna domani!' : 'A new discovery every day · Come back tomorrow!'}
+                                <span style="display:inline-flex;">${kodaIcon('clock')}</span> ${currentLanguage === 'it' ? 'Nuova scoperta ogni giorno · Torna domani!' : 'A new discovery every day · Come back tomorrow!'}
                             </div>
                         </div>
                     `;
@@ -13716,7 +13776,7 @@ ${knowledgeBaseFormatter(tools)}
 
                     // Limita a 4 le AI In evidenza
                     const featuredTools = staticTools.filter(t => t.isFeatured).slice(0, 4); // Solo 4 AI In evidenza
-                    let contentHTML = dailyAiHTML + `<div class="section-title"><span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container featured-ai-grid">`;
+                    let contentHTML = dailyAiHTML + `<div class="section-title"><span class="section-title-icon" style="color:var(--Koda-accent);display:inline-flex;vertical-align:-0.14em;">${kodaIcon('featured')}</span> <span data-translate="featured">${t.featured}</span><span class="featured-disclaimer" data-translate="featuredDisclaimer">${t.featuredDisclaimer}</span></div><div class="grid-container featured-ai-grid">`;
 
                     // Render static featured tools, potentially replaced by user tools
                     contentHTML += featuredTools.map(staticTool => {
@@ -13917,7 +13977,7 @@ ${filtersHTML}
                                         </div>
                                         
                                         <!-- Cuore animato per doppio tocco -->
-                                        <div class="double-tap-heart">❤️</div>
+                                        <div class="double-tap-heart"><svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
                                         
                                         <!-- Overlay testo -->
                                         <div class="news-overlay">
@@ -14145,8 +14205,7 @@ ${filtersHTML}
                     // Load AI filter state
                     const aiSelectedCategories = JSON.parse(localStorage.getItem('ai-selected-categories') || '[]');
                     const aiSelectedPricing = JSON.parse(localStorage.getItem('ai-selected-pricing') || '[]');
-                    const aiOnlyNew = localStorage.getItem('ai-only-new') === '1';
-                    const hasActiveFilters = aiSelectedCategories.length > 0 || aiSelectedPricing.length > 0 || aiOnlyNew;
+                    const hasActiveFilters = aiSelectedCategories.length > 0 || aiSelectedPricing.length > 0;
                     const categoryCountText = aiSelectedCategories.length > 0
                         ? ` (${aiSelectedCategories.length})`
                         : '';
@@ -14161,9 +14220,6 @@ ${filtersHTML}
                         <div style="display: flex; gap: 8px; align-items: center; padding: 0 16px 16px 16px; overflow-x: auto;">
                             <button class="filter-btn ${!hasActiveFilters ? 'active' : ''}" data-action="clear-ai-filters">
                                 ${currentLanguage === 'it' ? 'Tutti' : 'All'}
-                            </button>
-                            <button class="filter-btn ${aiOnlyNew ? 'active' : ''}" data-action="toggle-ai-new-filter">
-                                ✨ ${currentLanguage === 'it' ? 'Novità' : 'New'}
                             </button>
                             <button class="filter-btn ${aiSelectedCategories.length > 0 ? 'active' : ''}" data-action="open-ai-category-modal">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2z"/></svg>
@@ -14185,10 +14241,6 @@ ${filtersHTML}
                         // Apply pricing filter if active
                         if (aiSelectedPricing.length > 0) {
                             filteredTools = filteredTools.filter(tool => aiSelectedPricing.includes(tool.pricing));
-                        }
-                        // Apply "only new" filter if active
-                        if (aiOnlyNew) {
-                            filteredTools = filteredTools.filter(tool => isToolNew(tool));
                         }
 
                         const title = exploreFilter.type === 'category' ? `${getCategoryEmoji(exploreFilter.value)} ${getTranslatedCategoryName(exploreFilter.value)}` : `${t.toolsFrom} ${exploreFilter.value}`;
@@ -14222,11 +14274,6 @@ ${filtersHTML}
                             allTools = allTools.filter(tool => aiSelectedPricing.includes(tool.pricing));
                         }
 
-                        // Apply "only new" filter
-                        if (aiOnlyNew) {
-                            allTools = allTools.filter(tool => isToolNew(tool));
-                        }
-
                         allTools.forEach(tool => {
                             const category = tool.category;
                             if (!toolsByCategory[category]) {
@@ -14243,7 +14290,7 @@ ${filtersHTML}
                             feedHTML += `
                                 <div class="feed-section">
                                     <div class="feed-section-header">
-                                        <h2 class="feed-section-title">🕘 ${currentLanguage === 'it' ? 'Visti di recente' : 'Recently viewed'}</h2>
+                                        <h2 class="feed-section-title">${kodaIcon('clock')} ${currentLanguage === 'it' ? 'Visti di recente' : 'Recently viewed'}</h2>
                                         <button class="see-all-btn" data-action="clear-recently-viewed">
                                             ${currentLanguage === 'it' ? 'Cancella' : 'Clear'}
                                         </button>
@@ -14268,7 +14315,7 @@ ${filtersHTML}
                             feedHTML += `
                                 <div class="feed-section">
                                     <div class="feed-section-header">
-                                        <h2 class="feed-section-title" style="color: var(--Koda-accent);">✨ ${t.newArrivals || 'Nuovi Arrivi'}</h2>
+                                        <h2 class="feed-section-title" style="color: var(--Koda-accent);">${kodaIcon('sparkle')} ${t.newArrivals || 'Nuovi Arrivi'}</h2>
                                     </div>
                                     <div class="horizontal-scroll-container">
                                         ${newTools.map(tool => `
@@ -14416,8 +14463,8 @@ ${filtersHTML}
                     const filtersHTML = `
                         <div id="library-filters-container" style="display: flex; align-items: center; gap: 12px;">
                             <div class="filter-pills" id="library-filters" style="flex: 1;">
-                                <button class="pill-btn ${libraryTab === 'favorites' ? 'active' : ''}" data-action="set-library-tab" data-tab="favorites">⭐ ${t.libraryFavorites}</button>
-                                <button class="pill-btn ${libraryTab === 'collections' ? 'active' : ''}" data-action="set-library-tab" data-tab="collections">📚 ${t.libraryCollections}</button>
+                                <button class="pill-btn ${libraryTab === 'favorites' ? 'active' : ''}" data-action="set-library-tab" data-tab="favorites">${kodaIcon('star')} ${t.libraryFavorites}</button>
+                                <button class="pill-btn ${libraryTab === 'collections' ? 'active' : ''}" data-action="set-library-tab" data-tab="collections">${kodaIcon('library')} ${t.libraryCollections}</button>
                             </div>
                             <div class="view-toggle-container">
                                 <button class="view-toggle-btn ${libraryViewMode === 'list' ? 'active' : ''}" data-action="set-view-mode" data-mode="list" title="${t.viewList}">
@@ -14484,7 +14531,7 @@ ${filtersHTML}
                             } else {
                                 contentHTML = `
                                     <div id="empty-state" class="empty-state-rich">
-                                        <div class="empty-state-icon">⭐</div>
+                                        <div class="empty-state-icon">${kodaIcon('star')}</div>
                                         <div class="empty-state-title">${t.emptyFavorites}</div>
                                         <div class="empty-state-text">${currentLanguage === 'it' ? 'Tocca la stella su un\u2019AI per ritrovarla qui in un attimo.' : 'Tap the star on any AI to find it here in a snap.'}</div>
                                         <button class="empty-state-cta" data-action="go-to-page" data-page="explore">${currentLanguage === 'it' ? 'Esplora le AI' : 'Explore AIs'}</button>
@@ -14524,7 +14571,7 @@ ${filtersHTML}
                             } else {
                                 contentHTML = `
                                     <div id="empty-state" class="empty-state-rich">
-                                        <div class="empty-state-icon">📚</div>
+                                        <div class="empty-state-icon">${kodaIcon('library')}</div>
                                         <div class="empty-state-title">${t.emptyCollections}</div>
                                         <div class="empty-state-text">${currentLanguage === 'it' ? 'Organizza le tue AI preferite in raccolte tematiche.' : 'Organize your favorite AIs into themed collections.'}</div>
                                         <button class="empty-state-cta" data-action="create-collection">${currentLanguage === 'it' ? '+ Crea collezione' : '+ Create collection'}</button>
@@ -14652,10 +14699,10 @@ ${filtersHTML}
                              <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: left;">${currentLanguage === 'it' ? 'Informazioni' : 'About'}</h3>
                              <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <button data-action="replay-tutorial" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                                    ${currentLanguage === 'it' ? '🧭 Rivedi il tutorial' : '🧭 Replay tutorial'} <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
+                                    <span style="display:inline-flex;align-items:center;gap:8px;">${kodaIcon('compass')} ${currentLanguage === 'it' ? 'Rivedi il tutorial' : 'Replay tutorial'}</span> <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
                                 </button>
                                 <button data-action="open-notifications-modal" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                                    ${currentLanguage === 'it' ? '🔔 Notifiche' : '🔔 Notifications'} <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
+                                    <span style="display:inline-flex;align-items:center;gap:8px;">${kodaIcon('bell')} ${currentLanguage === 'it' ? 'Notifiche' : 'Notifications'}</span> <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
                                 </button>
                                 <button data-action="open-cinema-policy" style="padding: 18px 0; text-align: left; background: none; border: none; border-top: 1px solid rgba(128,128,128,0.1); border-bottom: 1px solid rgba(128,128,128,0.1); color: var(--Koda-text); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                                     Policy <span style="pointer-events: none; color: var(--Koda-text-secondary); font-size: 20px;">›</span>
@@ -14764,7 +14811,7 @@ ${filtersHTML}
                             <div style="position: relative; width: 120px; height: 120px; cursor: pointer; transition: transform 0.2s ease; margin: 0 auto;" id="add-app-logo-container" onclick="document.getElementById('add-app-logo').click()">
                                 <img id="add-app-logo-preview" src="" alt="Logo Preview" style="display: none; width: 100%; height: 100%; border-radius: 24px; object-fit: cover; border: 1px solid var(--Koda-text-secondary);">
                                 <div id="add-app-logo-placeholder" style="width: 100%; height: 100%; border-radius: 24px; background: var(--Koda-card); display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--Koda-text-secondary);">
-                                    <span style="font-size: 32px; margin-bottom: 4px;">🖼️</span>
+                                    <span style="display:inline-flex; color: var(--Koda-text-secondary); margin-bottom: 4px;">${kodaIcon('immagini', 32)}</span>
                                     <span style="font-size: 11px; font-weight: 700; color: var(--Koda-text-secondary); text-transform: uppercase;">Carica Logo</span>
                                 </div>
                                 <input type="file" id="add-app-logo" accept="image/*" style="display: none;">
@@ -16063,15 +16110,15 @@ ${filtersHTML}
                 history.pushState({ modal: 'ai-category-filter', page: currentView }, '', '');
 
                 const aiCategories = [
-                    { id: 'Testo', label: currentLanguage === 'it' ? 'Testo' : 'Text', icon: '📝' },
-                    { id: 'Immagini', label: currentLanguage === 'it' ? 'Immagini' : 'Images', icon: '🖼️' },
-                    { id: 'Video', label: 'Video', icon: '🎥' },
-                    { id: 'Presentazioni', label: currentLanguage === 'it' ? 'Presentazioni' : 'Presentations', icon: '📊' },
-                    { id: 'Codice', label: currentLanguage === 'it' ? 'Codice' : 'Code', icon: '💻' },
-                    { id: 'Audio', label: 'Audio', icon: '🎵' },
-                    { id: 'Automation Tools', label: currentLanguage === 'it' ? 'Automazioni' : 'Automation Tools', icon: '⚙️' },
-                    { id: 'Browser AI', label: currentLanguage === 'it' ? 'Browser AI' : 'AI Browser', icon: '🌐' },
-                    { id: 'AI Playground', label: 'AI Playground', icon: '🎮' }
+                    { id: 'Testo', label: currentLanguage === 'it' ? 'Testo' : 'Text', icon: kodaIcon('testo') },
+                    { id: 'Immagini', label: currentLanguage === 'it' ? 'Immagini' : 'Images', icon: kodaIcon('immagini') },
+                    { id: 'Video', label: 'Video', icon: kodaIcon('video') },
+                    { id: 'Presentazioni', label: currentLanguage === 'it' ? 'Presentazioni' : 'Presentations', icon: kodaIcon('presentazioni') },
+                    { id: 'Codice', label: currentLanguage === 'it' ? 'Codice' : 'Code', icon: kodaIcon('codice') },
+                    { id: 'Audio', label: 'Audio', icon: kodaIcon('audio') },
+                    { id: 'Automation Tools', label: currentLanguage === 'it' ? 'Automazioni' : 'Automation Tools', icon: kodaIcon('automation') },
+                    { id: 'Browser AI', label: currentLanguage === 'it' ? 'Browser AI' : 'AI Browser', icon: kodaIcon('browser') },
+                    { id: 'AI Playground', label: 'AI Playground', icon: kodaIcon('playground') }
                 ];
 
                 const categoriesHTML = aiCategories.map(cat => `
@@ -16151,9 +16198,9 @@ ${filtersHTML}
                 history.pushState({ modal: 'ai-pricing-filter', page: currentView }, '', '');
 
                 const pricingOptions = [
-                    { id: 'free', label: t.pricingFree || (currentLanguage === 'it' ? 'Gratuito' : 'Free'), icon: '💚' },
-                    { id: 'freemium', label: t.pricingFreemium || 'Freemium', icon: '💛' },
-                    { id: 'paid', label: t.pricingPaid || (currentLanguage === 'it' ? 'A Pagamento' : 'Paid'), icon: '💰' }
+                    { id: 'free', label: t.pricingFree || (currentLanguage === 'it' ? 'Gratuito' : 'Free'), icon: kodaIcon('free') },
+                    { id: 'freemium', label: t.pricingFreemium || 'Freemium', icon: kodaIcon('freemium') },
+                    { id: 'paid', label: t.pricingPaid || (currentLanguage === 'it' ? 'A Pagamento' : 'Paid'), icon: kodaIcon('paid') }
                 ];
 
                 const pricingHTML = pricingOptions.map(opt => `
@@ -16233,10 +16280,10 @@ ${filtersHTML}
                 history.pushState({ modal: 'category-filter', page: currentView }, '', '');
 
                 const categories = [
-                    { id: 'tutorial', label: t.categoryTutorial || 'Tutorial', icon: '📚' },
-                    { id: 'education', label: t.categoryEducation || 'Education', icon: '🎓' },
-                    { id: 'development', label: t.categoryDevelopment || 'Development', icon: '💻' },
-                    { id: 'news', label: t.categoryNews || 'News', icon: '📰' }
+                    { id: 'tutorial', label: t.categoryTutorial || 'Tutorial', icon: kodaIcon('tutorial') },
+                    { id: 'education', label: t.categoryEducation || 'Education', icon: kodaIcon('education') },
+                    { id: 'development', label: t.categoryDevelopment || 'Development', icon: kodaIcon('codice') },
+                    { id: 'news', label: t.categoryNews || 'News', icon: kodaIcon('news') }
                 ];
 
                 const categoriesHTML = categories.map(cat => `
@@ -18489,17 +18536,9 @@ ${filtersHTML}
                         case 'clear-ai-filters':
                             localStorage.setItem('ai-selected-categories', '[]');
                             localStorage.setItem('ai-selected-pricing', '[]');
-                            localStorage.setItem('ai-only-new', '0');
                             // Ricarica la vista explore
                             currentView = 'explore';
                             exploreFilter = {};
-                            renderView();
-                            break;
-                        // NUOVO: Attiva/disattiva il filtro rapido "Novità"
-                        case 'toggle-ai-new-filter':
-                            window.triggerHaptic('light');
-                            localStorage.setItem('ai-only-new', localStorage.getItem('ai-only-new') === '1' ? '0' : '1');
-                            currentView = 'explore';
                             renderView();
                             break;
                         // NUOVO: Apre il modale di selezione categorie AI
