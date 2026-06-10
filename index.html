@@ -5912,6 +5912,46 @@
             to { transform: rotate(360deg); }
         }
 
+        /* --- PULL-TO-REFRESH GLOBALE (hard refresh con scroll del dito) --- */
+        #main-content {
+            overscroll-behavior-y: contain;
+        }
+
+        #koda-global-ptr {
+            position: fixed;
+            top: -56px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            z-index: 9500;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--Koda-card);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #koda-global-ptr .koda-ptr-spinner {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid color-mix(in srgb, var(--Koda-accent) 25%, transparent);
+            border-top-color: var(--Koda-accent);
+        }
+
+        #koda-global-ptr.ready .koda-ptr-spinner {
+            border-color: var(--Koda-accent);
+            border-top-color: var(--Koda-accent);
+        }
+
+        #koda-global-ptr.refreshing .koda-ptr-spinner {
+            animation: spin 0.7s linear infinite;
+        }
+
         /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
         /* --- STILI PER CATALOGO VIDEO (FULLSCREEN & RESPONSIVE) --- */
         #video-catalog-modal.modal-overlay {
@@ -13431,7 +13471,154 @@ ${knowledgeBaseFormatter(tools)}
             };
             window.showNewContentBanner = showNewContentBanner;
 
-            // Invia le preferenze correnti al Service Worker (per il controllo in background)
+            // ---------------------------------------------------------------
+            // HARD REFRESH: svuota le cache + aggiorna il Service Worker e
+            // ricarica l'app (scarica nuovo sw.js e asset). Le preferenze e il
+            // profilo restano in localStorage, quindi NON viene rifatta la
+            // creazione del profilo ospite.
+            // ---------------------------------------------------------------
+            let kodaHardRefreshInProgress = false;
+            const kodaHardRefresh = async () => {
+                if (kodaHardRefreshInProgress) return;
+                kodaHardRefreshInProgress = true;
+                try {
+                    // 1) Aggiorna la registrazione del SW per scaricare il nuovo sw.js
+                    if ('serviceWorker' in navigator) {
+                        const reg = await navigator.serviceWorker.getRegistration();
+                        if (reg) {
+                            try { await reg.update(); } catch (e) { /* noop */ }
+                            // Se c'è un worker in attesa, attivalo subito
+                            if (reg.waiting) reg.waiting.postMessage({ type: 'koda-skip-waiting' });
+                            // 2) Chiedi al SW di svuotare le cache versionate (mantiene le preferenze)
+                            const ctrl = navigator.serviceWorker.controller;
+                            if (ctrl) {
+                                await new Promise((resolve) => {
+                                    const channel = new MessageChannel();
+                                    const done = setTimeout(resolve, 1500);
+                                    channel.port1.onmessage = () => { clearTimeout(done); resolve(); };
+                                    try {
+                                        ctrl.postMessage({ type: 'koda-clear-caches' }, [channel.port2]);
+                                    } catch (e) { clearTimeout(done); resolve(); }
+                                });
+                            }
+                        }
+                    }
+                    // 3) Fallback: svuota le cache anche direttamente dalla pagina
+                    if (window.caches) {
+                        const keys = await caches.keys();
+                        await Promise.all(keys
+                            .filter((k) => k !== 'koda-prefs')
+                            .map((k) => caches.delete(k)));
+                    }
+                } catch (e) {
+                    console.warn('Hard refresh: pulizia cache non riuscita', e);
+                }
+                // 4) Ricarica forzando il bypass della cache HTTP
+                const url = new URL(window.location.href);
+                url.searchParams.set('_r', Date.now().toString());
+                window.location.replace(url.toString());
+            };
+            window.kodaHardRefresh = kodaHardRefresh;
+
+            // ---------------------------------------------------------------
+            // PULL-TO-REFRESH GLOBALE: trascina verso il basso (in cima a
+            // qualsiasi schermata) per fare un hard refresh dell'app.
+            // ---------------------------------------------------------------
+            const setupGlobalPullToRefresh = () => {
+                if (window.__kodaPTRSetup) return;
+                window.__kodaPTRSetup = true;
+
+                const indicator = document.createElement('div');
+                indicator.id = 'koda-global-ptr';
+                indicator.innerHTML = '<div class="koda-ptr-spinner"></div>';
+                document.body.appendChild(indicator);
+                const spinner = indicator.querySelector('.koda-ptr-spinner');
+
+                const THRESHOLD = 90;   // px (dopo lo smorzamento) per attivare
+                const MAX = 150;        // px di trascinamento massimo
+                const START_TOP = 56;   // deve combaciare con top:-56px nel CSS
+                let startY = 0, pulling = false, refreshing = false, scrollEl = null;
+
+                const getScrollParent = (node) => {
+                    let el = node;
+                    while (el && el !== document.body && el.nodeType === 1) {
+                        const oy = getComputedStyle(el).overflowY;
+                        if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight) return el;
+                        el = el.parentElement;
+                    }
+                    return el.mainContent || document.getElementById('main-content');
+                };
+
+                const setIndicator = (dist) => {
+                    const h = Math.min(dist, MAX);
+                    indicator.style.transform = `translateX(-50%) translateY(${START_TOP + h}px)`;
+                    indicator.style.opacity = Math.min(dist / THRESHOLD, 1).toString();
+                    if (spinner) spinner.style.transform = `rotate(${dist * 2.2}deg)`;
+                    indicator.classList.toggle('ready', dist >= THRESHOLD);
+                };
+
+                const reset = () => {
+                    indicator.style.transition = 'transform .3s ease, opacity .3s ease';
+                    indicator.style.transform = 'translateX(-50%) translateY(0)';
+                    indicator.style.opacity = '0';
+                    indicator.classList.remove('ready');
+                    setTimeout(() => { indicator.style.transition = ''; }, 320);
+                };
+
+                const blockedByOverlay = () => !!document.querySelector(
+                    '.modal-overlay.visible, .utility-modal-overlay, #notifications-modal, #side-menu.visible, #video-catalog-modal.visible, .category-modal.visible'
+                );
+
+                document.addEventListener('touchstart', (e) => {
+                    if (refreshing || e.touches.length !== 1) { pulling = false; return; }
+                    // La sezione News ha un suo pull-to-refresh dedicato
+                    if (e.target.closest && e.target.closest('#news-feed-container')) { pulling = false; return; }
+                    if (blockedByOverlay()) { pulling = false; return; }
+                    scrollEl = getScrollParent(e.target);
+                    if (scrollEl && scrollEl.scrollTop <= 0) {
+                        startY = e.touches[0].clientY;
+                        pulling = true;
+                    } else {
+                        pulling = false;
+                    }
+                }, { passive: true });
+
+                document.addEventListener('touchmove', (e) => {
+                    if (!pulling || refreshing) return;
+                    const dist = e.touches[0].clientY - startY;
+                    if (dist > 0 && (!scrollEl || scrollEl.scrollTop <= 0)) {
+                        setIndicator(dist * 0.5);
+                    } else {
+                        pulling = false;
+                        reset();
+                    }
+                }, { passive: true });
+
+                const onEnd = (e) => {
+                    if (!pulling || refreshing) return;
+                    const endY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : startY;
+                    const dist = (endY - startY) * 0.5;
+                    pulling = false;
+                    if (dist >= THRESHOLD) {
+                        refreshing = true;
+                        indicator.classList.add('refreshing');
+                        setIndicator(THRESHOLD);
+                        if (window.triggerHaptic) window.triggerHaptic('medium');
+                        kodaHardRefresh();
+                    } else {
+                        reset();
+                    }
+                };
+                document.addEventListener('touchend', onEnd, { passive: true });
+                document.addEventListener('touchcancel', () => {
+                    if (refreshing) return;
+                    pulling = false;
+                    reset();
+                }, { passive: true });
+            };
+            window.setupGlobalPullToRefresh = setupGlobalPullToRefresh;
+
+
             const sendNotifPrefsToSW = () => {
                 try {
                     const ctrl = navigator.serviceWorker && navigator.serviceWorker.controller;
@@ -19248,6 +19435,9 @@ ${filtersHTML}
                     // NUOVO: Banner "Novità" in-app (alternativa alle notifiche nel wrapper APK)
                     setTimeout(() => { if (window.showNewContentBanner) window.showNewContentBanner(); }, 1200);
                 }, 100);
+
+                // NUOVO: Attiva il pull-to-refresh globale (hard refresh trascinando in basso)
+                if (window.setupGlobalPullToRefresh) window.setupGlobalPullToRefresh();
 
                 // Rimuovi la playlist predefinita "Guarda più tardi" se esiste nel localStorage
                 const removeDefaultPlaylist = () => {
