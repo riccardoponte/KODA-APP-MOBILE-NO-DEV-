@@ -1,6 +1,6 @@
 /* =====================================================================
    Koda AI — Service Worker
-   - Offline (app shell + runtime cache)
+   - Offline (app shell + runtime della cache)
    - Notifiche sopra l'icona dell'app quando i cataloghi (video / AI /
      notizie) vengono aggiornati (Notification + Badging API)
    - Periodic Background Sync per controllare gli aggiornamenti anche ad
