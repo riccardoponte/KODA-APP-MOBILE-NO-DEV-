@@ -13382,19 +13382,37 @@ ${knowledgeBaseFormatter(tools)}
                 else navigator.clearAppBadge && navigator.clearAppBadge().catch(() => {});
             };
 
-            // Mostra una notifica di sistema (preferendo il Service Worker)
+            // Mostra una notifica di sistema (preferendo il Service Worker).
+            // IMPORTANTE: su Android Chrome il costruttore new Notification() NON e'
+            // supportato (lancia "Illegal constructor"): le notifiche DEVONO passare
+            // dal Service Worker. Inoltre navigator.serviceWorker.ready puo' restare
+            // pending all'infinito se nessun SW si attiva, quindi non lo usiamo da solo.
             const showSystemNotification = async (title, body, tag, url) => {
                 if (!('Notification' in window) || Notification.permission !== 'granted') return;
                 const options = {
                     body, tag, renotify: true,
                     icon: 'icons/icon-192x192.png',
-                    badge: 'icons/icon-96x96.png',
+                    badge: 'icons/icon-144x144.png',
                     data: { url }
                 };
                 try {
-                    const reg = navigator.serviceWorker && await navigator.serviceWorker.ready;
-                    if (reg) { await reg.showNotification(title, options); return; }
+                    if (navigator.serviceWorker) {
+                        // getRegistration() risponde subito (anche con undefined),
+                        // a differenza di .ready che puo' restare pending all'infinito.
+                        let reg = await navigator.serviceWorker.getRegistration();
+                        if (!reg || !reg.active) {
+                            reg = await Promise.race([
+                                navigator.serviceWorker.ready,
+                                new Promise((res) => setTimeout(() => res(null), 3000))
+                            ]);
+                        }
+                        if (reg && reg.showNotification) {
+                            await reg.showNotification(title, options);
+                            return;
+                        }
+                    }
                 } catch (e) { /* fallthrough */ }
+                // Fallback desktop (su Android lancia un errore, qui catturato).
                 try { new Notification(title, options); } catch (e) { /* noop */ }
             };
 
@@ -13723,6 +13741,14 @@ ${knowledgeBaseFormatter(tools)}
                     runContentNotificationCheck(true); // baseline silenzioso
                     sendNotifPrefsToSW();
                     showToast(it ? '🔔 Notifiche attivate' : '🔔 Notifications enabled');
+                    // Notifica di conferma immediata: prova concreta che le notifiche
+                    // di sistema funzionano (su Android passa dal Service Worker).
+                    showSystemNotification(
+                        'Koda AI',
+                        it ? '🔔 Notifiche attivate! Ti avviseremo quando arrivano nuovi video, strumenti AI o notizie.' : "🔔 Notifications enabled! We'll alert you about new videos, AI tools and news.",
+                        'koda-welcome',
+                        '#home'
+                    );
                 } else {
                     localStorage.setItem(NOTIF.ENABLED, '0');
                     if (window.triggerHaptic) window.triggerHaptic('light');
