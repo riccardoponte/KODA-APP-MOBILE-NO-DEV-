@@ -11,7 +11,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Koda AI</title>
     <!-- Font Montserrat (Alternativa Koda) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -49,6 +49,8 @@
             --Koda-accent: #1db954;
             --font-family: 'Montserrat', sans-serif;
             --bottom-nav-height: 70px;
+            /* Spazio sicuro per la barra inferiore del sistema/browser (notch, home indicator) */
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         /* NUOVO: Stili per la modalità Giorno (Light Mode) */
@@ -111,14 +113,25 @@
 
         #app-container {
             height: 100vh;
+            /* Fallback dinamico impostato via JS per i browser senza supporto a 'dvh' */
+            height: var(--app-height, 100vh);
             display: flex;
             flex-direction: column;
+        }
+
+        /* I browser moderni usano l'altezza dinamica della viewport: si adatta
+           automaticamente quando la barra del browser (es. barra inferiore di
+           Chrome mobile) compare o scompare, evitando che l'app venga tagliata. */
+        @supports (height: 100dvh) {
+            #app-container {
+                height: 100dvh;
+            }
         }
 
         #main-content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: var(--bottom-nav-height);
+            padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
         }
 
         /* NUOVO: Blocca lo scroll della pagina quando la welcome screen del chatbot è visibile */
@@ -246,6 +259,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             background: rgba(0, 0, 0, 0.6);
             z-index: 99998;
             opacity: 0;
@@ -266,6 +280,7 @@
             width: 100%;
             max-width: 350px;
             height: 100vh;
+            height: 100dvh;
             background-color: var(--Koda-bg);
             box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
             z-index: 99999;
@@ -1288,7 +1303,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: var(--bottom-nav-height);
+            height: calc(var(--bottom-nav-height) + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
             background: linear-gradient(to top, var(--Koda-bg) 80%, transparent);
             z-index: 1001;
             /* Z-index più alto dell'input per rimanere sempre visibile */
@@ -2006,7 +2022,7 @@
             gap: 12px;
             border: 1px solid var(--Koda-bg-light);
             position: fixed;
-            bottom: calc(var(--bottom-nav-height) + 16px);
+            bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 16px);
             /* Posizionato sopra la barra di navigazione con margine */
             left: 16px;
             right: 16px;
@@ -2039,7 +2055,7 @@
         /* NUOVO: Regole responsive per l'input fisso */
         @media (max-width: 768px) {
             #chat-input-container {
-                bottom: calc(var(--bottom-nav-height) + 8px);
+                bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 8px);
                 left: 8px;
                 right: 8px;
             }
@@ -2059,7 +2075,7 @@
 
         @media (max-width: 480px) {
             #chat-input-container {
-                bottom: calc(var(--bottom-nav-height) + 4px);
+                bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + 4px);
                 left: 4px;
                 right: 4px;
             }
@@ -4277,6 +4293,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            height: 100dvh;
             /* Modificato a 100vh per occupare l'intera altezza dello schermo */
             background-color: var(--Koda-bg);
         }
@@ -6333,7 +6350,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 70px;
+            height: calc(70px + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
             background-color: var(--Koda-bg-light);
             border-top: 1px solid rgba(128, 128, 128, 0.2);
             display: flex;
@@ -13666,11 +13684,31 @@ ${knowledgeBaseFormatter(tools)}
                 }
                 if (Notification.permission === 'granted') return true;
                 if (Notification.permission === 'denied') {
-                    showToast(it ? 'Notifiche bloccate: abilitale dalle impostazioni del browser.' : 'Notifications blocked: enable them in browser settings.');
+                    showToast(it ? 'Notifiche bloccate: abilitale dalle impostazioni del sito (icona del lucchetto nella barra degli indirizzi).' : 'Notifications blocked: enable them in the site settings (lock icon in the address bar).');
                     return false;
                 }
-                const perm = await Notification.requestPermission();
-                return perm === 'granted';
+                // Richiede il permesso. Gestisce sia la forma con Promise sia quella con callback (browser piu' vecchi).
+                let perm;
+                try {
+                    perm = await new Promise((resolve) => {
+                        let settled = false;
+                        const finish = (p) => { if (!settled) { settled = true; resolve(p); } };
+                        const maybePromise = Notification.requestPermission(finish);
+                        if (maybePromise && typeof maybePromise.then === 'function') {
+                            maybePromise.then(finish).catch(() => finish(Notification.permission));
+                        }
+                    });
+                } catch (e) {
+                    perm = Notification.permission;
+                }
+                if (perm === 'granted') return true;
+                if (perm === 'denied') {
+                    showToast(it ? 'Notifiche bloccate: abilitale dalle impostazioni del sito (icona del lucchetto nella barra degli indirizzi).' : 'Notifications blocked: enable them in the site settings (lock icon in the address bar).');
+                } else {
+                    // 'default': l'utente ha chiuso o ignorato il prompt senza scegliere
+                    showToast(it ? 'Permesso non concesso. Tocca di nuovo e scegli "Consenti".' : 'Permission not granted. Tap again and choose "Allow".');
+                }
+                return false;
             };
 
             // Attiva/disattiva il master delle notifiche
@@ -13777,7 +13815,7 @@ ${knowledgeBaseFormatter(tools)}
                         <button class="modal-close-btn" data-action="close-modal" style="top:20px;right:24px;font-size:36px;">×</button>
                         <h2 style="margin-bottom:8px;display:flex;align-items:center;gap:10px;"><span style="display:inline-flex;color:var(--Koda-accent);">${kodaIcon('bell')}</span> ${it ? 'Notifiche' : 'Notifications'}</h2>
                         <p style="font-size:13px;color:var(--Koda-text-secondary);margin-bottom:28px;line-height:1.4;">${it ? "Ricevi un avviso sull'icona dell'app quando vengono aggiunti nuovi video, strumenti AI o notizie." : 'Get an alert on the app icon when new videos, AI tools or news are added.'}</p>
-                        ${row(it ? 'Abilita notifiche' : 'Enable notifications', it ? 'Attiva gli avvisi di aggiornamento' : 'Turn on update alerts', masterOn, 'toggle-notif-master', '', !supported || denied)}
+                        ${row(it ? 'Abilita notifiche' : 'Enable notifications', it ? 'Attiva gli avvisi di aggiornamento' : 'Turn on update alerts', masterOn, 'toggle-notif-master', '', !supported)}
                         ${categoriesHTML}
                         ${deniedHTML}
                         ${unsupportedHTML}
@@ -19843,6 +19881,22 @@ ${filtersHTML}
                     closeDiceOverlay();
                 }
             });
+        })();
+    </script>
+    <script>
+        // Altezza reale della viewport: fallback per i browser senza supporto a 'dvh'.
+        // Evita che la barra di navigazione inferiore del browser (es. Chrome mobile)
+        // copra/tagli la parte inferiore dell'app. I browser moderni usano '100dvh' via CSS.
+        (function () {
+            const setAppHeight = () => {
+                document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
+            };
+            setAppHeight();
+            window.addEventListener('resize', setAppHeight);
+            window.addEventListener('orientationchange', setAppHeight);
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', setAppHeight);
+            }
         })();
     </script>
     <script>
