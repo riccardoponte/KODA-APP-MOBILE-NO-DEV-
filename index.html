@@ -2514,180 +2514,6 @@
             border-color: var(--Koda-card);
         }
 
-        /* --- STILI PER I GROUP CHATS --- */
-        .group-chat-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            border-bottom: 1px solid var(--Koda-card);
-        }
-
-        .group-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--Koda-accent), #1ed760);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
-            font-size: 16px;
-        }
-
-        .group-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0 0 4px 0;
-        }
-
-        .group-members-count {
-            font-size: 12px;
-            color: var(--Koda-text-secondary);
-        }
-
-        .group-actions {
-            margin-left: auto;
-            display: flex;
-            gap: 8px;
-        }
-
-        .group-action-btn {
-            background: none;
-            border: none;
-            color: var(--Koda-text-secondary);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .group-action-btn:hover {
-            background-color: var(--Koda-card);
-            color: var(--Koda-text);
-        }
-
-        .create-group-btn {
-            background-color: var(--Koda-accent);
-            color: #000;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 16px;
-            transition: all 0.2s;
-        }
-
-        .create-group-btn:hover {
-            background-color: #1ed760;
-            transform: scale(1.02);
-        }
-
-        .group-chat-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.1);
-        }
-
-        .group-chat-item:hover {
-            background-color: var(--Koda-card);
-        }
-
-        .group-chat-item.active {
-            background-color: var(--Koda-bg-light);
-        }
-
-        .group-member-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-        }
-
-        .member-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: var(--Koda-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
-            font-size: 14px;
-        }
-
-        .member-info {
-            flex: 1;
-        }
-
-        .member-name {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .member-role {
-            font-size: 12px;
-            color: var(--Koda-text-secondary);
-        }
-
-        .group-settings-modal .modal-content {
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .group-settings-section {
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--Koda-card);
-        }
-
-        .group-settings-section:last-child {
-            border-bottom: none;
-        }
-
-        .group-settings-section h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .member-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .member-action-btn {
-            background: none;
-            border: 1px solid var(--Koda-text-secondary);
-            color: var(--Koda-text-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .member-action-btn:hover {
-            background-color: var(--Koda-card);
-            color: var(--Koda-text);
-        }
-
-        .member-action-btn.danger:hover {
-            background-color: #ff6b6b;
-            border-color: #ff6b6b;
-            color: white;
-        }
-
         /* --- STILI PER LE CLASSIFICHE (AGGIUNTI) --- */
         .ranking-section-container {
             display: grid;
@@ -9576,8 +9402,6 @@ ${knowledgeBaseFormatter(tools)}
     </script>
 
     <script type="module">
-        // Definisco la funzione vuota per prevenire crash
-        window.loadToolRatings = function () { console.log("Caricamento ratings..."); };
         // --- FIREBASE IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -14837,9 +14661,6 @@ ${filtersHTML}
                     el.mainContent.appendChild(contentArea);
                 }
 
-                // NUOVO: Carica le valutazioni degli strumenti dopo aver renderizzato la vista
-                // setTimeout(() => loadToolRatings(), 500); // Commentata perché la funzione non esiste
-
                 updateNavActiveState();
                 applyTranslations(currentLanguage); // Apply translations after rendering content
 
@@ -17938,27 +17759,7 @@ ${filtersHTML}
                         `}).join('');
                     }
 
-                    // 3. Cerca nei Prompt Salvati (Solo Locali per velocità)
-                    const localPrompts = JSON.parse(localStorage.getItem('guest-savedPrompts')) || [];
-                    const matchedPrompts = localPrompts.filter(p =>
-                        p.originalPrompt.toLowerCase().includes(query) ||
-                        p.optimizedPrompt.toLowerCase().includes(query)
-                    ).slice(0, 2);
-
-                    if (matchedPrompts.length > 0) {
-                        resultsHTML += `<div class="spotlight-group-title">Prompt Salvati</div>`;
-                        resultsHTML += matchedPrompts.map(p => `
-                            <div class="spotlight-item" style="align-items: flex-start;">
-                                <div style="font-size: 24px; margin-right: 8px;">📝</div>
-                                <div class="spotlight-item-info" style="width: 100%;">
-                                    <span class="spotlight-item-title" style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">${p.originalPrompt}</span>
-                                    <span class="spotlight-item-sub" style="color: var(--Koda-accent); margin-top: 4px;">Ottimizzato</span>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
-
-                    // 4. Cerca nelle News (Fuzzy search per spazi e trattini es. "chat gpt" = "chatgpt")
+                    // 3. Cerca nelle News (Fuzzy search per spazi e trattini es. "chat gpt" = "chatgpt")
                     const normalizedQuery = query.replace(/[\s\-_]/g, '');
                     const matchedNews = newsData.filter(news => {
                         const normalizedTitle = (news.title || '').toLowerCase().replace(/[\s\-_]/g, '');
@@ -19521,12 +19322,6 @@ ${filtersHTML}
             });
         });
     </script>
-
-    <!-- Modal recensioni rimosso -->
-
-    <!-- Modal recensioni rimosso -->
-
-
 
     <!-- Privacy Reminder Modal a tema Koda (Stile Koda) -->
     <div class="modal-overlay" id="privacy-reminder-modal"
