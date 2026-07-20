@@ -7,24 +7,39 @@
      app chiusa (best-effort, supportato principalmente su Chrome/Android)
    ===================================================================== */
 
-const CACHE_VERSION = 'koda-v2';
+const CACHE_VERSION = 'koda-v13';
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const PREFS_CACHE = 'koda-prefs'; // non versionato: conserva preferenze/stato tra gli aggiornamenti
+const MAX_RUNTIME_ENTRIES = 120;
 
 // File principali dell'app (percorsi relativi allo scope del SW)
 const APP_SHELL = [
     './',
     './index.html',
-    './manifest.json'
+    './local-ai.js',
+    './ai-worker.js',
+    './browser-artifacts.js',
+    './manifest.json',
+    './icons/icon-144x144.png',
+    './icons/icon-192x192.png',
+    './icons/icon-512x512.png'
+];
+
+// Moduli necessari per avviare l'app prima che il SW abbia osservato richieste runtime
+const STARTUP_DEPENDENCIES = [
+    'https://esm.sh/react@18.3.1/es2022/react.mjs',
+    'https://esm.sh/react-dom@18.3.1/X-ZHJlYWN0QDE4LjMuMQ/es2022/client.bundle.mjs',
+    'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js',
+    'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
 ];
 
 // ------------------------- INSTALL -------------------------
 self.addEventListener('install', (event) => {
     event.waitUntil((async () => {
         const cache = await caches.open(APP_SHELL_CACHE);
-        // Non far fallire l'installazione se qualche file non è raggiungibile
-        await Promise.allSettled(APP_SHELL.map((url) => cache.add(url)));
+        // Un SW installato deve avere tutto il necessario per il primo avvio offline
+        await cache.addAll([...APP_SHELL, ...STARTUP_DEPENDENCIES]);
         await self.skipWaiting();
     })());
 });
@@ -39,7 +54,7 @@ self.addEventListener('activate', (event) => {
         // Pulisci le vecchie cache versionate (mantieni PREFS_CACHE)
         const keys = await caches.keys();
         await Promise.all(keys.map((key) => {
-            if (key !== APP_SHELL_CACHE && key !== RUNTIME_CACHE && key !== PREFS_CACHE) {
+            if (key.startsWith('koda-v') && key !== APP_SHELL_CACHE && key !== RUNTIME_CACHE) {
                 return caches.delete(key);
             }
         }));
@@ -54,8 +69,8 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(req.url);
 
-    // Non intercettare le chiamate API dinamiche (Firestore, Gemini, auth, ecc.)
-    const isApi = /firestore\.googleapis\.com|generativelanguage|identitytoolkit|firebaseinstallations|google-analytics|firebaselogging|firebasedatabase/.test(url.href);
+    // Non intercettare le chiamate API dinamiche (Firestore, auth, analytics, ecc.)
+    const isApi = /firestore\.googleapis\.com|identitytoolkit|firebaseinstallations|google-analytics|firebaselogging|firebasedatabase/.test(url.href);
     if (isApi) return; // lascia gestire alla rete
 
     // Richieste di navigazione: network-first con fallback alla shell offline
@@ -63,11 +78,12 @@ self.addEventListener('fetch', (event) => {
         event.respondWith((async () => {
             try {
                 const preload = await event.preloadResponse;
-                if (preload) {
+                if (preload && preload.ok) {
                     caches.open(APP_SHELL_CACHE).then((c) => c.put('./', preload.clone())).catch(() => {});
                     return preload;
                 }
                 const net = await fetch(req);
+                if (!net.ok) throw new Error(`Navigation failed with ${net.status}`);
                 // Salva una copia della pagina per la navigazione offline (qualsiasi nome file)
                 caches.open(APP_SHELL_CACHE).then((c) => c.put('./', net.clone())).catch(() => {});
                 return net;
@@ -79,17 +95,48 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Asset statici / CDN: cache-first con aggiornamento in background (stale-while-revalidate)
-    event.respondWith((async () => {
-        const cached = await caches.match(req);
-        const network = fetch(req).then((res) => {
-            if (res && (res.ok || res.type === 'opaque')) {
-                caches.open(RUNTIME_CACHE).then((cache) => cache.put(req, res.clone())).catch(() => {});
+    // I moduli core devono aggiornarsi insieme al service worker. La cache resta
+    // disponibile come fallback offline, ma non deve eseguire codice obsoleto.
+    const isCoreModule = url.origin === self.location.origin && [
+        '/index.html',
+        '/local-ai.js',
+        '/ai-worker.js',
+        '/browser-artifacts.js',
+        '/manifest.json'
+    ].some(path => url.pathname.endsWith(path));
+    if (isCoreModule) {
+        event.respondWith((async () => {
+            try {
+                const response = await fetch(req);
+                if (!response.ok) throw new Error(`Core asset failed with ${response.status}`);
+                const cache = await caches.open(APP_SHELL_CACHE);
+                await cache.put(req, response.clone());
+                return response;
+            } catch (error) {
+                return (await caches.match(req)) || Response.error();
             }
-            return res;
-        }).catch(() => null);
-        return cached || (await network) || Response.error();
-    })());
+        })());
+        return;
+    }
+
+    // Asset statici / CDN: cache-first con aggiornamento in background (stale-while-revalidate)
+    const staticDestinations = new Set(['style', 'script', 'font', 'image', 'manifest', 'worker']);
+    const isLocalAIRuntime = url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/@huggingface/transformers@3.7.2/dist/');
+    if (url.origin !== self.location.origin && !staticDestinations.has(req.destination) && !isLocalAIRuntime) return;
+
+    const network = fetch(req).then(async (res) => {
+        const cacheControl = res.headers.get('Cache-Control') || '';
+        if ((res.ok || res.type === 'opaque') && !/no-store/i.test(cacheControl)) {
+            const cache = await caches.open(RUNTIME_CACHE);
+            await cache.put(req, res.clone());
+            const keys = await cache.keys();
+            await Promise.all(keys.slice(0, Math.max(0, keys.length - MAX_RUNTIME_ENTRIES)).map((key) => cache.delete(key)));
+        }
+        return res;
+    }).catch(() => null);
+
+    event.waitUntil(network.then(() => undefined));
+    event.respondWith((async () => (await caches.match(req)) || (await network) || Response.error())());
 });
 
 // ------------------------- PREFERENZE (storage nel SW) -------------------------
@@ -126,7 +173,7 @@ self.addEventListener('message', (event) => {
             try {
                 const keys = await caches.keys();
                 await Promise.all(keys
-                    .filter((key) => key !== PREFS_CACHE)
+                    .filter((key) => key.startsWith('koda-v'))
                     .map((key) => caches.delete(key)));
             } catch (e) { /* noop */ }
             // Conferma all'eventuale porta del messaggio
@@ -256,7 +303,8 @@ self.addEventListener('push', (event) => {
 // ------------------------- CLICK SULLA NOTIFICA -------------------------
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const targetHash = (event.notification.data && event.notification.data.url) || '#';
+    const requestedHash = String((event.notification.data && event.notification.data.url) || '#');
+    const targetHash = /^#[a-z0-9-]*$/i.test(requestedHash) ? requestedHash : '#';
     event.waitUntil((async () => {
         const allClients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
         for (const client of allClients) {
