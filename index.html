@@ -12104,6 +12104,103 @@ window.mountChatbotApp = (container, props) => {
             const getMedianBridges = () => [window.median, window.gonative]
                 .filter((bridge, index, bridges) => bridge && bridges.indexOf(bridge) === index);
 
+            const SHORT_SHARE_CACHE_KEY = 'koda-short-share-links';
+            const SHORT_SHARE_CACHE_LIMIT = 120;
+            const SHORT_SHARE_MAX_URL_LENGTH = 5000;
+            const SHORT_SHARE_API_URL = 'https://spoo.me/api/v1/shorten';
+            const SHORT_SHARE_REQUEST_TIMEOUT = 8000;
+            const pendingShortShareLinks = new Map();
+
+            const hashShareUrl = (value, seed) => {
+                let hash = seed;
+                for (let index = 0; index < value.length; index += 1) {
+                    hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
+                }
+                return (hash >>> 0).toString(36);
+            };
+
+            const buildShortShareAlias = (url) => `K${hashShareUrl(url, 2166136261)}${hashShareUrl(url, 3339675911)}`;
+
+            const normalizeShortShareUrl = (value) => {
+                try {
+                    const url = new URL(value);
+                    if (url.protocol !== 'https:' || url.hostname !== 'spoo.me') return '';
+                    if (!/^\/[A-Za-z0-9_-]{3,16}$/.test(url.pathname) || url.search || url.hash) return '';
+                    return url.href;
+                } catch (error) {
+                    return '';
+                }
+            };
+
+            const requestShortenerJSON = async (longUrl, alias = '') => {
+                const controller = new AbortController();
+                const timeoutId = window.setTimeout(() => controller.abort(), SHORT_SHARE_REQUEST_TIMEOUT);
+                try {
+                    const response = await fetch(SHORT_SHARE_API_URL, {
+                        method: 'POST',
+                        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(alias ? { long_url: longUrl, alias } : { long_url: longUrl }),
+                        credentials: 'omit',
+                        referrerPolicy: 'no-referrer',
+                        signal: controller.signal
+                    });
+                    let data = null;
+                    try { data = await response.json(); }
+                    catch (error) { /* risposta non JSON */ }
+                    return { ok: response.ok, status: response.status, data };
+                } finally {
+                    window.clearTimeout(timeoutId);
+                }
+            };
+
+            const cacheShortShareUrl = (longUrl, shortUrl) => {
+                const cachedLinks = readStoredJSON(SHORT_SHARE_CACHE_KEY, []);
+                const validLinks = Array.isArray(cachedLinks) ? cachedLinks : [];
+                const nextLinks = [
+                    { longUrl, shortUrl },
+                    ...validLinks.filter(item => item && item.longUrl !== longUrl && normalizeShortShareUrl(item.shortUrl))
+                ].slice(0, SHORT_SHARE_CACHE_LIMIT);
+                writeStoredJSON(SHORT_SHARE_CACHE_KEY, nextLinks);
+            };
+
+            const createShortShareUrl = async (longUrl) => {
+                if (typeof longUrl !== 'string' || longUrl.length === 0 || longUrl.length > SHORT_SHARE_MAX_URL_LENGTH) return '';
+
+                const alias = buildShortShareAlias(longUrl);
+                const customResult = await requestShortenerJSON(longUrl, alias);
+                const customUrl = normalizeShortShareUrl(customResult.data?.short_url);
+                if (customResult.ok && customResult.data?.long_url === longUrl && customUrl) return customUrl;
+                if (customResult.status !== 409) return '';
+
+                const generatedResult = await requestShortenerJSON(longUrl);
+                const generatedUrl = normalizeShortShareUrl(generatedResult.data?.short_url);
+                return generatedResult.ok && generatedResult.data?.long_url === longUrl ? generatedUrl : '';
+            };
+
+            const getShortShareUrl = async (longUrl) => {
+                const cachedLinks = readStoredJSON(SHORT_SHARE_CACHE_KEY, []);
+                if (Array.isArray(cachedLinks)) {
+                    const cachedLink = cachedLinks.find(item => item?.longUrl === longUrl && normalizeShortShareUrl(item.shortUrl));
+                    if (cachedLink) return normalizeShortShareUrl(cachedLink.shortUrl);
+                }
+
+                if (pendingShortShareLinks.has(longUrl)) return pendingShortShareLinks.get(longUrl);
+
+                const pendingLink = createShortShareUrl(longUrl)
+                    .then(shortUrl => {
+                        if (shortUrl) cacheShortShareUrl(longUrl, shortUrl);
+                        return shortUrl;
+                    })
+                    .catch(error => {
+                        console.warn('Unable to create the short share link:', error);
+                        return '';
+                    })
+                    .finally(() => pendingShortShareLinks.delete(longUrl));
+
+                pendingShortShareLinks.set(longUrl, pendingLink);
+                return pendingLink;
+            };
+
             const shareViaMedian = async (text, url) => {
                 for (const bridge of getMedianBridges()) {
                     if (typeof bridge.share?.sharePage !== 'function') continue;
@@ -12158,6 +12255,24 @@ window.mountChatbotApp = (container, props) => {
                 window.prompt(isIT ? 'Copia il link:' : 'Copy the link:', url);
             };
 
+            let shortShareInProgress = false;
+            const shareWithNeutralLink = async (title, text, longUrl) => {
+                if (shortShareInProgress) return;
+                shortShareInProgress = true;
+                try {
+                    const shortUrl = await getShortShareUrl(longUrl);
+                    if (!shortUrl) {
+                        showToast(currentLanguage === 'it'
+                            ? 'Impossibile creare il link breve. Riprova tra poco.'
+                            : 'Could not create the short link. Try again shortly.');
+                        return;
+                    }
+                    await shareViaSystem(title, text, shortUrl);
+                } finally {
+                    shortShareInProgress = false;
+                }
+            };
+
             // Azione: condividi un tool
             const shareTool = (toolId) => {
                 const tool = getAllToolsForCurrentUser().find(t => t.id === toolId);
@@ -12166,7 +12281,7 @@ window.mountChatbotApp = (container, props) => {
                 const title = `Koda · ${name}`;
                 const text = isIT ? `Dai un'occhiata a ${name} su Koda` : `Check out ${name} on Koda`;
                 if (window.triggerHaptic) window.triggerHaptic('light');
-                shareViaSystem(title, text, buildToolShareLink(toolId));
+                shareWithNeutralLink(title, text, buildToolShareLink(toolId));
             };
 
             // Azione: condividi una collezione (link di sola lettura)
@@ -12177,7 +12292,7 @@ window.mountChatbotApp = (container, props) => {
                 const title = `Koda · ${collection.name}`;
                 const text = isIT ? `Guarda la mia collezione "${collection.name}" su Koda` : `Check out my "${collection.name}" collection on Koda`;
                 if (window.triggerHaptic) window.triggerHaptic('light');
-                shareViaSystem(title, text, buildCollectionShareLink(collection));
+                shareWithNeutralLink(title, text, buildCollectionShareLink(collection));
             };
 
             const shareVideo = (videoId) => {
@@ -12185,7 +12300,7 @@ window.mountChatbotApp = (container, props) => {
                 if (!video) return;
                 const isIT = currentLanguage === 'it';
                 if (window.triggerHaptic) window.triggerHaptic('light');
-                shareViaSystem(
+                shareWithNeutralLink(
                     `Koda · ${video.title}`,
                     isIT ? `Guarda "${video.title}" su Koda` : `Watch "${video.title}" on Koda`,
                     buildVideoShareLink(videoId)
@@ -12198,7 +12313,7 @@ window.mountChatbotApp = (container, props) => {
                 const isIT = currentLanguage === 'it';
                 const newsTitle = getLocalizedNewsValue(news, 'title');
                 if (window.triggerHaptic) window.triggerHaptic('light');
-                shareViaSystem(
+                shareWithNeutralLink(
                     `Koda · ${newsTitle}`,
                     isIT ? `Leggi "${newsTitle}" su Koda` : `Read "${newsTitle}" on Koda`,
                     buildNewsShareLink(newsId)
@@ -12212,7 +12327,7 @@ window.mountChatbotApp = (container, props) => {
                 if (!url) return;
                 const isIT = currentLanguage === 'it';
                 if (window.triggerHaptic) window.triggerHaptic('light');
-                shareViaSystem(
+                shareWithNeutralLink(
                     `Koda · ${playlist.name}`,
                     isIT ? `Guarda la playlist "${playlist.name}" su Koda` : `Watch the "${playlist.name}" playlist on Koda`,
                     url
