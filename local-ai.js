@@ -426,6 +426,18 @@ const normalizeToolSpecializations = value => {
     return [...normalized.values()];
 };
 
+const normalizeToolKeyFeatures = (value, lang) => {
+    const items = Array.isArray(value)
+        ? value
+        : (typeof value === 'string' ? value.split(/\r?\n|,/) : []);
+    return [...new Set(items.map(item => {
+        if (typeof item === 'string') return item.trim();
+        if (!item || typeof item !== 'object') return '';
+        const label = item.label ?? item.name ?? item;
+        return localizedValue(label, lang).trim();
+    }).filter(Boolean))];
+};
+
 const detectToolTask = query => {
     const normalized = normalizeText(query);
     const specializations = TOOL_SPECIALIZATION_DEFINITIONS
@@ -472,6 +484,7 @@ const getToolFields = (tool, lang) => {
     const category = localizedValue(tool?.category, lang).trim();
     const alternatives = Array.isArray(tool?.alternatives) ? tool.alternatives.map(String) : [];
     const specializations = normalizeToolSpecializations(tool?.specializations);
+    const keyFeatures = normalizeToolKeyFeatures(tool?.keyFeatures, lang);
     const referenceAliases = toolReferenceAliases(name);
     return {
         tool,
@@ -480,6 +493,7 @@ const getToolFields = (tool, lang) => {
         category,
         alternatives,
         specializations,
+        keyFeatures,
         referenceAliases,
         logoUrl: String(tool?.logoUrl || tool?.logo || '').trim(),
         website: String(tool?.website || '').trim(),
@@ -489,6 +503,7 @@ const getToolFields = (tool, lang) => {
         descriptionNorm: normalizeText(description),
         categoryNorm: normalizeText(category),
         alternativesNorm: normalizeText(alternatives.join(' ')),
+        keyFeaturesNorm: normalizeText(keyFeatures.join(' ')),
         specializationsNorm: normalizeText(specializations.map(item => {
             const definition = specializationDefinition(item.type);
             return [item.type, definition?.labels?.it, definition?.labels?.en, ...(definition?.aliases || [])].join(' ');
@@ -539,6 +554,7 @@ const rankTools = (query, tools, lang, maxResults = MAX_CONTEXT_TOOLS) => {
             if (fields.descriptionNorm.includes(term)) score += 5;
             if (fields.alternativesNorm.includes(term)) score += 3;
             if (fields.specializationsNorm.includes(term)) score += 12;
+            if (fields.keyFeaturesNorm.includes(term)) score += 12;
         }
 
         if (requestedPricing) {
@@ -707,6 +723,10 @@ const formatSpecializationCapabilities = (fields, lang, requestedTypes = []) => 
     });
 };
 
+const formatToolFeatures = (fields, lang) => fields.keyFeatures.length
+    ? `${lang === 'it' ? 'Feature verificate' : 'Verified features'}: ${fields.keyFeatures.join(', ')}.`
+    : `${lang === 'it' ? 'Feature verificate' : 'Verified features'}: ${lang === 'it' ? 'in fase di verifica.' : 'under review.'}`;
+
 const formatToolList = (heading, fields, lang, showPricing = false) => {
     const lines = fields.map(item => {
         const price = showPricing && item.pricing ? ` [${pricingLabel(item.pricing, lang)}]` : '';
@@ -714,12 +734,14 @@ const formatToolList = (heading, fields, lang, showPricing = false) => {
         const capabilityText = capabilities.length
             ? ` ${lang === 'it' ? 'Capacità dichiarate' : 'Declared capabilities'}: ${capabilities.join('; ')}.`
             : '';
-        return `\u2022 **${item.name}**: ${toolDescription(item, lang)}${price}${capabilityText}`;
+        return `\u2022 **${item.name}**: ${toolDescription(item, lang)}${price}${capabilityText} ${formatToolFeatures(item, lang)}`;
     });
     return `${heading}\n${lines.join('\n')}`;
 };
 
 const isToolComparisonRequest = query => /\b(vs|versus|confronta|confrontare|confrontami|confronto|compara|comparare|paragona|paragonare|differenza|differenze|compare|comparison|difference|differences|quale e meglio|qual e meglio|quale scegliere|which is better)\b/.test(normalizeText(query));
+
+const isToolFeatureQuestion = query => /\b(feature|features|funzione|funzioni|funzionalita|capacita|capabilities|what can it do|what can .* do|cosa puo fare|cosa sa fare)\b/.test(normalizeText(query));
 
 const comparisonToolLines = (fields, lang, missing) => {
     const specializationLines = formatSpecializationCapabilities(fields, lang);
@@ -728,6 +750,7 @@ const comparisonToolLines = (fields, lang, missing) => {
         `${lang === 'it' ? 'Prezzo' : 'Pricing'}: ${fields.pricing ? pricingLabel(fields.pricing, lang) : missing}`,
         `${lang === 'it' ? 'Descrizione' : 'Description'}: ${toolDescription(fields, lang)}`,
         `${lang === 'it' ? 'Sito' : 'Website'}: ${fields.website || missing}`,
+        formatToolFeatures(fields, lang),
         `${lang === 'it' ? 'Specializzazioni e capacità' : 'Specializations and capabilities'}:`,
         ...(specializationLines.length ? specializationLines.map(line => `- ${line}`) : [`- ${missing}`])
     ];
@@ -2124,6 +2147,14 @@ const createResponsePlan = (chat, message, tools) => {
             };
         }
     }
+    if (isToolFeatureQuestion(message) && referenced[0]) {
+        return {
+            text: `**${referenced[0].name}**\n${formatToolFeatures(referenced[0], lang)}`,
+            context: [referenced[0]],
+            intent: 'catalog-tool-features',
+            useModel: false
+        };
+    }
     const ranked = rankTools(message, tools, lang);
     const hasCatalogComparisonContext = referenced.length > 0
         || /\b(strumento|strumenti|tool|tools|app ai|ai tool)\b/.test(normalized)
@@ -2722,6 +2753,7 @@ const contextForPrompt = (context, lang) => context.map(item => {
         item.category ? `Category: ${item.category}` : '',
         item.pricing ? `Pricing: ${item.pricing}` : '',
         item.website ? `Website: ${item.website}` : '',
+        item.keyFeatures.length ? `Verified features: ${item.keyFeatures.join('; ')}` : 'Verified features: under review',
         capabilities.length ? `Declared capabilities: ${capabilities.join('; ')}` : 'Declared capabilities: not specified'
     ].filter(Boolean).join(' | ');
 }).join('\n');
