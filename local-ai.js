@@ -394,6 +394,18 @@ const TOOL_OPERATION_ALIASES = Object.freeze({
     edit: ['modificare', 'modifica', 'editare', 'cambiare', 'correggere', 'aggiornare', 'riscrivere', 'edit', 'change', 'correct', 'update', 'rewrite']
 });
 
+const TOOL_REFERENCE_ALIAS_GROUPS = Object.freeze([
+    { canonicalNames: ['chatgpt', 'chat gpt'], aliases: ['gpt', 'chat gpt', 'chat-gpt'] },
+    { canonicalNames: ['google gemini'], aliases: ['gemini'] }
+]);
+
+const toolReferenceAliases = name => {
+    const normalizedName = normalizeText(name);
+    const group = TOOL_REFERENCE_ALIAS_GROUPS.find(item =>
+        item.canonicalNames.some(canonicalName => normalizeText(canonicalName) === normalizedName));
+    return group ? [...new Set(group.aliases.map(normalizeText).filter(Boolean))] : [];
+};
+
 const includesNormalizedPhrase = (text, phrase) => (` ${text} `).includes(` ${normalizeText(phrase)} `);
 
 const normalizeToolSpecializations = value => {
@@ -460,6 +472,7 @@ const getToolFields = (tool, lang) => {
     const category = localizedValue(tool?.category, lang).trim();
     const alternatives = Array.isArray(tool?.alternatives) ? tool.alternatives.map(String) : [];
     const specializations = normalizeToolSpecializations(tool?.specializations);
+    const referenceAliases = toolReferenceAliases(name);
     return {
         tool,
         name,
@@ -467,6 +480,7 @@ const getToolFields = (tool, lang) => {
         category,
         alternatives,
         specializations,
+        referenceAliases,
         logoUrl: String(tool?.logoUrl || tool?.logo || '').trim(),
         website: String(tool?.website || '').trim(),
         pricing: normalizeText(tool?.pricing),
@@ -513,8 +527,10 @@ const rankTools = (query, tools, lang) => {
 
         let score = 0;
         if (normalizedQuery === fields.nameNorm) score += 1000;
+        if (fields.referenceAliases.includes(normalizedQuery)) score += 1000;
         if (fields.nameNorm.length > 2 && (` ${normalizedQuery} `).includes(` ${fields.nameNorm} `)) score += 140;
         if (fields.nameCompact.length > 3 && compactQuery.includes(fields.nameCompact)) score += 90;
+        if (fields.referenceAliases.some(alias => includesNormalizedPhrase(normalizedQuery, alias))) score += 100;
 
         for (const term of terms) {
             if (fields.nameNorm.split(' ').includes(term)) score += 28;
@@ -560,9 +576,10 @@ const rankTools = (query, tools, lang) => {
 };
 
 const findReferencedTools = (query, tools, lang) => {
+    const normalizedQuery = normalizeText(query);
     const compactQuery = compactText(query);
-    const candidates = tools.flatMap(tool => {
-        const fields = getToolFields(tool, lang);
+    const toolFields = tools.map(tool => getToolFields(tool, lang));
+    const directCandidates = toolFields.flatMap(fields => {
         if (fields.nameNorm.length <= 2 || fields.nameCompact.length <= 3) return [];
         const matches = [];
         let referenceIndex = compactQuery.indexOf(fields.nameCompact);
@@ -570,12 +587,36 @@ const findReferencedTools = (query, tools, lang) => {
             matches.push({
                 ...fields,
                 referenceIndex,
-                referenceEnd: referenceIndex + fields.nameCompact.length
+                referenceEnd: referenceIndex + fields.nameCompact.length,
+                matchedReference: fields.nameNorm,
+                matchKind: 'name'
             });
             referenceIndex = compactQuery.indexOf(fields.nameCompact, referenceIndex + 1);
         }
         return matches;
-    }).sort((left, right) => left.referenceIndex - right.referenceIndex || right.nameCompact.length - left.nameCompact.length);
+    });
+    const paddedQuery = ` ${normalizedQuery} `;
+    const aliasCandidates = toolFields.flatMap(fields => fields.referenceAliases.flatMap(alias => {
+        const matches = [];
+        const needle = ` ${alias} `;
+        let paddedIndex = paddedQuery.indexOf(needle);
+        while (paddedIndex >= 0) {
+            const referenceIndex = compactText(normalizedQuery.slice(0, paddedIndex)).length;
+            matches.push({
+                ...fields,
+                referenceIndex,
+                referenceEnd: referenceIndex + compactText(alias).length,
+                matchedReference: alias,
+                matchKind: 'alias'
+            });
+            paddedIndex = paddedQuery.indexOf(needle, paddedIndex + needle.length - 1);
+        }
+        return matches;
+    }));
+    const candidates = [...directCandidates, ...aliasCandidates]
+        .sort((left, right) => left.referenceIndex - right.referenceIndex
+            || (right.referenceEnd - right.referenceIndex) - (left.referenceEnd - left.referenceIndex)
+            || Number(right.matchKind === 'name') - Number(left.matchKind === 'name'));
 
     const nonOverlapping = [];
     for (const candidate of candidates) {
@@ -1403,7 +1444,8 @@ const conversationFallback = (lang, message = '') => {
 
 const findExactRequest = (query, tools, lang) => {
     const stripped = normalizeText(query).replace(/^(cos e|cosa e|parlami di|dimmi di|what is|tell me about)\s+/, '');
-    return tools.map(tool => getToolFields(tool, lang)).find(fields => fields.nameNorm === stripped) || null;
+    return tools.map(tool => getToolFields(tool, lang))
+        .find(fields => fields.nameNorm === stripped || fields.referenceAliases.includes(stripped)) || null;
 };
 
 const findSimilarName = (query, tools, lang) => {
@@ -1476,7 +1518,9 @@ const createResponsePlan = (chat, message, tools) => {
         const pending = getToolFields(chat.pendingComparisonTool, lang);
         const candidate = referenced[0];
         const directReply = normalized.replace(/^(?:con|e|vs|versus|with|and)\s+/, '');
-        const isDirectNameReply = directReply === candidate.nameNorm || compactText(directReply) === candidate.nameCompact;
+        const isDirectNameReply = directReply === candidate.nameNorm
+            || compactText(directReply) === candidate.nameCompact
+            || directReply === candidate.matchedReference;
         if (isDirectNameReply && candidate.nameNorm !== pending.nameNorm) {
             chat.pendingComparisonTool = null;
             return {

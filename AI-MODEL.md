@@ -53,7 +53,7 @@ Arbitrary translation and rewriting use a transformation-only prompt. Accepted o
 
 ### Catalog RAG
 
-Catalog entries come from Firestore and are ranked locally. Name matches, category and description terms, aliases, alternatives, requested pricing, structured specializations, and declared capabilities contribute to the score. The router detects both the requested area (`excel`, `word`, `pptx`, `pdf`, `images`, `video`, `audio`, `code`, `data`, or `automation`) and the requested operation (`create`, `read`, or `edit`).
+Catalog entries come from Firestore and are ranked locally. Name matches, category and description terms, aliases, alternatives, requested pricing, structured specializations, and declared capabilities contribute to the score. Controlled family aliases resolve common shorthand such as `GPT` to `ChatGPT` and `Gemini` to `Google Gemini`; full catalog names take precedence on overlaps, so `Zero GPT` remains distinct. The router detects both the requested area (`excel`, `word`, `pptx`, `pdf`, `images`, `video`, `audio`, `code`, `data`, or `automation`) and the requested operation (`create`, `read`, or `edit`).
 
 When structured candidates exist, only tools with a compatible declared capability are recommended. If the specialization exists but the operation is not confirmed for any tool, the deterministic response states that no compatible capability is recorded. Legacy records without structured metadata retain the previous text-based ranking fallback when no structured candidate is available.
 
