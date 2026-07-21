@@ -5940,7 +5940,9 @@
             }
 
             .home-chat-header .user-chat-info {
-                display: none;
+                display: block;
+                min-width: 0;
+                white-space: nowrap;
             }
 
             .home-chat-header #global-controls {
@@ -10933,7 +10935,7 @@ window.mountChatbotApp = (container, props) => {
                     fullNameRequired: "Il nome completo è obbligatorio.",
                     // App
                     navHome: "Home", navTopAI: "Classifiche", navSearch: "Catalogo", navLibrary: "Libreria",
-                    pageTitleHome: "Koda", pageTitleTopAI: "Classifiche", pageTitleSearch: "Catalogo", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema", pageTitleNews: "Notizie", navNews: "Notizie",
+                    pageTitleHome: "Home", pageTitleTopAI: "Classifiche", pageTitleSearch: "Catalogo", pageTitleLibrary: "Libreria", pageTitleCinema: "Cinema", pageTitleNews: "Notizie", navNews: "Notizie",
                     navCinemaVideos: "Video", navCinemaFavorites: "Preferiti", navCinemaPlaylists: "Playlist",
                     logout: "Logout", featured: "In evidenza", featuredDisclaimer: "Basate su preferenze personali", rankingsTitle: "Classifiche TOP AI", filterAll: "Tutti",
                     searchPlaceholder: "Cerca strumenti, categorie...", browseAll: "Sfoglia tutto", browseByOrigin: "Sfoglia per nazionalità", newArrivals: "Nuovi Arrivi", newBadge: "NUOVO",
@@ -11146,7 +11148,7 @@ window.mountChatbotApp = (container, props) => {
                     fullNameRequired: "Full name is required.",
                     // App
                     navHome: "Home", navTopAI: "TOP AI", navSearch: "Catalogue", navLibrary: "Library",
-                    pageTitleHome: "Koda", pageTitleTopAI: "TOP AI", pageTitleSearch: "Catalogue", pageTitleLibrary: "Library", pageTitleCinema: "Cinema", pageTitleNews: "News", navNews: "News",
+                    pageTitleHome: "Home", pageTitleTopAI: "TOP AI", pageTitleSearch: "Catalogue", pageTitleLibrary: "Library", pageTitleCinema: "Cinema", pageTitleNews: "News", navNews: "News",
                     navCinemaVideos: "Videos", navCinemaFavorites: "Favorites", navCinemaPlaylists: "Playlists",
                     logout: "Logout", featured: "Featured", featuredDisclaimer: "Based on personal preferences", rankingsTitle: "TOP AI Rankings", filterAll: "All",
                     searchPlaceholder: "Search tools, categories...", browseAll: "Browse All", browseByOrigin: "Browse by County", newArrivals: "New Arrivals", newBadge: "NEW",
