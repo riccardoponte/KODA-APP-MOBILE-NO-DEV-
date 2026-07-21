@@ -514,7 +514,7 @@ const detectPricing = query => {
     return '';
 };
 
-const rankTools = (query, tools, lang) => {
+const rankTools = (query, tools, lang, maxResults = MAX_CONTEXT_TOOLS) => {
     const normalizedQuery = normalizeText(query);
     const compactQuery = compactText(query);
     const terms = queryTerms(query);
@@ -557,10 +557,13 @@ const rankTools = (query, tools, lang) => {
         return { ...fields, score, specializationMatches, supportsRequestedTask };
     });
 
+    const resultLimit = Number.isFinite(maxResults)
+        ? Math.max(1, Math.floor(maxResults))
+        : MAX_CONTEXT_TOOLS;
     const sortAndLimit = items => items
         .filter(item => item.score >= 8)
         .sort((left, right) => right.score - left.score || left.name.localeCompare(right.name))
-        .slice(0, MAX_CONTEXT_TOOLS);
+        .slice(0, resultLimit);
 
     if (task.specializations.length) {
         const specialized = scored.filter(item => item.specializationMatches.length);
@@ -631,6 +634,46 @@ const findReferencedTools = (query, tools, lang) => {
             const key = String(fields.tool?.id ?? fields.nameNorm);
             return all.findIndex(item => String(item.tool?.id ?? item.nameNorm) === key) === index;
         });
+};
+
+const editDistance = (leftValue, rightValue) => {
+    const left = String(leftValue || '');
+    const right = String(rightValue || '');
+    if (!left.length) return right.length;
+    if (!right.length) return left.length;
+    let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+    for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+        const current = [leftIndex];
+        for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+            current[rightIndex] = Math.min(
+                previous[rightIndex] + 1,
+                current[rightIndex - 1] + 1,
+                previous[rightIndex - 1] + Number(left[leftIndex - 1] !== right[rightIndex - 1])
+            );
+        }
+        previous = current;
+    }
+    return previous[right.length];
+};
+
+const findApproximateReferencedTool = (query, tools, lang, excludedToolId = '') => {
+    const normalizedQuery = normalizeText(query);
+    const compactQuery = compactText(query);
+    if (compactQuery.length < 5 || normalizedQuery.split(/\s+/).length > 4) return null;
+
+    const candidates = tools
+        .map(tool => getToolFields(tool, lang))
+        .filter(fields => String(fields.tool?.id || '') !== String(excludedToolId || ''))
+        .map(fields => {
+            const references = [...new Set([fields.nameCompact, ...fields.referenceAliases.map(compactText)].filter(Boolean))];
+            const distance = Math.min(...references.map(reference => editDistance(compactQuery, reference)));
+            return { ...fields, distance, matchKind: 'fuzzy', matchedReference: normalizedQuery };
+        })
+        .filter(candidate => candidate.distance <= (Math.max(compactQuery.length, candidate.nameCompact.length) >= 9 ? 2 : 1))
+        .sort((left, right) => left.distance - right.distance || left.name.localeCompare(right.name));
+
+    if (!candidates.length || candidates[1]?.distance === candidates[0].distance) return null;
+    return candidates[0];
 };
 
 const shorten = (value, maxLength = 170) => {
@@ -800,9 +843,11 @@ const formatMissingCapability = (task, lang) => {
         : `The catalog contains tools associated with **${formats}**, but none has **${operations}** set to Yes. An unconfirmed capability is not presented as compatible.`;
 };
 
-const isSimpleGreeting = query => /^(ciao|salve|hey|hello|hi|buongiorno|buonasera)[!. ]*$/.test(normalizeText(query));
+const isSimpleGreeting = query => /^(ciao|salve|hey|hello|hi|oi|buongiorno|buonasera)[!. ]*$/.test(normalizeText(query));
 const isSocialQuestion = query => /\b(come stai|come va|tutto bene|how are you|how is it going|whats up)\b/.test(normalizeText(query));
-const isCapabilityQuestion = query => /\b(che fai|cosa fai|cosa sai fare|come puoi aiutarmi|come mi puoi aiutare|in cosa puoi aiutarmi|chi sei|what can you do|how can you help|who are you)\b/.test(normalizeText(query));
+const isCreatorQuestion = query => /\b(chi ti ha creato|chi ti ha sviluppato|chi ti ha programmato|chi sono i tuoi creatori|chi sono i tuoi sviluppatori|da chi sei stata creata|da chi sei stato creato|who created you|who developed you|who built you|who made you|who are your creators|who are your developers)\b/.test(normalizeText(query));
+const isIdentityQuestion = query => /\b(chi sei|come ti chiami|qual e il tuo nome|parlami di te|who are you|what are you|what is your name|tell me about yourself)\b/.test(normalizeText(query));
+const isCapabilityQuestion = query => /\b(che fai|cosa fai|cosa sai fare|come puoi aiutarmi|come mi puoi aiutare|in cosa puoi aiutarmi|what can you do|how can you help)\b/.test(normalizeText(query));
 const isThanks = query => /^(grazie|perfetto|ok grazie|thanks|thank you|perfect)[!. ]*$/.test(normalizeText(query));
 const isPositiveReply = query => /^(si|yes|esatto|correct|ok|giusto)$/.test(normalizeText(query));
 const isVague = query => /^(aiutami|help me|non so|boh|help)[!. ]*$/.test(normalizeText(query));
@@ -815,6 +860,484 @@ const deterministicPlan = (intent, text, options = {}) => ({
     intent,
     ...options
 });
+
+const GUIDED_SPECIALIZATION_CHOICES = Object.freeze([
+    { type: 'word', it: 'Documenti', en: 'Documents' },
+    { type: 'excel', it: 'Excel', en: 'Excel' },
+    { type: 'pptx', it: 'Presentazioni', en: 'Presentations' },
+    { type: 'pdf', it: 'PDF', en: 'PDF' },
+    { type: 'images', it: 'Immagini', en: 'Images' },
+    { type: 'video', it: 'Video', en: 'Video' },
+    { type: 'audio', it: 'Audio', en: 'Audio' },
+    { type: 'code', it: 'Codice', en: 'Code' },
+    { type: 'data', it: 'Dati', en: 'Data' },
+    { type: 'automation', it: 'Automazioni', en: 'Automation' }
+]);
+
+const GUIDED_OPERATION_CHOICES = Object.freeze([
+    { operation: 'create', it: 'Creare', en: 'Create' },
+    { operation: 'read', it: 'Leggere o analizzare', en: 'Read or analyze' },
+    { operation: 'edit', it: 'Modificare', en: 'Edit' },
+    { operation: 'all', it: 'Tutte le operazioni', en: 'All operations' }
+]);
+
+const GUIDED_FILE_CHOICES = Object.freeze([
+    { type: 'xlsx', it: 'Excel', en: 'Excel' },
+    { type: 'pdf', it: 'PDF', en: 'PDF' },
+    { type: 'doc', it: 'Documento Word', en: 'Word document' },
+    { type: 'html', it: 'Pagina HTML', en: 'HTML page' },
+    { type: 'csv', it: 'CSV', en: 'CSV' },
+    { type: 'json', it: 'JSON', en: 'JSON' }
+]);
+
+const guidedLabels = (choices, lang) => choices.map(choice => choice[lang]);
+const guidedChoiceNumber = message => Number.parseInt(normalizeText(message).match(/^(\d{1,2})(?:\s|$)/)?.[1] || '0', 10);
+const isGuidedMenuCommand = message => /^(menu|home|inizio|start|main menu)$/.test(normalizeText(message));
+const isGuidedCancelCommand = message => /^(annulla|esci|stop|cancel|quit)$/.test(normalizeText(message));
+const isGuidedBackCommand = message => /^(indietro|torna indietro|back|go back)$/.test(normalizeText(message));
+
+const setGuidedState = (chat, flow, step, details = {}) => {
+    chat.guidedState = { flow, step, attempts: 0, ...details };
+    chat.pendingTool = null;
+    chat.pendingComparisonTool = null;
+    return chat.guidedState;
+};
+
+const guidedMainReplies = lang => lang === 'it'
+    ? ["Trova un'AI", 'Confronta due AI', 'Crea un file', "Domanda sull'AI"]
+    : ['Find an AI tool', 'Compare two AI tools', 'Create a file', 'Ask about AI'];
+
+const guidedMainMenuPlan = (chat, lang, prefix = '') => {
+    setGuidedState(chat, 'main', 'choice');
+    const body = lang === 'it'
+        ? "Ti guido io. Scegli da dove partire:\n\n1. trovare l'AI adatta\n2. confrontare due AI\n3. creare un file\n4. fare una domanda su AI o catalogo\n\nPuoi anche scrivere direttamente una richiesta completa. Durante il percorso usa **indietro**, **menu** o **annulla**."
+        : 'I will guide you. Choose where to start:\n\n1. find the right AI tool\n2. compare two AI tools\n3. create a file\n4. ask about AI or the catalog\n\nYou can also enter a complete request directly. During a guided flow, use **back**, **menu**, or **cancel**.';
+    return deterministicPlan('guided-menu-main', [prefix, body].filter(Boolean).join('\n\n'), {
+        quickReplies: guidedMainReplies(lang)
+    });
+};
+
+const guidedIdentityPlan = (chat, lang, includeCreators = false) => {
+    const identity = lang === 'it'
+        ? 'Sono **Koda AI**, l’assistente locale dell’app Koda. Ti guido nella ricerca e nel confronto degli strumenti AI, rispondo a domande sull’intelligenza artificiale e posso creare file direttamente nel browser.'
+        : 'I am **Koda AI**, the local assistant in the Koda app. I guide you through finding and comparing AI tools, answer questions about artificial intelligence, and can create files directly in your browser.';
+    const creators = lang === 'it'
+        ? 'Koda AI è stata sviluppata da **Riccardo Giorgio Ponte** e **Davide Narracci**.'
+        : 'Koda AI was developed by **Riccardo Giorgio Ponte** and **Davide Narracci**.';
+    return {
+        ...guidedMainMenuPlan(chat, lang, includeCreators ? `${identity}\n\n${creators}` : `${identity}\n\n${creators}`),
+        intent: includeCreators ? 'identity-creators' : 'identity'
+    };
+};
+
+const guidedSpecializationPlan = (chat, lang, prefix = '') => {
+    setGuidedState(chat, 'recommend', 'specialization');
+    return deterministicPlan('guided-recommend-specialization', [prefix, lang === 'it'
+        ? 'Che tipo di attività deve gestire lo strumento?'
+        : 'What type of task should the tool handle?'].filter(Boolean).join('\n\n'), {
+        quickReplies: guidedLabels(GUIDED_SPECIALIZATION_CHOICES, lang)
+    });
+};
+
+const guidedOperationPlan = (chat, lang, specialization, prefix = '') => {
+    setGuidedState(chat, 'recommend', 'operation', { specialization });
+    const label = specializationLabel(specialization, lang);
+    return deterministicPlan('guided-recommend-operation', [prefix, lang === 'it'
+        ? `Per **${label}**, cosa deve fare lo strumento?`
+        : `For **${label}**, what should the tool do?`].filter(Boolean).join('\n\n'), {
+        quickReplies: guidedLabels(GUIDED_OPERATION_CHOICES, lang)
+    });
+};
+
+const GUIDED_TOOL_SUGGESTION_PAGE_SIZE = 4;
+const isGuidedMoreToolsCommand = message => /^(mostra altri|altri strumenti|altre ai|show more|more tools)$/.test(normalizeText(message));
+
+const guidedToolSuggestionPage = (tools, lang, excludedName = '', requestedPage = 0) => {
+    const excluded = normalizeText(excludedName);
+    const seen = new Set();
+    const ordered = tools
+        .map(tool => getToolFields(tool, lang))
+        .filter(fields => fields.name && fields.nameNorm !== excluded)
+        .filter(fields => {
+            const key = String(fields.tool?.id || fields.nameNorm);
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        })
+        .sort((left, right) => Number(right.tool?.isFeatured === true) - Number(left.tool?.isFeatured === true)
+            || left.name.localeCompare(right.name, lang));
+    const pageCount = Math.max(1, Math.ceil(ordered.length / GUIDED_TOOL_SUGGESTION_PAGE_SIZE));
+    const page = ((Number(requestedPage) || 0) % pageCount + pageCount) % pageCount;
+    const names = ordered
+        .slice(page * GUIDED_TOOL_SUGGESTION_PAGE_SIZE, (page + 1) * GUIDED_TOOL_SUGGESTION_PAGE_SIZE)
+        .map(fields => fields.name);
+    if (pageCount > 1) names.push(lang === 'it' ? 'Mostra altri' : 'Show more');
+    return { names, page, pageCount };
+};
+
+const guidedFirstToolPlan = (chat, tools, lang, prefix = '', suggestionPage = 0) => {
+    const suggestions = guidedToolSuggestionPage(tools, lang, '', suggestionPage);
+    setGuidedState(chat, 'compare', 'first-tool', { suggestionPage: suggestions.page });
+    const pageLabel = suggestions.pageCount > 1
+        ? (lang === 'it' ? `Suggerimenti ${suggestions.page + 1}/${suggestions.pageCount}.` : `Suggestions ${suggestions.page + 1}/${suggestions.pageCount}.`)
+        : '';
+    return deterministicPlan('guided-compare-first-tool', [prefix, lang === 'it'
+        ? `Qual è il primo strumento da confrontare? Scrivi qualsiasi nome del catalogo o scorri i suggerimenti. ${pageLabel}`
+        : `What is the first tool to compare? Enter any catalog name or browse the suggestions. ${pageLabel}`].filter(Boolean).join('\n\n'), {
+        quickReplies: suggestions.names
+    });
+};
+
+const guidedSecondToolPlan = (chat, tools, lang, firstTool, prefix = '', suggestionPage = 0) => {
+    const suggestions = guidedToolSuggestionPage(tools, lang, firstTool.name, suggestionPage);
+    setGuidedState(chat, 'compare', 'second-tool', {
+        firstToolId: String(firstTool.tool?.id || ''),
+        suggestionPage: suggestions.page
+    });
+    const pageLabel = suggestions.pageCount > 1
+        ? (lang === 'it' ? `Suggerimenti ${suggestions.page + 1}/${suggestions.pageCount}.` : `Suggestions ${suggestions.page + 1}/${suggestions.pageCount}.`)
+        : '';
+    return deterministicPlan('guided-compare-second-tool', [prefix, lang === 'it'
+        ? `Hai scelto **${firstTool.name}**. Qual è il secondo strumento? Puoi scrivere qualsiasi nome del catalogo o scorrere le proposte. ${pageLabel}`
+        : `You selected **${firstTool.name}**. What is the second tool? Enter any catalog name or browse the suggestions. ${pageLabel}`].filter(Boolean).join('\n\n'), {
+        context: [firstTool],
+        quickReplies: suggestions.names
+    });
+};
+
+const guidedTypoPrefix = (message, match, lang) => match?.matchKind === 'fuzzy'
+    ? (lang === 'it'
+        ? `Ho interpretato “${String(message).trim()}” come **${match.name}**.`
+        : `I interpreted “${String(message).trim()}” as **${match.name}**.`)
+    : '';
+
+const guidedFileFormatPlan = (chat, lang, prefix = '') => {
+    setGuidedState(chat, 'file', 'format');
+    return deterministicPlan('guided-file-format', [prefix, lang === 'it'
+        ? 'Quale formato vuoi creare?'
+        : 'Which format do you want to create?'].filter(Boolean).join('\n\n'), {
+        quickReplies: guidedLabels(GUIDED_FILE_CHOICES, lang)
+    });
+};
+
+const guidedFileDetailsPlan = (chat, lang, fileType, prefix = '') => {
+    setGuidedState(chat, 'file', 'details', { fileType });
+    const label = fileLabels[fileType];
+    return deterministicPlan('guided-file-details', [prefix, lang === 'it'
+        ? `Descrivi il contenuto del file **${label}**. Indica scopo, dati o sezioni necessarie; se mancano dati userò campi segnaposto.`
+        : `Describe the **${label}** file content. Include its purpose, data, or required sections; missing data will use placeholders.`].filter(Boolean).join('\n\n'), {
+        quickReplies: lang === 'it' ? ['Indietro', 'Menu'] : ['Back', 'Menu']
+    });
+};
+
+const guidedAIQuestionPlan = (chat, lang, prefix = '') => {
+    setGuidedState(chat, 'ai-question', 'question');
+    return deterministicPlan('guided-ai-question', [prefix, lang === 'it'
+        ? 'Scrivi una domanda specifica su AI, modelli, prompt o strumenti del catalogo.'
+        : 'Enter a specific question about AI, models, prompts, or catalog tools.'].filter(Boolean).join('\n\n'), {
+        quickReplies: lang === 'it' ? ['Cos’è il RAG?', 'Confronta GPT e Claude', 'Menu'] : ['What is RAG?', 'Compare GPT and Claude', 'Menu']
+    });
+};
+
+const parseGuidedMainChoice = message => {
+    const normalized = normalizeText(message);
+    const number = guidedChoiceNumber(message);
+    if (number >= 1 && number <= 4) return ['recommend', 'compare', 'file', 'ai-question'][number - 1];
+    if (/\b(trova|consiglia|scegli|find|recommend)\b.*\b(ai|strumento|tool)\b/.test(normalized) || normalized === 'trova un ai') return 'recommend';
+    if (/\b(confronta|confrontare|paragona|compare)\b/.test(normalized)) return 'compare';
+    if (/\b(crea|creare|genera|create|generate)\b.*\b(file|documento|document)\b/.test(normalized)) return 'file';
+    if (/\b(domanda|chiedi|ask)\b.*\b(ai|catalogo|catalog)\b/.test(normalized)) return 'ai-question';
+    return '';
+};
+
+const parseExactGuidedMainChoice = message => {
+    const normalized = normalizeText(message);
+    const number = guidedChoiceNumber(message);
+    if (number >= 1 && number <= 4) return ['recommend', 'compare', 'file', 'ai-question'][number - 1];
+    const exactChoices = new Map([
+        ["trova un ai", 'recommend'],
+        ['find an ai tool', 'recommend'],
+        ['confronta due ai', 'compare'],
+        ['compare two ai tools', 'compare'],
+        ['crea un file', 'file'],
+        ['create a file', 'file'],
+        ["domanda sull ai", 'ai-question'],
+        ['ask about ai', 'ai-question']
+    ]);
+    return exactChoices.get(normalized) || '';
+};
+
+const parseGuidedSpecialization = message => {
+    const number = guidedChoiceNumber(message);
+    if (number >= 1 && number <= GUIDED_SPECIALIZATION_CHOICES.length) return GUIDED_SPECIALIZATION_CHOICES[number - 1].type;
+    const detected = detectToolTask(message).specializations;
+    if (detected.length === 1) return detected[0];
+    const normalized = normalizeText(message);
+    return GUIDED_SPECIALIZATION_CHOICES.find(choice => normalizeText(choice.it) === normalized || normalizeText(choice.en) === normalized)?.type || '';
+};
+
+const parseGuidedOperations = message => {
+    const number = guidedChoiceNumber(message);
+    if (number >= 1 && number <= GUIDED_OPERATION_CHOICES.length) {
+        const operation = GUIDED_OPERATION_CHOICES[number - 1].operation;
+        return operation === 'all' ? ['create', 'read', 'edit'] : [operation];
+    }
+    const normalized = normalizeText(message);
+    if (/\b(tutte|tutto|all|qualsiasi)\b/.test(normalized)) return ['create', 'read', 'edit'];
+    return detectToolTask(message).operations;
+};
+
+const parseGuidedFileType = message => {
+    const number = guidedChoiceNumber(message);
+    if (number >= 1 && number <= GUIDED_FILE_CHOICES.length) return GUIDED_FILE_CHOICES[number - 1].type;
+    const normalized = normalizeText(message);
+    return GUIDED_FILE_CHOICES.find(choice => normalizeText(choice.it) === normalized || normalizeText(choice.en) === normalized)?.type || '';
+};
+
+const guidedRankingQuery = (specialization, operations, lang) => {
+    const format = specializationLabel(specialization, lang);
+    const action = operations.map(operation => capabilityLabel(operation, lang).toLocaleLowerCase(lang)).join(lang === 'it' ? ' e ' : ' and ');
+    return lang === 'it' ? `consigliami uno strumento per ${action} ${format}` : `recommend a tool to ${action} ${format}`;
+};
+
+const GUIDED_RECOMMENDATION_PAGE_SIZE = 4;
+const guidedRecommendationResultsPlan = (chat, tools, lang, specialization, operations, requestedPage = 0, prefix = '') => {
+    const ranked = rankTools(guidedRankingQuery(specialization, operations, lang), tools, lang, tools.length || MAX_CONTEXT_TOOLS);
+    if (!ranked.length) {
+        return guidedOperationPlan(chat, lang, specialization, lang === 'it'
+            ? 'Nessuno strumento ha tutte le capacità richieste impostate su Sì.'
+            : 'No tool has every requested capability set to Yes.');
+    }
+    const pageCount = Math.max(1, Math.ceil(ranked.length / GUIDED_RECOMMENDATION_PAGE_SIZE));
+    const page = ((Number(requestedPage) || 0) % pageCount + pageCount) % pageCount;
+    const pageStart = page * GUIDED_RECOMMENDATION_PAGE_SIZE;
+    const pageItems = ranked.slice(pageStart, pageStart + GUIDED_RECOMMENDATION_PAGE_SIZE);
+    setGuidedState(chat, 'recommend', 'results', {
+        specialization,
+        operations,
+        resultPage: page,
+        resultToolIds: pageItems.map(item => String(item.tool?.id || '')).filter(Boolean)
+    });
+    const range = lang === 'it'
+        ? `Risultati ${pageStart + 1}-${pageStart + pageItems.length} di ${ranked.length}.`
+        : `Results ${pageStart + 1}-${pageStart + pageItems.length} of ${ranked.length}.`;
+    const quickReplies = [];
+    if (pageItems.length >= 2) quickReplies.push(lang === 'it' ? 'Confronta i primi due' : 'Compare the first two');
+    if (pageCount > 1) quickReplies.push(lang === 'it' ? 'Mostra altri' : 'Show more');
+    quickReplies.push(...(lang === 'it'
+        ? ['Cambia operazione', 'Cambia ambito', 'Menu']
+        : ['Change operation', 'Change area', 'Menu']));
+    return deterministicPlan('guided-recommend-results', formatToolList([
+        prefix,
+        lang === 'it' ? 'Questi strumenti corrispondono ai requisiti:' : 'These tools match the requirements:',
+        range
+    ].filter(Boolean).join(' '), pageItems, lang), {
+        context: pageItems,
+        quickReplies
+    });
+};
+
+const isAIOrCatalogScope = (message, task, referenced) => {
+    const normalized = normalizeText(message);
+    return referenced.length > 0
+        || task.specializations.length > 0
+        || /\b(ai|ia|intelligenza artificiale|artificial intelligence|machine learning|deep learning|llm|modello linguistico|language model|prompt|rag|embedding|transformer|chatbot|agente ai|ai agent|generative ai|catalogo|catalog)\b/.test(normalized);
+};
+
+const isExplicitSupportedRequest = (message, task, referenced) => {
+    const normalized = normalizeText(message);
+    return isAIOrCatalogScope(message, task, referenced)
+        || looksLikeFileRequest(message)
+        || /^(scrivi|crea|genera|prepara|riassumi|traduci|riscrivi|correggi|calcola|converti|conta|write|create|generate|prepare|summarize|translate|rewrite|correct|calculate|convert|count)\b/.test(normalized);
+};
+
+const guidedBackPlan = (chat, tools, lang) => {
+    const state = chat.guidedState;
+    if (!state || state.flow === 'main') return guidedMainMenuPlan(chat, lang);
+    if (state.flow === 'recommend' && state.step === 'operation') return guidedSpecializationPlan(chat, lang);
+    if (state.flow === 'recommend' && state.step === 'results') return guidedOperationPlan(chat, lang, state.specialization);
+    if (state.flow === 'compare' && state.step === 'second-tool') return guidedFirstToolPlan(chat, tools, lang);
+    if (state.flow === 'file' && state.step === 'details') return guidedFileFormatPlan(chat, lang);
+    return guidedMainMenuPlan(chat, lang);
+};
+
+const guidedFocusPlan = (chat, tools, lang) => {
+    const state = chat.guidedState;
+    const prefix = lang === 'it'
+        ? 'Restiamo sul passaggio corrente. Scegli una delle opzioni valide oppure usa **indietro**, **menu** o **annulla**.'
+        : 'Let’s stay on the current step. Choose a valid option or use **back**, **menu**, or **cancel**.';
+    if (!state || state.flow === 'main') return guidedMainMenuPlan(chat, lang, prefix);
+    if (state.flow === 'recommend' && state.step === 'specialization') return guidedSpecializationPlan(chat, lang, prefix);
+    if (state.flow === 'recommend' && state.step === 'operation') return guidedOperationPlan(chat, lang, state.specialization, prefix);
+    if (state.flow === 'recommend' && state.step === 'results') {
+        return guidedRecommendationResultsPlan(chat, tools, lang, state.specialization, state.operations || [], state.resultPage, prefix);
+    }
+    if (state.flow === 'compare' && state.step === 'first-tool') return guidedFirstToolPlan(chat, tools, lang, prefix, state.suggestionPage);
+    if (state.flow === 'compare' && state.step === 'second-tool') {
+        const firstTool = tools.find(tool => String(tool.id || '') === state.firstToolId);
+        return firstTool
+            ? guidedSecondToolPlan(chat, tools, lang, getToolFields(firstTool, lang), prefix, state.suggestionPage)
+            : guidedFirstToolPlan(chat, tools, lang, prefix);
+    }
+    if (state.flow === 'file' && state.step === 'format') return guidedFileFormatPlan(chat, lang, prefix);
+    if (state.flow === 'file' && state.step === 'details') return guidedFileDetailsPlan(chat, lang, state.fileType, prefix);
+    if (state.flow === 'ai-question') return guidedAIQuestionPlan(chat, lang, prefix);
+    return guidedMainMenuPlan(chat, lang, prefix);
+};
+
+const processGuidedState = (chat, message, tools, lang, task, referenced) => {
+    const state = chat.guidedState;
+    if (!state) return null;
+    if (isGuidedBackCommand(message)) return guidedBackPlan(chat, tools, lang);
+
+    if (state.flow === 'main') {
+        const exactChoice = parseExactGuidedMainChoice(message);
+        if (exactChoice === 'recommend') return guidedSpecializationPlan(chat, lang);
+        if (exactChoice === 'compare') return guidedFirstToolPlan(chat, tools, lang);
+        if (exactChoice === 'file') return guidedFileFormatPlan(chat, lang);
+        if (exactChoice === 'ai-question') return guidedAIQuestionPlan(chat, lang);
+        if (looksLikeFileRequest(message)) {
+            chat.guidedState = null;
+            return createFileGenerationPlan(chat, message);
+        }
+        if (isExplicitSupportedRequest(message, task, referenced)) {
+            chat.guidedState = null;
+            return null;
+        }
+        const choice = parseGuidedMainChoice(message);
+        if (choice === 'recommend') return guidedSpecializationPlan(chat, lang);
+        if (choice === 'compare') return guidedFirstToolPlan(chat, tools, lang);
+        if (choice === 'file') return guidedFileFormatPlan(chat, lang);
+        if (choice === 'ai-question') return guidedAIQuestionPlan(chat, lang);
+        return guidedFocusPlan(chat, tools, lang);
+    }
+
+    if (state.flow === 'recommend' && state.step === 'specialization') {
+        const specialization = parseGuidedSpecialization(message);
+        return specialization ? guidedOperationPlan(chat, lang, specialization) : guidedFocusPlan(chat, tools, lang);
+    }
+
+    if (state.flow === 'recommend' && state.step === 'operation') {
+        const operations = parseGuidedOperations(message);
+        if (!operations.length) return guidedFocusPlan(chat, tools, lang);
+        return guidedRecommendationResultsPlan(chat, tools, lang, state.specialization, operations);
+    }
+
+    if (state.flow === 'recommend' && state.step === 'results') {
+        const normalized = normalizeText(message);
+        const resultFields = (state.resultToolIds || []).map(id => tools.find(tool => String(tool.id || '') === id)).filter(Boolean).map(tool => getToolFields(tool, lang));
+        if (isGuidedMoreToolsCommand(message)) {
+            return guidedRecommendationResultsPlan(chat, tools, lang, state.specialization, state.operations || [], (state.resultPage || 0) + 1);
+        }
+        if (/confronta i primi due|compare the first two/.test(normalized) && resultFields.length >= 2) {
+            return deterministicPlan('guided-recommend-comparison', formatToolComparison(resultFields[0], resultFields[1], lang, {
+                specializations: [state.specialization],
+                operations: state.operations || []
+            }), {
+                context: resultFields.slice(0, 2),
+                presentation: 'comparison',
+                quickReplies: lang === 'it' ? ['Cambia operazione', 'Cambia ambito', 'Menu'] : ['Change operation', 'Change area', 'Menu']
+            });
+        }
+        if (/cambia operazione|change operation/.test(normalized)) return guidedOperationPlan(chat, lang, state.specialization);
+        if (/cambia ambito|change area/.test(normalized)) return guidedSpecializationPlan(chat, lang);
+        const selected = referenced.find(item => (state.resultToolIds || []).includes(String(item.tool?.id || '')));
+        if (selected) {
+            return deterministicPlan('guided-recommend-tool-detail', formatToolList(lang === 'it'
+                ? `Dettagli di ${selected.name}:`
+                : `${selected.name} details:`, [selected], lang, true), {
+                context: [selected],
+                quickReplies: lang === 'it' ? ['Cambia operazione', 'Cambia ambito', 'Menu'] : ['Change operation', 'Change area', 'Menu']
+            });
+        }
+        return guidedFocusPlan(chat, tools, lang);
+    }
+
+    if (state.flow === 'compare' && state.step === 'first-tool') {
+        if (isGuidedMoreToolsCommand(message)) {
+            return guidedFirstToolPlan(chat, tools, lang, '', (state.suggestionPage || 0) + 1);
+        }
+        if (referenced.length >= 2) {
+            setGuidedState(chat, 'compare', 'complete');
+            return deterministicPlan('guided-catalog-comparison', formatToolComparison(referenced[0], referenced[1], lang, task), {
+                context: referenced.slice(0, 2),
+                presentation: 'comparison',
+                quickReplies: lang === 'it' ? ['Nuovo confronto', 'Menu'] : ['New comparison', 'Menu']
+            });
+        }
+        const first = referenced[0] || findApproximateReferencedTool(message, tools, lang);
+        return first
+            ? guidedSecondToolPlan(chat, tools, lang, first, guidedTypoPrefix(message, first, lang))
+            : guidedFirstToolPlan(chat, tools, lang, lang === 'it'
+                ? 'Non trovo uno strumento con quel nome nel catalogo. Controlla la grafia o usa uno dei suggerimenti.'
+                : 'I cannot find a tool with that name in the catalog. Check the spelling or use one of the suggestions.', state.suggestionPage);
+    }
+
+    if (state.flow === 'compare' && state.step === 'second-tool') {
+        const firstTool = tools.find(tool => String(tool.id || '') === state.firstToolId);
+        const first = firstTool ? getToolFields(firstTool, lang) : null;
+        if (first && isGuidedMoreToolsCommand(message)) {
+            return guidedSecondToolPlan(chat, tools, lang, first, '', (state.suggestionPage || 0) + 1);
+        }
+        const second = referenced.find(item => String(item.tool?.id || '') !== state.firstToolId)
+            || findApproximateReferencedTool(message, tools, lang, state.firstToolId);
+        if (!first) return guidedFirstToolPlan(chat, tools, lang);
+        if (!second) return guidedSecondToolPlan(chat, tools, lang, first, referenced.length
+            ? (lang === 'it' ? 'Scegli uno strumento diverso dal primo.' : 'Choose a tool different from the first one.')
+            : (lang === 'it'
+                ? 'Non trovo uno strumento con quel nome nel catalogo. Controlla la grafia o usa uno dei suggerimenti.'
+                : 'I cannot find a tool with that name in the catalog. Check the spelling or use one of the suggestions.'), state.suggestionPage);
+        setGuidedState(chat, 'compare', 'complete');
+        return deterministicPlan('guided-catalog-comparison', [
+            guidedTypoPrefix(message, second, lang),
+            formatToolComparison(first, second, lang, task)
+        ].filter(Boolean).join('\n\n'), {
+            context: [first, second],
+            presentation: 'comparison',
+            quickReplies: lang === 'it' ? ['Nuovo confronto', 'Menu'] : ['New comparison', 'Menu']
+        });
+    }
+
+    if (state.flow === 'file' && state.step === 'format') {
+        const fileType = parseGuidedFileType(message);
+        return fileType ? guidedFileDetailsPlan(chat, lang, fileType) : guidedFocusPlan(chat, tools, lang);
+    }
+
+    if (state.flow === 'file' && state.step === 'details') {
+        if (normalizeText(message).split(/\s+/).filter(Boolean).length < 2 || isVague(message)) return guidedFocusPlan(chat, tools, lang);
+        const label = fileLabels[state.fileType];
+        const syntheticMessage = lang === 'it' ? `crea un file ${label} per ${message}` : `create a ${label} file for ${message}`;
+        setGuidedState(chat, 'file', 'complete');
+        return {
+            ...createFileGenerationPlan(chat, syntheticMessage),
+            intent: 'guided-file-generation',
+            useModel: false,
+            quickReplies: lang === 'it' ? ['Crea un altro file', 'Menu'] : ['Create another file', 'Menu']
+        };
+    }
+
+    if (state.flow === 'compare' && state.step === 'complete') {
+        if (/^(nuovo confronto|new comparison)$/.test(normalizeText(message))) return guidedFirstToolPlan(chat, tools, lang);
+        chat.guidedState = null;
+        return null;
+    }
+
+    if (state.flow === 'file' && state.step === 'complete') {
+        if (/^(crea un altro file|create another file)$/.test(normalizeText(message))) return guidedFileFormatPlan(chat, lang);
+        chat.guidedState = null;
+        return null;
+    }
+
+    if (state.flow === 'ai-question') {
+        if (isAIOrCatalogScope(message, task, referenced)) {
+            chat.guidedState = null;
+            return null;
+        }
+        return guidedFocusPlan(chat, tools, lang);
+    }
+
+    return guidedMainMenuPlan(chat, lang);
+};
 
 const isPromptSecurityRequest = message => {
     const normalized = normalizeText(message);
@@ -1471,7 +1994,6 @@ const createResponsePlan = (chat, message, tools) => {
     const lang = chat.lang;
     const normalized = normalizeText(message);
     const task = detectToolTask(message);
-    const ranked = rankTools(message, tools, lang);
     const referenced = findReferencedTools(message, tools, lang);
     const promptSecurity = isPromptSecurityRequest(message);
     const unsafeIntent = detectUnsafeIntent(message);
@@ -1489,6 +2011,31 @@ const createResponsePlan = (chat, message, tools) => {
     if (promptSecurity) return deterministicPlan('prompt-security', promptSecurityResponse(lang));
     if (unsafeIntent) return deterministicPlan(unsafeIntent, unsafeResponse(lang));
     if (highStakesIntent) return deterministicPlan(`high-stakes-${highStakesIntent}`, highStakesResponse(highStakesIntent, lang));
+    if (isGuidedMenuCommand(message) || isGuidedCancelCommand(message)) {
+        return guidedMainMenuPlan(chat, lang, isGuidedCancelCommand(message)
+            ? (lang === 'it' ? 'Percorso annullato.' : 'Guided flow canceled.')
+            : '');
+    }
+    if (isCreatorQuestion(message)) return guidedIdentityPlan(chat, lang, true);
+    if (isIdentityQuestion(message)) return guidedIdentityPlan(chat, lang);
+    if (isCapabilityQuestion(message)) {
+        return {
+            ...guidedMainMenuPlan(chat, lang, lang === 'it'
+                ? 'Posso trovare e confrontare strumenti AI verificati nel catalogo, guidarti con domande, spiegare concetti di intelligenza artificiale, migliorare prompt e creare file scaricabili.'
+                : 'I can find and compare verified catalog tools, guide you with focused questions, explain AI concepts, improve prompts, and create downloadable files.'),
+            intent: 'capabilities'
+        };
+    }
+    if (chat.guidedState) {
+        const guidedPlan = processGuidedState(chat, message, tools, lang, task, referenced);
+        if (guidedPlan) return guidedPlan;
+    } else if (isGuidedBackCommand(message)) {
+        return guidedMainMenuPlan(chat, lang);
+    }
+    if (isSimpleGreeting(message) || isVague(message)) {
+        return guidedMainMenuPlan(chat, lang);
+    }
+    if (isSocialQuestion(message)) return guidedMainMenuPlan(chat, lang, lang === 'it' ? 'Bene, grazie.' : 'Doing well, thanks.');
     if (localDateTime) return deterministicPlan(localDateTime.intent, localDateTime.text);
     if (textMetrics) return deterministicPlan(textMetrics.intent, textMetrics.text);
     if (isLiveInformationRequest(message)) return deterministicPlan('live-information-limit', liveInformationResponse(lang));
@@ -1543,36 +2090,6 @@ const createResponsePlan = (chat, message, tools) => {
             useModel: false
         };
     }
-    if (isSimpleGreeting(message)) {
-        return {
-            text: lang === 'it'
-                ? 'Ciao! Raccontami pure cosa vuoi fare o di cosa vuoi parlare. Se ti serve, posso anche consigliarti strumenti del catalogo.'
-                : 'Hi! Tell me what you want to do or talk about. I can also recommend tools from the catalog when useful.',
-            context: [],
-            intent: 'greeting',
-            useModel: false
-        };
-    }
-    if (isSocialQuestion(message)) {
-        return {
-            text: lang === 'it'
-                ? "Bene, grazie. Di cosa vuoi parlare? Posso aiutarti a sviluppare un'idea o trovare uno strumento adatto."
-                : 'Doing well, thanks. What would you like to talk about? I can help develop an idea or find a suitable tool.',
-            context: [],
-            intent: 'social',
-            useModel: false
-        };
-    }
-    if (isCapabilityQuestion(message)) {
-        return {
-            text: lang === 'it'
-                ? 'Posso dialogare con te, rispondere a domande, sviluppare idee, consigliare e confrontare strumenti del catalogo, migliorare prompt e creare file scaricabili. Dimmi cosa vuoi ottenere.'
-                : 'I can talk things through with you, answer questions, develop ideas, recommend and compare catalog tools, improve prompts, and create downloadable files. Tell me what you want to accomplish.',
-            context: [],
-            intent: 'capabilities',
-            useModel: false
-        };
-    }
     if (isThanks(message)) {
         return {
             text: lang === 'it'
@@ -1607,6 +2124,7 @@ const createResponsePlan = (chat, message, tools) => {
             };
         }
     }
+    const ranked = rankTools(message, tools, lang);
     const hasCatalogComparisonContext = referenced.length > 0
         || /\b(strumento|strumenti|tool|tools|app ai|ai tool)\b/.test(normalized)
         || (task.specializations.length > 0 && ranked.length >= 2);
@@ -1674,16 +2192,6 @@ const createResponsePlan = (chat, message, tools) => {
             useModel: false
         };
     }
-    if (isVague(message)) {
-        return {
-            text: lang === 'it'
-                ? 'Certo. Raccontami cosa vuoi ottenere, anche in modo semplice: ti farò le domande necessarie e, se utile, ti proporrò gli strumenti adatti.'
-                : 'Of course. Tell me what you want to achieve, even in simple terms: I will ask what is needed and suggest suitable tools when useful.',
-            context: [],
-            intent: 'clarification-vague',
-            useModel: false
-        };
-    }
     if (task.specializations.length && task.operations.length && !ranked.length) {
         const hasStructuredCandidates = tools
             .map(tool => getToolFields(tool, lang))
@@ -1710,6 +2218,11 @@ const createResponsePlan = (chat, message, tools) => {
             intent: 'catalog-recommendation',
             useModel: false
         };
+    }
+    if (!isAIOrCatalogScope(message, task, referenced)) {
+        return guidedMainMenuPlan(chat, lang, lang === 'it'
+            ? 'Questa chat resta focalizzata su AI, strumenti del catalogo e attività assistite. Ti riporto al punto di partenza.'
+            : 'This chat stays focused on AI, catalog tools, and assisted tasks. I will bring you back to the starting point.');
     }
     const fallbackText = conversationFallback(lang, message);
     return {
@@ -2497,6 +3010,45 @@ const restoreChatHistory = messages => (Array.isArray(messages) ? messages : [])
     .filter(Boolean)
     .slice(-MAX_SESSION_HISTORY_MESSAGES);
 
+const normalizeStoredGuidedState = state => {
+    if (!state || typeof state !== 'object') return null;
+    const validSteps = {
+        main: new Set(['choice']),
+        recommend: new Set(['specialization', 'operation', 'results']),
+        compare: new Set(['first-tool', 'second-tool', 'complete']),
+        file: new Set(['format', 'details', 'complete']),
+        'ai-question': new Set(['question'])
+    };
+    const flow = String(state.flow || '');
+    const step = String(state.step || '');
+    if (!validSteps[flow]?.has(step)) return null;
+    const normalized = { flow, step, attempts: 0 };
+    if (specializationDefinition(state.specialization)) normalized.specialization = state.specialization;
+    if (Array.isArray(state.operations)) {
+        normalized.operations = state.operations.filter(operation => ['create', 'read', 'edit'].includes(operation));
+    }
+    if (Array.isArray(state.resultToolIds)) normalized.resultToolIds = state.resultToolIds.map(String).filter(Boolean).slice(0, 5);
+    if (state.firstToolId) normalized.firstToolId = String(state.firstToolId);
+    if (state.fileType && fileLabels[state.fileType]) normalized.fileType = state.fileType;
+    if (Number.isInteger(state.suggestionPage) && state.suggestionPage >= 0) normalized.suggestionPage = state.suggestionPage;
+    if (Number.isInteger(state.resultPage) && state.resultPage >= 0) normalized.resultPage = state.resultPage;
+    if (flow === 'recommend' && step !== 'specialization' && !normalized.specialization) return null;
+    if (flow === 'compare' && step === 'second-tool' && !normalized.firstToolId) return null;
+    if (flow === 'file' && step === 'details' && !normalized.fileType) return null;
+    return normalized;
+};
+
+const restoreGuidedState = messages => {
+    if (!Array.isArray(messages)) return null;
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+        const message = messages[index];
+        if (message?.role === 'assistant' || message?.sender === 'model') {
+            return normalizeStoredGuidedState(message.guidedState);
+        }
+    }
+    return null;
+};
+
 export const createLocalChatSession = (lang, tools = [], mode = 'catalog', messages = []) => ({
     lang: lang === 'en' ? 'en' : 'it',
     tools: Array.isArray(tools) ? tools : [],
@@ -2504,6 +3056,7 @@ export const createLocalChatSession = (lang, tools = [], mode = 'catalog', messa
     history: restoreChatHistory(messages),
     pendingTool: null,
     pendingComparisonTool: null,
+    guidedState: restoreGuidedState(messages),
     responseMetadata: null
 });
 
@@ -2514,6 +3067,8 @@ export const takeLocalResponseMetadata = chat => {
         responseType: '',
         toolIds: [],
         toolNames: [],
+        quickReplies: [],
+        guidedState: null,
         intent: '',
         strategy: ''
     };
@@ -2531,7 +3086,7 @@ export async function* sendLocalMessageStream(chat, message) {
     const responseLanguage = detectResponseLanguage(cleanMessage, chat.lang);
     const responseChat = responseLanguage === chat.lang ? chat : { ...chat, lang: responseLanguage };
     const promptRewrite = responseChat.mode === PROMPT_REWRITE_MODE;
-    const fileRequest = !promptRewrite && looksLikeFileRequest(cleanMessage);
+    const fileRequest = !promptRewrite && !responseChat.guidedState && looksLikeFileRequest(cleanMessage);
 
     const plan = promptRewrite
         ? createPromptRewritePlan(responseChat, cleanMessage)
@@ -2540,6 +3095,7 @@ export async function* sendLocalMessageStream(chat, message) {
             : createResponsePlan(responseChat, cleanMessage, tools);
     chat.pendingTool = responseChat.pendingTool;
     chat.pendingComparisonTool = responseChat.pendingComparisonTool;
+    chat.guidedState = responseChat.guidedState;
 
     const contextTools = (Array.isArray(plan.context) ? plan.context : [])
         .map(item => item?.tool || item)
@@ -2549,6 +3105,8 @@ export async function* sendLocalMessageStream(chat, message) {
         responseType: plan.presentation || '',
         toolIds: contextTools.map(tool => String(tool.id || '')).filter(Boolean),
         toolNames: contextTools.map(tool => String(tool.name || '')).filter(Boolean),
+        quickReplies: Array.isArray(plan.quickReplies) ? plan.quickReplies.map(String).filter(Boolean).slice(0, 12) : [],
+        guidedState: normalizeStoredGuidedState(chat.guidedState),
         intent: plan.intent || plan.kind || 'catalog',
         strategy: plan.useModel ? 'verified-fallback' : 'deterministic'
     };

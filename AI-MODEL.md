@@ -19,12 +19,14 @@ Review each model card and linked license before redistribution. This document i
 ```mermaid
 flowchart LR
     U[User message] --> R{Local router}
+    R --> S[Guided state machine]
     R --> D[Deterministic handlers]
     R --> C[Firestore catalog RAG]
     R --> P[Prompt Optimizer]
     R --> T[Translation or rewrite]
     R --> G[Open conversation]
     R --> F[File generation plan]
+    S --> O
     D --> O[Rendered response]
     C --> O
     P --> O
@@ -43,17 +45,25 @@ flowchart LR
 
 ## Response Hardening
 
-Common, bounded requests bypass SmolLM2. Deterministic handlers cover greetings and conversation controls, safety and high-stakes boundaries, live-data limitations, arithmetic and percentages, local date/time, text counts, common unit conversions, selected stable definitions and comparisons, extractive summaries, outlines, checklists, agendas, plans, email and social templates, and common Italian/English translations.
+Common, bounded requests bypass SmolLM2. Deterministic handlers cover conversation controls, safety and high-stakes boundaries, live-data limitations, arithmetic and percentages, local date/time, text counts, common unit conversions, selected stable definitions and comparisons, extractive summaries, outlines, checklists, agendas, plans, email and social templates, and common Italian/English translations.
 
-Open-ended conversation has a separate system prompt requiring a direct first sentence, stable knowledge, concise structure, explicit uncertainty, and no invented live data, sources, URLs, or actions. Validation checks topic overlap, language, informative content, prompt leakage, repeated segments, degenerate token repetition, and unapproved URLs.
+Open-ended conversation is limited to AI, models, prompts, and the verified catalog. It has a separate system prompt requiring a direct first sentence, stable knowledge, concise structure, explicit uncertainty, and no invented live data, sources, URLs, or actions. Validation checks topic overlap, language, informative content, prompt leakage, repeated segments, degenerate token repetition, and unapproved URLs. Unrelated conversation is redirected to the guided menu without model inference.
 
 Arbitrary translation and rewriting use a transformation-only prompt. Accepted output must preserve source numbers, URLs, email addresses, placeholders, acronyms, and proper-name tokens. Translation also enforces the target language and rejects unchanged or excessively expanded text.
+
+## Guided Interaction
+
+Greetings and short or incomplete messages open a deterministic menu with four paths: find an AI tool, compare two AI tools, create a file, or ask about AI and the catalog. Each path is an explicit JavaScript state machine and exposes optional quick-reply buttons. Comparison suggestions are read from the full live catalog, ordered with featured records first and then alphabetically, and paged four at a time through `Show more`/`Mostra altri`. Suggestions that represent catalog tools include their live catalog logo, with initials as a loading or error fallback. The same choices also accept typed labels and numbered answers.
+
+An active path owns the next message. Invalid or unrelated replies repeat the current question and valid choices instead of falling through to open conversation. `back`/`indietro`, `menu`, and `cancel`/`annulla` provide deterministic navigation. Complete supported requests can still bypass the menu.
+
+Guided recommendations use only declared Firestore specializations and create/read/edit capabilities. All compatible records are available in pages of four through `Show more`/`Mostra altri`; each card preloads its catalog logo and keeps initials visible while loading or after an image error. Guided comparisons use verified catalog records, and guided file creation delegates to the existing artifact builder. No guided step invokes SmolLM2.
 
 ## Retrieval and Grounding
 
 ### Catalog RAG
 
-Catalog entries come from Firestore and are ranked locally. Name matches, category and description terms, aliases, alternatives, requested pricing, structured specializations, and declared capabilities contribute to the score. Controlled family aliases resolve common shorthand such as `GPT` to `ChatGPT` and `Gemini` to `Google Gemini`; full catalog names take precedence on overlaps, so `Zero GPT` remains distinct. The router detects both the requested area (`excel`, `word`, `pptx`, `pdf`, `images`, `video`, `audio`, `code`, `data`, or `automation`) and the requested operation (`create`, `read`, or `edit`).
+Catalog entries come from Firestore and are ranked locally. Name matches, category and description terms, aliases, alternatives, requested pricing, structured specializations, and declared capabilities contribute to the score. Controlled family aliases resolve common shorthand such as `GPT` to `ChatGPT` and `Gemini` to `Google Gemini`; full catalog names take precedence on overlaps, so `Zero GPT` remains distinct. Guided tool selection also accepts a very close spelling error only when one catalog name is the unique match, and displays the interpreted name before continuing. The router detects both the requested area (`excel`, `word`, `pptx`, `pdf`, `images`, `video`, `audio`, `code`, `data`, or `automation`) and the requested operation (`create`, `read`, or `edit`).
 
 When structured candidates exist, only tools with a compatible declared capability are recommended. If the specialization exists but the operation is not confirmed for any tool, the deterministic response states that no compatible capability is recorded. Legacy records without structured metadata retain the previous text-based ranking fallback when no structured candidate is available.
 
@@ -94,7 +104,7 @@ Run the local suite from the application directory:
 node --test tests/local-ai.test.mjs
 ```
 
-The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
+The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers multi-turn guided recommendations, comparisons, file creation, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
 
 ## Limitations
 

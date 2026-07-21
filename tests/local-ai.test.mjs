@@ -63,7 +63,7 @@ test.beforeEach(() => {
 
 test('routes common Italian requests deterministically', async () => {
     const cases = [
-        ['ciao', 'greeting'],
+        ['ciao', 'guided-menu-main'],
         ['quanto fa il 20% di 250?', 'calculation'],
         ['spiegami il RAG', 'known-knowledge'],
         ['riassumi: Il progetto e partito. Il team ha completato il prototipo. La verifica finale e prevista domani.', 'extractive-summary'],
@@ -97,7 +97,7 @@ test('routes common Italian requests deterministically', async () => {
 
 test('routes common English requests deterministically', async () => {
     const cases = [
-        ['hello', 'greeting'],
+        ['hello', 'guided-menu-main'],
         ['calculate (12 + 8) / 4', 'calculation'],
         ['what is machine learning?', 'known-knowledge'],
         ['compare photosynthesis and cellular respiration', 'known-comparison'],
@@ -183,6 +183,168 @@ test('resolves canonical tool aliases without confusing GPT with Zero GPT', asyn
     assert.equal(workerRequests.length, 0);
 });
 
+test('guides recommendations deterministically and keeps focus', async () => {
+    const tools = [
+        {
+            id: 'code-studio',
+            name: 'Code Studio',
+            description: { it: 'Crea e modifica codice.', en: 'Creates and edits code.' },
+            category: 'Codice',
+            specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }]
+        },
+        {
+            id: 'code-reader',
+            name: 'Code Reader',
+            description: { it: 'Analizza codice.', en: 'Analyzes code.' },
+            category: 'Codice',
+            specializations: [{ type: 'code', capabilities: { create: false, read: true, edit: false } }]
+        }
+    ];
+    const chat = localModule.createLocalChatSession('it', tools, 'catalog');
+
+    const menu = await send(chat, 'ciao');
+    assert.equal(menu.metadata.intent, 'guided-menu-main');
+    assert.ok(menu.metadata.quickReplies.includes("Trova un'AI"));
+    assert.deepEqual(menu.metadata.guidedState, { flow: 'main', step: 'choice', attempts: 0 });
+
+    const area = await send(chat, "Trova un'AI");
+    assert.equal(area.metadata.intent, 'guided-recommend-specialization');
+
+    const drift = await send(chat, 'parlami dei mondiali di calcio');
+    assert.equal(drift.metadata.intent, 'guided-recommend-specialization');
+    assert.match(drift.text, /passaggio corrente/i);
+
+    const socialDrift = await send(chat, 'come stai?');
+    assert.equal(socialDrift.metadata.intent, 'guided-recommend-specialization');
+    assert.match(socialDrift.text, /passaggio corrente/i);
+
+    const operation = await send(chat, 'Codice');
+    assert.equal(operation.metadata.intent, 'guided-recommend-operation');
+
+    const result = await send(chat, 'Modificare');
+    assert.equal(result.metadata.intent, 'guided-recommend-results');
+    assert.deepEqual(result.metadata.toolIds, ['code-studio']);
+    assert.equal(result.metadata.strategy, 'deterministic');
+    assert.equal(workerRequests.length, 0);
+});
+
+test('pages through every compatible guided recommendation', async () => {
+    const tools = Array.from({ length: 10 }, (_, index) => ({
+        id: `slides-${index + 1}`,
+        name: `Slides Tool ${String(index + 1).padStart(2, '0')}`,
+        description: { it: 'Crea presentazioni.', en: 'Creates presentations.' },
+        category: 'Presentazioni',
+        logoUrl: `https://example.test/slides-${index + 1}.png`,
+        specializations: [{ type: 'pptx', capabilities: { create: true, read: true, edit: true } }]
+    }));
+    const chat = localModule.createLocalChatSession('it', tools, 'catalog');
+    await send(chat, 'menu');
+    await send(chat, "Trova un'AI");
+    await send(chat, 'Presentazioni');
+    const firstPage = await send(chat, 'Creare');
+    assert.deepEqual(firstPage.metadata.toolIds, ['slides-1', 'slides-2', 'slides-3', 'slides-4']);
+    assert.match(firstPage.text, /Risultati 1-4 di 10/);
+    assert.ok(firstPage.metadata.quickReplies.includes('Mostra altri'));
+
+    const secondPage = await send(chat, 'Mostra altri');
+    assert.deepEqual(secondPage.metadata.toolIds, ['slides-5', 'slides-6', 'slides-7', 'slides-8']);
+    assert.match(secondPage.text, /Risultati 5-8 di 10/);
+    assert.equal(secondPage.metadata.guidedState.resultPage, 1);
+
+    const thirdPage = await send(chat, 'Mostra altri');
+    assert.deepEqual(thirdPage.metadata.toolIds, ['slides-9', 'slides-10']);
+    assert.match(thirdPage.text, /Risultati 9-10 di 10/);
+    assert.equal(workerRequests.length, 0);
+});
+
+test('restores a saved guide and lets complete requests bypass its menu', async () => {
+    const tools = [{
+        id: 'code-studio',
+        name: 'Code Studio',
+        category: 'Codice',
+        specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }]
+    }];
+    const originalChat = localModule.createLocalChatSession('it', tools, 'catalog');
+    const menu = await send(originalChat, 'menu');
+    const restoredChat = localModule.createLocalChatSession('it', tools, 'catalog', [
+        { sender: 'user', text: 'menu' },
+        { sender: 'model', text: menu.text, ...menu.metadata }
+    ]);
+    const continued = await send(restoredChat, "Trova un'AI");
+    assert.equal(continued.metadata.intent, 'guided-recommend-specialization');
+
+    const directChat = localModule.createLocalChatSession('it', tools, 'catalog');
+    await send(directChat, 'menu');
+    const directFile = await send(directChat, 'crea un file Excel per un budget mensile con categorie e importi');
+    assert.equal(directFile.metadata.intent, 'file-generation');
+    assert.notEqual(directFile.metadata.intent, 'guided-file-format');
+});
+
+test('guides comparison and file creation without model inference', async () => {
+    const tools = [
+        { id: 'chatgpt', name: 'ChatGPT', category: 'Multimodali', specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }] },
+        { id: 'claude', name: 'Claude', category: 'Multimodali', specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }] }
+    ];
+    const comparisonChat = localModule.createLocalChatSession('it', tools, 'catalog');
+    await send(comparisonChat, 'ciao');
+    assert.equal((await send(comparisonChat, 'Confronta due AI')).metadata.intent, 'guided-compare-first-tool');
+    assert.equal((await send(comparisonChat, 'ChatGPT')).metadata.intent, 'guided-compare-second-tool');
+    const comparison = await send(comparisonChat, 'Claude');
+    assert.equal(comparison.metadata.intent, 'guided-catalog-comparison');
+    assert.deepEqual(comparison.metadata.toolIds, ['chatgpt', 'claude']);
+
+    const fileChat = localModule.createLocalChatSession('it', tools, 'catalog');
+    await send(fileChat, 'menu');
+    assert.equal((await send(fileChat, 'Crea un file')).metadata.intent, 'guided-file-format');
+    assert.equal((await send(fileChat, 'Excel')).metadata.intent, 'guided-file-details');
+    const file = await send(fileChat, 'un budget mensile con categorie e importi');
+    assert.equal(file.metadata.intent, 'guided-file-generation');
+    assert.equal(file.metadata.strategy, 'deterministic');
+    assert.equal(file.metadata.artifacts[0].type, 'xlsx');
+    assert.equal(workerRequests.length, 0);
+});
+
+test('recognizes an unambiguous tool typo and explains unknown comparison names', async () => {
+    const tools = [
+        { id: 'chatgpt', name: 'ChatGPT', category: 'Multimodali', isFeatured: true },
+        { id: 'claude', name: 'Claude', category: 'Multimodali', isFeatured: true },
+        { id: 'gemini', name: 'Google Gemini', category: 'Multimodali', isFeatured: true },
+        { id: 'huggingface', name: 'HuggingFace', category: 'Codice' },
+        { id: 'grok-build', name: 'Grok Build', category: 'Codice', isFeatured: true },
+        { id: 'manus', name: 'Manus', category: 'Agenti', isFeatured: true },
+        { id: 'active-pieces', name: 'Active Pieces', category: 'Automazione' }
+    ];
+    const chat = localModule.createLocalChatSession('it', tools, 'catalog');
+    await send(chat, 'menu');
+    await send(chat, 'Confronta due AI');
+    const secondPrompt = await send(chat, 'Claude');
+    assert.deepEqual(secondPrompt.metadata.quickReplies, ['ChatGPT', 'Google Gemini', 'Grok Build', 'Manus', 'Mostra altri']);
+
+    const moreTools = await send(chat, 'Mostra altri');
+    assert.deepEqual(moreTools.metadata.quickReplies, ['Active Pieces', 'HuggingFace', 'Mostra altri']);
+    assert.equal(moreTools.metadata.guidedState.suggestionPage, 1);
+
+    const unknown = await send(chat, 'strumento inesistente');
+    assert.equal(unknown.metadata.intent, 'guided-compare-second-tool');
+    assert.match(unknown.text, /non trovo uno strumento/i);
+    assert.equal(unknown.metadata.guidedState.suggestionPage, 1);
+
+    const comparison = await send(chat, 'hugginface');
+    assert.equal(comparison.metadata.intent, 'guided-catalog-comparison');
+    assert.deepEqual(comparison.metadata.toolIds, ['claude', 'huggingface']);
+    assert.match(comparison.text, /interpretato.*HuggingFace/i);
+    assert.equal(workerRequests.length, 0);
+});
+
+test('redirects unsupported conversation back to the guided scope', async () => {
+    const result = await ask('chi ha vinto i mondiali di calcio?');
+    assert.equal(result.metadata.intent, 'guided-menu-main');
+    assert.equal(result.metadata.strategy, 'deterministic');
+    assert.match(result.text, /resta focalizzata/i);
+    assert.ok(result.metadata.quickReplies.length >= 4);
+    assert.equal(workerRequests.length, 0);
+});
+
 test('keeps prompt optimization deterministic and structured', async () => {
     const result = await ask('scrivi una email per chiedere ferie', { mode: 'prompt-rewrite' });
     assert.equal(result.metadata.intent, 'prompt-rewrite');
@@ -230,20 +392,20 @@ test('accepts a faithful rewrite and rejects prompt leakage', async () => {
 
 test('accepts relevant conversation output and rejects invented URLs', async () => {
     queueModelOutput('Il lavoro asincrono riduce le interruzioni e lascia tempo per risposte documentate. Richiede priorita e scadenze esplicite.');
-    const accepted = await ask('spiegami i vantaggi del lavoro asincrono');
+    const accepted = await ask('spiegami i vantaggi del lavoro asincrono per un team che sviluppa sistemi AI');
     assert.equal(accepted.metadata.intent, 'open-conversation');
     assert.equal(accepted.metadata.strategy, 'model');
     assert.match(accepted.text, /lavoro asincrono/i);
 
     queueModelOutput('Il lavoro asincrono e sempre migliore. Fonte: https://invented.example/report');
-    const rejected = await ask('spiegami i vantaggi del lavoro asincrono');
+    const rejected = await ask('spiegami i vantaggi del lavoro asincrono per un team che sviluppa sistemi AI');
     assert.equal(rejected.metadata.strategy, 'verified-fallback');
     assert.doesNotMatch(rejected.text, /invented\.example/);
 });
 
 test('rejects degenerate model repetition', async () => {
     queueModelOutput('Lavoro asincrono utile lavoro asincrono utile lavoro asincrono utile lavoro asincrono utile lavoro asincrono utile.');
-    const result = await ask('spiegami i vantaggi del lavoro asincrono');
+    const result = await ask('spiegami i vantaggi del lavoro asincrono per un team che sviluppa sistemi AI');
     assert.equal(result.metadata.strategy, 'verified-fallback');
     assert.doesNotMatch(result.text, /utile lavoro asincrono utile lavoro asincrono/);
 });
@@ -277,4 +439,26 @@ test('builds useful deterministic file drafts when model output is invalid', asy
     assert.equal(report.metadata.artifacts[0].name, 'progetto-koda.md');
     assert.match(report.metadata.artifacts[0].content, /Sintesi esecutiva/);
     assert.match(report.metadata.artifacts[0].content, /Rischi e limiti/);
+});
+
+test('handles typo greetings, identity, creators, and capabilities deterministically', async () => {
+    const greeting = await ask('oi');
+    assert.equal(greeting.metadata.intent, 'guided-menu-main');
+    assert.deepEqual(greeting.metadata.toolIds, []);
+
+    const identity = await ask('chi sei?');
+    assert.equal(identity.metadata.intent, 'identity');
+    assert.match(identity.text, /Koda AI/);
+    assert.match(identity.text, /Riccardo Giorgio Ponte/);
+    assert.match(identity.text, /Davide Narracci/);
+
+    const creators = await ask('chi ti ha sviluppato?');
+    assert.equal(creators.metadata.intent, 'identity-creators');
+    assert.match(creators.text, /Riccardo Giorgio Ponte/);
+    assert.match(creators.text, /Davide Narracci/);
+
+    const capabilities = await ask('cosa fai?');
+    assert.equal(capabilities.metadata.intent, 'capabilities');
+    assert.match(capabilities.text, /creare file/i);
+    assert.equal(workerRequests.length, 0);
 });

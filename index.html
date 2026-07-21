@@ -1545,6 +1545,60 @@
             margin-top: 0;
         }
 
+        #detail-content .tool-features {
+            margin: 0 0 24px;
+            padding: 14px 0;
+            border-top: 1px solid rgba(128, 128, 128, 0.24);
+            border-bottom: 1px solid rgba(128, 128, 128, 0.24);
+            text-align: left;
+        }
+
+        #detail-content .tool-features summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            list-style: none;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        #detail-content .tool-features summary::-webkit-details-marker {
+            display: none;
+        }
+
+        #detail-content .tool-features-count {
+            color: var(--Koda-text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        #detail-content .tool-features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #detail-content .tool-features-list li {
+            padding: 7px 10px;
+            border: 1px solid rgba(128, 128, 128, 0.22);
+            border-radius: 6px;
+            background: var(--Koda-bg-light);
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        #detail-content .tool-features-empty {
+            margin-top: 12px;
+            color: var(--Koda-text-secondary);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
         #detail-content .detail-actions {
             display: flex;
             flex-direction: column;
@@ -1945,6 +1999,76 @@
             gap: 8px;
         }
 
+        .chat-quick-replies {
+            width: min(85%, 560px);
+            align-self: flex-start;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0 0 2px 4px;
+        }
+
+        .chat-quick-reply {
+            min-height: 38px;
+            max-width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(128, 128, 128, 0.32);
+            border-radius: 8px;
+            background: var(--Koda-card);
+            color: var(--Koda-text);
+            font: inherit;
+            font-size: 14px;
+            line-height: 1.25;
+            text-align: left;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+            transition: border-color 0.18s ease, background-color 0.18s ease;
+        }
+
+        .chat-quick-reply.has-tool-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-quick-reply-logo {
+            width: 24px;
+            height: 24px;
+            flex: 0 0 24px;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            border-radius: 6px;
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text-secondary);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .chat-quick-reply-logo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .chat-quick-reply-label {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .chat-quick-reply:hover:not(:disabled),
+        .chat-quick-reply:focus-visible {
+            border-color: var(--Koda-accent);
+            background: rgba(29, 185, 84, 0.1);
+            outline: none;
+        }
+
+        .chat-quick-reply:disabled {
+            cursor: default;
+            opacity: 0.55;
+        }
+
         .chat-artifact-card {
             min-height: 64px;
             display: grid;
@@ -2126,14 +2250,25 @@
             width: 48px;
             height: 48px;
             flex-shrink: 0;
+            display: grid;
+            place-items: center;
             border-radius: 8px;
             overflow: hidden;
+            background: var(--Koda-bg-light);
         }
 
         .chat-tool-card .tool-logo {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .chat-tool-card .tool-logo-fallback {
+            display: grid;
+            place-items: center;
+            color: var(--Koda-accent);
+            font-size: 15px;
+            font-weight: 900;
         }
 
         .chat-tool-card .info {
@@ -2170,6 +2305,11 @@
         .chat-tool-specialization strong {
             display: block;
             color: var(--Koda-text);
+            margin-bottom: 2px;
+        }
+
+        .chat-tool-specialization span {
+            display: block;
         }
 
         .chat-tool-specialization span {
@@ -2197,6 +2337,16 @@
             font-size: 14px;
             font-weight: 800;
             color: var(--Koda-text-secondary);
+        }
+
+        .chat-comparison-note {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: var(--Koda-text);
+        }
+
+        .chat-comparison-note p {
+            margin: 0;
         }
 
         .chat-comparison-grid {
@@ -9581,6 +9731,38 @@ const ArtifactPreviewDialog = ({
     })));
 };
 
+const CatalogToolLogo = ({
+    tool,
+    imageClassName,
+    fallbackClassName
+}) => {
+    const logoUrl = String(tool?.logoUrl || '');
+    const [loadedLogoUrl, setLoadedLogoUrl] = useState('');
+    useEffect(() => {
+        if (!logoUrl) {
+            setLoadedLogoUrl('');
+            return undefined;
+        }
+        let active = true;
+        const image = new Image();
+        image.onload = () => active && setLoadedLogoUrl(logoUrl);
+        image.onerror = () => active && setLoadedLogoUrl('');
+        image.src = logoUrl;
+        return () => {
+            active = false;
+        };
+    }, [logoUrl]);
+    const initials = String(tool?.name || '?').split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
+    return loadedLogoUrl === logoUrl && logoUrl ? /*#__PURE__*/React.createElement("img", {
+        src: loadedLogoUrl,
+        className: imageClassName,
+        alt: tool?.name || ''
+    }) : /*#__PURE__*/React.createElement("span", {
+        className: fallbackClassName,
+        "aria-hidden": "true"
+    }, initials);
+};
+
 const ToolCardMessage = ({
     tool,
     onOpenDetail,
@@ -9595,11 +9777,10 @@ const ToolCardMessage = ({
         className: "chat-tool-card"
     }, /*#__PURE__*/React.createElement("div", {
         className: "logo-container"
-    }, /*#__PURE__*/React.createElement("img", {
-        src: tool.logoUrl || '',
-        className: "tool-logo",
-        alt: tool.name,
-        loading: "lazy"
+    }, /*#__PURE__*/React.createElement(CatalogToolLogo, {
+        tool: tool,
+        imageClassName: "tool-logo",
+        fallbackClassName: "tool-logo tool-logo-fallback"
     })), /*#__PURE__*/React.createElement("div", {
         className: "info"
     }, /*#__PURE__*/React.createElement("div", {
@@ -9670,20 +9851,15 @@ const ComparisonToolCard = ({
     const capabilityLabels = lang === 'it'
         ? { create: 'Crea', read: 'Legge', edit: 'Modifica' }
         : { create: 'Create', read: 'Read', edit: 'Edit' };
-    const initials = String(tool.name || '?').split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
     return /*#__PURE__*/React.createElement("article", {
         className: "chat-comparison-tool"
     }, /*#__PURE__*/React.createElement("div", {
         className: "chat-comparison-tool-header"
-    }, tool.logoUrl ? /*#__PURE__*/React.createElement("img", {
-        src: tool.logoUrl,
-        alt: tool.name || '',
-        className: "chat-comparison-logo",
-        loading: "lazy"
-    }) : /*#__PURE__*/React.createElement("span", {
-        className: "chat-comparison-logo-fallback",
-        "aria-hidden": "true"
-    }, initials), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement(CatalogToolLogo, {
+        tool: tool,
+        imageClassName: "chat-comparison-logo",
+        fallbackClassName: "chat-comparison-logo chat-comparison-logo-fallback"
+    }), /*#__PURE__*/React.createElement("div", {
         className: "chat-comparison-name"
     }, tool.name)), /*#__PURE__*/React.createElement("p", {
         className: "chat-comparison-description"
@@ -9719,12 +9895,20 @@ const ToolComparisonMessage = ({
     onOpenDetail,
     lang
 }) => {
+    const headingMarker = lang === 'it' ? '**Confronto:' : '**Comparison:';
+    const headingIndex = text.indexOf(headingMarker);
+    const note = headingIndex > 0 ? text.slice(0, headingIndex).trim() : '';
     const summaryMarker = lang === 'it' ? '**Differenze principali**' : '**Main differences**';
     const summaryIndex = text.indexOf(summaryMarker);
     const summary = summaryIndex >= 0 ? text.slice(summaryIndex) : '';
     return /*#__PURE__*/React.createElement("div", {
         className: "chat-comparison"
-    }, /*#__PURE__*/React.createElement("div", {
+    }, note && /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-note",
+        dangerouslySetInnerHTML: {
+            __html: formatMessageContent(note)
+        }
+    }), /*#__PURE__*/React.createElement("div", {
         className: "chat-comparison-heading"
     }, lang === 'it' ? `Confronto: ${tools[0].name} e ${tools[1].name}` : `Comparison: ${tools[0].name} and ${tools[1].name}`), /*#__PURE__*/React.createElement("div", {
         className: "chat-comparison-grid"
@@ -9923,11 +10107,50 @@ const ChatMessageActions = ({
     d: "M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"
   })))));
 };
+const ChatQuickReply = ({
+    reply,
+    tool,
+    disabled,
+    onSelect
+}) => {
+    const logoUrl = String(tool?.logoUrl || '');
+    const [loadedLogoUrl, setLoadedLogoUrl] = useState('');
+    useEffect(() => {
+        if (!logoUrl) {
+            setLoadedLogoUrl('');
+            return undefined;
+        }
+        let active = true;
+        const image = new Image();
+        image.onload = () => active && setLoadedLogoUrl(logoUrl);
+        image.onerror = () => active && setLoadedLogoUrl('');
+        image.src = logoUrl;
+        return () => {
+            active = false;
+        };
+    }, [logoUrl]);
+    const initials = String(tool?.name || reply).split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
+    return /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        className: `chat-quick-reply${tool ? ' has-tool-logo' : ''}`,
+        disabled: disabled,
+        onClick: () => onSelect?.(reply)
+    }, tool && /*#__PURE__*/React.createElement("span", {
+        className: "chat-quick-reply-logo",
+        "aria-hidden": "true"
+    }, loadedLogoUrl === logoUrl ? /*#__PURE__*/React.createElement("img", {
+        src: loadedLogoUrl,
+        alt: ""
+    }) : initials), /*#__PURE__*/React.createElement("span", {
+        className: "chat-quick-reply-label"
+    }, reply));
+};
 const ChatMessageDisplay = ({
   message,
   tools,
   onOpenDetail,
     onPreviewArtifact,
+    onQuickReply,
   lang,
   onCopy,
   onRegenerate,
@@ -10000,16 +10223,28 @@ const ChatMessageDisplay = ({
         }
       });
     }
+        const quickReplies = isLastModel && Array.isArray(message.quickReplies) ? message.quickReplies.filter(Boolean) : [];
+        const quickRepliesAreTools = message.intent === 'guided-compare-first-tool' || message.intent === 'guided-compare-second-tool';
         return /*#__PURE__*/React.createElement(React.Fragment, null, inner, /*#__PURE__*/React.createElement(GeneratedArtifacts, {
             artifacts: message.artifacts,
             lang: lang,
             onPreview: onPreviewArtifact
-        }), /*#__PURE__*/React.createElement(ChatMessageActions, {
+        }), quickReplies.length > 0 && /*#__PURE__*/React.createElement("div", {
+            className: "chat-quick-replies",
+            role: "group",
+            "aria-label": lang === 'it' ? 'Risposte rapide' : 'Quick replies'
+        }, quickReplies.map(reply => /*#__PURE__*/React.createElement(ChatQuickReply, {
+            key: reply,
+            reply: reply,
+            tool: quickRepliesAreTools ? allTools.find(tool => String(tool.name || '').trim().toLocaleLowerCase() === String(reply).trim().toLocaleLowerCase()) : null,
+            disabled: isLoading,
+            onSelect: onQuickReply
+        }))), /*#__PURE__*/React.createElement(ChatMessageActions, {
       message: message,
       lang: lang,
       onCopy: onCopy,
       onRegenerate: onRegenerate,
-      canRegenerate: isLastModel && !!onRegenerate,
+    canRegenerate: isLastModel && !!onRegenerate && !String(message.intent || '').startsWith('guided-'),
       isLoading: isLoading
     }));
   }
@@ -10234,7 +10469,7 @@ const App = ({
         });
       }
 
-            const responseMetadata = window.kodaLocalAI?.takeResponseMetadata(chatSession) || { artifacts: [], responseType: '', toolIds: [], toolNames: [], intent: '', strategy: '' };
+            const responseMetadata = window.kodaLocalAI?.takeResponseMetadata(chatSession) || { artifacts: [], responseType: '', toolIds: [], toolNames: [], quickReplies: [], guidedState: null, intent: '', strategy: '' };
             setConversations(prev => ({
                 ...prev,
                 [activeConversationId]: {
@@ -10245,6 +10480,8 @@ const App = ({
                         responseType: responseMetadata.responseType || '',
                         toolIds: responseMetadata.toolIds || [],
                         toolNames: responseMetadata.toolNames || [],
+                        quickReplies: responseMetadata.quickReplies || [],
+                        guidedState: responseMetadata.guidedState || null,
                         intent: responseMetadata.intent || '',
                         strategy: responseMetadata.strategy || ''
                     } : message)
@@ -10284,7 +10521,7 @@ const App = ({
     }
   };
   const handleSendMessage = async inputText => {
-    if (!inputText.trim() || !chatSession) return;
+        if (isLoading || !inputText.trim() || !chatSession) return;
     const userMessage = {
       id: `user-${Date.now()}`,
       text: inputText,
@@ -10408,6 +10645,7 @@ const App = ({
     tools: tools,
     onOpenDetail: onOpenDetail,
     onPreviewArtifact: openArtifactPreview,
+    onQuickReply: handleSendMessage,
     lang: lang,
     onCopy: handleCopy,
     onRegenerate: handleRegenerate,
@@ -10489,6 +10727,22 @@ window.mountChatbotApp = (container, props) => {
             '"': '&quot;',
             "'": '&#039;'
         })[char]);
+
+        const normalizeToolKeyFeatures = (value) => {
+            const items = Array.isArray(value)
+                ? value
+                : (typeof value === 'string' ? value.split(/\r?\n|,/) : []);
+            return [...new Set(items.map(item => {
+                if (typeof item === 'string') return item.trim();
+                if (!item || typeof item !== 'object') return '';
+                const label = item.label;
+                if (typeof label === 'string') return label.trim();
+                if (label && typeof label === 'object') {
+                    return String(label[currentLanguage] || label.en || label.it || '').trim();
+                }
+                return String(item.name || '').trim();
+            }).filter(Boolean))];
+        };
 
         const readStoredValue = (key, fallback, isValid = () => true) => {
             try {
@@ -12747,6 +13001,18 @@ window.mountChatbotApp = (container, props) => {
                 const toolCountryHTML = escapeHTML(tool.country || 'N/A');
                 const toolCategoryHTML = escapeHTML(getTranslatedCategoryName(tool.category || 'N/A'));
                 const toolWebsiteHref = safeHref(tool.website);
+                const keyFeatures = normalizeToolKeyFeatures(tool.keyFeatures);
+                const featuresStatus = keyFeatures.length
+                    ? String(keyFeatures.length)
+                    : (currentLanguage === 'it' ? 'In verifica' : 'Under review');
+                const featuresContentHTML = keyFeatures.length
+                    ? `<ul class="tool-features-list">${keyFeatures.map(feature => `<li>${escapeHTML(feature)}</li>`).join('')}</ul>`
+                    : `<div class="tool-features-empty">${currentLanguage === 'it' ? 'Le feature di questo strumento sono in fase di verifica.' : 'This tool’s features are being verified.'}</div>`;
+                const featuresHTML = `
+                    <details class="tool-features">
+                        <summary><span>Features</span><span class="tool-features-count">${featuresStatus}</span></summary>
+                        ${featuresContentHTML}
+                    </details>`;
 
                 let recommendationHTML = '';
                 let recommendedTool = null;
@@ -12787,6 +13053,7 @@ window.mountChatbotApp = (container, props) => {
                                 <span class="tag">${toolCategoryHTML}</span>
                                 ${tool.pricing ? getPricingBadgeHTML(tool.pricing) : ''}
                             </div>
+                            ${featuresHTML}
                             <div class="detail-actions">
                                 ${userToolActionsHTML}
                                 ${currentUser.uid ? `<button class="button" data-action="toggle-favorite" data-id="${toolIdAttr}">${isFavorited ? t.detailModalRemoveFavorite : t.detailModalAddFavorite}</button>` : ''}
