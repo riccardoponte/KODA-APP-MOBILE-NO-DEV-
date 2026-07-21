@@ -12070,6 +12070,9 @@ window.mountChatbotApp = (container, props) => {
             // Link diretto alla scheda di un tool
             const buildToolShareLink = (toolId) => `${getShareBaseUrl()}?tool=${encodeURIComponent(toolId)}`;
 
+            const buildVideoShareLink = (videoId) => `${getShareBaseUrl()}?video=${encodeURIComponent(videoId)}`;
+            const buildNewsShareLink = (newsId) => `${getShareBaseUrl()}?news=${encodeURIComponent(newsId)}`;
+
             // Link di sola lettura di una collezione (dati incorporati nel link)
             const buildCollectionShareLink = (collection) => {
                 const payload = { v: 1, n: collection.name, t: collection.toolIds || [] };
@@ -12078,6 +12081,24 @@ window.mountChatbotApp = (container, props) => {
                 }
                 const encoded = b64EncodeUnicode(JSON.stringify(payload));
                 return `${getShareBaseUrl()}?c=${encodeURIComponent(encoded)}`;
+            };
+
+            const normalizeSharedPlaylist = (data) => {
+                if (!data || data.v !== 1 || typeof data.n !== 'string' || !Array.isArray(data.t)) return null;
+                const name = data.n.trim().slice(0, 80);
+                if (!name) return null;
+                const knownVideoIds = new Set(youtubeVideosData.map(video => video.id));
+                const videos = [...new Set(data.t
+                    .filter(id => typeof id === 'string' && id.length <= 128 && knownVideoIds.has(id)))]
+                    .slice(0, 100);
+                return { v: 1, n: name, t: videos };
+            };
+
+            const buildPlaylistShareLink = (playlist) => {
+                const payload = normalizeSharedPlaylist({ v: 1, n: playlist.name, t: playlist.videos || [] });
+                if (!payload) return '';
+                const encoded = b64EncodeUnicode(JSON.stringify(payload));
+                return encoded ? `${getShareBaseUrl()}?p=${encodeURIComponent(encoded)}` : '';
             };
 
             const getMedianBridges = () => [window.median, window.gonative]
@@ -12157,6 +12178,102 @@ window.mountChatbotApp = (container, props) => {
                 const text = isIT ? `Guarda la mia collezione "${collection.name}" su Koda` : `Check out my "${collection.name}" collection on Koda`;
                 if (window.triggerHaptic) window.triggerHaptic('light');
                 shareViaSystem(title, text, buildCollectionShareLink(collection));
+            };
+
+            const shareVideo = (videoId) => {
+                const video = youtubeVideosData.find(item => item.id === videoId);
+                if (!video) return;
+                const isIT = currentLanguage === 'it';
+                if (window.triggerHaptic) window.triggerHaptic('light');
+                shareViaSystem(
+                    `Koda · ${video.title}`,
+                    isIT ? `Guarda "${video.title}" su Koda` : `Watch "${video.title}" on Koda`,
+                    buildVideoShareLink(videoId)
+                );
+            };
+
+            const shareNews = (newsId) => {
+                const news = newsData.find(item => item.id === newsId);
+                if (!news) return;
+                const isIT = currentLanguage === 'it';
+                const newsTitle = getLocalizedNewsValue(news, 'title');
+                if (window.triggerHaptic) window.triggerHaptic('light');
+                shareViaSystem(
+                    `Koda · ${newsTitle}`,
+                    isIT ? `Leggi "${newsTitle}" su Koda` : `Read "${newsTitle}" on Koda`,
+                    buildNewsShareLink(newsId)
+                );
+            };
+
+            const sharePlaylist = (playlistId) => {
+                const playlist = readStoredJSON('video-playlists', []).find(item => item.id === playlistId);
+                if (!playlist) return;
+                const url = buildPlaylistShareLink(playlist);
+                if (!url) return;
+                const isIT = currentLanguage === 'it';
+                if (window.triggerHaptic) window.triggerHaptic('light');
+                shareViaSystem(
+                    `Koda · ${playlist.name}`,
+                    isIT ? `Guarda la playlist "${playlist.name}" su Koda` : `Watch the "${playlist.name}" playlist on Koda`,
+                    url
+                );
+            };
+
+            const decodeSharedPlaylist = (encoded) => {
+                try {
+                    return normalizeSharedPlaylist(JSON.parse(b64DecodeUnicode(decodeURIComponent(encoded))));
+                } catch (error) {
+                    return null;
+                }
+            };
+
+            const openSharedPlaylistModal = (data) => {
+                const playlist = normalizeSharedPlaylist(data);
+                if (!playlist) return;
+                const isIT = currentLanguage === 'it';
+                const videos = playlist.t.map(id => youtubeVideosData.find(video => video.id === id)).filter(Boolean);
+                const videoCountText = videos.length === 1 ? '1 video' : `${videos.length} ${isIT ? 'video' : 'videos'}`;
+                const videosHTML = videos.length
+                    ? videos.map(video => {
+                        const youtubeId = getYouTubeVideoId(video.youtubeUrl);
+                        const youtubeUrl = youtubeId ? `https://www.youtube.com/watch?v=${youtubeId}` : '';
+                        return `<div class="video-card" style="display:flex;flex-direction:column;align-self:start;padding:0;background:var(--Koda-bg-light);border-radius:8px;overflow:hidden;">
+                            ${youtubeId ? `<img src="https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg" alt="${escapeHTML(video.title)}" style="width:100%;aspect-ratio:16/9;object-fit:cover;">` : ''}
+                            <div style="padding:12px;display:flex;flex-direction:column;gap:10px;">
+                                <strong style="font-size:14px;line-height:1.35;">${escapeHTML(video.title)}</strong>
+                                <button class="button" data-action="watch-youtube-video" data-url="${safeHref(youtubeUrl)}" ${youtubeUrl ? '' : 'disabled'} style="margin-top:auto;padding:8px;">${isIT ? 'Guarda' : 'Watch'}</button>
+                            </div>
+                        </div>`;
+                    }).join('')
+                    : `<div id="empty-state" style="grid-column:1/-1;">${isIT ? 'Questa playlist non contiene video disponibili.' : 'This playlist has no available videos.'}</div>`;
+
+                window.pendingSharedPlaylist = playlist;
+                el.modalContainer.insertAdjacentHTML('beforeend', `
+                    <div id="shared-playlist-modal" class="modal-overlay visible">
+                        <div class="modal-content" style="max-width:760px;max-height:calc(100dvh - 32px);overflow-y:auto;">
+                            <button class="modal-close-btn" data-action="close-shared-playlist">×</button>
+                            <div style="margin-bottom:20px;padding-right:36px;">
+                                <div style="font-size:12px;font-weight:800;color:var(--Koda-accent);text-transform:uppercase;">${isIT ? 'Playlist condivisa' : 'Shared playlist'}</div>
+                                <h2 style="margin:8px 0 4px;">${escapeHTML(playlist.n)}</h2>
+                                <p style="color:var(--Koda-text-secondary);margin:0;">${videoCountText}</p>
+                            </div>
+                            <div class="video-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));align-items:start;gap:16px;min-height:0;">${videosHTML}</div>
+                            <button class="button" data-action="save-shared-playlist" style="width:100%;margin-top:20px;background:var(--Koda-accent);color:#000;">${isIT ? 'Salva playlist' : 'Save playlist'}</button>
+                        </div>
+                    </div>`);
+                history.pushState({ modal: 'shared-playlist' }, '', '');
+            };
+
+            const saveSharedPlaylist = () => {
+                const playlist = normalizeSharedPlaylist(window.pendingSharedPlaylist);
+                if (!playlist) return;
+                const playlists = readStoredJSON('video-playlists', []);
+                playlists.push({ id: `playlist-${Date.now()}`, name: playlist.n, videos: playlist.t });
+                if (!writeStoredJSON('video-playlists', playlists)) return;
+                window.pendingSharedPlaylist = null;
+                document.getElementById('shared-playlist-modal')?.remove();
+                if (window.triggerHaptic) window.triggerHaptic('medium');
+                showToast(currentLanguage === 'it' ? `Playlist "${playlist.n}" salvata!` : `Playlist "${playlist.n}" saved!`);
             };
 
             // Decodifica i dati di una collezione condivisa dal parametro URL
@@ -12243,7 +12360,10 @@ window.mountChatbotApp = (container, props) => {
             const handleDeepLinks = () => {
                 const params = new URLSearchParams(window.location.search);
                 const toolId = params.get('tool');
+                const videoId = params.get('video');
+                const newsId = params.get('news');
                 const sharedCollection = params.get('c');
+                const sharedPlaylist = params.get('p');
 
                 // Pulisci i parametri dall'URL per non riaprire i modali al refresh/navigazione
                 const cleanUrl = () => {
@@ -12256,6 +12376,34 @@ window.mountChatbotApp = (container, props) => {
                     setTimeout(() => window.openDetailModal(toolId), 300);
                     return;
                 }
+                if (videoId) {
+                    const video = youtubeVideosData.find(item => item.id === videoId);
+                    cleanUrl();
+                    if (video) {
+                        setTimeout(() => window.openVideoDetailPage(videoId), 300);
+                    } else {
+                        showToast(currentLanguage === 'it' ? 'Video non disponibile.' : 'Video unavailable.');
+                    }
+                    return;
+                }
+                if (newsId) {
+                    const news = newsData.find(item => item.id === newsId);
+                    cleanUrl();
+                    if (news) {
+                        setTimeout(() => {
+                            const trigger = document.createElement('button');
+                            trigger.hidden = true;
+                            trigger.dataset.action = 'open-news-detail';
+                            trigger.dataset.id = newsId;
+                            document.body.appendChild(trigger);
+                            trigger.click();
+                            trigger.remove();
+                        }, 300);
+                    } else {
+                        showToast(currentLanguage === 'it' ? 'Notizia non disponibile.' : 'News item unavailable.');
+                    }
+                    return;
+                }
                 if (sharedCollection) {
                     const data = decodeSharedCollection(sharedCollection);
                     cleanUrl();
@@ -12263,6 +12411,16 @@ window.mountChatbotApp = (container, props) => {
                         setTimeout(() => openSharedCollectionModal(data), 300);
                     } else {
                         showToast(currentLanguage === 'it' ? 'Link della collezione non valido.' : 'Invalid collection link.');
+                    }
+                    return;
+                }
+                if (sharedPlaylist) {
+                    const data = decodeSharedPlaylist(sharedPlaylist);
+                    cleanUrl();
+                    if (data) {
+                        setTimeout(() => openSharedPlaylistModal(data), 300);
+                    } else {
+                        showToast(currentLanguage === 'it' ? 'Link della playlist non valido.' : 'Invalid playlist link.');
                     }
                 }
             };
@@ -13298,6 +13456,10 @@ window.mountChatbotApp = (container, props) => {
                                     </button>
                                     <button class="button video-action-btn" data-action="add-to-playlist" data-video-id="${videoIdAttr}" style="background: #6b46c1; color: white; border: 1px solid #6b46c1; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
                                          ${t.addToPlaylist || 'Aggiungi a playlist'}
+                                    </button>
+                                    <button class="button video-action-btn" data-action="share-video" data-video-id="${videoIdAttr}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(128,128,128,0.18); color: var(--Koda-text); border: 1px solid rgba(128,128,128,0.2); font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11C16.5 7.69 17.21 8 18 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Condividi' : 'Share'}
                                     </button>
                                     <a href="${safeHref(video.youtubeUrl)}" target="_blank" rel="noopener noreferrer" class="button video-action-btn" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; background: #ff0000; color: white; border: 1px solid #ff0000; font-weight: 600; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">
                                          ${t.watchOnYouTube || 'Guarda su YouTube'}
@@ -15844,6 +16006,11 @@ ${filtersHTML}
                                             <button class="news-action-btn ${isSaved ? 'saved' : ''}" data-action="toggle-news-save" data-id="${newsIdAttr}">
                                                 <svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="${isSaved ? 'var(--Koda-accent)' : 'rgba(0,0,0,0.5)'}">
                                                     <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                                                </svg>
+                                            </button>
+                                            <button class="news-action-btn" data-action="share-news" data-id="${newsIdAttr}" title="${currentLanguage === 'it' ? 'Condividi notizia' : 'Share news'}" aria-label="${currentLanguage === 'it' ? 'Condividi notizia' : 'Share news'}">
+                                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11C16.5 7.69 17.21 8 18 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
                                                 </svg>
                                             </button>
                                             ${mentionedToolHTML}
@@ -18525,6 +18692,12 @@ ${filtersHTML}
                                     </button>
                                 ` : ''}
                                 <h2 style="margin: 0; flex: 1;">${escapeHTML(playlist.name)}</h2>
+                                ${!playlistSelectionMode ? `
+                                    <button class="pill-btn" data-action="share-playlist" data-playlist-id="${escapeHTML(playlistId)}" title="${currentLanguage === 'it' ? 'Condividi playlist' : 'Share playlist'}" aria-label="${currentLanguage === 'it' ? 'Condividi playlist' : 'Share playlist'}" style="display: inline-flex; align-items: center; gap: 8px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11C16.5 7.69 17.21 8 18 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                                        ${currentLanguage === 'it' ? 'Condividi' : 'Share'}
+                                    </button>
+                                ` : ''}
                                 ${playlist.videos.length > 0 && playlistSelectionMode ? `
                                     <div style="display: flex; gap: 8px;">
                                         <button class="pill-btn" data-action="toggle-playlist-selection-mode" style="display: inline-flex; align-items: center; gap: 8px;">
@@ -20089,6 +20262,9 @@ ${filtersHTML}
                                         <div class="news-detail-header">
                                             <button class="news-detail-back-btn" data-action="close-news-detail">←</button>
                                             <div class="news-detail-title-header">${newsTitleHTML}</div>
+                                            <button class="news-detail-back-btn" data-action="share-news" data-id="${escapeHTML(newsDetailId)}" title="${currentLanguage === 'it' ? 'Condividi notizia' : 'Share news'}" aria-label="${currentLanguage === 'it' ? 'Condividi notizia' : 'Share news'}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11C16.5 7.69 17.21 8 18 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                                            </button>
                                         </div>
                                         <div class="news-detail-content">
                                             <img src="${newsImageSrc}" alt="${newsTitleHTML}" class="news-detail-image">
@@ -20625,6 +20801,15 @@ ${filtersHTML}
                         case 'share-tool':
                             shareTool(actionTarget.dataset.id);
                             break;
+                        case 'share-video':
+                            shareVideo(actionTarget.dataset.videoId);
+                            break;
+                        case 'share-news':
+                            shareNews(actionTarget.dataset.id);
+                            break;
+                        case 'share-playlist':
+                            sharePlaylist(actionTarget.dataset.playlistId);
+                            break;
                         case 'share-collection':
                             if (activeContextMenu) { activeContextMenu.remove(); activeContextMenu = null; }
                             shareCollection(actionTarget.dataset.collectionId);
@@ -20637,6 +20822,15 @@ ${filtersHTML}
                             if (sharedModal) sharedModal.remove();
                             window.pendingSharedCollection = null;
                             if (window.history.state && window.history.state.modal === 'shared-collection') window.history.back();
+                            break;
+                        }
+                        case 'save-shared-playlist':
+                            saveSharedPlaylist();
+                            break;
+                        case 'close-shared-playlist': {
+                            document.getElementById('shared-playlist-modal')?.remove();
+                            window.pendingSharedPlaylist = null;
+                            if (window.history.state && window.history.state.modal === 'shared-playlist') window.history.back();
                             break;
                         }
                         case 'open-utility-tool':
