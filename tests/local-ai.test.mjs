@@ -155,6 +155,34 @@ test('uses structured catalog capabilities for recommendations and comparisons',
     assert.equal(workerRequests.length, 0);
 });
 
+test('resolves canonical tool aliases without confusing GPT with Zero GPT', async () => {
+    const tools = [
+        { id: 'chatgpt', name: 'ChatGPT', description: { it: 'Assistente di OpenAI.', en: 'OpenAI assistant.' }, category: 'Multimodali' },
+        { id: 'claude', name: 'Claude', description: { it: 'Assistente di Anthropic.', en: 'Anthropic assistant.' }, category: 'Multimodali' },
+        { id: 'zero-gpt', name: 'Zero GPT', description: { it: 'Rilevatore di testi AI.', en: 'AI text detector.' }, category: 'Testo' }
+    ];
+
+    const directComparison = await ask('Quali sono le differenze tra gpt e Claude', { tools });
+    assert.equal(directComparison.metadata.intent, 'catalog-comparison');
+    assert.deepEqual(directComparison.metadata.toolIds, ['chatgpt', 'claude']);
+
+    const exactAlias = await ask('GPT', { tools });
+    assert.equal(exactAlias.metadata.intent, 'catalog-exact-tool');
+    assert.deepEqual(exactAlias.metadata.toolIds, ['chatgpt']);
+
+    const chat = localModule.createLocalChatSession('it', tools, 'catalog');
+    const clarification = await send(chat, 'Confronta Claude');
+    assert.equal(clarification.metadata.intent, 'clarification-comparison');
+    const followUp = await send(chat, 'Gpt');
+    assert.equal(followUp.metadata.intent, 'catalog-comparison');
+    assert.deepEqual(followUp.metadata.toolIds, ['claude', 'chatgpt']);
+
+    const detectorComparison = await ask('Confronta Zero GPT e Claude', { tools });
+    assert.equal(detectorComparison.metadata.intent, 'catalog-comparison');
+    assert.deepEqual(detectorComparison.metadata.toolIds, ['zero-gpt', 'claude']);
+    assert.equal(workerRequests.length, 0);
+});
+
 test('keeps prompt optimization deterministic and structured', async () => {
     const result = await ask('scrivi una email per chiedere ferie', { mode: 'prompt-rewrite' });
     assert.equal(result.metadata.intent, 'prompt-rewrite');
