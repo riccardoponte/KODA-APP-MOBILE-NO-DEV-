@@ -120,6 +120,35 @@
             padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
         }
 
+        #main-content.chatbot-view {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden !important;
+            overscroll-behavior: none;
+        }
+
+        #main-content.chatbot-view > .user-chat-header {
+            flex: 0 0 auto;
+        }
+
+        body.koda-scroll-locked {
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+
+        body.koda-scroll-locked #app-container,
+        body.koda-scroll-locked #main-content {
+            overflow: hidden !important;
+            touch-action: none;
+        }
+
+        body.koda-scroll-locked .modal-overlay.visible,
+        body.koda-scroll-locked .utility-modal-overlay.visible {
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+        }
+
         /* NUOVO: Blocca lo scroll della pagina quando la welcome screen del chatbot è visibile */
         #main-content:has(#welcome-screen) {
             overflow-y: hidden;
@@ -1570,9 +1599,22 @@
         #chatbot-container-wrapper {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: auto;
+            min-height: 0;
+            flex: 1 1 auto;
             position: relative;
             overflow: hidden;
+        }
+
+        #chatbot-react-root {
+            display: flex;
+            flex: 1 1 auto;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        #chatbot-react-root > #chatbot-app-container {
+            width: 100%;
         }
 
         /* NUOVO: Keyframes per l'animazione di zoom lento dello sfondo */
@@ -1650,6 +1692,7 @@
         #chatbot-app-container main {
             flex: 1;
             overflow-y: auto;
+            overscroll-behavior-y: contain;
             padding: 16px 16px 0 16px;
             /* Rimuovo padding bottom per evitare spazio extra */
             display: flex;
@@ -1698,44 +1741,6 @@
         .welcome-logo svg {
             width: 50px;
             height: 50px;
-        }
-
-        .prompt-rewrite-session-header {
-            position: sticky;
-            top: 0;
-            z-index: 5;
-            align-self: stretch;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin: 4px 0 14px;
-            padding: 8px;
-            border: 1px solid rgba(128, 128, 128, 0.22);
-            border-radius: 8px;
-            background: color-mix(in srgb, var(--Koda-card) 90%, transparent);
-            backdrop-filter: blur(10px);
-        }
-
-        .prompt-rewrite-session-label {
-            color: var(--Koda-text);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .prompt-rewrite-session-back {
-            width: 36px;
-            min-height: 36px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            border: 1px solid rgba(128, 128, 128, 0.25);
-            border-radius: 50%;
-            background: var(--Koda-bg-light);
-            color: var(--Koda-text);
-            font-size: 21px;
-            cursor: pointer;
         }
 
         /* NUOVI STILI PER I PULSANTI DI AZIONE */
@@ -2150,6 +2155,27 @@
             line-height: 1.4;
         }
 
+        .chat-tool-specializations {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 0 0 9px;
+        }
+
+        .chat-tool-specialization {
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .chat-tool-specialization strong {
+            display: block;
+            color: var(--Koda-text);
+        }
+
+        .chat-tool-specialization span {
+            color: var(--Koda-text-secondary);
+        }
+
         .chat-tool-card .details-btn {
             background: var(--Koda-bg-light);
             color: var(--Koda-text);
@@ -2159,6 +2185,187 @@
             border-radius: 20px;
             cursor: pointer;
             align-self: flex-start;
+        }
+
+        .chat-comparison {
+            width: min(720px, 100%);
+            align-self: flex-start;
+        }
+
+        .chat-comparison-heading {
+            margin: 0 0 10px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--Koda-text-secondary);
+        }
+
+        .chat-comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .chat-comparison-tool {
+            min-width: 0;
+            padding: 14px;
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 8px;
+            background: var(--Koda-card);
+        }
+
+        .chat-comparison-tool-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .chat-comparison-logo,
+        .chat-comparison-logo-fallback {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: var(--Koda-bg-light);
+        }
+
+        .chat-comparison-logo-fallback {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--Koda-accent);
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .chat-comparison-name {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .chat-comparison-description {
+            margin: 10px 0;
+            color: var(--Koda-text-secondary);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .chat-comparison-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .chat-comparison-meta span {
+            max-width: 100%;
+            padding: 4px 7px;
+            border-radius: 6px;
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .chat-comparison-specializations {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .chat-comparison-specialization-name {
+            margin-bottom: 5px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .chat-comparison-capabilities {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 4px;
+        }
+
+        .chat-comparison-capability {
+            min-width: 0;
+            padding: 5px 3px;
+            border: 1px solid rgba(128, 128, 128, 0.16);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 10px;
+            line-height: 1.25;
+        }
+
+        .chat-comparison-capability strong,
+        .chat-comparison-capability span {
+            display: block;
+            overflow-wrap: anywhere;
+        }
+
+        .chat-comparison-capability span {
+            margin-top: 2px;
+            color: var(--Koda-text-secondary);
+            font-weight: 800;
+        }
+
+        .chat-comparison-capability.is-supported span {
+            color: #20a464;
+        }
+
+        .chat-comparison-missing {
+            color: var(--Koda-text-secondary);
+            font-size: 12px;
+        }
+
+        .chat-comparison-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 12px;
+        }
+
+        .chat-comparison-actions button,
+        .chat-comparison-actions a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 6px 10px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text);
+            font: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .chat-comparison-summary {
+            margin-top: 10px;
+            padding: 12px 14px;
+            border-left: 3px solid var(--Koda-accent);
+            background: var(--Koda-card);
+            color: var(--Koda-text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .chat-comparison-summary p {
+            margin: 0 0 8px;
+        }
+
+        .chat-comparison-summary p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 640px) {
+            .chat-comparison-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
         }
 
         #chat-input-container {
@@ -2905,6 +3112,117 @@
         }
 
         /* --- STILI PER MODALE IMPOSTAZIONI (AGGIUNTI) --- */
+        #settings-modal {
+            align-items: flex-start !important;
+            justify-content: flex-start !important;
+            overscroll-behavior: contain;
+        }
+
+        #settings-modal .settings-screen {
+            width: 100%;
+            max-width: 500px;
+            min-height: 100%;
+            margin: 0 auto;
+            padding: max(20px, env(safe-area-inset-top)) 24px max(80px, env(safe-area-inset-bottom));
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #settings-modal .settings-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 36px;
+        }
+
+        #settings-modal .settings-avatar-control {
+            position: relative;
+            width: clamp(96px, 28vw, 120px);
+            height: clamp(96px, 28vw, 120px);
+            flex: 0 0 auto;
+            cursor: pointer;
+        }
+
+        #settings-modal .settings-save-button {
+            width: 100%;
+            max-width: 350px;
+            min-height: 52px;
+            margin: 0 auto 48px;
+            padding: 14px 18px;
+            border: 0;
+            border-radius: 500px;
+            background: var(--Koda-accent);
+            color: #000;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .local-ai-download-progress {
+            margin-top: 8px;
+        }
+
+        .local-ai-download-progress[hidden] {
+            display: none;
+        }
+
+        .local-ai-download-progress-track {
+            height: 7px;
+            overflow: hidden;
+            border-radius: 4px;
+            background: color-mix(in srgb, var(--Koda-text-secondary) 20%, transparent);
+        }
+
+        .local-ai-download-progress-fill {
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--Koda-accent);
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 180ms linear;
+            will-change: transform;
+        }
+
+        .local-ai-download-progress.is-indeterminate .local-ai-download-progress-fill {
+            width: 32%;
+            animation: local-ai-download-indeterminate 1.1s ease-in-out infinite;
+        }
+
+        @keyframes local-ai-download-indeterminate {
+            from { transform: translateX(-115%); }
+            to { transform: translateX(340%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .local-ai-download-progress-fill {
+                transition-duration: 0ms;
+            }
+
+            .local-ai-download-progress.is-indeterminate .local-ai-download-progress-fill {
+                animation-duration: 2s;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #settings-modal .settings-screen {
+                padding-right: 18px;
+                padding-left: 18px;
+            }
+
+            #settings-modal .settings-header {
+                margin-bottom: 20px !important;
+                padding-top: 4px !important;
+            }
+
+            #settings-modal .settings-profile-label {
+                margin-bottom: 24px !important;
+            }
+        }
+
         #settings-modal .input-group,
         #add-app-modal .input-group,
         #replace-featured-modal .input-group,
@@ -5437,6 +5755,32 @@
             .user-chat-header {
                 padding: 12px;
             }
+
+            .home-chat-header {
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .home-chat-header #menu-toggle-btn {
+                margin-right: 0;
+            }
+
+            .home-chat-header #profile-avatar-menu {
+                margin-left: 0 !important;
+            }
+
+            .home-chat-header .user-chat-info {
+                display: none;
+            }
+
+            .home-chat-header #global-controls {
+                gap: 2px;
+            }
+
+            .home-chat-header .global-btn {
+                padding: 2px;
+            }
+
         }
 
         /* NUOVO: Stili per l'iniziale nelle card dei suggerimenti */
@@ -9041,7 +9385,6 @@ import { createLocalChatSession, sendLocalMessageStream, localAI } from './local
 import { createArtifactPreview, downloadArtifact, revokeArtifactPreview } from './browser-artifacts.js';
 
 window.kodaLocalAI = localAI;
-localAI.preload();
 
 // --- Type Definitions ---
 const MessageSender = {
@@ -9239,28 +9582,164 @@ const ArtifactPreviewDialog = ({
 };
 
 const ToolCardMessage = ({
-  tool,
-  onOpenDetail,
-  lang
-}) => /*#__PURE__*/React.createElement("div", {
-  className: "chat-tool-card"
-}, /*#__PURE__*/React.createElement("div", {
-  className: "logo-container"
-}, /*#__PURE__*/React.createElement("img", {
-  src: tool.logoUrl || '',
-  className: "tool-logo",
-  alt: tool.name,
-  loading: "lazy"
-})), /*#__PURE__*/React.createElement("div", {
-  className: "info"
-}, /*#__PURE__*/React.createElement("div", {
-  className: "tool-name"
-}, tool.name), /*#__PURE__*/React.createElement("p", {
-  className: "tool-desc"
-}, tool.description.split('.')[0], "."), /*#__PURE__*/React.createElement("button", {
-  className: "details-btn",
-  onClick: () => onOpenDetail(tool.id)
-}, lang === 'it' ? 'Vedi Dettagli' : 'View Details')));
+    tool,
+    onOpenDetail,
+    lang
+}) => {
+    const description = comparisonLocalizedValue(tool.description, lang) || (lang === 'it' ? 'Descrizione non specificata.' : 'Description not specified.');
+    const specializations = comparisonSpecializations(tool);
+    const operationLabels = lang === 'it'
+        ? { create: 'Crea', read: 'Legge', edit: 'Modifica' }
+        : { create: 'Create', read: 'Read', edit: 'Edit' };
+    return /*#__PURE__*/React.createElement("div", {
+        className: "chat-tool-card"
+    }, /*#__PURE__*/React.createElement("div", {
+        className: "logo-container"
+    }, /*#__PURE__*/React.createElement("img", {
+        src: tool.logoUrl || '',
+        className: "tool-logo",
+        alt: tool.name,
+        loading: "lazy"
+    })), /*#__PURE__*/React.createElement("div", {
+        className: "info"
+    }, /*#__PURE__*/React.createElement("div", {
+        className: "tool-name"
+    }, tool.name), /*#__PURE__*/React.createElement("p", {
+        className: "tool-desc"
+    }, description), specializations.length > 0 && /*#__PURE__*/React.createElement("div", {
+        className: "chat-tool-specializations"
+    }, specializations.map(specialization => /*#__PURE__*/React.createElement("div", {
+        className: "chat-tool-specialization",
+        key: specialization.type
+    }, /*#__PURE__*/React.createElement("strong", null, specialization[lang]), /*#__PURE__*/React.createElement("span", null, ['create', 'read', 'edit'].map(operation => `${operationLabels[operation]}: ${specialization.capabilities[operation] ? (lang === 'it' ? 'Sì' : 'Yes') : 'No'}`).join(' · '))))), /*#__PURE__*/React.createElement("button", {
+        className: "details-btn",
+        onClick: () => onOpenDetail(tool.id)
+    }, lang === 'it' ? 'Vedi Dettagli' : 'View Details')));
+};
+
+const COMPARISON_SPECIALIZATION_DEFINITIONS = Object.freeze([
+    { type: 'excel', it: 'Excel e fogli di calcolo', en: 'Excel and spreadsheets' },
+    { type: 'word', it: 'Word e documenti', en: 'Word and documents' },
+    { type: 'pptx', it: 'PowerPoint e presentazioni', en: 'PowerPoint and presentations' },
+    { type: 'pdf', it: 'PDF', en: 'PDF' },
+    { type: 'images', it: 'Immagini', en: 'Images' },
+    { type: 'video', it: 'Video', en: 'Video' },
+    { type: 'audio', it: 'Audio e voce', en: 'Audio and voice' },
+    { type: 'code', it: 'Codice', en: 'Code' },
+    { type: 'data', it: 'Dati e database', en: 'Data and databases' },
+    { type: 'automation', it: 'Automazioni', en: 'Automation' }
+]);
+const comparisonLocalizedValue = (value, lang) => {
+    if (typeof value === 'string') return value;
+    if (!value || typeof value !== 'object') return '';
+    return value[lang] || value.en || value.it || '';
+};
+const comparisonSpecializations = tool => {
+    if (!Array.isArray(tool?.specializations)) return [];
+    return tool.specializations.map(item => {
+        const type = typeof item === 'string' ? item : item?.type;
+        const definition = COMPARISON_SPECIALIZATION_DEFINITIONS.find(candidate => candidate.type === type);
+        if (!definition) return null;
+        const capabilities = typeof item === 'object' && item?.capabilities ? item.capabilities : {};
+        return {
+            ...definition,
+            capabilities: {
+                create: capabilities.create === true,
+                read: capabilities.read === true,
+                edit: capabilities.edit === true
+            }
+        };
+    }).filter(Boolean);
+};
+const comparisonPricing = (pricing, lang) => {
+    const normalized = String(pricing || '').toLowerCase();
+    const labels = lang === 'it'
+        ? { free: 'Gratuito', freemium: 'Freemium', paid: 'A pagamento' }
+        : { free: 'Free', freemium: 'Freemium', paid: 'Paid' };
+    return labels[normalized] || pricing || (lang === 'it' ? 'Non specificato' : 'Not specified');
+};
+const ComparisonToolCard = ({
+    tool,
+    onOpenDetail,
+    lang
+}) => {
+    const description = comparisonLocalizedValue(tool.description, lang) || (lang === 'it' ? 'Descrizione non specificata.' : 'Description not specified.');
+    const category = comparisonLocalizedValue(tool.category, lang) || (lang === 'it' ? 'Categoria non specificata' : 'Category not specified');
+    const specializations = comparisonSpecializations(tool);
+    const website = /^https?:\/\//i.test(String(tool.website || '')) ? tool.website : '';
+    const capabilityLabels = lang === 'it'
+        ? { create: 'Crea', read: 'Legge', edit: 'Modifica' }
+        : { create: 'Create', read: 'Read', edit: 'Edit' };
+    const initials = String(tool.name || '?').split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase();
+    return /*#__PURE__*/React.createElement("article", {
+        className: "chat-comparison-tool"
+    }, /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-tool-header"
+    }, tool.logoUrl ? /*#__PURE__*/React.createElement("img", {
+        src: tool.logoUrl,
+        alt: tool.name || '',
+        className: "chat-comparison-logo",
+        loading: "lazy"
+    }) : /*#__PURE__*/React.createElement("span", {
+        className: "chat-comparison-logo-fallback",
+        "aria-hidden": "true"
+    }, initials), /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-name"
+    }, tool.name)), /*#__PURE__*/React.createElement("p", {
+        className: "chat-comparison-description"
+    }, description), /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-meta"
+    }, /*#__PURE__*/React.createElement("span", null, category), /*#__PURE__*/React.createElement("span", null, comparisonPricing(tool.pricing, lang))), specializations.length ? /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-specializations"
+    }, specializations.map(specialization => /*#__PURE__*/React.createElement("div", {
+        key: specialization.type
+    }, /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-specialization-name"
+    }, specialization[lang]), /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-capabilities"
+    }, ['create', 'read', 'edit'].map(capability => /*#__PURE__*/React.createElement("div", {
+        className: `chat-comparison-capability ${specialization.capabilities[capability] ? 'is-supported' : ''}`,
+        key: capability
+    }, /*#__PURE__*/React.createElement("strong", null, capabilityLabels[capability]), /*#__PURE__*/React.createElement("span", null, specialization.capabilities[capability] ? (lang === 'it' ? 'Sì' : 'Yes') : 'No'))))))) : /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-missing"
+    }, lang === 'it' ? 'Specializzazioni non specificate' : 'Specializations not specified'), /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-actions"
+    }, /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        onClick: () => onOpenDetail(tool.id)
+    }, lang === 'it' ? 'Dettagli' : 'Details'), website && /*#__PURE__*/React.createElement("a", {
+        href: website,
+        target: "_blank",
+        rel: "noopener noreferrer"
+    }, lang === 'it' ? 'Sito' : 'Website')));
+};
+const ToolComparisonMessage = ({
+    tools,
+    text,
+    onOpenDetail,
+    lang
+}) => {
+    const summaryMarker = lang === 'it' ? '**Differenze principali**' : '**Main differences**';
+    const summaryIndex = text.indexOf(summaryMarker);
+    const summary = summaryIndex >= 0 ? text.slice(summaryIndex) : '';
+    return /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison"
+    }, /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-heading"
+    }, lang === 'it' ? `Confronto: ${tools[0].name} e ${tools[1].name}` : `Comparison: ${tools[0].name} and ${tools[1].name}`), /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-grid"
+    }, tools.slice(0, 2).map(tool => /*#__PURE__*/React.createElement(ComparisonToolCard, {
+        key: tool.id || tool.name,
+        tool: tool,
+        onOpenDetail: onOpenDetail,
+        lang: lang
+    }))), summary && /*#__PURE__*/React.createElement("div", {
+        className: "chat-comparison-summary",
+        dangerouslySetInnerHTML: {
+            __html: formatMessageContent(summary)
+        }
+    }));
+};
 
 // --- Barra azioni sotto i messaggi del modello (copia / rigenera / feedback) ---
 const readMessageFeedback = () => {
@@ -9463,14 +9942,30 @@ const ChatMessageDisplay = ({
   }
   if (message.sender === MessageSender.MODEL) {
     const allTools = window.getAllToolsForCurrentUser ? window.getAllToolsForCurrentUser() : window.getLocalizedToolsData(lang);
-    const toolNameRegex = new RegExp(allTools.map(t => t.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
-    const mentionedToolNames = [...new Set(message.text.match(toolNameRegex))];
-    const isComparisonResponse = /^\*\*(?:Confronto|Comparison):/i.test(message.text.trim());
-    const isToolListResponse = !isComparisonResponse && mentionedToolNames.length > 0 && message.text.includes('•');
+        const escapedToolNames = allTools.map(t => String(t.name || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
+        const toolNameRegex = escapedToolNames.length ? new RegExp(escapedToolNames.join('|'), 'g') : null;
+        const mentionedToolNames = toolNameRegex ? [...new Set(message.text.match(toolNameRegex) || [])] : [];
+        const referencedTools = [];
+        for (const toolId of Array.isArray(message.toolIds) ? message.toolIds : []) {
+            const tool = allTools.find(candidate => String(candidate.id) === String(toolId));
+            if (tool && !referencedTools.includes(tool)) referencedTools.push(tool);
+        }
+        for (const toolName of Array.isArray(message.toolNames) ? message.toolNames : mentionedToolNames) {
+            const tool = allTools.find(candidate => candidate.name === toolName);
+            if (tool && !referencedTools.includes(tool)) referencedTools.push(tool);
+        }
+        const isComparisonResponse = message.responseType === 'comparison' || /^\*\*(?:Confronto|Comparison):/i.test(message.text.trim());
+        const isToolListResponse = !isComparisonResponse && referencedTools.length > 0 && message.text.includes('•');
     let inner;
-    if (isToolListResponse) {
+        if (isComparisonResponse && referencedTools.length >= 2) {
+            inner = /*#__PURE__*/React.createElement(ToolComparisonMessage, {
+                tools: referencedTools,
+                text: message.text,
+                onOpenDetail: onOpenDetail,
+                lang: lang
+            });
+        } else if (isToolListResponse) {
       // Logica esistente per renderizzare le card degli strumenti
-      const mentionedTools = allTools.filter(tool => mentionedToolNames.includes(tool.name));
       const lines = message.text.trim().split('\n');
       const introLine = lines.find(line => !line.trim().startsWith('•'));
       const introContent = introLine ? formatMessageContent(introLine) : '';
@@ -9488,7 +9983,7 @@ const ChatMessageDisplay = ({
         }
       }, /*#__PURE__*/React.createElement("div", {
         className: "chat-tool-card-container"
-      }, mentionedTools.map(tool => /*#__PURE__*/React.createElement(ToolCardMessage, {
+            }, referencedTools.map(tool => /*#__PURE__*/React.createElement(ToolCardMessage, {
         key: tool.id,
         tool: tool,
         onOpenDetail: onOpenDetail,
@@ -9616,8 +10111,7 @@ const ChatInput = ({
     }))));
 };
 const WelcomeScreen = ({
-    isPromptRewrite,
-  lang
+    lang
 }) => /*#__PURE__*/React.createElement("div", {
     id: "welcome-screen"
   }, /*#__PURE__*/React.createElement("div", {
@@ -9633,9 +10127,7 @@ const WelcomeScreen = ({
     }
     }, "AI")), /*#__PURE__*/React.createElement("p", {
         className: "welcome-heading"
-    }, isPromptRewrite
-        ? (lang === 'it' ? 'Prompt Optimizer attivo' : 'Prompt Optimizer active')
-        : (lang === 'it' ? 'Come posso aiutarti?' : 'How can I help?')));
+    }, lang === 'it' ? 'Come posso aiutarti?' : 'How can I help?'));
 
 // --- Main App Component ---
 const App = ({
@@ -9696,15 +10188,18 @@ const App = ({
         window.addEventListener('keydown', handleEscape);
         return () => window.removeEventListener('keydown', handleEscape);
     }, [artifactPreview, closeArtifactPreview]);
-  const initializeChat = useCallback(() => {
+    const initializeChat = useCallback(() => {
     try {
-        const savedMessages = initialConversations[initialActiveId]?.messages || [];
-        const newSession = createChatSession(lang, tools, chatMode, savedMessages);
+                const savedConversation = initialConversations[initialActiveId];
+                const savedMessages = savedConversation?.messages || [];
+                const savedMode = savedConversation?.mode === 'prompt-rewrite' ? 'prompt-rewrite' : 'catalog';
+                setChatMode(savedMode);
+                const newSession = createChatSession(lang, tools, savedMode, savedMessages);
       setChatSession(newSession);
     } catch (e) {
       console.error("Initialization Error:", e);
     }
-        }, [lang, tools, chatMode, initialConversations, initialActiveId]);
+                }, [lang, tools, initialConversations, initialActiveId]);
   useEffect(() => {
     initializeChat();
   }, [initializeChat]);
@@ -9739,14 +10234,19 @@ const App = ({
         });
       }
 
-            const responseMetadata = window.kodaLocalAI?.takeResponseMetadata(chatSession) || { artifacts: [] };
+            const responseMetadata = window.kodaLocalAI?.takeResponseMetadata(chatSession) || { artifacts: [], responseType: '', toolIds: [], toolNames: [], intent: '', strategy: '' };
             setConversations(prev => ({
                 ...prev,
                 [activeConversationId]: {
                     ...prev[activeConversationId],
                     messages: prev[activeConversationId].messages.map(message => message.id === currentModelMessageId ? {
                         ...message,
-                        artifacts: responseMetadata.artifacts || []
+                        artifacts: responseMetadata.artifacts || [],
+                        responseType: responseMetadata.responseType || '',
+                        toolIds: responseMetadata.toolIds || [],
+                        toolNames: responseMetadata.toolNames || [],
+                        intent: responseMetadata.intent || '',
+                        strategy: responseMetadata.strategy || ''
                     } : message)
                 }
             }));
@@ -9807,37 +10307,20 @@ const App = ({
     }));
                 await streamResponse(inputText);
   };
-    const handleStartPromptRewrite = () => {
+    const handleTogglePromptRewrite = () => {
         if (isLoading) return;
-        setChatMode('prompt-rewrite');
-        setChatSession(createChatSession(lang, tools, 'prompt-rewrite'));
+        const nextMode = chatMode === 'prompt-rewrite' ? 'catalog' : 'prompt-rewrite';
+        const savedMessages = conversations[activeConversationId]?.messages || [];
+        setChatMode(nextMode);
+        setChatSession(createChatSession(lang, tools, nextMode, savedMessages));
         setConversations(prev => ({
             ...prev,
             [activeConversationId]: {
                 ...prev[activeConversationId],
-                mode: 'prompt-rewrite',
-                title: 'Prompt Optimizer'
+                mode: nextMode
             }
         }));
         setTimeout(() => document.getElementById('chat-input')?.focus(), 0);
-    };
-    const handleExitPromptRewrite = () => {
-        if (isLoading) return;
-        if (typeof window.startNewKodaChat === 'function') {
-            window.startNewKodaChat();
-            return;
-        }
-        setChatMode('catalog');
-        setChatSession(createChatSession(lang, tools, 'catalog'));
-        setConversations(prev => ({
-            ...prev,
-            [activeConversationId]: {
-                ...prev[activeConversationId],
-                mode: 'catalog',
-                title: lang === 'it' ? 'Nuova chat' : 'New chat',
-                messages: []
-            }
-        }));
     };
 
   // Copia il testo di una risposta negli appunti
@@ -9916,35 +10399,10 @@ const App = ({
     id: "chatbot-app-container",
         className: `${hasStartedChat ? 'chat-started' : 'chat-idle'}${chatMode === 'prompt-rewrite' ? ' prompt-rewrite-active' : ''}`.trim()
     }, /*#__PURE__*/React.createElement("main", null, !hasStartedChat ? /*#__PURE__*/React.createElement(WelcomeScreen, {
-        isPromptRewrite: chatMode === 'prompt-rewrite',
         lang: lang
     }) : /*#__PURE__*/React.createElement("div", {
     id: "chat-messages"
-    }, chatMode === 'prompt-rewrite' && /*#__PURE__*/React.createElement("div", {
-        className: "prompt-rewrite-session-header"
-    }, /*#__PURE__*/React.createElement("span", {
-        className: "prompt-rewrite-session-label"
-    }, /*#__PURE__*/React.createElement("svg", {
-        viewBox: "0 0 24 24",
-        width: "16",
-        height: "16",
-        fill: "none",
-        stroke: "var(--Koda-accent)",
-        strokeWidth: "1.8",
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        "aria-hidden": "true",
-        style: { verticalAlign: '-3px', marginRight: '7px' }
-    }, /*#__PURE__*/React.createElement("path", {
-        d: "M12 3l1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7L12 3z"
-    })), "Prompt Optimizer"), /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "prompt-rewrite-session-back",
-        onClick: handleExitPromptRewrite,
-        disabled: isLoading,
-        title: lang === 'it' ? 'Disattiva Prompt Optimizer' : 'Turn off Prompt Optimizer',
-        "aria-label": lang === 'it' ? 'Disattiva Prompt Optimizer' : 'Turn off Prompt Optimizer'
-    }, "×")), messages.map(msg => /*#__PURE__*/React.createElement(ChatMessageDisplay, {
+    }, messages.map(msg => /*#__PURE__*/React.createElement(ChatMessageDisplay, {
     key: msg.id,
     message: msg,
     tools: tools,
@@ -9962,7 +10420,7 @@ const App = ({
     isLoading: isLoading,
     lang: lang,
                 mode: chatMode,
-                onTogglePromptRewrite: chatMode === 'prompt-rewrite' ? handleExitPromptRewrite : handleStartPromptRewrite
+                onTogglePromptRewrite: handleTogglePromptRewrite
     }), /*#__PURE__*/React.createElement(ArtifactPreviewDialog, {
         state: artifactPreview,
         lang: lang,
@@ -10213,7 +10671,7 @@ window.mountChatbotApp = (container, props) => {
                     detailModalRemoveFavorite: "Rimuovi dai Preferiti", detailModalAddFavorite: "Aggiungi ai Preferiti",
                     visitWebsite: "Visita Sito Web", alternativeSuggestion: "In alternativa prova:",
                     // Settings Modal
-                    settingsTitle: "Impostazioni account", changePasswordTitle: "Cambia password", newPasswordLabel: "Nuova password",
+                    settingsTitle: "Impostazioni", changePasswordTitle: "Cambia password", newPasswordLabel: "Nuova password",
                     newPasswordPlaceholder: "Minimo 6 caratteri", confirmPasswordLabel: "Conferma password", confirmPasswordPlaceholder: "Reinserisci la Nuova password",
                     savePasswordButton: "Salva Password", passwordUpdateSuccess: "Password aggiornata con successo!",
                     passwordTooShort: "La password deve contenere almeno 6 caratteri.", passwordsDoNotMatch: "Le password non coincidono.",
@@ -10348,7 +10806,7 @@ window.mountChatbotApp = (container, props) => {
                     privacy: "Privacy",
                     privacyPolicyTitle: "Privacy Policy di Koda AI",
                     privacySubtitle: "Termini di servizio",
-                    privacyLastUpdate: "Ultimo aggiornamento: 20 luglio 2026",
+                    privacyLastUpdate: "Ultimo aggiornamento: 21 luglio 2026",
                     privacyIntro: "Questa applicazione (\"Koda AI\") è fornita da Riccardo Giorgio Ponte e Davide Narracci.",
                     privacyDataControllerTitle: "Titolare del trattamento dei dati",
                     privacyDataController: "Riccardo Giorgio Ponte & Davide Narracci",
@@ -10357,7 +10815,7 @@ window.mountChatbotApp = (container, props) => {
                     privacyDataTypesIntro: "Questa applicazione non raccoglie dati personali identificativi come nome o email, né utilizza cookie di profilazione o strumenti di analisi statistica.",
                     privacyDataTypesNote: "Il chatbot elabora i messaggi localmente nel browser.",
                     privacyNavigationData: "Dati di navigazione:",
-                    privacyNavigationDataDesc: "Durante il normale funzionamento, l'indirizzo IP viene trasmesso ai fornitori che distribuiscono l'app, il catalogo e, al primo utilizzo, i file del modello locale. Queste richieste non contengono i messaggi della chat.",
+                    privacyNavigationDataDesc: "Durante il normale funzionamento, l'indirizzo IP viene trasmesso ai fornitori che distribuiscono l'app, il catalogo e i modelli locali quando l'utente sceglie di scaricarli. Queste richieste non contengono i messaggi della chat.",
                     privacyUserData: "Dati forniti volontariamente dall'utente:",
                     privacyUserDataDesc: "I messaggi e i file generati vengono elaborati e salvati sul dispositivo dell'utente e non vengono inviati a servizi esterni.",
                     privacyLocalStorageTitle: "Archiviazione locale dei dati (Local Storage)",
@@ -10366,7 +10824,7 @@ window.mountChatbotApp = (container, props) => {
                     privacyLocalStoragePreferences: "• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.",
                     privacyLocalStorageHistory: "• Cronologia delle conversazioni: messaggi, fonti mostrate e contenuto dei file generati vengono salvati localmente per permetterti di ritrovare le conversazioni precedenti.",
                     privacyLocalStorageCollections: "• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.",
-                    privacyLocalStorageState: "• Stato e cache dell'applicazione: informazioni tecniche, stato delle conversazioni e, dopo il primo utilizzo, i file del modello AI locale (circa 118 MB).",
+                    privacyLocalStorageState: "• Stato e cache dell'applicazione: informazioni tecniche, stato delle conversazioni e il modello locale SmolLM2 (circa 118 MB al primo utilizzo).",
                     privacyLocalStorageImportantTitle: "Importante da sapere:",
                     privacyLocalStoragePoint1: "• Cronologia, risposte e file generati rimangono sul dispositivo e non vengono inviati ai nostri server o a servizi esterni.",
                     privacyLocalStoragePoint2: "• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser (solitamente nella sezione \"Privacy\" o \"Cancella dati di navigazione\").",
@@ -10426,7 +10884,7 @@ window.mountChatbotApp = (container, props) => {
                     detailModalRemoveFavorite: "Remove from Favorites", detailModalAddFavorite: "Add to Favorites",
                     visitWebsite: "Visit Website", alternativeSuggestion: "Alternatively, try:",
                     // Settings Modal
-                    settingsTitle: "Account Settings", changePasswordTitle: "Change Password", newPasswordLabel: "New Password",
+                    settingsTitle: "Settings", changePasswordTitle: "Change Password", newPasswordLabel: "New Password",
                     newPasswordPlaceholder: "Minimum 6 characters", confirmPasswordLabel: "Confirm Password", confirmPasswordPlaceholder: "Re-enter new password",
                     savePasswordButton: "Save Password", passwordUpdateSuccess: "Password updated successfully!",
                     passwordTooShort: "Password must be at least 6 characters long.", passwordsDoNotMatch: "Passwords do not match.",
@@ -10555,7 +11013,7 @@ window.mountChatbotApp = (container, props) => {
                     privacy: "Privacy",
                     privacyPolicyTitle: "Koda AI Privacy Policy",
                     privacySubtitle: "Terms of Service",
-                    privacyLastUpdate: "Last updated: July 20, 2026",
+                    privacyLastUpdate: "Last updated: July 21, 2026",
                     privacyIntro: "This application (\"Koda AI\") is provided by Riccardo Giorgio Ponte and Davide Narracci.",
                     privacyDataControllerTitle: "Data controller",
                     privacyDataController: "Riccardo Giorgio Ponte & Davide Narracci",
@@ -10564,7 +11022,7 @@ window.mountChatbotApp = (container, props) => {
                     privacyDataTypesIntro: "This application does not collect personally identifiable information such as name or email, nor does it use profiling cookies or statistical analysis tools.",
                     privacyDataTypesNote: "The chatbot processes messages locally in the browser.",
                     privacyNavigationData: "Navigation data:",
-                    privacyNavigationDataDesc: "During normal operation, the IP address is transmitted to providers that distribute the app, catalog, and, on first use, the local model files. These requests do not contain chat messages.",
+                    privacyNavigationDataDesc: "During normal operation, the IP address is transmitted to providers that distribute the app, catalog, and local models when the user chooses to download them. These requests do not contain chat messages.",
                     privacyUserData: "Data voluntarily provided by the user:",
                     privacyUserDataDesc: "Messages and generated files are processed and stored on the user's device and are not sent to external services.",
                     privacyLocalStorageTitle: "Local data storage (Local Storage)",
@@ -10573,7 +11031,7 @@ window.mountChatbotApp = (container, props) => {
                     privacyLocalStoragePreferences: "• User preferences: such as selected language, theme (light/dark mode), and other customization settings.",
                     privacyLocalStorageHistory: "• Conversation history: messages, displayed sources, and generated-file content are saved locally so previous conversations remain available.",
                     privacyLocalStorageCollections: "• Collections and favorites: your AI tool collections and favorites are stored on your device.",
-                    privacyLocalStorageState: "• Application state and cache: technical information, conversation state, and, after first use, the local AI model files (about 118 MB).",
+                    privacyLocalStorageState: "• Application state and cache: technical information, conversation state, and the local SmolLM2 model (about 118 MB on first use).",
                     privacyLocalStorageImportantTitle: "Important to know:",
                     privacyLocalStoragePoint1: "• History, responses, and generated files remain on the device and are not sent to our servers or external services.",
                     privacyLocalStoragePoint2: "• You can delete this data at any time through your browser settings (usually in the \"Privacy\" or \"Clear browsing data\" section).",
@@ -10635,6 +11093,15 @@ window.mountChatbotApp = (container, props) => {
             let aiRankingsData = []; // NUOVO: Questa variabile conterrà i dati delle classifiche da Firestore
             let youtubeVideosData = []; // NUOVO: Conterrà i video da Firebase
             let newsData = []; // NUOVO: Conterrà le news dal database
+            const getLocalizedNewsValue = (news, field, lang = currentLanguage) => {
+                const value = news?.[field];
+                if (typeof value === 'string') return value;
+                if (value && typeof value === 'object') return value[lang] || value.it || value.en || '';
+                return news?.[`${field}_${lang}`] || news?.[`${field}_it`] || news?.[`${field}_en`] || '';
+            };
+            const getNewsHashtags = news => Array.isArray(news?.hashtags)
+                ? news.hashtags.map(tag => String(tag || '').replace(/^#+/, '').trim()).filter(Boolean).slice(0, 3)
+                : [];
             const FIRESTORE_LIMITS = { tools: 300, rankings: 100, videos: 200, news: 100 };
             // NUOVA FUNZIONE per caricare gli strumenti da Firestore
             const fetchToolsFromFirestore = async () => {
@@ -10920,6 +11387,8 @@ window.mountChatbotApp = (container, props) => {
             const syncAccessibleModals = () => {
                 const nextModal = getTopVisibleModal();
                 if (nextModal) prepareAccessibleModal(nextModal);
+                const hasBlockingSurface = Boolean(nextModal || document.querySelector('#side-menu.visible, #notifications-modal.visible, #video-catalog-modal.visible'));
+                document.body.classList.toggle('koda-scroll-locked', hasBlockingSurface);
 
                 let focusOrigin = null;
                 if (activeAccessibleModal && activeAccessibleModal !== nextModal) {
@@ -11099,6 +11568,7 @@ window.mountChatbotApp = (container, props) => {
                 sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/>',
                 clock: '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>',
                 free: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+                download: '<path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M5 21h14"/>',
                 freemium: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
                 paid: '<rect x="1" y="4" width="22" height="16" rx="2.5"/><line x1="1" y1="10" x2="23" y2="10"/>',
                 tutorial: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
@@ -13145,19 +13615,19 @@ window.mountChatbotApp = (container, props) => {
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
                             </svg>
-                            <span data-translate="settingsTitle">Impostazioni account</span>
+                            <span data-translate="settingsTitle">Impostazioni</span>
                         </button>
                         <button type="button" class="user-profile-item" data-action="open-appearance">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/>
                             </svg>
-                            <span>${currentLanguage === 'it' ? 'Personalizza aspetto' : 'Customize Appearance'}</span>
+                            <span>${currentLanguage === 'it' ? 'Aspetto' : 'Appearance'}</span>
                         </button>
                         <button type="button" class="user-profile-item" data-action="open-menu-customization">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z" fill="currentColor"/>
                             </svg>
-                            <span>${currentLanguage === 'it' ? 'Personalizza menù' : 'Customize Menu'}</span>
+                            <span>${currentLanguage === 'it' ? 'Personalizza' : 'Customization'}</span>
                         </button>
                         
                         
@@ -14631,8 +15101,9 @@ window.mountChatbotApp = (container, props) => {
                     el.mainContent.style.paddingBottom = `var(--bottom-nav-height)`;
                 }
 
-                // Ripristina sempre l'overflow di default (necessario per resettare il blocco della pagina News)
-                el.mainContent.style.overflowY = 'auto';
+                // La home lascia scorrere solo il pannello messaggi, mantenendo fermo lo sfondo.
+                el.mainContent.classList.toggle('chatbot-view', currentView === 'home');
+                el.mainContent.style.overflowY = currentView === 'home' ? 'hidden' : 'auto';
 
                 // Close any open dropdowns when navigating
                 closeUserProfileDropdown();
@@ -14714,7 +15185,7 @@ window.mountChatbotApp = (container, props) => {
                     // Add the same header structure as other pages for consistency
                     const globalControls = getGlobalControlsHTML();
                     const pageTitle = pageTitles[currentView] || currentView;
-                    const topBarHTML = `<div class="user-chat-header">
+                    const topBarHTML = `<div class="user-chat-header home-chat-header">
                     <button id="menu-toggle-btn" class="chat-header-btn" title="Chat History" data-action="toggle-menu">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
                     </button>
@@ -14727,14 +15198,20 @@ window.mountChatbotApp = (container, props) => {
                     // Chatbot view handles its own header and global controls via React prop
                     const chatbotContainer = document.createElement('div');
                     chatbotContainer.id = 'chatbot-container-wrapper';
-                    chatbotContainer.style.height = '100%';
+                    chatbotContainer.style.height = 'auto';
+                    chatbotContainer.style.minHeight = '0';
+                    chatbotContainer.style.flex = '1 1 auto';
                     chatbotContainer.style.width = '100%';
                     chatbotContainer.style.display = 'flex';
                     chatbotContainer.style.flexDirection = 'column';
                     el.mainContent.appendChild(chatbotContainer);
 
+                    const chatbotReactRoot = document.createElement('div');
+                    chatbotReactRoot.id = 'chatbot-react-root';
+                    chatbotContainer.appendChild(chatbotReactRoot);
+
                     if (window.mountChatbotApp) {
-                        reactRoot = window.mountChatbotApp(chatbotContainer, {
+                        reactRoot = window.mountChatbotApp(chatbotReactRoot, {
                             tools: allTools, // Pass all tools to chatbot for recommendations
                             initialConversations: conversations,
                             initialActiveId: activeConversationId,
@@ -14751,7 +15228,7 @@ window.mountChatbotApp = (container, props) => {
                         });
                     } else {
                         console.warn("React non è ancora pronto. Riprovo in automatico...");
-                        chatbotContainer.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%; color:var(--Koda-text-secondary); font-weight:bold; font-size:14px;">Caricamento AI in corso...⏳</div>';
+                        chatbotReactRoot.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%; color:var(--Koda-text-secondary); font-weight:bold; font-size:14px;">Caricamento AI in corso...⏳</div>';
                         setTimeout(() => {
                             if (currentView === 'home') renderView();
                         }, 500);
@@ -14951,14 +15428,20 @@ ${filtersHTML}
                                 const isLiked = newsLiked.includes(news.id);
                                 const isSaved = newsSaved.includes(news.id);
                                 const newsIdAttr = escapeHTML(news.id);
-                                const newsTitleHTML = escapeHTML(news.title);
-                                const newsContentHTML = escapeHTML(news.content);
+                                const localizedNewsTitle = getLocalizedNewsValue(news, 'title');
+                                const localizedNewsContent = getLocalizedNewsValue(news, 'content');
+                                const newsTitleHTML = escapeHTML(localizedNewsTitle);
+                                const newsContentHTML = escapeHTML(localizedNewsContent);
                                 const newsImageSrc = safeImageSrc(news.imageUrl || fallbackImage);
+                                const newsHashtags = getNewsHashtags(news);
+                                const newsHashtagsHTML = newsHashtags.length
+                                    ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;color:var(--Koda-accent);font-size:12px;font-weight:800;">${newsHashtags.map(tag => `<span>#${escapeHTML(tag)}</span>`).join('')}</div>`
+                                    : '';
 
                                 // NUOVO: Cerca lo strumento menzionato nel testo (con Normalizzazione)
                                 let mentionedToolHTML = '';
                                 const allTools = getAllToolsForCurrentUser();
-                                const fullNewsText = (news.title + ' ' + news.content);
+                                const fullNewsText = `${localizedNewsTitle} ${localizedNewsContent}`;
                                 
                                 let mentionedTool = null;
                                 if (news.mentionedToolId) {
@@ -15015,6 +15498,7 @@ ${filtersHTML}
                                             <div class="news-date">${dateStr}</div>
                                             <h2 class="news-title">${newsTitleHTML}</h2>
                                             <div class="news-content" id="news-content-${newsIdAttr}" style="padding-right: 50px;">${newsContentHTML}</div>
+                                            ${newsHashtagsHTML}
                                             <div class="news-inline-read-more" data-action="open-news-detail" data-id="${newsIdAttr}">${currentLanguage === 'it' ? '...leggi altro' : '...read more'}</div>
                                         </div>
 
@@ -15053,12 +15537,15 @@ ${filtersHTML}
                         filteredNews = window.filterNewsByTime(filteredNews);
 
                         const renderGrid = (newsList) => {
-                            return newsList.map(n => `
+                            return newsList.map(n => {
+                                const localizedTitle = getLocalizedNewsValue(n, 'title');
+                                return `
                                 <div class="news-grid-card" data-action="open-news-detail" data-id="${escapeHTML(n.id)}">
-                                    <img src="${safeImageSrc(n.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png')}" alt="${escapeHTML(n.title)}">
-                                    <div class="news-grid-overlay">${escapeHTML(n.title)}</div>
+                                    <img src="${safeImageSrc(n.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png')}" alt="${escapeHTML(localizedTitle)}">
+                                    <div class="news-grid-overlay">${escapeHTML(localizedTitle)}</div>
                                 </div>
-                            `).join('');
+                            `;
+                            }).join('');
                         };
 
                         newsHTML += `
@@ -15214,15 +15701,18 @@ ${filtersHTML}
                                 
                                 const timeFilteredBaseNews = window.filterNewsByTime ? window.filterNewsByTime(baseNews) : baseNews;
                                 
-                                const filtered = timeFilteredBaseNews.filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query));
+                                const filtered = timeFilteredBaseNews.filter(n => getLocalizedNewsValue(n, 'title').toLowerCase().includes(query) || getLocalizedNewsValue(n, 'content').toLowerCase().includes(query));
 
                                 gridContainer.innerHTML = filtered.length > 0
-                                    ? filtered.map(n => `
+                                    ? filtered.map(n => {
+                                        const localizedTitle = getLocalizedNewsValue(n, 'title');
+                                        return `
                                         <div class="news-grid-card" data-action="open-news-detail" data-id="${escapeHTML(n.id)}">
-                                            <img src="${safeImageSrc(n.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png')}" alt="${escapeHTML(n.title)}">
-                                            <div class="news-grid-overlay">${escapeHTML(n.title)}</div>
+                                            <img src="${safeImageSrc(n.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png')}" alt="${escapeHTML(localizedTitle)}">
+                                            <div class="news-grid-overlay">${escapeHTML(localizedTitle)}</div>
                                         </div>
-                                    `).join('')
+                                    `;
+                                    }).join('')
                                     : `<div id="empty-state" style="grid-column: 1/-1; color: #a7a7a7;">Nessun risultato.</div>`;
                             });
                         }
@@ -15674,8 +16164,11 @@ ${filtersHTML}
 
             // --- SETTINGS MODAL FUNCTIONS (Copied from index.html and adapted) ---
 
+            let settingsModelStatusListener = null;
+
             window.openSettingsModal = () => {
                 const t = translations[currentLanguage];
+                const localAIService = window.kodaLocalAI;
                 const isGuest = !currentUser.uid;
                 const emailDisplay = isGuest ? (currentLanguage === 'it' ? 'Profilo Locale' : 'Local Profile') : currentUser.name;
                 const defaultAvatar = currentTheme === 'light'
@@ -15685,21 +16178,21 @@ ${filtersHTML}
 
                 // Layout full screen immersivo e centrato
                 const modalHTML = `
-                <div id="settings-modal" class="modal-overlay visible" role="dialog" aria-modal="true" aria-label="${escapeHTML(t.settingsTitle)}" style="background: var(--Koda-bg); z-index: 10006; align-items: center; justify-content: center; overflow-y: auto; padding: 0;">
+                <div id="settings-modal" class="modal-overlay visible" role="dialog" aria-modal="true" aria-label="${escapeHTML(t.settingsTitle)}" style="background: var(--Koda-bg); z-index: 10006; overflow-y: auto; padding: 0;">
                     
-                    <div style="width: 100%; max-width: 500px; min-height: 100vh; display: flex; flex-direction: column; text-align: center; padding: 20px 24px 80px 24px;">
+                    <div class="settings-screen">
                         
                         <!-- Header centrato con X a destra -->
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-top: 20px;">
+                        <div class="settings-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-top: 12px;">
                             <h2 style="font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -1px;">${t.settingsTitle}</h2>
                             <button data-action="close-modal" aria-label="${currentLanguage === 'it' ? 'Chiudi' : 'Close'}" style="background: none; border: none; color: var(--Koda-text); font-size: 36px; cursor: pointer; line-height: 1;">&times;</button>
                         </div>
 
-                        <p style="font-size: 14px; color: var(--Koda-text-secondary); margin-bottom: 40px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">${escapeHTML(emailDisplay)}</p>
+                        <p class="settings-profile-label" style="font-size: 14px; color: var(--Koda-text-secondary); margin-bottom: 32px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">${escapeHTML(emailDisplay)}</p>
                         
                         <!-- Box Profilo Centrato -->
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; margin-bottom: 48px;">
-                            <div style="position: relative; width: 120px; height: 120px; cursor: pointer;" onclick="document.getElementById('settings-avatar-upload').click()">
+                        <div class="settings-profile">
+                            <div class="settings-avatar-control" onclick="document.getElementById('settings-avatar-upload').click()">
                                 <img id="settings-avatar-preview" src="${settingsAvatar}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--Koda-text-secondary); transition: transform 0.2s;">
                                 <input type="file" id="settings-avatar-upload" accept="image/jpeg,image/png,image/webp" style="display: none;">
                                 <div style="position: absolute; right: 4px; bottom: 4px; background: var(--Koda-accent); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: 2px solid var(--Koda-bg);">
@@ -15712,10 +16205,11 @@ ${filtersHTML}
                                 <input type="text" id="profile-nickname" maxlength="40" placeholder="${t.registerNicknamePlaceholder}" value="${escapeHTML(currentUser.nickname || '')}" style="width: 100%; padding: 16px; font-size: 16px; background-color: var(--Koda-bg-light); border: 1px solid transparent; border-radius: 8px; color: var(--Koda-text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--Koda-text)'" onblur="this.style.borderColor='transparent'">
                             </div>
 
-                            <button id="update-profile-btn" style="width: 100%; max-width: 350px; padding: 16px; border-radius: 500px; background-color: var(--Koda-accent); color: #000; font-size: 16px; font-weight: 800; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-                                ${currentLanguage === 'it' ? 'Salva Profilo' : 'Save Profile'}
-                            </button>
                         </div>
+
+                        <button id="update-profile-btn" class="settings-save-button">
+                            ${currentLanguage === 'it' ? 'Salva Profilo' : 'Save Profile'}
+                        </button>
 
                          <!-- Sezione Info Legali Centrata -->
                          <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto;">
@@ -15736,6 +16230,187 @@ ${filtersHTML}
                     </div>
                 </div>`;
                 el.modalContainer.innerHTML = modalHTML;
+
+                const formatLocalAIModelSize = bytes => {
+                    if (bytes >= 1000000000) {
+                        return `~${(bytes / 1000000000).toLocaleString(currentLanguage === 'it' ? 'it-IT' : 'en-US', {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1
+                        })} GB`;
+                    }
+                    return `~${Math.round(bytes / 1000000)} MB`;
+                };
+
+                const localAIErrorMessage = error => {
+                    const code = error instanceof Error ? error.message : String(error || '');
+                    if (code === 'WEBGPU_REQUIRED') {
+                        return currentLanguage === 'it'
+                            ? 'Questo modello richiede un browser e un dispositivo con WebGPU.'
+                            : 'This model requires a browser and device with WebGPU.';
+                    }
+                    if (code === 'MODEL_DOWNLOAD_IN_PROGRESS') {
+                        return currentLanguage === 'it'
+                            ? 'Attendi il completamento del download in corso.'
+                            : 'Wait for the current download to finish.';
+                    }
+                    if (code === 'MODEL_CACHE_WRITE_FAILED' || code === 'MODEL_CACHE_UNAVAILABLE') {
+                        return currentLanguage === 'it'
+                            ? 'Impossibile salvare il modello. Libera spazio nell’archivio del browser e riprova.'
+                            : 'The model could not be saved. Free browser storage and try again.';
+                    }
+                    return currentLanguage === 'it' ? 'Download del modello non riuscito.' : 'Model download failed.';
+                };
+
+                let renderedDownloadPhase = '';
+                const getDownloadPhase = aiStatus => `${aiStatus.operation || ''}:${aiStatus.state || ''}:${aiStatus.modelKey || ''}`;
+                const getLocalAIStatusMessage = (aiStatus, models) => {
+                    const progress = Number.isFinite(aiStatus.progress) ? Math.round(aiStatus.progress) : null;
+                    const activeDownloadModel = models.find(model => model.key === aiStatus.modelKey);
+                    const isDownloading = aiStatus.operation === 'download' && aiStatus.state === 'loading';
+                    if (isDownloading && activeDownloadModel) {
+                        return `${currentLanguage === 'it' ? 'Download' : 'Downloading'} ${activeDownloadModel.name}${progress === null ? '' : `: ${progress}%`}`;
+                    }
+                    if (aiStatus.operation === 'download' && aiStatus.state === 'download-error') {
+                        return localAIErrorMessage(new Error(aiStatus.reason || 'LOCAL_MODEL_DOWNLOAD_ERROR'));
+                    }
+                    if (aiStatus.operation === 'download' && aiStatus.state === 'downloaded' && activeDownloadModel) {
+                        return currentLanguage === 'it'
+                            ? `${activeDownloadModel.name} è stato scaricato.`
+                            : `${activeDownloadModel.name} has been downloaded.`;
+                    }
+                    return currentLanguage === 'it'
+                        ? 'I modelli scaricati restano nell’archivio locale di questo browser.'
+                        : 'Downloaded models remain in this browser’s local storage.';
+                };
+
+                const updateLocalAIDownloadProgress = aiStatus => {
+                    const statusElement = document.getElementById('local-ai-download-status');
+                    const progressElement = document.getElementById('local-ai-download-progress');
+                    const progressFill = document.getElementById('local-ai-download-progress-fill');
+                    if (!statusElement || !progressElement || !progressFill) return;
+
+                    const models = localAIService.getModels();
+                    const isDownloading = aiStatus.operation === 'download' && aiStatus.state === 'loading';
+                    const progress = Number.isFinite(aiStatus.progress)
+                        ? Math.max(0, Math.min(100, aiStatus.progress))
+                        : null;
+                    statusElement.textContent = getLocalAIStatusMessage(aiStatus, models);
+                    progressElement.hidden = !isDownloading;
+                    if (!isDownloading) return;
+
+                    progressElement.classList.toggle('is-indeterminate', progress === null);
+                    if (progress === null) {
+                        progressElement.removeAttribute('aria-valuenow');
+                        progressFill.style.removeProperty('transform');
+                    } else {
+                        progressElement.setAttribute('aria-valuenow', String(Math.round(progress)));
+                        progressFill.style.transform = `scaleX(${progress / 100})`;
+                    }
+                };
+
+                const renderLocalAIModelSettings = () => {
+                    const container = document.getElementById('local-ai-model-settings');
+                    if (!container) return;
+
+                    const models = localAIService.getModels();
+                    const selectedModel = localAIService.getSelectedModel();
+                    const downloadedModels = new Set(localAIService.getDownloadedModels());
+                    const aiStatus = localAIService.getStatus();
+                    const webGPUAvailable = !!globalThis.navigator?.gpu;
+                    const isDownloading = aiStatus.operation === 'download' && aiStatus.state === 'loading';
+                    const progress = Number.isFinite(aiStatus.progress) ? Math.round(aiStatus.progress) : null;
+                    const activeDownloadModel = models.find(model => model.key === aiStatus.modelKey);
+                    const allDownloaded = models.every(model => downloadedModels.has(model.key));
+
+                    const statusMessage = getLocalAIStatusMessage(aiStatus, models);
+
+                    container.innerHTML = `
+                        <h3 style="display:flex;align-items:center;gap:9px;font-size:20px;font-weight:900;margin:0 0 8px 0;">${kodaIcon('agente', 21)} ${currentLanguage === 'it' ? 'Modello AI locale' : 'Local AI model'}</h3>
+                        <p style="font-size:13px;line-height:1.5;color:var(--Koda-text-secondary);margin:0 0 16px 0;">${currentLanguage === 'it' ? 'Scegli il modello usato dalla chat e gestisci i download locali.' : 'Choose the chat model and manage local downloads.'}</p>
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            ${models.map(model => {
+                                const isSelected = model.key === selectedModel.key;
+                                const isDownloaded = downloadedModels.has(model.key);
+                                const isUnsupported = model.requiresWebGPU && !webGPUAvailable;
+                                const isThisDownload = isDownloading && aiStatus.modelKey === model.key;
+                                const borderColor = isSelected ? 'var(--Koda-accent)' : 'rgba(128,128,128,0.22)';
+                                return `
+                                    <div style="border:1px solid ${borderColor};border-radius:8px;padding:14px;background:rgba(128,128,128,0.06);">
+                                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;">
+                                            <div style="min-width:0;">
+                                                <div style="font-size:16px;font-weight:800;color:var(--Koda-text);">${escapeHTML(model.name)}</div>
+                                                <div style="font-size:12px;color:var(--Koda-text-secondary);margin-top:3px;">${formatLocalAIModelSize(model.downloadBytes)}${model.requiresWebGPU ? ' · WebGPU' : ' · WebGPU / WASM'}</div>
+                                            </div>
+                                            <span style="flex:0 0 auto;font-size:11px;font-weight:800;color:${isDownloaded ? 'var(--Koda-accent)' : 'var(--Koda-text-secondary)'};text-transform:uppercase;">${isDownloaded ? (currentLanguage === 'it' ? 'Scaricato' : 'Downloaded') : (currentLanguage === 'it' ? 'Non scaricato' : 'Not downloaded')}</span>
+                                        </div>
+                                        ${isUnsupported ? `<div style="font-size:12px;line-height:1.4;color:#e0a23a;margin-bottom:10px;">${currentLanguage === 'it' ? 'WebGPU non disponibile su questo dispositivo.' : 'WebGPU is unavailable on this device.'}</div>` : ''}
+                                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                            <button type="button" data-local-ai-select="${escapeHTML(model.key)}" ${isSelected || isUnsupported || isDownloading ? 'disabled' : ''} style="min-height:42px;padding:9px 10px;border-radius:7px;border:1px solid ${isSelected ? 'var(--Koda-accent)' : 'rgba(128,128,128,0.28)'};background:${isSelected ? 'rgba(29,185,84,0.12)' : 'transparent'};color:var(--Koda-text);font-size:13px;font-weight:800;cursor:${isSelected || isUnsupported || isDownloading ? 'default' : 'pointer'};opacity:${isUnsupported ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:6px;">${isSelected ? `${kodaIcon('free', 16)} ${currentLanguage === 'it' ? 'Selezionato' : 'Selected'}` : (currentLanguage === 'it' ? 'Seleziona' : 'Select')}</button>
+                                            <button type="button" data-local-ai-download="${escapeHTML(model.key)}" ${isDownloaded || isUnsupported || isDownloading ? 'disabled' : ''} style="min-height:42px;padding:9px 10px;border-radius:7px;border:none;background:${isDownloaded ? 'rgba(128,128,128,0.12)' : 'var(--Koda-accent)'};color:${isDownloaded ? 'var(--Koda-text-secondary)' : '#000'};font-size:13px;font-weight:800;cursor:${isDownloaded || isUnsupported || isDownloading ? 'default' : 'pointer'};opacity:${isUnsupported ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:6px;">${isDownloaded ? `${kodaIcon('free', 16)} ${currentLanguage === 'it' ? 'Scaricato' : 'Downloaded'}` : `${kodaIcon('download', 16)} ${isThisDownload ? (currentLanguage === 'it' ? 'Download…' : 'Downloading…') : (currentLanguage === 'it' ? 'Scarica' : 'Download')}`}</button>
+                                        </div>
+                                    </div>`;
+                            }).join('')}
+                        </div>
+                        <button type="button" id="download-all-local-ai-models" ${allDownloaded || !webGPUAvailable || isDownloading ? 'disabled' : ''} style="width:100%;min-height:44px;margin-top:12px;padding:10px 14px;border-radius:7px;border:1px solid rgba(128,128,128,0.3);background:transparent;color:var(--Koda-text);font-size:14px;font-weight:800;cursor:${allDownloaded || !webGPUAvailable || isDownloading ? 'default' : 'pointer'};opacity:${allDownloaded || !webGPUAvailable ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:7px;">${kodaIcon(allDownloaded ? 'free' : 'download', 17)} ${allDownloaded ? (currentLanguage === 'it' ? 'Entrambi scaricati' : 'Both downloaded') : (currentLanguage === 'it' ? 'Scarica entrambi' : 'Download both')}</button>
+                        <div aria-live="polite" style="min-height:38px;margin-top:11px;font-size:12px;line-height:1.45;color:var(--Koda-text-secondary);">
+                            <div id="local-ai-download-status">${escapeHTML(statusMessage)}</div>
+                            <div id="local-ai-download-progress" class="local-ai-download-progress${progress === null ? ' is-indeterminate' : ''}" role="progressbar" aria-label="${currentLanguage === 'it' ? 'Avanzamento download modello' : 'Model download progress'}" aria-valuemin="0" aria-valuemax="100" ${progress === null ? '' : `aria-valuenow="${progress}"`} ${isDownloading ? '' : 'hidden'}>
+                                <div class="local-ai-download-progress-track"><div id="local-ai-download-progress-fill" class="local-ai-download-progress-fill" ${progress === null ? '' : `style="transform:scaleX(${progress / 100})"`}></div></div>
+                            </div>
+                        </div>`;
+                    renderedDownloadPhase = getDownloadPhase(aiStatus);
+
+                    container.querySelectorAll('[data-local-ai-select]').forEach(button => {
+                        button.addEventListener('click', () => {
+                            try {
+                                const model = localAIService.selectModel(button.dataset.localAiSelect);
+                                showToast(currentLanguage === 'it' ? `${model.name} selezionato` : `${model.name} selected`);
+                                renderLocalAIModelSettings();
+                            } catch (error) {
+                                showToast(localAIErrorMessage(error));
+                            }
+                        });
+                    });
+                    container.querySelectorAll('[data-local-ai-download]').forEach(button => {
+                        button.addEventListener('click', async () => {
+                            try {
+                                const model = await localAIService.downloadModel(button.dataset.localAiDownload);
+                                showToast(currentLanguage === 'it' ? `${model.name} scaricato` : `${model.name} downloaded`);
+                            } catch (error) {
+                                showToast(localAIErrorMessage(error));
+                            }
+                            renderLocalAIModelSettings();
+                        });
+                    });
+                    document.getElementById('download-all-local-ai-models')?.addEventListener('click', async () => {
+                        try {
+                            await localAIService.downloadAllModels();
+                            showToast(currentLanguage === 'it' ? 'Entrambi i modelli sono stati scaricati' : 'Both models have been downloaded');
+                        } catch (error) {
+                            showToast(localAIErrorMessage(error));
+                        }
+                        renderLocalAIModelSettings();
+                    });
+                };
+
+                if (settingsModelStatusListener) {
+                    window.removeEventListener(localAIService.statusEvent, settingsModelStatusListener);
+                }
+                settingsModelStatusListener = event => {
+                    if (!document.getElementById('local-ai-model-settings')) {
+                        window.removeEventListener(localAIService.statusEvent, settingsModelStatusListener);
+                        settingsModelStatusListener = null;
+                        return;
+                    }
+                    const nextStatus = event.detail || localAIService.getStatus();
+                    if (getDownloadPhase(nextStatus) !== renderedDownloadPhase) {
+                        renderLocalAIModelSettings();
+                    } else {
+                        updateLocalAIDownloadProgress(nextStatus);
+                    }
+                };
+                window.addEventListener(localAIService.statusEvent, settingsModelStatusListener);
+                renderLocalAIModelSettings();
 
                 // Attach listener to the update profile (nickname + avatar) button
                 document.getElementById('update-profile-btn')?.addEventListener('click', handleNicknameUpdate);
@@ -15921,7 +16596,7 @@ ${filtersHTML}
                 <div id="appearance-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10006; align-items: flex-start; padding: 0; overflow-y: auto;">
                     <div class="modal-content" style="text-align: left; width: 100%; max-width: 500px; min-height: 100vh; border-radius: 0; margin: 0 auto; padding: 40px 24px;">
                         <button class="modal-close-btn" data-action="close-modal" style="top: 20px; right: 24px; font-size: 36px;">×</button>
-                        <h2 style="margin-bottom: 32px;">${currentLanguage === 'it' ? 'Personalizza aspetto' : 'Appearance'}</h2>
+                        <h2 style="margin-bottom: 32px;">${currentLanguage === 'it' ? 'Aspetto' : 'Appearance'}</h2>
                         
                         <label style="display: block; font-size: 12px; font-weight: 800; color: var(--Koda-text-secondary); text-transform: uppercase; margin-bottom: 12px;">${currentLanguage === 'it' ? 'Colore App' : 'App Color'}</label>
                         <div style="display: flex; gap: 12px; justify-content: space-between; margin-bottom: 24px; padding: 0 8px;">
@@ -15988,7 +16663,7 @@ ${filtersHTML}
                 <div id="menu-customization-modal" class="modal-overlay visible" style="background: var(--Koda-bg); z-index: 10006; align-items: flex-start; padding: 0; overflow-y: auto;">
                     <div class="modal-content" style="text-align: left; width: 100%; max-width: 500px; min-height: 100vh; border-radius: 0; margin: 0 auto; padding: 40px 24px;">
                         <button class="modal-close-btn" data-action="close-modal" style="top: 20px; right: 24px; font-size: 36px;">×</button>
-                        <h2 style="margin-bottom: 12px;">${currentLanguage === 'it' ? 'Personalizza menù' : 'Customize Menu'}</h2>
+                        <h2 style="margin-bottom: 12px;">${currentLanguage === 'it' ? 'Personalizza' : 'Customization'}</h2>
                         <p style="font-size: 13px; color: var(--Koda-text-secondary); margin-bottom: 24px; line-height: 1.4;">${currentLanguage === 'it' ? 'Riordina (▲/▼) o nascondi le sezioni in basso.' : 'Reorder (▲/▼) or hide bottom sections.'}</p>
                         
                         <div id="nav-customization-list" style="display: flex; flex-direction: column; gap: 8px;">
@@ -16239,7 +16914,7 @@ ${filtersHTML}
                 const yourPrivacyPolicy = `
                     <hr style="margin: 40px 0; border: 0; border-top: 1px solid #727272;">
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">Termini di servizio</h3>
-                    <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 1 Novembre 2025</strong></p>
+                    <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 21 luglio 2026</strong></p>
                     <p style="margin-bottom: 16px;">Questa applicazione ("Koda AI") è fornita da Riccardo Giorgio Ponte e Davide Narracci.</p>
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">Titolare del trattamento dei dati</h3>
                     <p style="margin-bottom: 16px;"><strong>Riccardo Giorgio Ponte & Davide Narracci</strong><br>Indirizzo email di contatto del titolare: [koda.aihelp@gmail.com]</p>
@@ -16257,7 +16932,7 @@ ${filtersHTML}
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">Finalità del trattamento</h3>
                     <p style="margin-bottom: 16px;">I testi sono elaborati sul dispositivo per cercare nel catalogo e generare una risposta. L'indirizzo IP è usato solo per scaricare dati e componenti dell'app. Noi non riceviamo né archiviamo le conversazioni.</p>
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">Destinatari dei dati (terze parti)</h3>
-                    <p style="margin-bottom: 16px;">Al primo utilizzo dell'AI locale, il browser scarica file statici da:<br><strong>Hugging Face, Inc. e jsDelivr</strong><br>Questi servizi possono ricevere i normali metadati di rete, incluso l'indirizzo IP, ma non ricevono prompt o risposte della chat.</p>
+                    <p style="margin-bottom: 16px;">Quando scegli di scaricare un modello AI locale, il browser richiede file statici a:<br><strong>Hugging Face, Inc. e jsDelivr</strong><br>Questi servizi possono ricevere i normali metadati di rete, incluso l'indirizzo IP, ma non ricevono prompt o risposte della chat.</p>
                     <h3 style="margin-top: 24px; margin-bottom: 8px;">Diritti dell'interessato</h3>
                     <p style="margin-bottom: 8px;">Ai sensi del regolamento europeo 679/2016 (GDPR), l'utente ha diritto di:</p>
                     <p style="margin-bottom: 16px; line-height: 1.8;">• Chiedere al titolare del trattamento l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione del trattamento.<br>• Opporsi al trattamento.<br>• Proporre reclamo a un'autorità di controllo.</p>
@@ -18680,8 +19355,8 @@ ${filtersHTML}
                     // 3. Cerca nelle News (Fuzzy search per spazi e trattini es. "chat gpt" = "chatgpt")
                     const normalizedQuery = query.replace(/[\s\-_]/g, '');
                     const matchedNews = newsData.filter(news => {
-                        const normalizedTitle = (news.title || '').toLowerCase().replace(/[\s\-_]/g, '');
-                        const normalizedContent = (news.content || '').toLowerCase().replace(/[\s\-_]/g, '');
+                        const normalizedTitle = getLocalizedNewsValue(news, 'title').toLowerCase().replace(/[\s\-_]/g, '');
+                        const normalizedContent = getLocalizedNewsValue(news, 'content').toLowerCase().replace(/[\s\-_]/g, '');
                         return normalizedTitle.includes(normalizedQuery) || normalizedContent.includes(normalizedQuery);
                     }).slice(0, 3); // Mostra al massimo 3 news
 
@@ -18690,11 +19365,12 @@ ${filtersHTML}
                         resultsHTML += matchedNews.map(news => {
                             const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
                             const dateStr = news.timestamp ? new Date(news.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US') : '';
+                            const localizedTitle = getLocalizedNewsValue(news, 'title');
                             return `
                             <div class="spotlight-item" data-action="open-news-detail" data-id="${escapeHTML(news.id)}">
-                                <img src="${safeImageSrc(news.imageUrl || fallbackImage)}" alt="${escapeHTML(news.title)}" class="spotlight-item-img" style="aspect-ratio: 1/1; object-fit: cover;">
+                                <img src="${safeImageSrc(news.imageUrl || fallbackImage)}" alt="${escapeHTML(localizedTitle)}" class="spotlight-item-img" style="aspect-ratio: 1/1; object-fit: cover;">
                                 <div class="spotlight-item-info">
-                                    <span class="spotlight-item-title" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${escapeHTML(news.title)}</span>
+                                    <span class="spotlight-item-title" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${escapeHTML(localizedTitle)}</span>
                                     <span class="spotlight-item-sub" style="color: var(--Koda-accent); margin-top: 2px;">📰 ${dateStr}</span>
                                 </div>
                             </div>
@@ -19017,14 +19693,20 @@ ${filtersHTML}
                             if (newsItem) {
                                 const dateStr = newsItem.timestamp ? new Date(newsItem.timestamp.seconds * 1000).toLocaleDateString(currentLanguage === 'it' ? 'it-IT' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
                                 const fallbackImage = 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png';
-                                const newsTitleHTML = escapeHTML(newsItem.title);
-                                const newsContentHTML = escapeHTML(newsItem.content);
+                                const localizedNewsTitle = getLocalizedNewsValue(newsItem, 'title');
+                                const localizedNewsContent = getLocalizedNewsValue(newsItem, 'content');
+                                const newsTitleHTML = escapeHTML(localizedNewsTitle);
+                                const newsContentHTML = escapeHTML(localizedNewsContent);
                                 const newsImageSrc = safeImageSrc(newsItem.imageUrl || fallbackImage);
+                                const newsHashtags = getNewsHashtags(newsItem);
+                                const newsHashtagsHTML = newsHashtags.length
+                                    ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;color:var(--Koda-accent);font-size:13px;font-weight:800;">${newsHashtags.map(tag => `<span>#${escapeHTML(tag)}</span>`).join('')}</div>`
+                                    : '';
                                 
                                 // Cerca lo strumento menzionato nel testo (con Normalizzazione)
                                 let mentionedToolHTML = '';
                                 const allTools = getAllToolsForCurrentUser();
-                                const fullNewsText = (newsItem.title + ' ' + newsItem.content);
+                                const fullNewsText = `${localizedNewsTitle} ${localizedNewsContent}`;
                                 
                                 let mentionedTool = null;
                                 if (newsItem.mentionedToolId) {
@@ -19081,6 +19763,7 @@ ${filtersHTML}
                                             <div class="news-detail-date">${dateStr}</div>
                                             <h1 class="news-detail-title">${newsTitleHTML}</h1>
                                             <div class="news-detail-text">${newsContentHTML}</div>
+                                            ${newsHashtagsHTML}
                                         </div>
                                     </div>
                                 `;
@@ -19766,7 +20449,7 @@ ${filtersHTML}
 
                             if (window.triggerHaptic) window.triggerHaptic('light');
 
-                            // Ri-renderizziamo il modale Personalizza aspetto per far aggiornare visivamente l'interruttore
+                            // Ri-renderizziamo il modale Aspetto per far aggiornare visivamente l'interruttore
                             if (document.getElementById('appearance-modal')) {
                                 openAppearanceModal();
                             }
@@ -20288,7 +20971,7 @@ ${filtersHTML}
                 const modalContainer = document.getElementById('modal-container');
                 const bodyContent = `
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Termini di servizio</h3>
-        <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 1 Novembre 2025</strong></p>
+        <p style="margin-bottom: 16px;"><strong>Ultimo aggiornamento: 21 luglio 2026</strong></p>
         <p style="margin-bottom: 16px;">Questa applicazione ("Koda AI") è fornita da Riccardo Giorgio Ponte e Davide Narracci.</p>
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Titolare del trattamento dei dati</h3>
         <p style="margin-bottom: 16px;"><strong>Riccardo Giorgio Ponte & Davide Narracci</strong><br>Indirizzo email di contatto del titolare: [koda.aihelp@gmail.com]</p>
@@ -20306,7 +20989,7 @@ ${filtersHTML}
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Finalità del trattamento</h3>
         <p style="margin-bottom: 16px;">I testi sono elaborati sul dispositivo per cercare nel catalogo e generare una risposta. L'indirizzo IP è usato solo per scaricare dati e componenti dell'app. Noi non riceviamo né archiviamo le conversazioni.</p>
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Destinatari dei dati (terze parti)</h3>
-        <p style="margin-bottom: 16px;">Al primo utilizzo dell'AI locale, il browser scarica file statici da:<br><strong>Hugging Face, Inc. e jsDelivr</strong><br>Questi servizi possono ricevere i normali metadati di rete, incluso l'indirizzo IP, ma non ricevono prompt o risposte della chat.</p>
+        <p style="margin-bottom: 16px;">Quando scegli di scaricare un modello AI locale, il browser richiede file statici a:<br><strong>Hugging Face, Inc. e jsDelivr</strong><br>Questi servizi possono ricevere i normali metadati di rete, incluso l'indirizzo IP, ma non ricevono prompt o risposte della chat.</p>
         <h3 style="margin-top: 24px; margin-bottom: 8px;">Diritti dell'interessato</h3>
         <p style="margin-bottom: 8px;">Ai sensi del regolamento europeo 679/2016 (GDPR), l'utente ha diritto di:</p>
         <p style="margin-bottom: 16px; line-height: 1.8;">• Chiedere al titolare del trattamento l'accesso ai dati personali, la rettifica, la cancellazione o la limitazione del trattamento.<br>• Opporsi al trattamento.<br>• Proporre reclamo a un'autorità di controllo.</p>

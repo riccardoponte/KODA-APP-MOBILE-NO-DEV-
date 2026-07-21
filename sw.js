@@ -7,7 +7,7 @@
      app chiusa (best-effort, supportato principalmente su Chrome/Android)
    ===================================================================== */
 
-const CACHE_VERSION = 'koda-v13';
+const CACHE_VERSION = 'koda-v22';
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const PREFS_CACHE = 'koda-prefs'; // non versionato: conserva preferenze/stato tra gli aggiornamenti
@@ -121,7 +121,7 @@ self.addEventListener('fetch', (event) => {
 
     // Asset statici / CDN: cache-first con aggiornamento in background (stale-while-revalidate)
     const staticDestinations = new Set(['style', 'script', 'font', 'image', 'manifest', 'worker']);
-    const isLocalAIRuntime = url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/@huggingface/transformers@3.7.2/dist/');
+    const isLocalAIRuntime = url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/@huggingface/transformers@4.2.0/dist/');
     if (url.origin !== self.location.origin && !staticDestinations.has(req.destination) && !isLocalAIRuntime) return;
 
     const network = fetch(req).then(async (res) => {
