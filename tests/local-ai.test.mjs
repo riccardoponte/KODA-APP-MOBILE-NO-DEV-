@@ -155,6 +155,54 @@ test('uses structured catalog capabilities for recommendations and comparisons',
     assert.equal(workerRequests.length, 0);
 });
 
+test('reports localized catalog features and uses them for discovery', async () => {
+    const tools = [
+        {
+            id: 'chatgpt',
+            name: 'ChatGPT',
+            description: { it: 'Assistente multimodale.', en: 'Multimodal assistant.' },
+            category: 'Multimodali',
+            keyFeatures: [
+                { label: { it: 'Ricerca web con fonti', en: 'Web search with sources' } },
+                { label: { it: 'Memoria tra conversazioni', en: 'Memory across conversations' } }
+            ]
+        },
+        {
+            id: 'plain-chat',
+            name: 'Plain Chat',
+            description: { it: 'Chat essenziale.', en: 'Basic chat.' },
+            category: 'Multimodali'
+        }
+    ];
+
+    const italian = await ask('quali feature ha ChatGPT?', { tools });
+    assert.equal(italian.metadata.intent, 'catalog-tool-features');
+    assert.match(italian.text, /Ricerca web con fonti/);
+    assert.doesNotMatch(italian.text, /Web search with sources/);
+
+    const english = await ask('what features does ChatGPT have?', { lang: 'en', tools });
+    assert.equal(english.metadata.intent, 'catalog-tool-features');
+    assert.match(english.text, /Web search with sources/);
+    assert.doesNotMatch(english.text, /Ricerca web con fonti/);
+
+    const exactTool = await ask('parlami di ChatGPT', { tools });
+    assert.equal(exactTool.metadata.intent, 'catalog-exact-tool');
+    assert.match(exactTool.text, /Feature verificate: Ricerca web con fonti, Memoria tra conversazioni\./);
+    assert.doesNotMatch(exactTool.text, /Web search with sources/);
+
+    const comparison = await ask('compare ChatGPT and Plain Chat', { lang: 'en', tools });
+    assert.equal(comparison.metadata.intent, 'catalog-comparison');
+    assert.match(comparison.text, /Verified features: Web search with sources, Memory across conversations\./);
+    assert.match(comparison.text, /Verified features: under review\./);
+    assert.doesNotMatch(comparison.text, /Ricerca web con fonti/);
+
+    const discovery = await ask('consigliami una AI con memoria tra conversazioni', { tools });
+    assert.equal(discovery.metadata.intent, 'catalog-recommendation');
+    assert.deepEqual(discovery.metadata.toolIds, ['chatgpt']);
+    assert.match(discovery.text, /Memoria tra conversazioni/);
+    assert.equal(workerRequests.length, 0);
+});
+
 test('resolves canonical tool aliases without confusing GPT with Zero GPT', async () => {
     const tools = [
         { id: 'chatgpt', name: 'ChatGPT', description: { it: 'Assistente di OpenAI.', en: 'OpenAI assistant.' }, category: 'Multimodali' },

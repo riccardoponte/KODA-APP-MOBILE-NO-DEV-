@@ -1441,6 +1441,26 @@
             position: relative;
         }
 
+        #detail-modal .modal-content {
+            box-sizing: border-box;
+            max-height: calc(100dvh - 32px);
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            overscroll-behavior: contain;
+        }
+
+        @media (max-width: 480px) {
+            #detail-modal {
+                padding: 8px;
+            }
+
+            #detail-modal .modal-content {
+                width: 100%;
+                max-height: calc(100dvh - 16px);
+                padding: 24px 18px;
+            }
+        }
+
         .modal-close-btn {
             position: absolute;
             top: 15px;
@@ -5924,11 +5944,15 @@
             }
 
             .home-chat-header #global-controls {
-                gap: 2px;
+                gap: 8px;
             }
 
             .home-chat-header .global-btn {
-                padding: 2px;
+                flex: 0 0 32px;
+                width: 32px;
+                min-width: 32px;
+                height: 32px;
+                padding: 4px;
             }
 
         }
@@ -10728,7 +10752,7 @@ window.mountChatbotApp = (container, props) => {
             "'": '&#039;'
         })[char]);
 
-        const normalizeToolKeyFeatures = (value) => {
+        const normalizeToolKeyFeatures = (value, lang = currentLanguage) => {
             const items = Array.isArray(value)
                 ? value
                 : (typeof value === 'string' ? value.split(/\r?\n|,/) : []);
@@ -10738,7 +10762,8 @@ window.mountChatbotApp = (container, props) => {
                 const label = item.label;
                 if (typeof label === 'string') return label.trim();
                 if (label && typeof label === 'object') {
-                    return String(label[currentLanguage] || label.en || label.it || '').trim();
+                    const fallback = Object.values(label).find(value => typeof value === 'string');
+                    return String(label[lang] || label.en || label.it || fallback || '').trim();
                 }
                 return String(item.name || '').trim();
             }).filter(Boolean))];
@@ -11491,7 +11516,11 @@ window.mountChatbotApp = (container, props) => {
 
             // Funzione globale accessibile anche dallo script React
             window.getLocalizedToolsData = (lang) => {
-                return aiToolsData.map(tool => ({ ...tool, description: tool.description[lang] || tool.description['en'] }));
+                return aiToolsData.map(tool => ({
+                    ...tool,
+                    description: tool.description[lang] || tool.description.en,
+                    keyFeatures: normalizeToolKeyFeatures(tool.keyFeatures, lang)
+                }));
             }
             window.aiToolsData = aiToolsData; // Keep static data accessible
 
@@ -13001,7 +13030,7 @@ window.mountChatbotApp = (container, props) => {
                 const toolCountryHTML = escapeHTML(tool.country || 'N/A');
                 const toolCategoryHTML = escapeHTML(getTranslatedCategoryName(tool.category || 'N/A'));
                 const toolWebsiteHref = safeHref(tool.website);
-                const keyFeatures = normalizeToolKeyFeatures(tool.keyFeatures);
+                const keyFeatures = normalizeToolKeyFeatures(tool.keyFeatures, currentLanguage);
                 const featuresStatus = keyFeatures.length
                     ? String(keyFeatures.length)
                     : (currentLanguage === 'it' ? 'In verifica' : 'Under review');
