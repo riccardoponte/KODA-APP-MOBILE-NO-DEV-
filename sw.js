@@ -7,7 +7,7 @@
      app chiusa (best-effort, supportato principalmente su Chrome/Android)
    ===================================================================== */
 
-const CACHE_VERSION = 'koda-v31';
+const CACHE_VERSION = 'koda-v32';
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const PREFS_CACHE = 'koda-prefs'; // non versionato: conserva preferenze/stato tra gli aggiornamenti

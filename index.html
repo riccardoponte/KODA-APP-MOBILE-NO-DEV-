@@ -12080,9 +12080,39 @@ window.mountChatbotApp = (container, props) => {
                 return `${getShareBaseUrl()}?c=${encodeURIComponent(encoded)}`;
             };
 
-            // Condivisione tramite Web Share API con fallback su clipboard
+            const getMedianBridges = () => [window.median, window.gonative]
+                .filter((bridge, index, bridges) => bridge && bridges.indexOf(bridge) === index);
+
+            const shareViaMedian = async (text, url) => {
+                for (const bridge of getMedianBridges()) {
+                    if (typeof bridge.share?.sharePage !== 'function') continue;
+                    try {
+                        await Promise.resolve(bridge.share.sharePage({ url, text }));
+                        return true;
+                    } catch (error) {
+                        console.warn('Median native share failed:', error);
+                    }
+                }
+                return false;
+            };
+
+            const copyViaMedian = async (text) => {
+                for (const bridge of getMedianBridges()) {
+                    if (typeof bridge.clipboard?.set !== 'function') continue;
+                    try {
+                        await Promise.resolve(bridge.clipboard.set({ data: text }));
+                        return true;
+                    } catch (error) {
+                        console.warn('Median native clipboard failed:', error);
+                    }
+                }
+                return false;
+            };
+
+            // Nell'app Median usa il bridge nativo; browser e PWA usano Web Share.
             const shareViaSystem = async (title, text, url) => {
                 const isIT = currentLanguage === 'it';
+                if (await shareViaMedian(text, url)) return;
                 try {
                     if (navigator.share) {
                         await navigator.share({ title, text, url });
@@ -12091,6 +12121,10 @@ window.mountChatbotApp = (container, props) => {
                 } catch (e) {
                     // L'utente ha annullato la condivisione nativa: non mostrare errori
                     if (e && e.name === 'AbortError') return;
+                }
+                if (await copyViaMedian(url)) {
+                    showToast(isIT ? '🔗 Link copiato negli appunti!' : '🔗 Link copied to clipboard!');
+                    return;
                 }
                 try {
                     if (navigator.clipboard && navigator.clipboard.writeText) {
