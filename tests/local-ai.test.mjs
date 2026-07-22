@@ -305,7 +305,7 @@ test('pages through every compatible guided recommendation', async () => {
     assert.equal(workerRequests.length, 0);
 });
 
-test('restores a saved guide and lets complete requests bypass its menu', async () => {
+test('restores a saved guide and blocks file generation requests', async () => {
     const tools = [{
         id: 'code-studio',
         name: 'Code Studio',
@@ -324,11 +324,12 @@ test('restores a saved guide and lets complete requests bypass its menu', async 
     const directChat = localModule.createLocalChatSession('it', tools, 'catalog');
     await send(directChat, 'menu');
     const directFile = await send(directChat, 'crea un file Excel per un budget mensile con categorie e importi');
-    assert.equal(directFile.metadata.intent, 'file-generation');
-    assert.notEqual(directFile.metadata.intent, 'guided-file-format');
+    assert.equal(directFile.metadata.intent, 'file-generation-unavailable');
+    assert.deepEqual(directFile.metadata.artifacts, []);
+    assert.equal(directFile.metadata.strategy, 'deterministic');
 });
 
-test('guides comparison and file creation without model inference', async () => {
+test('guides comparison and exposes only the two supported menu actions', async () => {
     const tools = [
         { id: 'chatgpt', name: 'ChatGPT', category: 'Multimodali', specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }] },
         { id: 'claude', name: 'Claude', category: 'Multimodali', specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }] }
@@ -342,13 +343,11 @@ test('guides comparison and file creation without model inference', async () => 
     assert.deepEqual(comparison.metadata.toolIds, ['chatgpt', 'claude']);
 
     const fileChat = localModule.createLocalChatSession('it', tools, 'catalog');
-    await send(fileChat, 'menu');
-    assert.equal((await send(fileChat, 'Crea un file')).metadata.intent, 'guided-file-format');
-    assert.equal((await send(fileChat, 'Excel')).metadata.intent, 'guided-file-details');
-    const file = await send(fileChat, 'un budget mensile con categorie e importi');
-    assert.equal(file.metadata.intent, 'guided-file-generation');
-    assert.equal(file.metadata.strategy, 'deterministic');
-    assert.equal(file.metadata.artifacts[0].type, 'xlsx');
+    const menu = await send(fileChat, 'menu');
+    assert.deepEqual(menu.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI']);
+    const file = await send(fileChat, 'Crea un file');
+    assert.equal(file.metadata.intent, 'file-generation-unavailable');
+    assert.deepEqual(file.metadata.artifacts, []);
     assert.equal(workerRequests.length, 0);
 });
 
@@ -389,7 +388,7 @@ test('redirects unsupported conversation back to the guided scope', async () => 
     assert.equal(result.metadata.intent, 'guided-menu-main');
     assert.equal(result.metadata.strategy, 'deterministic');
     assert.match(result.text, /resta focalizzata/i);
-    assert.ok(result.metadata.quickReplies.length >= 4);
+    assert.deepEqual(result.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI']);
     assert.equal(workerRequests.length, 0);
 });
 
@@ -458,35 +457,17 @@ test('rejects degenerate model repetition', async () => {
     assert.doesNotMatch(result.text, /utile lavoro asincrono utile lavoro asincrono/);
 });
 
-test('creates safe model-backed HTML and rejects active content', async () => {
-    queueModelOutput('<!doctype html><html><body><h1>Stato progetto</h1><p>Bozza da completare.</p></body></html>');
-    const accepted = await ask('crea un file HTML sullo stato del progetto');
-    assert.equal(accepted.metadata.intent, 'file-generation');
-    assert.equal(accepted.metadata.strategy, 'model');
-    assert.equal(accepted.metadata.artifacts[0].type, 'html');
-    assert.match(accepted.metadata.artifacts[0].content, /<h1>Stato progetto<\/h1>/);
+test('blocks direct file generation without invoking the model or returning artifacts', async () => {
+    const html = await ask('crea un file HTML sullo stato del progetto');
+    assert.equal(html.metadata.intent, 'file-generation-unavailable');
+    assert.equal(html.metadata.strategy, 'deterministic');
+    assert.deepEqual(html.metadata.artifacts, []);
+    assert.match(html.text, /creazione di file non è disponibile/i);
 
-    queueModelOutput('<!doctype html><html><body><script>alert(1)</script><p>Test</p></body></html>');
-    const rejected = await ask('crea un file HTML sullo stato del progetto');
-    assert.equal(rejected.metadata.strategy, 'verified-fallback');
-    assert.doesNotMatch(rejected.metadata.artifacts[0].content, /<script/i);
-    assert.match(rejected.metadata.artifacts[0].content, /<section/);
-});
-
-test('builds useful deterministic file drafts when model output is invalid', async () => {
-    queueModelOutput('invalid');
     const spreadsheet = await ask('crea un file Excel per i clienti');
-    const spreadsheetContent = spreadsheet.metadata.artifacts[0].content;
-    assert.equal(spreadsheet.metadata.strategy, 'verified-fallback');
-    assert.equal(spreadsheet.metadata.artifacts[0].name, 'clienti.xlsx');
-    assert.match(spreadsheetContent, /"Nome","Cognome","Email"/);
-    assert.match(spreadsheetContent, /"Azienda","Stato"/);
-
-    queueModelOutput('invalid');
-    const report = await ask('crea un report sul progetto Koda');
-    assert.equal(report.metadata.artifacts[0].name, 'progetto-koda.md');
-    assert.match(report.metadata.artifacts[0].content, /Sintesi esecutiva/);
-    assert.match(report.metadata.artifacts[0].content, /Rischi e limiti/);
+    assert.equal(spreadsheet.metadata.intent, 'file-generation-unavailable');
+    assert.deepEqual(spreadsheet.metadata.artifacts, []);
+    assert.equal(workerRequests.length, 0);
 });
 
 test('handles typo greetings, identity, creators, and capabilities deterministically', async () => {
@@ -507,6 +488,6 @@ test('handles typo greetings, identity, creators, and capabilities deterministic
 
     const capabilities = await ask('cosa fai?');
     assert.equal(capabilities.metadata.intent, 'capabilities');
-    assert.match(capabilities.text, /creare file/i);
+    assert.doesNotMatch(capabilities.text, /creare file|create files/i);
     assert.equal(workerRequests.length, 0);
 });

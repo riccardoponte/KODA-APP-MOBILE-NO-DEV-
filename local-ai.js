@@ -17,13 +17,10 @@ const MAX_HISTORY_MESSAGES = 4;
 const MAX_SESSION_HISTORY_MESSAGES = 80;
 const MAX_PROMPT_LENGTH = 4000;
 const PROMPT_REWRITE_MODE = 'prompt-rewrite';
-const FILE_GENERATION_MODE = 'file-generation';
 const CONVERSATION_MODE = 'conversation';
 const TRANSFORMATION_MODE = 'transformation';
 const MODEL_IDLE_TIMEOUT_MS = 120000;
-const FILE_MODEL_IDLE_TIMEOUT_MS = 240000;
 const WASM_MODEL_IDLE_TIMEOUT_MS = 240000;
-const MAX_ARTIFACT_CONTENT = 24000;
 const MODEL_PROMPT_LEAKAGE = /\b(verifaxed|verifydraft|verified draft|verified database records|database records|user request|raw prompt to rewrite)\b/i;
 
 const hasLocalInference = () => typeof Worker !== 'undefined' && typeof WebAssembly !== 'undefined';
@@ -904,15 +901,6 @@ const GUIDED_OPERATION_CHOICES = Object.freeze([
     { operation: 'all', it: 'Tutte le operazioni', en: 'All operations' }
 ]);
 
-const GUIDED_FILE_CHOICES = Object.freeze([
-    { type: 'xlsx', it: 'Excel', en: 'Excel' },
-    { type: 'pdf', it: 'PDF', en: 'PDF' },
-    { type: 'doc', it: 'Documento Word', en: 'Word document' },
-    { type: 'html', it: 'Pagina HTML', en: 'HTML page' },
-    { type: 'csv', it: 'CSV', en: 'CSV' },
-    { type: 'json', it: 'JSON', en: 'JSON' }
-]);
-
 const guidedLabels = (choices, lang) => choices.map(choice => choice[lang]);
 const guidedChoiceNumber = message => Number.parseInt(normalizeText(message).match(/^(\d{1,2})(?:\s|$)/)?.[1] || '0', 10);
 const isGuidedMenuCommand = message => /^(menu|home|inizio|start|main menu)$/.test(normalizeText(message));
@@ -927,14 +915,14 @@ const setGuidedState = (chat, flow, step, details = {}) => {
 };
 
 const guidedMainReplies = lang => lang === 'it'
-    ? ["Trova un'AI", 'Confronta due AI', 'Crea un file', "Domanda sull'AI"]
-    : ['Find an AI tool', 'Compare two AI tools', 'Create a file', 'Ask about AI'];
+    ? ["Trova un'AI", 'Confronta due AI']
+    : ['Find an AI tool', 'Compare two AI tools'];
 
 const guidedMainMenuPlan = (chat, lang, prefix = '') => {
     setGuidedState(chat, 'main', 'choice');
     const body = lang === 'it'
-        ? "Ti guido io. Scegli da dove partire:\n\n1. trovare l'AI adatta\n2. confrontare due AI\n3. creare un file\n4. fare una domanda su AI o catalogo\n\nPuoi anche scrivere direttamente una richiesta completa. Durante il percorso usa **indietro**, **menu** o **annulla**."
-        : 'I will guide you. Choose where to start:\n\n1. find the right AI tool\n2. compare two AI tools\n3. create a file\n4. ask about AI or the catalog\n\nYou can also enter a complete request directly. During a guided flow, use **back**, **menu**, or **cancel**.';
+        ? "Ti guido io. Scegli da dove partire:\n\n1. trovare l'AI adatta\n2. confrontare due AI\n\nPuoi anche scrivere direttamente una richiesta completa. Durante il percorso usa **indietro**, **menu** o **annulla**."
+        : 'I will guide you. Choose where to start:\n\n1. find the right AI tool\n2. compare two AI tools\n\nYou can also enter a complete request directly. During a guided flow, use **back**, **menu**, or **cancel**.';
     return deterministicPlan('guided-menu-main', [prefix, body].filter(Boolean).join('\n\n'), {
         quickReplies: guidedMainReplies(lang)
     });
@@ -942,8 +930,8 @@ const guidedMainMenuPlan = (chat, lang, prefix = '') => {
 
 const guidedIdentityPlan = (chat, lang, includeCreators = false) => {
     const identity = lang === 'it'
-        ? 'Sono **Koda AI**, l’assistente locale dell’app Koda. Ti guido nella ricerca e nel confronto degli strumenti AI, rispondo a domande sull’intelligenza artificiale e posso creare file direttamente nel browser.'
-        : 'I am **Koda AI**, the local assistant in the Koda app. I guide you through finding and comparing AI tools, answer questions about artificial intelligence, and can create files directly in your browser.';
+        ? 'Sono **Koda AI**, l’assistente locale dell’app Koda. Ti guido nella ricerca e nel confronto degli strumenti AI e rispondo a domande sull’intelligenza artificiale.'
+        : 'I am **Koda AI**, the local assistant in the Koda app. I guide you through finding and comparing AI tools and answer questions about artificial intelligence.';
     const creators = lang === 'it'
         ? 'Koda AI è stata sviluppata da **Riccardo Giorgio Ponte** e **Davide Narracci**.'
         : 'Koda AI was developed by **Riccardo Giorgio Ponte** and **Davide Narracci**.';
@@ -1034,58 +1022,24 @@ const guidedTypoPrefix = (message, match, lang) => match?.matchKind === 'fuzzy'
         : `I interpreted “${String(message).trim()}” as **${match.name}**.`)
     : '';
 
-const guidedFileFormatPlan = (chat, lang, prefix = '') => {
-    setGuidedState(chat, 'file', 'format');
-    return deterministicPlan('guided-file-format', [prefix, lang === 'it'
-        ? 'Quale formato vuoi creare?'
-        : 'Which format do you want to create?'].filter(Boolean).join('\n\n'), {
-        quickReplies: guidedLabels(GUIDED_FILE_CHOICES, lang)
-    });
-};
-
-const guidedFileDetailsPlan = (chat, lang, fileType, prefix = '') => {
-    setGuidedState(chat, 'file', 'details', { fileType });
-    const label = fileLabels[fileType];
-    return deterministicPlan('guided-file-details', [prefix, lang === 'it'
-        ? `Descrivi il contenuto del file **${label}**. Indica scopo, dati o sezioni necessarie; se mancano dati userò campi segnaposto.`
-        : `Describe the **${label}** file content. Include its purpose, data, or required sections; missing data will use placeholders.`].filter(Boolean).join('\n\n'), {
-        quickReplies: lang === 'it' ? ['Indietro', 'Menu'] : ['Back', 'Menu']
-    });
-};
-
-const guidedAIQuestionPlan = (chat, lang, prefix = '') => {
-    setGuidedState(chat, 'ai-question', 'question');
-    return deterministicPlan('guided-ai-question', [prefix, lang === 'it'
-        ? 'Scrivi una domanda specifica su AI, modelli, prompt o strumenti del catalogo.'
-        : 'Enter a specific question about AI, models, prompts, or catalog tools.'].filter(Boolean).join('\n\n'), {
-        quickReplies: lang === 'it' ? ['Cos’è il RAG?', 'Confronta GPT e Claude', 'Menu'] : ['What is RAG?', 'Compare GPT and Claude', 'Menu']
-    });
-};
-
 const parseGuidedMainChoice = message => {
     const normalized = normalizeText(message);
     const number = guidedChoiceNumber(message);
-    if (number >= 1 && number <= 4) return ['recommend', 'compare', 'file', 'ai-question'][number - 1];
+    if (number >= 1 && number <= 2) return ['recommend', 'compare'][number - 1];
     if (/\b(trova|consiglia|scegli|find|recommend)\b.*\b(ai|strumento|tool)\b/.test(normalized) || normalized === 'trova un ai') return 'recommend';
     if (/\b(confronta|confrontare|paragona|compare)\b/.test(normalized)) return 'compare';
-    if (/\b(crea|creare|genera|create|generate)\b.*\b(file|documento|document)\b/.test(normalized)) return 'file';
-    if (/\b(domanda|chiedi|ask)\b.*\b(ai|catalogo|catalog)\b/.test(normalized)) return 'ai-question';
     return '';
 };
 
 const parseExactGuidedMainChoice = message => {
     const normalized = normalizeText(message);
     const number = guidedChoiceNumber(message);
-    if (number >= 1 && number <= 4) return ['recommend', 'compare', 'file', 'ai-question'][number - 1];
+    if (number >= 1 && number <= 2) return ['recommend', 'compare'][number - 1];
     const exactChoices = new Map([
         ["trova un ai", 'recommend'],
         ['find an ai tool', 'recommend'],
         ['confronta due ai', 'compare'],
-        ['compare two ai tools', 'compare'],
-        ['crea un file', 'file'],
-        ['create a file', 'file'],
-        ["domanda sull ai", 'ai-question'],
-        ['ask about ai', 'ai-question']
+        ['compare two ai tools', 'compare']
     ]);
     return exactChoices.get(normalized) || '';
 };
@@ -1108,13 +1062,6 @@ const parseGuidedOperations = message => {
     const normalized = normalizeText(message);
     if (/\b(tutte|tutto|all|qualsiasi)\b/.test(normalized)) return ['create', 'read', 'edit'];
     return detectToolTask(message).operations;
-};
-
-const parseGuidedFileType = message => {
-    const number = guidedChoiceNumber(message);
-    if (number >= 1 && number <= GUIDED_FILE_CHOICES.length) return GUIDED_FILE_CHOICES[number - 1].type;
-    const normalized = normalizeText(message);
-    return GUIDED_FILE_CHOICES.find(choice => normalizeText(choice.it) === normalized || normalizeText(choice.en) === normalized)?.type || '';
 };
 
 const guidedRankingQuery = (specialization, operations, lang) => {
@@ -1180,7 +1127,6 @@ const guidedBackPlan = (chat, tools, lang) => {
     if (state.flow === 'recommend' && state.step === 'operation') return guidedSpecializationPlan(chat, lang);
     if (state.flow === 'recommend' && state.step === 'results') return guidedOperationPlan(chat, lang, state.specialization);
     if (state.flow === 'compare' && state.step === 'second-tool') return guidedFirstToolPlan(chat, tools, lang);
-    if (state.flow === 'file' && state.step === 'details') return guidedFileFormatPlan(chat, lang);
     return guidedMainMenuPlan(chat, lang);
 };
 
@@ -1202,9 +1148,6 @@ const guidedFocusPlan = (chat, tools, lang) => {
             ? guidedSecondToolPlan(chat, tools, lang, getToolFields(firstTool, lang), prefix, state.suggestionPage)
             : guidedFirstToolPlan(chat, tools, lang, prefix);
     }
-    if (state.flow === 'file' && state.step === 'format') return guidedFileFormatPlan(chat, lang, prefix);
-    if (state.flow === 'file' && state.step === 'details') return guidedFileDetailsPlan(chat, lang, state.fileType, prefix);
-    if (state.flow === 'ai-question') return guidedAIQuestionPlan(chat, lang, prefix);
     return guidedMainMenuPlan(chat, lang, prefix);
 };
 
@@ -1217,12 +1160,6 @@ const processGuidedState = (chat, message, tools, lang, task, referenced) => {
         const exactChoice = parseExactGuidedMainChoice(message);
         if (exactChoice === 'recommend') return guidedSpecializationPlan(chat, lang);
         if (exactChoice === 'compare') return guidedFirstToolPlan(chat, tools, lang);
-        if (exactChoice === 'file') return guidedFileFormatPlan(chat, lang);
-        if (exactChoice === 'ai-question') return guidedAIQuestionPlan(chat, lang);
-        if (looksLikeFileRequest(message)) {
-            chat.guidedState = null;
-            return createFileGenerationPlan(chat, message);
-        }
         if (isExplicitSupportedRequest(message, task, referenced)) {
             chat.guidedState = null;
             return null;
@@ -1230,8 +1167,6 @@ const processGuidedState = (chat, message, tools, lang, task, referenced) => {
         const choice = parseGuidedMainChoice(message);
         if (choice === 'recommend') return guidedSpecializationPlan(chat, lang);
         if (choice === 'compare') return guidedFirstToolPlan(chat, tools, lang);
-        if (choice === 'file') return guidedFileFormatPlan(chat, lang);
-        if (choice === 'ai-question') return guidedAIQuestionPlan(chat, lang);
         return guidedFocusPlan(chat, tools, lang);
     }
 
@@ -1321,42 +1256,10 @@ const processGuidedState = (chat, message, tools, lang, task, referenced) => {
         });
     }
 
-    if (state.flow === 'file' && state.step === 'format') {
-        const fileType = parseGuidedFileType(message);
-        return fileType ? guidedFileDetailsPlan(chat, lang, fileType) : guidedFocusPlan(chat, tools, lang);
-    }
-
-    if (state.flow === 'file' && state.step === 'details') {
-        if (normalizeText(message).split(/\s+/).filter(Boolean).length < 2 || isVague(message)) return guidedFocusPlan(chat, tools, lang);
-        const label = fileLabels[state.fileType];
-        const syntheticMessage = lang === 'it' ? `crea un file ${label} per ${message}` : `create a ${label} file for ${message}`;
-        setGuidedState(chat, 'file', 'complete');
-        return {
-            ...createFileGenerationPlan(chat, syntheticMessage),
-            intent: 'guided-file-generation',
-            useModel: false,
-            quickReplies: lang === 'it' ? ['Crea un altro file', 'Menu'] : ['Create another file', 'Menu']
-        };
-    }
-
     if (state.flow === 'compare' && state.step === 'complete') {
         if (/^(nuovo confronto|new comparison)$/.test(normalizeText(message))) return guidedFirstToolPlan(chat, tools, lang);
         chat.guidedState = null;
         return null;
-    }
-
-    if (state.flow === 'file' && state.step === 'complete') {
-        if (/^(crea un altro file|create another file)$/.test(normalizeText(message))) return guidedFileFormatPlan(chat, lang);
-        chat.guidedState = null;
-        return null;
-    }
-
-    if (state.flow === 'ai-question') {
-        if (isAIOrCatalogScope(message, task, referenced)) {
-            chat.guidedState = null;
-            return null;
-        }
-        return guidedFocusPlan(chat, tools, lang);
     }
 
     return guidedMainMenuPlan(chat, lang);
@@ -2044,8 +1947,8 @@ const createResponsePlan = (chat, message, tools) => {
     if (isCapabilityQuestion(message)) {
         return {
             ...guidedMainMenuPlan(chat, lang, lang === 'it'
-                ? 'Posso trovare e confrontare strumenti AI verificati nel catalogo, guidarti con domande, spiegare concetti di intelligenza artificiale, migliorare prompt e creare file scaricabili.'
-                : 'I can find and compare verified catalog tools, guide you with focused questions, explain AI concepts, improve prompts, and create downloadable files.'),
+                ? 'Posso trovare e confrontare strumenti AI verificati nel catalogo, guidarti con domande, spiegare concetti di intelligenza artificiale e migliorare prompt.'
+                : 'I can find and compare verified catalog tools, guide you with focused questions, explain AI concepts, and improve prompts.'),
             intent: 'capabilities'
         };
     }
@@ -2521,229 +2424,12 @@ const looksLikeFileRequest = message => {
     return !catalogDiscovery && action && file;
 };
 
-const detectFileType = message => {
-    const normalized = normalizeText(message);
-    if (/\b(xlsx|excel|spreadsheet|foglio excel|foglio di calcolo)\b/.test(normalized)) return 'xlsx';
-    if (/\bcsv\b/.test(normalized)) return 'csv';
-    if (/\bhtml\b|\bpagina web\b/.test(normalized)) return 'html';
-    if (/\bjson\b/.test(normalized)) return 'json';
-    if (/\b(markdown|md)\b/.test(normalized)) return 'md';
-    if (/\bpdf\b/.test(normalized)) return 'pdf';
-    if (/\b(word|doc|docx)\b/.test(normalized)) return 'doc';
-    if (/\b(testo|txt|plain text)\b/.test(normalized)) return 'txt';
-    return 'md';
-};
-
-const fileLabels = Object.freeze({
-    txt: 'TXT',
-    md: 'Markdown',
-    html: 'HTML',
-    csv: 'CSV',
-    json: 'JSON',
-    doc: 'Word',
-    pdf: 'PDF',
-    xlsx: 'Excel'
-});
-
-const fileTitle = message => {
-    const cleaned = String(message)
-        .replace(/\b(crea|creare|creami|genera|generare|generami|prepara|preparare|produci|esporta|salva|scrivi|redigi|compila|create|generate|make|prepare|produce|export|save|write)\b/gi, ' ')
-        .replace(/\b(file|documento|document|report|relazione|lettera|memo|word|doc|docx|pdf|testo|txt|markdown|md|html|pagina web|csv|excel|xlsx|foglio(?: di calcolo)?|spreadsheet|json)\b/gi, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/^(?:(?:un|uno|una|il|lo|la|i|gli|le|a|an|the|per|su|sul|sulla|di|del|della|for|about|on|of)\s+)+/i, '');
-    return shorten(cleaned || 'Koda document', 72).replace(/[.!?]+$/, '');
-};
-
-const artifactFileName = (message, type) => {
-    const stem = fileTitle(message)
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 44) || 'koda-document';
-    return `${stem}.${type}`;
-};
-
-const csvCell = value => `"${String(value).replace(/"/g, '""')}"`;
-
-const inferTableColumns = (message, lang) => {
-    const input = String(message);
-    const normalized = normalizeText(input);
-    const explicit = input.match(/\b(?:colonne|campi|columns|fields)\s*[:\-]?\s*([^.!?]+)/i)?.[1];
-    if (explicit) {
-        const columns = explicit.split(/[,;]|\s+(?:e|and)\s+/i)
-            .map(column => column.replace(/[^\p{L}\p{N} _-]/gu, '').trim())
-            .filter(Boolean)
-            .slice(0, 12);
-        if (columns.length >= 2) return columns;
-    }
-    if (/\b(cliente|clienti|contatti|crm|customer|customers|contacts)\b/.test(normalized)) {
-        return lang === 'it'
-            ? ['Nome', 'Cognome', 'Email', 'Telefono', 'Azienda', 'Stato']
-            : ['First name', 'Last name', 'Email', 'Phone', 'Company', 'Status'];
-    }
-    if (/\b(spese|costi|budget|expense|expenses|costs)\b/.test(normalized)) {
-        return lang === 'it'
-            ? ['Data', 'Categoria', 'Descrizione', 'Importo', 'Metodo di pagamento', 'Note']
-            : ['Date', 'Category', 'Description', 'Amount', 'Payment method', 'Notes'];
-    }
-    if (/\b(attivita|task|progetto|project|piano|plan)\b/.test(normalized)) {
-        return lang === 'it'
-            ? ['Attività', 'Responsabile', 'Data inizio', 'Scadenza', 'Priorità', 'Stato']
-            : ['Task', 'Owner', 'Start date', 'Due date', 'Priority', 'Status'];
-    }
-    if (/\b(inventario|magazzino|prodotti|inventory|stock|products)\b/.test(normalized)) {
-        return lang === 'it'
-            ? ['Codice', 'Prodotto', 'Categoria', 'Quantità', 'Prezzo unitario', 'Fornitore']
-            : ['Code', 'Product', 'Category', 'Quantity', 'Unit price', 'Supplier'];
-    }
-    return lang === 'it'
-        ? ['Elemento', 'Descrizione', 'Responsabile', 'Scadenza', 'Stato', 'Note']
-        : ['Item', 'Description', 'Owner', 'Due date', 'Status', 'Notes'];
-};
-
-const markdownFileFallback = (message, title, lang) => {
-    const normalized = normalizeText(message);
-    if (/\b(lettera|letter)\b/.test(normalized)) {
-        return lang === 'it'
-            ? [`# ${title}`, '', '[LUOGO], [DATA]', '', 'Gentile [DESTINATARIO],', '', '[APERTURA E MOTIVO DELLA LETTERA]', '', '[DETTAGLI ESSENZIALI, DATI E CONTESTO]', '', '[RICHIESTA O RISULTATO ATTESO]', '', 'Cordiali saluti,', '', '[NOME MITTENTE]', '[RECAPITO]'].join('\n')
-            : [`# ${title}`, '', '[LOCATION], [DATE]', '', 'Dear [RECIPIENT],', '', '[OPENING AND PURPOSE OF THE LETTER]', '', '[ESSENTIAL DETAILS, DATA, AND CONTEXT]', '', '[REQUEST OR EXPECTED OUTCOME]', '', 'Kind regards,', '', '[SENDER NAME]', '[CONTACT DETAILS]'].join('\n');
-    }
-    if (/\b(memo|memorandum)\b/.test(normalized)) {
-        return lang === 'it'
-            ? [`# ${title}`, '', '**A:** [DESTINATARI]', '**Da:** [MITTENTE]', '**Data:** [DATA]', '**Oggetto:** [OGGETTO]', '', '## Decisione o messaggio principale', '[SINTESI IN 2–3 FRASI]', '', '## Contesto', '[FATTI VERIFICATI E VINCOLI]', '', '## Azioni richieste', '- [AZIONE] — [RESPONSABILE] — [SCADENZA]', '', '## Rischi aperti', '- [RISCHIO E MITIGAZIONE]'].join('\n')
-            : [`# ${title}`, '', '**To:** [RECIPIENTS]', '**From:** [SENDER]', '**Date:** [DATE]', '**Subject:** [SUBJECT]', '', '## Main decision or message', '[2–3 SENTENCE SUMMARY]', '', '## Context', '[VERIFIED FACTS AND CONSTRAINTS]', '', '## Required actions', '- [ACTION] — [OWNER] — [DEADLINE]', '', '## Open risks', '- [RISK AND MITIGATION]'].join('\n');
-    }
-    return lang === 'it'
-        ? [`# ${title}`, '', '## Sintesi esecutiva', '[RISULTATO PRINCIPALE IN 3–5 FRASI]', '', '## Obiettivo', shorten(message, 500), '', '## Contesto e perimetro', '[CONTESTO, DESTINATARI E VINCOLI]', '', '## Evidenze e analisi', '- [DATO O FATTO VERIFICATO]', '- [OSSERVAZIONE]', '- [IMPATTO]', '', '## Raccomandazioni', '1. [AZIONE PRIORITARIA]', '2. [AZIONE SUCCESSIVA]', '', '## Rischi e limiti', '- [RISCHIO, PROBABILITÀ, MITIGAZIONE]', '', '## Prossimi passi', '- [RESPONSABILE] — [AZIONE] — [SCADENZA]'].join('\n')
-        : [`# ${title}`, '', '## Executive summary', '[MAIN OUTCOME IN 3–5 SENTENCES]', '', '## Objective', shorten(message, 500), '', '## Context and scope', '[CONTEXT, AUDIENCE, AND CONSTRAINTS]', '', '## Evidence and analysis', '- [VERIFIED DATA OR FACT]', '- [OBSERVATION]', '- [IMPACT]', '', '## Recommendations', '1. [PRIORITY ACTION]', '2. [NEXT ACTION]', '', '## Risks and limitations', '- [RISK, LIKELIHOOD, MITIGATION]', '', '## Next steps', '- [OWNER] — [ACTION] — [DEADLINE]'].join('\n');
-};
-
-const buildFileFallback = (message, type, lang) => {
-    const title = fileTitle(message);
-    if (type === 'html') {
-        return `<!doctype html>
-<html lang="${lang}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title.replace(/[<>&"]/g, '')}</title>
-  <style>body{max-width:760px;margin:48px auto;padding:0 20px;font:16px/1.6 Arial,sans-serif;color:#202124}h1{line-height:1.2;color:#146c35}.brief{padding:16px;border-left:4px solid #1db954;background:#f3f7f4}</style>
-</head>
-<body>
-  <main>
-    <h1>${title.replace(/[<>&]/g, '')}</h1>
-    <section class="brief"><h2>${lang === 'it' ? 'Obiettivo' : 'Objective'}</h2><p>${String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p></section>
-    <section><h2>${lang === 'it' ? 'Contenuto principale' : 'Main content'}</h2><p>[${lang === 'it' ? 'INSERISCI CONTENUTO VERIFICATO' : 'ADD VERIFIED CONTENT'}]</p></section>
-    <section><h2>${lang === 'it' ? 'Prossima azione' : 'Next action'}</h2><p>[${lang === 'it' ? 'AZIONE, RESPONSABILE E SCADENZA' : 'ACTION, OWNER, AND DEADLINE'}]</p></section>
-  </main>
-</body>
-</html>`;
-    }
-    if (type === 'json') {
-        return JSON.stringify({
-            title,
-            objective: message,
-            status: 'draft',
-            items: [],
-            metadata: {
-                generatedBy: 'Koda AI',
-                requiresReview: true
-            }
-        }, null, 2);
-    }
-    if (type === 'csv' || type === 'xlsx') {
-        const columns = inferTableColumns(message, lang);
-        const placeholders = columns.map(column => `[${normalizeText(column).replace(/\s+/g, '_').toUpperCase()}]`);
-        return `${columns.map(csvCell).join(',')}\n${placeholders.map(csvCell).join(',')}`;
-    }
-    const markdown = markdownFileFallback(message, title, lang);
-    return type === 'txt' ? markdown.replace(/^#+\s*/gm, '').replace(/^[-*]\s+/gm, '• ') : markdown;
-};
-
-const isConversationExportRequest = message => /\b(conversazione|questa chat|nostra chat|cronologia(?: della chat)?|conversation|this chat|our chat|chat history)\b/.test(normalizeText(message));
-
-const buildConversationExport = (chat, lang) => {
-    const messages = chat.history
-        .filter(item => ['user', 'assistant'].includes(item?.role) && typeof item.content === 'string' && item.content.trim())
-        .slice(-MAX_SESSION_HISTORY_MESSAGES);
-    const title = lang === 'it' ? 'Conversazione con Koda AI' : 'Conversation with Koda AI';
-    if (!messages.length) {
-        return `# ${title}\n\n${lang === 'it' ? 'La conversazione non contiene ancora messaggi da esportare.' : 'The conversation does not contain any messages to export yet.'}`;
-    }
-    const userLabel = lang === 'it' ? 'Utente' : 'User';
-    const assistantLabel = 'Koda AI';
-    return [
-        `# ${title}`,
-        '',
-        ...messages.flatMap(item => [
-            `## ${item.role === 'user' ? userLabel : assistantLabel}`,
-            '',
-            item.content.trim(),
-            ''
-        ])
-    ].join('\n').trim();
-};
-
-const createFileGenerationPlan = (chat, message) => {
-    const type = detectFileType(message);
-    const conversationExport = isConversationExportRequest(message);
-    return {
-        text: conversationExport ? buildConversationExport(chat, chat.lang) : buildFileFallback(message, type, chat.lang),
-        context: [],
-        kind: FILE_GENERATION_MODE,
-        file: {
-            type,
-            label: fileLabels[type],
-            name: conversationExport ? `conversazione-koda.${type}` : artifactFileName(message, type)
-        },
-        directExport: conversationExport,
-        useModel: !conversationExport
-    };
-};
-
-const stripGeneratedFileContent = value => {
-    const text = String(value || '').trim()
-        .replace(/<\|(?:system|assistant|user|endoftext)\|>/gi, '')
-        .trim();
-    const fenced = text.match(/^```[^\n]*\n([\s\S]*?)```\s*$/);
-    return (fenced ? fenced[1] : text.replace(/^```[^\n]*\n?/, '').replace(/```\s*$/, '')).trim();
-};
-
-const validateFileContent = (content, plan) => {
-    const text = String(content || '').trim();
-    if (text.length < 12 || text.length > MAX_ARTIFACT_CONTENT || /<\|(?:system|assistant|user)\|>/i.test(text)) return false;
-    if (MODEL_PROMPT_LEAKAGE.test(text) || /\b(?:as an ai language model|come modello linguistico)\b/i.test(text)) return false;
-    if (plan.file.type === 'html') {
-        return /<!doctype html>|<html[\s>]/i.test(text)
-            && /<\/html>/i.test(text)
-            && !/<(?:script|iframe|object|embed|form)\b/i.test(text)
-            && !/\son[a-z]+\s*=/i.test(text)
-            && !/\b(?:src|href)\s*=\s*["']https?:/i.test(text);
-    }
-    if (plan.file.type === 'json') {
-        try {
-            const parsed = JSON.parse(text);
-            return parsed !== null && typeof parsed === 'object';
-        } catch (error) {
-            return false;
-        }
-    }
-    if (plan.file.type === 'csv' || plan.file.type === 'xlsx') {
-        const lines = text.split(/\r?\n/).filter(Boolean);
-        if (lines.length < 2) return false;
-        const delimiter = lines[0].includes('\t') ? '\t' : lines[0].includes(';') ? ';' : ',';
-        const expectedColumns = lines[0].split(delimiter).length;
-        return expectedColumns >= 2 && lines.every(line => line.split(delimiter).length === expectedColumns);
-    }
-    return true;
-};
-
-const fileConfirmation = (plan, lang, usedModel) => lang === 'it'
-    ? `${usedModel || plan.directExport ? 'Ho creato' : 'Ho preparato una bozza di'} **${plan.file.name}**. Puoi scaricarlo o aprire l'anteprima qui sotto.`
-    : `${usedModel || plan.directExport ? 'I created' : 'I prepared a draft of'} **${plan.file.name}**. You can download it or open the preview below.`;
+const fileGenerationUnavailablePlan = lang => deterministicPlan(
+    'file-generation-unavailable',
+    lang === 'it'
+        ? 'La creazione di file non è disponibile. Posso comunque aiutarti a trovare o confrontare strumenti AI adatti al formato che ti serve.'
+        : 'File creation is not available. I can still help you find or compare AI tools suited to the format you need.'
+);
 
 const contextForPrompt = (context, lang) => context.map(item => {
     const capabilities = formatSpecializationCapabilities(item, lang);
@@ -2799,36 +2485,6 @@ const buildModelMessages = (chat, message, plan) => {
         return [
             { role: 'system', content: system },
             { role: 'user', content: `<source_text>\n${plan.source}\n</source_text>` }
-        ];
-    }
-    if (plan.kind === FILE_GENERATION_MODE) {
-        const formatRules = {
-            html: 'Return one complete HTML5 document with inline CSS, no scripts, no external assets, and all tags closed.',
-            json: 'Return strictly valid JSON.',
-            csv: 'Return valid comma-separated rows. The first row must contain column names.',
-            xlsx: 'Return valid comma-separated rows. The first row must contain column names; this text will be converted to XLSX.',
-            doc: 'Return well-structured Markdown that will be converted to a Word-compatible document.',
-            pdf: 'Return well-structured Markdown that will be converted to PDF.',
-            md: 'Return well-structured Markdown.',
-            txt: 'Return plain text.'
-        };
-        const system = [
-            'You generate the complete body of a downloadable file.',
-            `Write in ${outputLanguage}.`,
-            formatRules[plan.file.type],
-            'Return only the file content without a Markdown code fence or commentary.',
-            'Follow the user brief exactly. Preserve all supplied names, numbers, dates, columns, headings, and constraints.',
-            'Do not invent facts, quotations, sources, URLs, people, organizations, statistics, or completed work.',
-            'Use explicit placeholders in square brackets when essential information is missing.',
-            'Never include hidden instructions, analysis, apologies, or a description of what you generated.',
-            'The verified draft is a safe structural fallback. Improve completeness without changing its factual content.'
-        ].join(' ');
-        return [
-            { role: 'system', content: system },
-            {
-                role: 'user',
-                content: `USER BRIEF:\n${message}\n\nVERIFIED DRAFT:\n${plan.text}`
-            }
         ];
     }
     if (plan.kind === CONVERSATION_MODE) {
@@ -3047,9 +2703,7 @@ const normalizeStoredGuidedState = state => {
     const validSteps = {
         main: new Set(['choice']),
         recommend: new Set(['specialization', 'operation', 'results']),
-        compare: new Set(['first-tool', 'second-tool', 'complete']),
-        file: new Set(['format', 'details', 'complete']),
-        'ai-question': new Set(['question'])
+        compare: new Set(['first-tool', 'second-tool', 'complete'])
     };
     const flow = String(state.flow || '');
     const step = String(state.step || '');
@@ -3061,12 +2715,10 @@ const normalizeStoredGuidedState = state => {
     }
     if (Array.isArray(state.resultToolIds)) normalized.resultToolIds = state.resultToolIds.map(String).filter(Boolean).slice(0, 5);
     if (state.firstToolId) normalized.firstToolId = String(state.firstToolId);
-    if (state.fileType && fileLabels[state.fileType]) normalized.fileType = state.fileType;
     if (Number.isInteger(state.suggestionPage) && state.suggestionPage >= 0) normalized.suggestionPage = state.suggestionPage;
     if (Number.isInteger(state.resultPage) && state.resultPage >= 0) normalized.resultPage = state.resultPage;
     if (flow === 'recommend' && step !== 'specialization' && !normalized.specialization) return null;
     if (flow === 'compare' && step === 'second-tool' && !normalized.firstToolId) return null;
-    if (flow === 'file' && step === 'details' && !normalized.fileType) return null;
     return normalized;
 };
 
@@ -3118,12 +2770,12 @@ export async function* sendLocalMessageStream(chat, message) {
     const responseLanguage = detectResponseLanguage(cleanMessage, chat.lang);
     const responseChat = responseLanguage === chat.lang ? chat : { ...chat, lang: responseLanguage };
     const promptRewrite = responseChat.mode === PROMPT_REWRITE_MODE;
-    const fileRequest = !promptRewrite && !responseChat.guidedState && looksLikeFileRequest(cleanMessage);
+    const fileRequest = !promptRewrite && looksLikeFileRequest(cleanMessage);
 
     const plan = promptRewrite
         ? createPromptRewritePlan(responseChat, cleanMessage)
         : fileRequest
-            ? createFileGenerationPlan(responseChat, cleanMessage)
+            ? fileGenerationUnavailablePlan(responseChat.lang)
             : createResponsePlan(responseChat, cleanMessage, tools);
     chat.pendingTool = responseChat.pendingTool;
     chat.pendingComparisonTool = responseChat.pendingComparisonTool;
@@ -3144,30 +2796,22 @@ export async function* sendLocalMessageStream(chat, message) {
     };
 
     let answer = plan.text;
-    let usedModel = false;
-
     if (plan.useModel && hasLocalInference() && !workerUnavailable) {
         try {
-            const fileGeneration = plan.kind === FILE_GENERATION_MODE;
             const promptOptimization = plan.kind === PROMPT_REWRITE_MODE;
             const transformation = plan.kind === TRANSFORMATION_MODE;
-            const generationOptions = fileGeneration
-                ? { maxNewTokens: 320, idleTimeoutMs: FILE_MODEL_IDLE_TIMEOUT_MS }
-                : promptOptimization
-                    ? { maxNewTokens: 240 }
-                    : transformation
-                        ? { maxNewTokens: 180 }
-                        : undefined;
+            const generationOptions = promptOptimization
+                ? { maxNewTokens: 240 }
+                : transformation
+                    ? { maxNewTokens: 180 }
+                    : undefined;
             const generated = await generateWithModel(buildModelMessages(responseChat, cleanMessage, plan), generationOptions);
-            const candidate = fileGeneration ? stripGeneratedFileContent(generated) : generated.trim();
+            const candidate = generated.trim();
             const isValid = plan.kind === PROMPT_REWRITE_MODE
                 ? validatePromptRewrite(candidate, cleanMessage, plan.text, responseChat.lang)
-                : fileGeneration
-                        ? validateFileContent(candidate, plan)
-                    : validateModelAnswer(candidate, plan, tools, responseChat.lang, cleanMessage);
+                : validateModelAnswer(candidate, plan, tools, responseChat.lang, cleanMessage);
             if (isValid) {
                 answer = candidate;
-                usedModel = true;
                 chat.responseMetadata.strategy = 'model';
             }
         } catch (error) {
@@ -3175,18 +2819,6 @@ export async function* sendLocalMessageStream(chat, message) {
         }
     } else if (plan.useModel && !hasLocalInference()) {
         updateStatus({ state: 'fallback', progress: null, supported: false, reason: 'LOCAL_INFERENCE_UNAVAILABLE' });
-    }
-
-    if (plan.kind === FILE_GENERATION_MODE) {
-        const artifact = {
-            id: `artifact-${Date.now()}`,
-            name: plan.file.name,
-            type: plan.file.type,
-            content: String(answer).slice(0, MAX_ARTIFACT_CONTENT),
-            createdAt: Date.now()
-        };
-        chat.responseMetadata.artifacts = [artifact];
-        answer = fileConfirmation(plan, responseChat.lang, usedModel);
     }
 
     chat.history.push({ role: 'user', content: cleanMessage }, { role: 'assistant', content: answer });
@@ -3210,6 +2842,5 @@ export const localAI = Object.freeze({
     preload: preloadLocalModel,
     takeResponseMetadata: takeLocalResponseMetadata,
     isModelSupported: hasLocalInference,
-    promptRewriteMode: PROMPT_REWRITE_MODE,
-    fileGenerationMode: FILE_GENERATION_MODE
+    promptRewriteMode: PROMPT_REWRITE_MODE
 });
