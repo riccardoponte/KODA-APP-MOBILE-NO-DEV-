@@ -9,7 +9,7 @@ Koda AI is a static progressive web app for discovering and comparing AI tools a
 - Manually authored Italian and English news with exactly three hashtags per item.
 - Local text generation through WebGPU and a dedicated Web Worker.
 - A bilingual deterministic router for common knowledge, calculations, percentages, unit conversions, local date/time, text metrics, summaries, templates, safety boundaries, and structured writing tasks.
-- Deterministic bilingual explanations for Computer Use, Gems, AI agents, RAG, multimodal AI, MCP, embeddings, fine-tuning, and context windows, with responsive animated diagrams and reduced-motion support.
+- A guided, paged catalog of 22 AI concepts, including Projects, custom assistants, Connectors, Plugins, Skills, tool use, memory, Deep Research, grounding, and model fundamentals. Every concept has a deterministic bilingual explanation, a responsive animated diagram, and reduced-motion support.
 - An inline Prompt Optimizer mode that rewrites a prompt without leaving the current conversation.
 - Local conversation history, preferences, and PWA caching.
 - Italian and English interface.

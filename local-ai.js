@@ -901,6 +901,31 @@ const GUIDED_OPERATION_CHOICES = Object.freeze([
     { operation: 'all', it: 'Tutte le operazioni', en: 'All operations' }
 ]);
 
+const AI_CONCEPT_CHOICES = Object.freeze([
+    { id: 'projects', group: 'customization', it: 'Progetti', en: 'Projects' },
+    { id: 'custom-assistants', group: 'customization', it: 'Assistenti personalizzati', en: 'Custom assistants' },
+    { id: 'gems', group: 'customization', it: 'Gems', en: 'Gems' },
+    { id: 'connectors', group: 'integration', it: 'Connettori', en: 'Connectors' },
+    { id: 'plugins', group: 'integration', it: 'Plugin', en: 'Plugins' },
+    { id: 'skills', group: 'customization', it: 'Skills', en: 'Skills' },
+    { id: 'tool-use', group: 'integration', it: 'Tool use e function calling', en: 'Tool use and function calling' },
+    { id: 'mcp', group: 'integration', it: 'MCP', en: 'MCP' },
+    { id: 'ai-agents', group: 'agents', it: 'Agenti AI', en: 'AI agents' },
+    { id: 'computer-use', group: 'agents', it: 'Computer Use', en: 'Computer Use' },
+    { id: 'memory', group: 'customization', it: 'Memoria', en: 'Memory' },
+    { id: 'artifacts', group: 'customization', it: 'Artifacts e Canvas', en: 'Artifacts and Canvas' },
+    { id: 'deep-research', group: 'knowledge', it: 'Deep Research', en: 'Deep Research' },
+    { id: 'rag', group: 'knowledge', it: 'RAG', en: 'RAG' },
+    { id: 'embeddings', group: 'knowledge', it: 'Embedding', en: 'Embeddings' },
+    { id: 'fine-tuning', group: 'models', it: 'Fine-tuning', en: 'Fine-tuning' },
+    { id: 'multimodal-ai', group: 'models', it: 'AI multimodale', en: 'Multimodal AI' },
+    { id: 'reasoning-models', group: 'models', it: 'Modelli di ragionamento', en: 'Reasoning models' },
+    { id: 'context-window', group: 'foundations', it: 'Finestra di contesto', en: 'Context window' },
+    { id: 'tokens', group: 'foundations', it: 'Token', en: 'Tokens' },
+    { id: 'guardrails', group: 'safety', it: 'Guardrail', en: 'Guardrails' },
+    { id: 'grounding', group: 'safety', it: 'Grounding e allucinazioni', en: 'Grounding and hallucinations' }
+]);
+
 const guidedLabels = (choices, lang) => choices.map(choice => choice[lang]);
 const guidedChoiceNumber = message => Number.parseInt(normalizeText(message).match(/^(\d{1,2})(?:\s|$)/)?.[1] || '0', 10);
 const isGuidedMenuCommand = message => /^(menu|home|inizio|start|main menu)$/.test(normalizeText(message));
@@ -915,16 +940,64 @@ const setGuidedState = (chat, flow, step, details = {}) => {
 };
 
 const guidedMainReplies = lang => lang === 'it'
-    ? ["Trova un'AI", 'Confronta due AI']
-    : ['Find an AI tool', 'Compare two AI tools'];
+    ? ["Trova un'AI", 'Confronta due AI', 'Concetti AI']
+    : ['Find an AI tool', 'Compare two AI tools', 'AI concepts'];
 
 const guidedMainMenuPlan = (chat, lang, prefix = '') => {
     setGuidedState(chat, 'main', 'choice');
     const body = lang === 'it'
-        ? "Ti guido io. Scegli da dove partire:\n\n1. trovare l'AI adatta\n2. confrontare due AI\n\nPuoi anche scrivere direttamente una richiesta completa. Durante il percorso usa **indietro**, **menu** o **annulla**."
-        : 'I will guide you. Choose where to start:\n\n1. find the right AI tool\n2. compare two AI tools\n\nYou can also enter a complete request directly. During a guided flow, use **back**, **menu**, or **cancel**.';
+        ? "Ti guido io. Scegli da dove partire:\n\n1. trovare l'AI adatta\n2. confrontare due AI\n3. capire i concetti dell'AI\n\nPuoi anche scrivere direttamente una richiesta completa. Durante il percorso usa **indietro**, **menu** o **annulla**."
+        : 'I will guide you. Choose where to start:\n\n1. find the right AI tool\n2. compare two AI tools\n3. understand AI concepts\n\nYou can also enter a complete request directly. During a guided flow, use **back**, **menu**, or **cancel**.';
     return deterministicPlan('guided-menu-main', [prefix, body].filter(Boolean).join('\n\n'), {
         quickReplies: guidedMainReplies(lang)
+    });
+};
+
+const GUIDED_CONCEPT_PAGE_SIZE = 6;
+const isGuidedMoreConceptsCommand = message => /^(mostra altri|altri concetti|show more|more concepts)$/.test(normalizeText(message));
+
+const guidedConceptPage = requestedPage => {
+    const pageCount = Math.max(1, Math.ceil(AI_CONCEPT_CHOICES.length / GUIDED_CONCEPT_PAGE_SIZE));
+    const page = ((Number(requestedPage) || 0) % pageCount + pageCount) % pageCount;
+    const choices = AI_CONCEPT_CHOICES.slice(page * GUIDED_CONCEPT_PAGE_SIZE, (page + 1) * GUIDED_CONCEPT_PAGE_SIZE);
+    return { choices, page, pageCount };
+};
+
+const guidedConceptListPlan = (chat, lang, requestedPage = 0, prefix = '') => {
+    const conceptPage = guidedConceptPage(requestedPage);
+    setGuidedState(chat, 'concepts', 'list', { conceptPage: conceptPage.page });
+    const pageLabel = conceptPage.pageCount > 1
+        ? (lang === 'it' ? `Pagina ${conceptPage.page + 1}/${conceptPage.pageCount}.` : `Page ${conceptPage.page + 1}/${conceptPage.pageCount}.`)
+        : '';
+    const quickReplies = conceptPage.choices.map(choice => choice[lang]);
+    if (conceptPage.pageCount > 1) quickReplies.push(lang === 'it' ? 'Mostra altri' : 'Show more');
+    quickReplies.push('Menu');
+    return deterministicPlan('guided-concepts-list', [prefix, lang === 'it'
+        ? `Scegli un concetto per ricevere una spiegazione con schema grafico. ${pageLabel}`
+        : `Choose a concept to get an explanation with a visual diagram. ${pageLabel}`].filter(Boolean).join('\n\n'), {
+        quickReplies
+    });
+};
+
+const parseGuidedConceptId = (message, page = 0) => {
+    const conceptPage = guidedConceptPage(page);
+    const number = guidedChoiceNumber(message);
+    if (number >= 1 && number <= conceptPage.choices.length) return conceptPage.choices[number - 1].id;
+    const normalized = normalizeText(message);
+    const choice = AI_CONCEPT_CHOICES.find(item => normalizeText(item.it) === normalized || normalizeText(item.en) === normalized);
+    if (choice) return choice.id;
+    const source = conversationSubject(message) || String(message).trim();
+    const subject = normalizeText(source).replace(/^(?:il|lo|la|l|i|gli|le|un|uno|una|the|a|an)\s+/, '');
+    return STATIC_KNOWLEDGE.find(item => item.id && item.aliases.some(alias => normalizeText(alias) === subject))?.id || '';
+};
+
+const guidedConceptDetailPlan = (chat, lang, conceptId, conceptPage = 0) => {
+    const entry = STATIC_KNOWLEDGE.find(item => item.id === conceptId);
+    if (!entry) return guidedConceptListPlan(chat, lang, conceptPage);
+    setGuidedState(chat, 'concepts', 'detail', { conceptPage, conceptId });
+    return deterministicPlan('guided-concept-explanation', entry[lang], {
+        presentation: `ai-concept-${conceptId}`,
+        quickReplies: [...conceptQuickReplies(conceptId, lang), lang === 'it' ? 'Tutti i concetti' : 'All concepts', 'Menu']
     });
 };
 
@@ -1025,21 +1098,24 @@ const guidedTypoPrefix = (message, match, lang) => match?.matchKind === 'fuzzy'
 const parseGuidedMainChoice = message => {
     const normalized = normalizeText(message);
     const number = guidedChoiceNumber(message);
-    if (number >= 1 && number <= 2) return ['recommend', 'compare'][number - 1];
+    if (number >= 1 && number <= 3) return ['recommend', 'compare', 'concepts'][number - 1];
     if (/\b(trova|consiglia|scegli|find|recommend)\b.*\b(ai|strumento|tool)\b/.test(normalized) || normalized === 'trova un ai') return 'recommend';
     if (/\b(confronta|confrontare|paragona|compare)\b/.test(normalized)) return 'compare';
+    if (/^(concetti ai|ai concepts)$/.test(normalized)) return 'concepts';
     return '';
 };
 
 const parseExactGuidedMainChoice = message => {
     const normalized = normalizeText(message);
     const number = guidedChoiceNumber(message);
-    if (number >= 1 && number <= 2) return ['recommend', 'compare'][number - 1];
+    if (number >= 1 && number <= 3) return ['recommend', 'compare', 'concepts'][number - 1];
     const exactChoices = new Map([
         ["trova un ai", 'recommend'],
         ['find an ai tool', 'recommend'],
         ['confronta due ai', 'compare'],
-        ['compare two ai tools', 'compare']
+        ['compare two ai tools', 'compare'],
+        ['concetti ai', 'concepts'],
+        ['ai concepts', 'concepts']
     ]);
     return exactChoices.get(normalized) || '';
 };
@@ -1124,6 +1200,8 @@ const isExplicitSupportedRequest = (message, task, referenced) => {
 const guidedBackPlan = (chat, tools, lang) => {
     const state = chat.guidedState;
     if (!state || state.flow === 'main') return guidedMainMenuPlan(chat, lang);
+    if (state.flow === 'concepts' && state.step === 'detail') return guidedConceptListPlan(chat, lang, state.conceptPage || 0);
+    if (state.flow === 'concepts') return guidedMainMenuPlan(chat, lang);
     if (state.flow === 'recommend' && state.step === 'operation') return guidedSpecializationPlan(chat, lang);
     if (state.flow === 'recommend' && state.step === 'results') return guidedOperationPlan(chat, lang, state.specialization);
     if (state.flow === 'compare' && state.step === 'second-tool') return guidedFirstToolPlan(chat, tools, lang);
@@ -1136,6 +1214,7 @@ const guidedFocusPlan = (chat, tools, lang) => {
         ? 'Restiamo sul passaggio corrente. Scegli una delle opzioni valide oppure usa **indietro**, **menu** o **annulla**.'
         : 'Let’s stay on the current step. Choose a valid option or use **back**, **menu**, or **cancel**.';
     if (!state || state.flow === 'main') return guidedMainMenuPlan(chat, lang, prefix);
+    if (state.flow === 'concepts') return guidedConceptListPlan(chat, lang, state.conceptPage || 0, prefix);
     if (state.flow === 'recommend' && state.step === 'specialization') return guidedSpecializationPlan(chat, lang, prefix);
     if (state.flow === 'recommend' && state.step === 'operation') return guidedOperationPlan(chat, lang, state.specialization, prefix);
     if (state.flow === 'recommend' && state.step === 'results') {
@@ -1151,7 +1230,7 @@ const guidedFocusPlan = (chat, tools, lang) => {
     return guidedMainMenuPlan(chat, lang, prefix);
 };
 
-const processGuidedState = (chat, message, tools, lang, task, referenced) => {
+const processGuidedState = (chat, message, tools, lang, task, referenced, knownAnswer = null) => {
     const state = chat.guidedState;
     if (!state) return null;
     if (isGuidedBackCommand(message)) return guidedBackPlan(chat, tools, lang);
@@ -1160,14 +1239,26 @@ const processGuidedState = (chat, message, tools, lang, task, referenced) => {
         const exactChoice = parseExactGuidedMainChoice(message);
         if (exactChoice === 'recommend') return guidedSpecializationPlan(chat, lang);
         if (exactChoice === 'compare') return guidedFirstToolPlan(chat, tools, lang);
-        if (isExplicitSupportedRequest(message, task, referenced)) {
+        if (exactChoice === 'concepts') return guidedConceptListPlan(chat, lang);
+        if (knownAnswer || isExplicitSupportedRequest(message, task, referenced)) {
             chat.guidedState = null;
             return null;
         }
         const choice = parseGuidedMainChoice(message);
         if (choice === 'recommend') return guidedSpecializationPlan(chat, lang);
         if (choice === 'compare') return guidedFirstToolPlan(chat, tools, lang);
+        if (choice === 'concepts') return guidedConceptListPlan(chat, lang);
         return guidedFocusPlan(chat, tools, lang);
+    }
+
+    if (state.flow === 'concepts') {
+        const normalized = normalizeText(message);
+        if (/^(tutti i concetti|all concepts)$/.test(normalized)) return guidedConceptListPlan(chat, lang, state.conceptPage || 0);
+        if (isGuidedMoreConceptsCommand(message)) return guidedConceptListPlan(chat, lang, (state.conceptPage || 0) + 1);
+        const conceptId = parseGuidedConceptId(message, state.conceptPage || 0);
+        return conceptId
+            ? guidedConceptDetailPlan(chat, lang, conceptId, state.conceptPage || 0)
+            : guidedFocusPlan(chat, tools, lang);
     }
 
     if (state.flow === 'recommend' && state.step === 'specialization') {
@@ -1619,6 +1710,84 @@ const STATIC_KNOWLEDGE = Object.freeze([
         en: 'The **context window** is the maximum number of tokens a model can consider at once, including instructions, messages, documents, and the response being generated. When the limit is exceeded, some content must be removed, summarized, or selectively retrieved.\n\nA large window is not permanent memory and does not guarantee that every detail will be used with equal accuracy.'
     },
     {
+        id: 'projects',
+        aliases: ['progetto', 'progetti', 'progetti chatgpt', 'progetti di chatgpt', 'progetti in chatgpt', 'progetti claude', 'progetti di claude', 'progetti in claude', 'projects', 'chatgpt projects', 'claude projects'],
+        it: 'I **Progetti** in servizi come ChatGPT e Claude sono spazi di lavoro che riuniscono conversazioni, file e istruzioni relative a uno stesso obiettivo. Consentono di mantenere separati clienti, ricerche o attività e di riutilizzare il contesto previsto dal servizio.\n\nUn Progetto non è un nuovo modello né coincide con un assistente personalizzato: organizza il lavoro e il contesto. Limiti dei file, memoria tra chat, connettori disponibili e modalità di condivisione dipendono dalla piattaforma e dal piano.',
+        en: '**Projects** in services such as ChatGPT and Claude are workspaces that group conversations, files, and instructions for one objective. They keep clients, research, or tasks separate and reuse the context supported by the service.\n\nA Project is not a new model and is not the same as a custom assistant: it organizes work and context. File limits, cross-chat memory, available connectors, and sharing depend on the platform and plan.'
+    },
+    {
+        id: 'custom-assistants',
+        aliases: ['assistente personalizzato', 'assistenti personalizzati', 'custom assistant', 'custom assistants', 'custom gpt', 'custom gpts', 'gpt personalizzati', 'gpt personalizzato'],
+        it: 'Un **assistente personalizzato**, per esempio un Custom GPT o un Gem, applica al modello una configurazione riutilizzabile: ruolo, istruzioni, eventuali file di conoscenza, strumenti e regole di risposta. Serve a ottenere un comportamento coerente per un compito o un pubblico.\n\nNon è normalmente un modello addestrato da zero. È diverso da un Progetto, che organizza un insieme di attività e conversazioni; un assistente definisce soprattutto come l’AI deve comportarsi.',
+        en: 'A **custom assistant**, such as a Custom GPT or a Gem, applies a reusable configuration to a model: role, instructions, optional knowledge files, tools, and response rules. It provides consistent behavior for a task or audience.\n\nIt is not normally a model trained from scratch. It differs from a Project, which organizes activities and conversations; an assistant primarily defines how the AI should behave.'
+    },
+    {
+        id: 'connectors',
+        aliases: ['connettore', 'connettori', 'connettori ai', 'connector', 'connectors', 'ai connectors'],
+        it: 'I **connettori** collegano un’app AI a servizi e archivi esterni, per esempio Drive, SharePoint, GitHub o strumenti aziendali. Dopo l’autorizzazione possono cercare, leggere o, se previsto, modificare dati rispettando gli ambiti concessi.\n\nUn connettore descrive l’integrazione con una fonte o un servizio; non è necessariamente un Plugin né un server MCP. Prima di abilitarlo vanno verificati account usato, permessi, dati indicizzati, aggiornamento delle informazioni e possibilità di revoca.',
+        en: '**Connectors** link an AI application to external services and repositories such as Drive, SharePoint, GitHub, or enterprise tools. Once authorized, they may search, read, or, when supported, modify data within the granted scopes.\n\nA connector describes integration with a source or service; it is not necessarily a Plugin or an MCP server. Check the account, permissions, indexed data, refresh behavior, and revocation options before enabling it.'
+    },
+    {
+        id: 'plugins',
+        aliases: ['plugin', 'plugins', 'plugin ai', 'ai plugin', 'ai plugins', 'estensioni ai'],
+        it: 'Un **Plugin** estende un’applicazione host con capacità aggiuntive, spesso esponendo operazioni o API che l’AI può richiamare. Installazione, distribuzione e autorizzazioni sono definite dalla piattaforma che ospita il plugin.\n\nIl termine è usato in modi diversi e alcune piattaforme hanno sostituito sistemi di plugin precedenti con azioni, connettori o protocolli come MCP. Per capire il rischio concreto bisogna controllare quali dati può leggere e quali azioni può eseguire.',
+        en: 'A **Plugin** extends a host application with additional capabilities, often exposing operations or APIs that the AI can call. Installation, distribution, and permissions are defined by the platform hosting the plugin.\n\nThe term is used in different ways, and some platforms have replaced earlier plugin systems with actions, connectors, or protocols such as MCP. Assess risk by checking which data it can read and which actions it can perform.'
+    },
+    {
+        id: 'skills',
+        aliases: ['skill', 'skills', 'skill ai', 'ai skills', 'competenze ai'],
+        it: 'Una **Skill** è una capacità riutilizzabile descritta in modo operativo, per esempio con istruzioni, esempi, risorse e strumenti necessari a svolgere un compito. Un assistente può caricarla o richiamarla quando riconosce una richiesta compatibile.\n\nIl significato preciso dipende dalla piattaforma: una Skill può essere solo una procedura testuale oppure includere codice e accesso a strumenti. Non va confusa con una capacità appresa nei parametri del modello; permessi e risultati devono essere verificati separatamente.',
+        en: 'A **Skill** is a reusable operational capability described through instructions, examples, resources, and tools needed for a task. An assistant can load or invoke it when it recognizes a compatible request.\n\nThe exact meaning is platform-specific: a Skill may be only a written procedure or may include code and tool access. It is not the same as a capability learned in model parameters; permissions and outcomes require separate checks.'
+    },
+    {
+        id: 'tool-use',
+        aliases: ['tool use', 'uso degli strumenti', 'uso strumenti', 'function calling', 'chiamata di funzione', 'chiamate di funzione', 'tools ai', 'strumenti ai'],
+        it: 'Nel **Tool use** o **function calling**, il modello produce una richiesta strutturata con nome dello strumento e argomenti. È l’applicazione host a validarla, eseguire la funzione e restituire il risultato al modello.\n\nIl modello quindi non esegue direttamente l’operazione. Schema degli input, autorizzazioni, conferme, gestione degli errori e registri devono essere controllati dall’applicazione, soprattutto per scritture, pagamenti o comunicazioni esterne.',
+        en: 'With **tool use** or **function calling**, the model produces a structured request containing a tool name and arguments. The host application validates it, executes the function, and returns the result to the model.\n\nThe model does not directly perform the operation. Input schemas, authorization, confirmations, error handling, and logs must be enforced by the application, especially for writes, payments, or external communications.'
+    },
+    {
+        id: 'memory',
+        aliases: ['memoria ai', 'memoria dell ai', 'memoria del chatbot', 'memory', 'ai memory', 'chatbot memory'],
+        it: 'La **memoria** di un assistente conserva informazioni oltre il singolo messaggio, per esempio preferenze dichiarate, fatti salvati o sintesi di conversazioni precedenti. È distinta dalla finestra di contesto, che contiene solo ciò che il modello può elaborare nella richiesta corrente.\n\nEsistono memoria della chat, del Progetto e del profilo, con regole diverse. L’utente dovrebbe poter vedere, correggere, eliminare o disattivare ciò che viene conservato; dati sensibili e deduzioni non verificate richiedono particolare cautela.',
+        en: 'An assistant’s **memory** retains information beyond one message, such as stated preferences, saved facts, or summaries of earlier conversations. It differs from the context window, which contains only what the model can process in the current request.\n\nChat, Project, and profile memory may follow different rules. Users should be able to inspect, correct, delete, or disable retained information; sensitive data and unverified inferences require particular care.'
+    },
+    {
+        id: 'artifacts',
+        aliases: ['artifact', 'artifacts', 'artefatti', 'canvas ai', 'canvas di chatgpt', 'claude artifacts', 'chatgpt canvas', 'documento affiancato'],
+        it: 'Gli **Artifacts** e i **Canvas** separano un risultato modificabile dalla sequenza dei messaggi. Testi, codice o altri contenuti vengono mostrati in uno spazio di lavoro dedicato, dove possono essere revisionati, confrontati o esportati.\n\nSono un’interfaccia di collaborazione, non una garanzia che il contenuto sia corretto o che il codice sia stato eseguito in sicurezza. Versionamento, esportazione, anteprima ed esecuzione variano tra i servizi.',
+        en: '**Artifacts** and **Canvas** separate an editable result from the message stream. Text, code, or other content appears in a dedicated workspace where it can be revised, compared, or exported.\n\nThey are collaboration interfaces, not guarantees that content is correct or code was executed safely. Versioning, export, preview, and execution differ across services.'
+    },
+    {
+        id: 'deep-research',
+        aliases: ['deep research', 'ricerca approfondita', 'ricerca profonda', 'agente di ricerca', 'research agent'],
+        it: 'La **Deep Research** è un flusso di ricerca in più passaggi: scompone una domanda, consulta fonti web o connettori, confronta informazioni e prepara un rapporto con riferimenti. Può richiedere più tempo di una risposta normale perché pianifica e aggiorna la ricerca.\n\nLe citazioni non rendono automaticamente corretto il rapporto. Bisogna controllare che ogni fonte esista, sostenga davvero l’affermazione, sia aggiornata e non derivi da una catena di copie dello stesso errore.',
+        en: '**Deep Research** is a multi-step research workflow: it decomposes a question, consults web sources or connectors, compares information, and prepares a referenced report. It can take longer than a normal answer because it plans and revises the search.\n\nCitations do not automatically make the report correct. Verify that each source exists, actually supports the claim, is current, and is not part of a chain repeating the same error.'
+    },
+    {
+        id: 'reasoning-models',
+        aliases: ['modello di ragionamento', 'modelli di ragionamento', 'reasoning model', 'reasoning models', 'reasoning ai', 'modelli reasoning'],
+        it: 'I **modelli di ragionamento** dedicano più calcolo alla fase di inferenza per esplorare passaggi intermedi, verificare alternative o usare strumenti prima della risposta. Sono spesso utili per problemi complessi, matematica, codice e pianificazione.\n\nPiù calcolo non garantisce una conclusione corretta. La traccia interna può essere incompleta o non mostrata e non costituisce una prova; risultato, fonti, test e vincoli vanno verificati direttamente.',
+        en: '**Reasoning models** allocate more inference computation to exploring intermediate steps, checking alternatives, or using tools before answering. They are often useful for complex problems, mathematics, code, and planning.\n\nMore computation does not guarantee a correct conclusion. Internal reasoning may be incomplete or hidden and is not evidence; verify the result, sources, tests, and constraints directly.'
+    },
+    {
+        id: 'tokens',
+        aliases: ['token', 'tokens', 'token ai', 'token llm', 'unità token'],
+        it: 'I **token** sono le unità in cui un modello rappresenta input e output. Possono corrispondere a parole intere, parti di parola, punteggiatura o altri simboli, quindi il loro numero non coincide con quello delle parole.\n\nToken di istruzioni, cronologia, documenti e risposta occupano la finestra di contesto e possono incidere su costo e latenza. La suddivisione precisa dipende dal tokenizer del modello.',
+        en: '**Tokens** are the units a model uses to represent input and output. They may correspond to whole words, word fragments, punctuation, or other symbols, so token count is not the same as word count.\n\nTokens from instructions, history, documents, and output occupy the context window and may affect cost and latency. Exact segmentation depends on the model’s tokenizer.'
+    },
+    {
+        id: 'guardrails',
+        aliases: ['guardrail', 'guardrails', 'controlli di sicurezza ai', 'ai safety controls', 'vincoli ai'],
+        it: 'I **guardrail** sono controlli applicati attorno a un sistema AI: regole di utilizzo, filtri, validazione degli input e output, permessi, limiti operativi, conferme e monitoraggio. Possono intervenire prima, durante o dopo il modello.\n\nNessun singolo guardrail elimina tutti gli errori o gli abusi. I controlli devono essere proporzionati al rischio, testati contro aggiramenti e affiancati da autorizzazioni reali e procedure di gestione degli incidenti.',
+        en: '**Guardrails** are controls placed around an AI system: usage policies, filters, input and output validation, permissions, operating limits, confirmations, and monitoring. They can act before, during, or after the model.\n\nNo single guardrail eliminates every error or misuse. Controls must match the risk, be tested against bypasses, and be backed by real authorization and incident-handling procedures.'
+    },
+    {
+        id: 'grounding',
+        aliases: ['grounding', 'allucinazione', 'allucinazioni', 'hallucination', 'hallucinations', 'grounding e allucinazioni', 'grounding and hallucinations', 'risposte fondate'],
+        it: 'Un’**allucinazione** è un contenuto generato che appare plausibile ma non è sostenuto dai dati disponibili. Il **grounding** vincola la risposta a fonti, documenti, risultati di strumenti o altri riferimenti controllabili.\n\nRAG, connettori e citazioni possono migliorare il grounding, ma non eliminano errori di recupero, interpretazione o attribuzione. Ogni affermazione importante va confrontata con la fonte effettiva, non solo con il testo della citazione.',
+        en: 'A **hallucination** is generated content that appears plausible but is unsupported by the available data. **Grounding** ties an answer to sources, documents, tool results, or other verifiable references.\n\nRAG, connectors, and citations can improve grounding but do not eliminate retrieval, interpretation, or attribution errors. Check important claims against the actual source, not only the citation text.'
+    },
+    {
         aliases: ['fotosintesi', 'photosynthesis'],
         it: 'La **fotosintesi** è il processo con cui piante, alghe e alcuni batteri usano l’energia luminosa per trasformare acqua e anidride carbonica in sostanze organiche. Nelle piante avviene soprattutto nei cloroplasti e libera ossigeno come sottoprodotto.',
         en: '**Photosynthesis** is the process by which plants, algae, and some bacteria use light energy to convert water and carbon dioxide into organic compounds. In plants it occurs mainly in chloroplasts and releases oxygen as a by-product.'
@@ -1643,10 +1812,10 @@ const STATIC_KNOWLEDGE = Object.freeze([
 const isDefinitionRequest = message => /^(?:cos e|cosa e|cosa sono|che cos e|che cosa sono|definisci|spiega|spiegami|parlami di|dimmi di|what is|what are|define|explain|tell me about)\b/.test(normalizeText(message));
 
 const conceptQuickReplies = (conceptId, lang) => {
-    const labels = lang === 'it'
-        ? [['computer-use', 'Computer Use'], ['gems', 'Gems'], ['ai-agents', 'Agenti AI'], ['rag', 'RAG'], ['mcp', 'MCP']]
-        : [['computer-use', 'Computer Use'], ['gems', 'Gems'], ['ai-agents', 'AI agents'], ['rag', 'RAG'], ['mcp', 'MCP']];
-    return labels.filter(([id]) => id !== conceptId).slice(0, 4).map(([, label]) => label);
+    const current = AI_CONCEPT_CHOICES.find(choice => choice.id === conceptId);
+    const related = AI_CONCEPT_CHOICES.filter(choice => choice.id !== conceptId && choice.group === current?.group);
+    const remaining = AI_CONCEPT_CHOICES.filter(choice => choice.id !== conceptId && choice.group !== current?.group);
+    return [...related, ...remaining].slice(0, 4).map(choice => choice[lang]);
 };
 
 const staticKnowledgeResponse = (message, lang) => {
@@ -2014,7 +2183,7 @@ const createResponsePlan = (chat, message, tools) => {
         };
     }
     if (chat.guidedState) {
-        const guidedPlan = processGuidedState(chat, message, tools, lang, task, referenced);
+        const guidedPlan = processGuidedState(chat, message, tools, lang, task, referenced, knownAnswer);
         if (guidedPlan) return guidedPlan;
     } else if (isGuidedBackCommand(message)) {
         return guidedMainMenuPlan(chat, lang);
@@ -2766,6 +2935,7 @@ const normalizeStoredGuidedState = state => {
     if (!state || typeof state !== 'object') return null;
     const validSteps = {
         main: new Set(['choice']),
+        concepts: new Set(['list', 'detail']),
         recommend: new Set(['specialization', 'operation', 'results']),
         compare: new Set(['first-tool', 'second-tool', 'complete'])
     };
@@ -2779,10 +2949,13 @@ const normalizeStoredGuidedState = state => {
     }
     if (Array.isArray(state.resultToolIds)) normalized.resultToolIds = state.resultToolIds.map(String).filter(Boolean).slice(0, 5);
     if (state.firstToolId) normalized.firstToolId = String(state.firstToolId);
+    if (Number.isInteger(state.conceptPage) && state.conceptPage >= 0) normalized.conceptPage = state.conceptPage;
+    if (state.conceptId && AI_CONCEPT_CHOICES.some(choice => choice.id === state.conceptId)) normalized.conceptId = String(state.conceptId);
     if (Number.isInteger(state.suggestionPage) && state.suggestionPage >= 0) normalized.suggestionPage = state.suggestionPage;
     if (Number.isInteger(state.resultPage) && state.resultPage >= 0) normalized.resultPage = state.resultPage;
     if (flow === 'recommend' && step !== 'specialization' && !normalized.specialization) return null;
     if (flow === 'compare' && step === 'second-tool' && !normalized.firstToolId) return null;
+    if (flow === 'concepts' && step === 'detail' && !normalized.conceptId) return null;
     return normalized;
 };
 

@@ -2114,13 +2114,22 @@
         }
 
         .ai-concept-illustration[data-concept="gems"],
-        .ai-concept-illustration[data-concept="mcp"] { --concept-accent: var(--Koda-concept-cyan); }
+        .ai-concept-illustration[data-concept="mcp"],
+        .ai-concept-illustration[data-concept="projects"],
+        .ai-concept-illustration[data-concept="connectors"],
+        .ai-concept-illustration[data-concept="artifacts"] { --concept-accent: var(--Koda-concept-cyan); }
 
         .ai-concept-illustration[data-concept="ai-agents"],
-        .ai-concept-illustration[data-concept="embeddings"] { --concept-accent: var(--Koda-concept-amber); }
+        .ai-concept-illustration[data-concept="embeddings"],
+        .ai-concept-illustration[data-concept="skills"],
+        .ai-concept-illustration[data-concept="memory"],
+        .ai-concept-illustration[data-concept="reasoning-models"] { --concept-accent: var(--Koda-concept-amber); }
 
         .ai-concept-illustration[data-concept="multimodal-ai"],
-        .ai-concept-illustration[data-concept="fine-tuning"] { --concept-accent: var(--Koda-concept-coral); }
+        .ai-concept-illustration[data-concept="fine-tuning"],
+        .ai-concept-illustration[data-concept="plugins"],
+        .ai-concept-illustration[data-concept="guardrails"],
+        .ai-concept-illustration[data-concept="grounding"] { --concept-accent: var(--Koda-concept-coral); }
 
         .ai-concept-heading {
             min-height: 46px;
@@ -2193,6 +2202,7 @@
             line-height: 1.15;
             text-align: center;
             letter-spacing: 0;
+            overflow-wrap: anywhere;
             transform: translate(-50%, -50%);
         }
 
@@ -10150,6 +10160,16 @@ const ChatQuickReply = ({
     }, reply));
 };
 const AI_CONCEPT_VISUALS = Object.freeze({
+    projects: {
+        variant: 'converge',
+        it: { title: 'Progetti', nodes: ['Chat', 'File', 'Istruzioni', 'Progetto'], caption: 'Un contesto di lavoro riunito attorno allo stesso obiettivo' },
+        en: { title: 'Projects', nodes: ['Chats', 'Files', 'Instructions', 'Project'], caption: 'A workspace context organized around one objective' }
+    },
+    'custom-assistants': {
+        variant: 'hub',
+        it: { title: 'Assistenti personalizzati', nodes: ['Istruzioni', 'Conoscenza', 'Strumenti'], caption: 'Una configurazione riutilizzabile definisce il comportamento' },
+        en: { title: 'Custom assistants', nodes: ['Instructions', 'Knowledge', 'Tools'], caption: 'A reusable configuration defines behavior' }
+    },
     'computer-use': {
         variant: 'device',
         it: { title: 'Computer Use', nodes: ['Osserva', 'Pianifica', 'Agisce', 'Verifica'], caption: 'Schermata, decisione, mouse e tastiera, controllo' },
@@ -10160,10 +10180,45 @@ const AI_CONCEPT_VISUALS = Object.freeze({
         it: { title: 'Gems', nodes: ['Istruzioni', 'Conoscenza', 'Attività'], caption: 'Una configurazione riutilizzabile applicata al modello Gemini' },
         en: { title: 'Gems', nodes: ['Instructions', 'Knowledge', 'Tasks'], caption: 'A reusable configuration applied to the Gemini model' }
     },
+    connectors: {
+        variant: 'pipeline',
+        it: { title: 'Connettori', nodes: ['Servizio', 'Accesso', 'Connettore', 'App AI'], caption: 'Dati esterni disponibili entro i permessi concessi' },
+        en: { title: 'Connectors', nodes: ['Service', 'Access', 'Connector', 'AI app'], caption: 'External data available within granted permissions' }
+    },
+    plugins: {
+        variant: 'pipeline',
+        it: { title: 'Plugin', nodes: ['App host', 'Plugin', 'Azione'], caption: 'Un’estensione aggiunge capacità definite dalla piattaforma' },
+        en: { title: 'Plugins', nodes: ['Host app', 'Plugin', 'Action'], caption: 'An extension adds platform-defined capabilities' }
+    },
+    skills: {
+        variant: 'pipeline',
+        it: { title: 'Skills', nodes: ['Richiesta', 'Skill', 'Risultato'], caption: 'Istruzioni e strumenti riutilizzati per un compito specifico' },
+        en: { title: 'Skills', nodes: ['Request', 'Skill', 'Result'], caption: 'Instructions and tools reused for a specific task' }
+    },
+    'tool-use': {
+        variant: 'loop',
+        it: { title: 'Tool use', nodes: ['Modello', 'Chiamata', 'Applicazione', 'Risultato'], caption: 'L’applicazione valida ed esegue la richiesta del modello' },
+        en: { title: 'Tool use', nodes: ['Model', 'Tool call', 'Application', 'Result'], caption: 'The application validates and executes the model request' }
+    },
     'ai-agents': {
         variant: 'loop',
         it: { title: 'Agenti AI', nodes: ['Obiettivo', 'Piano', 'Strumenti', 'Esito'], caption: 'Pianifica, agisce, osserva e aggiorna il piano' },
         en: { title: 'AI agents', nodes: ['Goal', 'Plan', 'Tools', 'Outcome'], caption: 'Plan, act, observe, and update the plan' }
+    },
+    memory: {
+        variant: 'cluster',
+        it: { title: 'Memoria', nodes: ['Chat', 'Progetto', 'Profilo'], caption: 'Informazioni conservate oltre il singolo messaggio' },
+        en: { title: 'Memory', nodes: ['Chat', 'Project', 'Profile'], caption: 'Information retained beyond a single message' }
+    },
+    artifacts: {
+        variant: 'pipeline',
+        it: { title: 'Artifacts e Canvas', nodes: ['Chat', 'Spazio di lavoro', 'Revisione'], caption: 'Il risultato modificabile vive accanto alla conversazione' },
+        en: { title: 'Artifacts and Canvas', nodes: ['Chat', 'Workspace', 'Review'], caption: 'The editable result lives beside the conversation' }
+    },
+    'deep-research': {
+        variant: 'loop',
+        it: { title: 'Deep Research', nodes: ['Piano', 'Fonti', 'Verifica', 'Rapporto'], caption: 'La ricerca viene scomposta, controllata e documentata' },
+        en: { title: 'Deep Research', nodes: ['Plan', 'Sources', 'Verify', 'Report'], caption: 'Research is decomposed, checked, and documented' }
     },
     rag: {
         variant: 'pipeline',
@@ -10190,10 +10245,30 @@ const AI_CONCEPT_VISUALS = Object.freeze({
         it: { title: 'Fine-tuning', nodes: ['Esempi', 'Addestramento', 'Modello adattato'], caption: 'Gli esempi modificano i parametri del modello di base' },
         en: { title: 'Fine-tuning', nodes: ['Examples', 'Training', 'Adapted model'], caption: 'Examples modify the parameters of the base model' }
     },
+    'reasoning-models': {
+        variant: 'loop',
+        it: { title: 'Modelli di ragionamento', nodes: ['Problema', 'Alternative', 'Controllo', 'Risposta'], caption: 'Più calcolo in inferenza per esplorare e verificare' },
+        en: { title: 'Reasoning models', nodes: ['Problem', 'Alternatives', 'Check', 'Answer'], caption: 'More inference compute to explore and verify' }
+    },
     'context-window': {
         variant: 'window',
         it: { title: 'Finestra di contesto', nodes: ['Istruzioni', 'Cronologia', 'Documenti', 'Output'], caption: 'Tutto compete per uno spazio di token limitato' },
         en: { title: 'Context window', nodes: ['Instructions', 'History', 'Documents', 'Output'], caption: 'Everything competes for a limited token budget' }
+    },
+    tokens: {
+        variant: 'pipeline',
+        it: { title: 'Token', nodes: ['Testo', 'Tokenizer', 'Token', 'Modello'], caption: 'Il contenuto viene suddiviso nelle unità elaborate dal modello' },
+        en: { title: 'Tokens', nodes: ['Text', 'Tokenizer', 'Tokens', 'Model'], caption: 'Content is split into the units processed by the model' }
+    },
+    guardrails: {
+        variant: 'pipeline',
+        it: { title: 'Guardrail', nodes: ['Input', 'Controlli', 'Modello', 'Output'], caption: 'Regole e verifiche circondano il comportamento del sistema' },
+        en: { title: 'Guardrails', nodes: ['Input', 'Controls', 'Model', 'Output'], caption: 'Rules and checks surround system behavior' }
+    },
+    grounding: {
+        variant: 'converge',
+        it: { title: 'Grounding e allucinazioni', nodes: ['Fonti', 'Documenti', 'Strumenti', 'Risposta'], caption: 'Le affermazioni vengono ancorate a riferimenti verificabili' },
+        en: { title: 'Grounding and hallucinations', nodes: ['Sources', 'Documents', 'Tools', 'Answer'], caption: 'Claims are anchored to verifiable references' }
     }
 });
 
@@ -10502,11 +10577,9 @@ const App = ({
     onConversationsChange(conversations);
   }, [conversations, onConversationsChange]);
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
-            behavior: "auto",
-            block: "end"
-    });
-    }, [latestMessageId]);
+        const messagesContainer = document.getElementById('chat-messages');
+        if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, [latestMessageId, isLoading]);
     const initializeChat = useCallback(() => {
     try {
                 const savedConversation = initialConversations[initialActiveId];

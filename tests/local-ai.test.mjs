@@ -127,7 +127,20 @@ test('explains AI concepts deterministically with visual metadata', async () => 
         ['che cos’è MCP?', 'ai-concept-mcp', /Model Context Protocol/is],
         ['cosa sono gli embeddings?', 'ai-concept-embeddings', /vettori numerici/is],
         ['spiegami il fine-tuning', 'ai-concept-fine-tuning', /parametri del modello/is],
-        ['spiegami la finestra di contesto', 'ai-concept-context-window', /quantità massima di token/is]
+        ['spiegami la finestra di contesto', 'ai-concept-context-window', /quantità massima di token/is],
+        ['cosa sono i progetti?', 'ai-concept-projects', /ChatGPT e Claude.*spazi di lavoro/is],
+        ['cosa sono gli assistenti personalizzati?', 'ai-concept-custom-assistants', /Custom GPT.*Gem/is],
+        ['spiegami i connettori', 'ai-concept-connectors', /Drive.*SharePoint.*GitHub/is],
+        ['cosa sono i plugin?', 'ai-concept-plugins', /estende un.applicazione host/is],
+        ['cosa sono le skills?', 'ai-concept-skills', /capacità riutilizzabile/is],
+        ['spiegami il function calling', 'ai-concept-tool-use', /richiesta strutturata.*applicazione host/is],
+        ['cos’è la memoria AI?', 'ai-concept-memory', /oltre il singolo messaggio/is],
+        ['cosa sono gli Artifacts?', 'ai-concept-artifacts', /spazio di lavoro dedicato/is],
+        ['spiegami la Deep Research', 'ai-concept-deep-research', /ricerca in più passaggi/is],
+        ['cosa sono i modelli di ragionamento?', 'ai-concept-reasoning-models', /più calcolo.*inferenza/is],
+        ['cosa sono i token?', 'ai-concept-tokens', /unità.*input e output/is],
+        ['cosa sono i guardrail?', 'ai-concept-guardrails', /filtri.*validazione.*permessi/is],
+        ['cosa sono le allucinazioni?', 'ai-concept-grounding', /plausibile.*non è sostenuto/is]
     ];
 
     for (const [message, responseType, expectedText] of cases) {
@@ -137,6 +150,30 @@ test('explains AI concepts deterministically with visual metadata', async () => 
         assert.equal(result.metadata.strategy, 'deterministic', message);
         assert.match(result.text, expectedText, message);
         assert.ok(result.metadata.quickReplies.length >= 3, message);
+    }
+
+    const englishCases = [
+        ['What are Projects?', 'ai-concept-projects', /workspaces.*conversations.*files.*instructions/is],
+        ['Explain custom assistants', 'ai-concept-custom-assistants', /Custom GPT.*Gem/is],
+        ['What are AI connectors?', 'ai-concept-connectors', /external services.*granted scopes/is],
+        ['Explain plugins', 'ai-concept-plugins', /extends a host application/is],
+        ['What are AI skills?', 'ai-concept-skills', /reusable operational capability/is],
+        ['Explain function calling', 'ai-concept-tool-use', /structured request.*host application/is],
+        ['What is AI memory?', 'ai-concept-memory', /beyond one message/is],
+        ['What are Artifacts?', 'ai-concept-artifacts', /dedicated workspace/is],
+        ['Explain Deep Research', 'ai-concept-deep-research', /multi-step research workflow/is],
+        ['What are reasoning models?', 'ai-concept-reasoning-models', /more inference computation/is],
+        ['What are tokens?', 'ai-concept-tokens', /units.*input and output/is],
+        ['What are guardrails?', 'ai-concept-guardrails', /filters.*validation.*permissions/is],
+        ['Explain grounding and hallucinations', 'ai-concept-grounding', /plausible.*unsupported/is]
+    ];
+
+    for (const [message, responseType, expectedText] of englishCases) {
+        const result = await ask(message, { lang: 'en' });
+        assert.equal(result.metadata.intent, 'known-knowledge', message);
+        assert.equal(result.metadata.responseType, responseType, message);
+        assert.equal(result.metadata.strategy, 'deterministic', message);
+        assert.match(result.text, expectedText, message);
     }
     assert.equal(workerRequests.length, 0);
 });
@@ -277,6 +314,7 @@ test('guides recommendations deterministically and keeps focus', async () => {
     const menu = await send(chat, 'ciao');
     assert.equal(menu.metadata.intent, 'guided-menu-main');
     assert.ok(menu.metadata.quickReplies.includes("Trova un'AI"));
+    assert.ok(menu.metadata.quickReplies.includes('Concetti AI'));
     assert.deepEqual(menu.metadata.guidedState, { flow: 'main', step: 'choice', attempts: 0 });
 
     const area = await send(chat, "Trova un'AI");
@@ -297,6 +335,63 @@ test('guides recommendations deterministically and keeps focus', async () => {
     assert.equal(result.metadata.intent, 'guided-recommend-results');
     assert.deepEqual(result.metadata.toolIds, ['code-studio']);
     assert.equal(result.metadata.strategy, 'deterministic');
+    assert.equal(workerRequests.length, 0);
+});
+
+test('opens the AI concept selector and renders a selected explanation', async () => {
+    const chat = localModule.createLocalChatSession('it', [], 'catalog');
+    const menu = await send(chat, 'ciao');
+    assert.deepEqual(menu.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI', 'Concetti AI']);
+
+    const concepts = await send(chat, 'Concetti AI');
+    assert.equal(concepts.metadata.intent, 'guided-concepts-list');
+    assert.ok(concepts.metadata.quickReplies.includes('Progetti'));
+    assert.ok(concepts.metadata.quickReplies.includes('Connettori'));
+    assert.deepEqual(concepts.metadata.guidedState, { flow: 'concepts', step: 'list', attempts: 0, conceptPage: 0 });
+
+    const explanation = await send(chat, 'Progetti');
+    assert.equal(explanation.metadata.intent, 'guided-concept-explanation');
+    assert.equal(explanation.metadata.responseType, 'ai-concept-projects');
+    assert.match(explanation.text, /ChatGPT e Claude.*spazi di lavoro/is);
+    assert.ok(explanation.metadata.quickReplies.includes('Tutti i concetti'));
+    assert.equal(explanation.metadata.strategy, 'deterministic');
+
+    const directChat = localModule.createLocalChatSession('it', [], 'catalog');
+    await send(directChat, 'ciao');
+    const directExplanation = await send(directChat, 'cosa sono i connettori?');
+    assert.equal(directExplanation.metadata.intent, 'known-knowledge');
+    assert.equal(directExplanation.metadata.responseType, 'ai-concept-connectors');
+    assert.match(directExplanation.text, /Drive.*SharePoint.*GitHub/is);
+    assert.equal(workerRequests.length, 0);
+});
+
+test('pages through all 22 AI concepts', async () => {
+    const chat = localModule.createLocalChatSession('it', [], 'catalog');
+    await send(chat, 'menu');
+    const firstPage = await send(chat, 'Concetti AI');
+    assert.match(firstPage.text, /Pagina 1\/4/);
+    assert.ok(firstPage.metadata.quickReplies.includes('Progetti'));
+    assert.ok(firstPage.metadata.quickReplies.includes('Skills'));
+
+    const secondPage = await send(chat, 'Mostra altri');
+    assert.match(secondPage.text, /Pagina 2\/4/);
+    assert.ok(secondPage.metadata.quickReplies.includes('Tool use e function calling'));
+    assert.ok(secondPage.metadata.quickReplies.includes('Artifacts e Canvas'));
+
+    const thirdPage = await send(chat, 'Mostra altri');
+    assert.match(thirdPage.text, /Pagina 3\/4/);
+    assert.ok(thirdPage.metadata.quickReplies.includes('Deep Research'));
+    assert.ok(thirdPage.metadata.quickReplies.includes('Modelli di ragionamento'));
+
+    const fourthPage = await send(chat, 'Mostra altri');
+    assert.match(fourthPage.text, /Pagina 4\/4/);
+    assert.ok(fourthPage.metadata.quickReplies.includes('Finestra di contesto'));
+    assert.ok(fourthPage.metadata.quickReplies.includes('Grounding e allucinazioni'));
+    assert.deepEqual(fourthPage.metadata.guidedState, { flow: 'concepts', step: 'list', attempts: 0, conceptPage: 3 });
+
+    const wrappedPage = await send(chat, 'Mostra altri');
+    assert.match(wrappedPage.text, /Pagina 1\/4/);
+    assert.ok(wrappedPage.metadata.quickReplies.includes('Progetti'));
     assert.equal(workerRequests.length, 0);
 });
 
@@ -353,7 +448,7 @@ test('restores a saved guide and blocks file generation requests', async () => {
     assert.equal(directFile.metadata.strategy, 'deterministic');
 });
 
-test('guides comparison and exposes only the two supported menu actions', async () => {
+test('guides comparison and exposes the three supported menu actions', async () => {
     const tools = [
         { id: 'chatgpt', name: 'ChatGPT', category: 'Multimodali', specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }] },
         { id: 'claude', name: 'Claude', category: 'Multimodali', specializations: [{ type: 'code', capabilities: { create: true, read: true, edit: true } }] }
@@ -368,7 +463,7 @@ test('guides comparison and exposes only the two supported menu actions', async 
 
     const fileChat = localModule.createLocalChatSession('it', tools, 'catalog');
     const menu = await send(fileChat, 'menu');
-    assert.deepEqual(menu.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI']);
+    assert.deepEqual(menu.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI', 'Concetti AI']);
     const file = await send(fileChat, 'Crea un file');
     assert.equal(file.metadata.intent, 'file-generation-unavailable');
     assert.deepEqual(file.metadata.artifacts, []);
@@ -412,7 +507,7 @@ test('redirects unsupported conversation back to the guided scope', async () => 
     assert.equal(result.metadata.intent, 'guided-menu-main');
     assert.equal(result.metadata.strategy, 'deterministic');
     assert.match(result.text, /resta focalizzata/i);
-    assert.deepEqual(result.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI']);
+    assert.deepEqual(result.metadata.quickReplies, ["Trova un'AI", 'Confronta due AI', 'Concetti AI']);
     assert.equal(workerRequests.length, 0);
 });
 
