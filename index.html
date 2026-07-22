@@ -16595,8 +16595,8 @@ window.mountChatbotApp = (container, props) => {
                         const localizedReason = ranking?.reasons?.[toolId]?.[currentLanguage]
                             || ranking?.reasons?.[toolId]
                             || (currentLanguage === 'it'
-                                ? `Segnali della scheda: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`
-                                : `Profile signals: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`);
+                                ? `Caratteristiche: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`
+                                : `Features: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`);
                         return `
                         <li class="ranking-item stagger-item" data-id="${tool.id}">
                             <span class="ranking-item-rank">${rank}</span>
