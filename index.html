@@ -1678,6 +1678,100 @@
             display: block;
         }
 
+        .tool-connections {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+        }
+
+        .tool-connection-section + .tool-connection-section {
+            margin-top: 24px;
+        }
+
+        .tool-connection-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 12px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .tool-connection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .tool-connection-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            width: 100%;
+            padding: 11px;
+            border: 1px solid rgba(128, 128, 128, 0.22);
+            border-radius: 8px;
+            background: var(--Koda-bg-light);
+            color: var(--Koda-text);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .tool-connection-card:hover,
+        .tool-connection-card:focus-visible {
+            border-color: var(--Koda-accent);
+            outline: none;
+        }
+
+        .tool-connection-thumb {
+            width: 54px;
+            height: 42px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--Koda-card);
+            flex: 0 0 auto;
+        }
+
+        .tool-connection-copy {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .tool-connection-kicker,
+        .recommendation-reason {
+            display: block;
+            color: var(--Koda-text-secondary);
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .tool-connection-title {
+            display: -webkit-box;
+            margin-top: 3px;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-size: 13px;
+            font-weight: 750;
+            line-height: 1.3;
+        }
+
+        .tool-prompt-card {
+            align-items: flex-start;
+        }
+
+        .tool-prompt-card .tool-connection-title {
+            font-weight: 600;
+            -webkit-line-clamp: 3;
+        }
+
+        @media (max-width: 560px) {
+            .tool-connection-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
         /* --- STILI MIGLIORATI E NUOVI PER IL CHATBOT --- */
         #chatbot-container-wrapper {
             display: flex;
@@ -3145,13 +3239,43 @@
             flex-shrink: 0;
         }
         .utility-tools-section::-webkit-scrollbar { display: none; }
-        .utility-tools-title {
+        .side-menu-section-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 2px;
+            border: none;
+            background: none;
             font-size: 12px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--Koda-text-secondary);
-            margin: 2px 2px 4px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .side-menu-section-toggle .section-toggle-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .side-menu-section-toggle .section-toggle-chevron {
+            width: 18px;
+            height: 18px;
+            transition: transform .2s ease;
+        }
+        .side-menu-section-toggle[aria-expanded="true"] .section-toggle-chevron {
+            transform: rotate(180deg);
+        }
+        .side-menu-section-content[hidden] {
+            display: none;
+        }
+        .side-menu-section-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         .utility-tool-item {
             display: flex;
@@ -3468,6 +3592,20 @@
             font-size: 12px;
             /* Reduced font size */
             color: var(--Koda-text-secondary);
+
+        .ranking-methodology {
+            margin: -2px 0 14px;
+            color: var(--Koda-text-secondary);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .ranking-item-reason {
+            margin-top: 4px;
+            color: var(--Koda-text-secondary);
+            font-size: 11px;
+            line-height: 1.35;
+        }
         }
 
         /* --- STILI PER MODALE IMPOSTAZIONI (AGGIUNTI) --- */
@@ -3549,6 +3687,61 @@
         .local-ai-download-progress.is-indeterminate .local-ai-download-progress-fill {
             width: 32%;
             animation: local-ai-download-indeterminate 1.1s ease-in-out infinite;
+        }
+
+        .local-ai-consent-panel {
+            width: min(100%, 460px);
+            max-height: min(720px, calc(100dvh - 32px));
+            overflow-y: auto;
+            padding: 24px;
+            border: 1px solid rgba(128, 128, 128, 0.25);
+            border-radius: 8px;
+            background: var(--Koda-card);
+            color: var(--Koda-text);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .local-ai-consent-facts {
+            display: grid;
+            gap: 8px;
+            margin: 18px 0;
+        }
+
+        .local-ai-consent-fact {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+            font-size: 13px;
+        }
+
+        .local-ai-consent-fact span {
+            color: var(--Koda-text-secondary);
+        }
+
+        .local-ai-consent-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .local-ai-consent-actions button {
+            min-height: 46px;
+            border: 1px solid rgba(128, 128, 128, 0.3);
+            border-radius: 7px;
+            background: transparent;
+            color: var(--Koda-text);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .local-ai-consent-actions .primary {
+            border-color: var(--Koda-accent);
+            background: var(--Koda-accent);
+            color: #000;
         }
 
         @keyframes local-ai-download-indeterminate {
@@ -9492,6 +9685,60 @@
             color: var(--Koda-accent);
         }
 
+        .news-mentioned-tools {
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+        }
+
+        .news-mentioned-tools h2 {
+            margin: 0 0 12px;
+            font-size: 18px;
+        }
+
+        .news-mentioned-tool-btn + .news-mentioned-tool-btn {
+            margin-top: 10px;
+        }
+
+        .news-mentioned-tool-actions {
+            display: flex;
+            gap: 8px;
+            flex: 0 0 auto;
+        }
+
+        .news-mentioned-tool-action {
+            min-height: 38px;
+            padding: 8px 11px;
+            border: 1px solid rgba(128, 128, 128, 0.3);
+            border-radius: 7px;
+            background: transparent;
+            color: var(--Koda-text);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .news-mentioned-tool-action.primary {
+            border-color: var(--Koda-accent);
+            background: var(--Koda-accent);
+            color: #000;
+        }
+
+        @media (max-width: 560px) {
+            .news-mentioned-tool-btn {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .news-mentioned-tool-actions {
+                width: 100%;
+            }
+
+            .news-mentioned-tool-action {
+                flex: 1;
+            }
+        }
+
         /* Contenitore per le altre tab (Ricerca, Salvati, Piaciuti) */
         .news-alt-container {
             padding: 72px 16px 20px;
@@ -9619,14 +9866,21 @@
                 <button class="new-chat-btn" data-action="new-chat" data-translate="newChat">Nuova chat</button>
             </div>
             <div id="utility-tools-container" class="utility-tools-section"></div>
-            <div class="menu-section-title" id="history-section-title" data-translate="history">Cronologia</div>
-            <div id="conversation-list-container" class="conversation-list">
-                <!-- Le conversazioni verranno popolate da JS -->
-            </div>
+            <section id="history-menu-section">
+                <button class="side-menu-section-toggle" id="history-section-title" type="button" data-action="toggle-side-menu-section" data-section="history" aria-expanded="false" aria-controls="history-section-content">
+                    <span class="section-toggle-label"><span data-translate="history">Cronologia</span></span>
+                    <svg class="section-toggle-chevron" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div id="history-section-content" class="side-menu-section-content" hidden>
+                    <div id="conversation-list-container" class="conversation-list">
+                        <!-- Le conversazioni verranno popolate da JS -->
+                    </div>
+                    <button id="delete-all-btn" data-action="delete-all-chats" data-translate="deleteAll">Elimina tutto</button>
+                </div>
+            </section>
             <div class="menu-footer">
                 <a href="https://mega.nz/file/ohYS0CYB#oLZnprvBFxWQpDqPDiqWzqHo6yTA_P1a34Qk_VAgqxA" target="_blank" rel="noopener noreferrer"
                     class="menu-footer-link" data-translate="discoverMoreLink">Clicca per scoprire di piu'</a>
-                <button id="delete-all-btn" data-action="delete-all-chats" data-translate="deleteAll">Elimina tutto</button>
             </div>
         </div>
     </div>
@@ -10600,6 +10854,7 @@ const App = ({
     let currentModelMessageId = `model-${Date.now()}`;
     let accumulatedResponse = "";
     try {
+            if (window.getAllToolsForCurrentUser) chatSession.tools = window.getAllToolsForCurrentUser();
             const stream = sendMessageStream(chatSession, inputText);
       for await (const chunk of stream) {
         accumulatedResponse += chunk;
@@ -10828,7 +11083,7 @@ window.mountChatbotApp = (container, props) => {
     <script type="module">
         // --- FIREBASE IMPORTS ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, orderBy, limit, startAfter, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -11230,7 +11485,7 @@ window.mountChatbotApp = (container, props) => {
                     privacyLocalStoragePreferences: "• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.",
                     privacyLocalStorageHistory: "• Cronologia delle conversazioni: messaggi e fonti mostrate vengono salvati localmente per permetterti di ritrovare le conversazioni precedenti.",
                     privacyLocalStorageCollections: "• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.",
-                    privacyLocalStorageState: "• Stato e cache dell'applicazione: informazioni tecniche, stato delle conversazioni e il modello locale SmolLM2 (circa 118 MB al primo utilizzo).",
+                    privacyLocalStorageState: "• Stato e cache dell'applicazione: informazioni tecniche e stato delle conversazioni. Il modello locale SmolLM2 occupa circa 118 MB solo dopo una conferma esplicita.",
                     privacyLocalStorageImportantTitle: "Importante da sapere:",
                     privacyLocalStoragePoint1: "• Cronologia e risposte rimangono sul dispositivo e non vengono inviati ai nostri server o a servizi esterni.",
                     privacyLocalStoragePoint2: "• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser (solitamente nella sezione \"Privacy\" o \"Cancella dati di navigazione\").",
@@ -11437,7 +11692,7 @@ window.mountChatbotApp = (container, props) => {
                     privacyLocalStoragePreferences: "• User preferences: such as selected language, theme (light/dark mode), and other customization settings.",
                     privacyLocalStorageHistory: "• Conversation history: messages and displayed sources are saved locally so previous conversations remain available.",
                     privacyLocalStorageCollections: "• Collections and favorites: your AI tool collections and favorites are stored on your device.",
-                    privacyLocalStorageState: "• Application state and cache: technical information, conversation state, and the local SmolLM2 model (about 118 MB on first use).",
+                    privacyLocalStorageState: "• Application state and cache: technical information and conversation state. The local SmolLM2 model uses about 118 MB only after explicit confirmation.",
                     privacyLocalStorageImportantTitle: "Important to know:",
                     privacyLocalStoragePoint1: "• History and responses remain on the device and are not sent to our servers or external services.",
                     privacyLocalStoragePoint2: "• You can delete this data at any time through your browser settings (usually in the \"Privacy\" or \"Clear browsing data\" section).",
@@ -11508,22 +11763,35 @@ window.mountChatbotApp = (container, props) => {
             const getNewsHashtags = news => Array.isArray(news?.hashtags)
                 ? news.hashtags.map(tag => String(tag || '').replace(/^#+/, '').trim()).filter(Boolean).slice(0, 3)
                 : [];
-            const FIRESTORE_LIMITS = { tools: 300, rankings: 100, videos: 200, news: 100 };
+            const FIRESTORE_LIMITS = { rankings: 100 };
+            const FIRESTORE_PAGE_SIZES = { tools: 48, videos: 24, news: 12 };
+            const firestorePageState = {
+                tools: { cursor: null, hasMore: true, loaded: 0 },
+                videos: { cursor: null, hasMore: true, loaded: 0 },
+                news: { cursor: null, hasMore: true, loaded: 0 }
+            };
+            let useFallbackVideoOrdering = false;
+
+            const snapshotToCatalogPage = (querySnapshot, pageSize) => ({
+                items: querySnapshot.docs.map(documentSnapshot => ({ ...documentSnapshot.data(), id: documentSnapshot.id })),
+                cursor: querySnapshot.docs.at(-1) || null,
+                hasMore: querySnapshot.size === pageSize
+            });
+
+            const emptyCatalogPage = () => ({ items: [], cursor: null, hasMore: false });
+
             // NUOVA FUNZIONE per caricare gli strumenti da Firestore
-            const fetchToolsFromFirestore = async () => {
+            const fetchToolsFromFirestore = async ({ cursor = null, pageSize = FIRESTORE_PAGE_SIZES.tools } = {}) => {
                 try {
                     const toolsCollectionRef = collection(db, "tools");
-                    const querySnapshot = await getDocs(query(toolsCollectionRef, limit(FIRESTORE_LIMITS.tools)));
-                    const firestoreTools = [];
-                    querySnapshot.forEach((doc) => {
-                        // Aggiungiamo i dati del documento e usiamo l'ID del documento di Firestore come 'id' principale
-                        firestoreTools.push({ ...doc.data(), id: doc.id });
-                    });
-                    return firestoreTools;
+                    const constraints = [orderBy(documentId())];
+                    if (cursor) constraints.push(startAfter(cursor));
+                    constraints.push(limit(pageSize));
+                    return snapshotToCatalogPage(await getDocs(query(toolsCollectionRef, ...constraints)), pageSize);
                 } catch (error) {
                     console.error("Error fetching tools from Firestore:", error);
                     showToast("Could not load AI tools from the database.");
-                    return []; // Restituisce un array vuoto in caso di errore
+                    return emptyCatalogPage();
                 }
             };
             // NUOVA FUNZIONE per caricare le classifiche da Firestore
@@ -11545,48 +11813,98 @@ window.mountChatbotApp = (container, props) => {
             };
 
             // NUOVA FUNZIONE per caricare i video da Firestore (ordinati per campo 'order' o data)
-            const fetchVideosFromFirestore = async () => {
-                try {
+            const fetchVideosFromFirestore = async ({ cursor = null, pageSize = FIRESTORE_PAGE_SIZES.videos } = {}) => {
+                const executeVideoQuery = async fallbackOrdering => {
                     const videosCollectionRef = collection(db, "videos");
-                    // Ordina per 'order' se esiste, altrimenti per data di creazione
-                    const q = query(videosCollectionRef, orderBy("order", "asc"), orderBy("createdAt", "desc"), limit(FIRESTORE_LIMITS.videos));
-                    const querySnapshot = await getDocs(q);
-                    const firestoreVideos = [];
-                    querySnapshot.forEach((doc) => {
-                        firestoreVideos.push({ ...doc.data(), id: doc.id });
-                    });
-                    return firestoreVideos;
+                    const constraints = fallbackOrdering
+                        ? [orderBy("createdAt", "desc")]
+                        : [orderBy("order", "asc"), orderBy("createdAt", "desc")];
+                    if (cursor) constraints.push(startAfter(cursor));
+                    constraints.push(limit(pageSize));
+                    return snapshotToCatalogPage(await getDocs(query(videosCollectionRef, ...constraints)), pageSize);
+                };
+                try {
+                    return await executeVideoQuery(useFallbackVideoOrdering);
                 } catch (error) {
-                    // Gestisce il caso in cui il campo 'order' non esista ancora su tutti i documenti
-                    if (error.code === 'failed-precondition') {
+                    if (error.code === 'failed-precondition' && !useFallbackVideoOrdering) {
                         console.warn("Composite index for videos not found, falling back to createdAt ordering. Please create the index in Firebase.");
-                        const videosCollectionRef = collection(db, "videos");
-                        const fallbackQuery = query(videosCollectionRef, orderBy("createdAt", "desc"), limit(FIRESTORE_LIMITS.videos));
-                        const querySnapshot = await getDocs(fallbackQuery);
-                        const firestoreVideos = [];
-                        querySnapshot.forEach((doc) => firestoreVideos.push({ ...doc.data(), id: doc.id }));
-                        return firestoreVideos;
+                        useFallbackVideoOrdering = true;
+                        return executeVideoQuery(true);
                     }
                     console.error("Error fetching videos from Firestore:", error);
-                    return [];
+                    return emptyCatalogPage();
                 }
             };
 
             // NUOVA FUNZIONE: Carica le news da Firebase
-            const fetchNewsFromFirestore = async () => {
+            const fetchNewsFromFirestore = async ({ cursor = null, pageSize = FIRESTORE_PAGE_SIZES.news } = {}) => {
                 try {
                     const newsRef = collection(db, "news");
-                    const q = query(newsRef, orderBy("timestamp", "desc"), limit(FIRESTORE_LIMITS.news));
-                    const querySnapshot = await getDocs(q);
-                    const firestoreNews = [];
-                    querySnapshot.forEach((doc) => {
-                        firestoreNews.push({ ...doc.data(), id: doc.id });
-                    });
-                    return firestoreNews;
+                    const constraints = [orderBy("timestamp", "desc")];
+                    if (cursor) constraints.push(startAfter(cursor));
+                    constraints.push(limit(pageSize));
+                    return snapshotToCatalogPage(await getDocs(query(newsRef, ...constraints)), pageSize);
                 } catch (error) {
                     console.error("Errore nel caricamento delle news:", error);
-                    return [];
+                    return emptyCatalogPage();
                 }
+            };
+
+            const appendUniqueCatalogItems = (currentItems, nextItems) => [
+                ...new Map([...currentItems, ...nextItems].map(item => [String(item.id), item])).values()
+            ];
+
+            const waitForCatalogIdle = () => new Promise(resolve => {
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(() => resolve(), { timeout: 700 });
+                } else {
+                    setTimeout(resolve, 40);
+                }
+            });
+
+            const updateCatalogPageState = (key, page, totalLoaded) => {
+                firestorePageState[key] = {
+                    cursor: page.cursor,
+                    hasMore: page.hasMore && Boolean(page.cursor),
+                    loaded: totalLoaded
+                };
+                window.kodaCatalogLoadState = {
+                    tools: { ...firestorePageState.tools, cursor: undefined },
+                    videos: { ...firestorePageState.videos, cursor: undefined },
+                    news: { ...firestorePageState.news, cursor: undefined }
+                };
+                window.dispatchEvent(new CustomEvent('koda-catalog-progress', {
+                    detail: { section: key, loaded: totalLoaded, hasMore: firestorePageState[key].hasMore }
+                }));
+            };
+
+            const loadRemainingCatalogData = async () => {
+                const loadSection = async (key, fetchPage, readItems, writeItems) => {
+                    while (firestorePageState[key].hasMore) {
+                        await waitForCatalogIdle();
+                        const page = await fetchPage({ cursor: firestorePageState[key].cursor });
+                        const mergedItems = appendUniqueCatalogItems(readItems(), page.items);
+                        writeItems(mergedItems);
+                        updateCatalogPageState(key, page, mergedItems.length);
+                    }
+                };
+
+                await Promise.all([
+                    loadSection('tools', fetchToolsFromFirestore, () => aiToolsData, items => {
+                        aiToolsData = items;
+                        window.aiToolsData = aiToolsData;
+                    }),
+                    loadSection('videos', fetchVideosFromFirestore, () => youtubeVideosData, items => { youtubeVideosData = items; }),
+                    loadSection('news', fetchNewsFromFirestore, () => newsData, items => { newsData = items; })
+                ]);
+
+                updateCinemaNotificationBadge();
+                updateExploreNotificationBadge();
+                updateNewsNotificationBadge();
+                const canRefreshCurrentView = ['top-ai', 'explore', 'cinema', 'news'].includes(currentView)
+                    && el.mainContent.scrollTop < 80;
+                if (canRefreshCurrentView) renderView();
+                window.dispatchEvent(new CustomEvent('koda-catalog-loaded'));
             };
             // NUOVO: Funzione per controllare se un tool è stato aggiunto negli ultimi 7 giorni
             const isToolNew = (tool) => {
@@ -11694,6 +12012,7 @@ window.mountChatbotApp = (container, props) => {
             let selectedTools = new Set(); // Set di tool IDs selezionati
             let reactRoot = null;
             let conversations = {};
+            const sideMenuSectionsExpanded = { tools: false, history: false };
             let activeConversationId = null;
             let currentLanguage = readStoredValue('koda-lang', 'it', value => ['it', 'en'].includes(value));
             let currentTheme = readStoredValue('koda-theme', 'dark', value => ['dark', 'light'].includes(value));
@@ -11915,6 +12234,72 @@ window.mountChatbotApp = (container, props) => {
             };
             window.showToast = showToast;
 
+            const formatLocalAIBytes = bytes => bytes >= 1000000000
+                ? `~${(bytes / 1000000000).toLocaleString(currentLanguage === 'it' ? 'it-IT' : 'en-US', { maximumFractionDigits: 1 })} GB`
+                : `~${Math.round(bytes / 1000000)} MB`;
+
+            const closeLocalAIConsentModal = () => document.getElementById('local-ai-consent-modal')?.remove();
+
+            const showLocalAIConsentModal = () => {
+                if (document.getElementById('local-ai-consent-modal')) return;
+                const localAIService = window.kodaLocalAI;
+                const model = localAIService?.getSelectedModel();
+                if (!model || localAIService.isModelDownloaded(model.key)) return;
+                const isIT = currentLanguage === 'it';
+                const plannedBackend = navigator.gpu ? 'WebGPU (fallback WASM)' : 'WASM';
+                const modal = document.createElement('div');
+                modal.id = 'local-ai-consent-modal';
+                modal.className = 'modal-overlay visible';
+                modal.setAttribute('role', 'dialog');
+                modal.setAttribute('aria-modal', 'true');
+                modal.setAttribute('aria-labelledby', 'local-ai-consent-title');
+                modal.style.zIndex = '10020';
+                modal.innerHTML = `
+                    <div class="local-ai-consent-panel">
+                        <h2 id="local-ai-consent-title" style="margin:0 0 10px;font-size:22px;">${isIT ? 'Modello AI locale richiesto' : 'Local AI model required'}</h2>
+                        <p style="margin:0;color:var(--Koda-text-secondary);font-size:13px;line-height:1.55;">${isIT
+                            ? 'La risposta appena mostrata ha usato il fallback verificato. Il modello viene scaricato soltanto dopo la tua conferma.'
+                            : 'The response just shown used the verified fallback. The model is downloaded only after your confirmation.'}</p>
+                        <div class="local-ai-consent-facts">
+                            <div class="local-ai-consent-fact"><span>${isIT ? 'Modello' : 'Model'}</span><strong>${escapeHTML(model.name)}</strong></div>
+                            <div class="local-ai-consent-fact"><span>${isIT ? 'Download richiesto' : 'Required download'}</span><strong>${formatLocalAIBytes(model.downloadBytes)}</strong></div>
+                            <div class="local-ai-consent-fact"><span>${isIT ? 'Spazio modello attuale' : 'Current model storage'}</span><strong>0 MB</strong></div>
+                            <div class="local-ai-consent-fact"><span>${isIT ? 'Backend previsto' : 'Expected backend'}</span><strong>${plannedBackend}</strong></div>
+                        </div>
+                        <p style="margin:0;padding:12px;border:1px solid rgba(128,128,128,.2);border-radius:7px;font-size:12px;line-height:1.5;color:var(--Koda-text-secondary);">${isIT
+                            ? 'Rimozione: Impostazioni > Modello AI locale > Rimuovi dal dispositivo.'
+                            : 'Removal: Settings > Local AI model > Remove from device.'}</p>
+                        <div id="local-ai-consent-status" aria-live="polite" style="min-height:20px;margin-top:12px;font-size:12px;color:var(--Koda-text-secondary);"></div>
+                        <div class="local-ai-consent-actions">
+                            <button type="button" id="local-ai-consent-cancel">${isIT ? 'Non ora' : 'Not now'}</button>
+                            <button type="button" id="local-ai-consent-download" class="primary">${isIT ? `Scarica ${formatLocalAIBytes(model.downloadBytes)}` : `Download ${formatLocalAIBytes(model.downloadBytes)}`}</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(modal);
+                document.getElementById('local-ai-consent-cancel')?.addEventListener('click', closeLocalAIConsentModal);
+                document.getElementById('local-ai-consent-download')?.addEventListener('click', async event => {
+                    const button = event.currentTarget;
+                    const statusElement = document.getElementById('local-ai-consent-status');
+                    button.disabled = true;
+                    button.textContent = isIT ? 'Download in corso…' : 'Downloading…';
+                    if (statusElement) statusElement.textContent = isIT ? 'Il modello viene salvato nell’archivio di questo browser.' : 'The model is being saved in this browser storage.';
+                    try {
+                        await localAIService.downloadModel(model.key);
+                        closeLocalAIConsentModal();
+                        showToast(isIT ? 'Modello locale pronto. Verrà usato dalla prossima richiesta.' : 'Local model ready. It will be used for the next request.');
+                    } catch (error) {
+                        button.disabled = false;
+                        button.textContent = isIT ? `Scarica ${formatLocalAIBytes(model.downloadBytes)}` : `Download ${formatLocalAIBytes(model.downloadBytes)}`;
+                        if (statusElement) statusElement.textContent = isIT ? 'Download non riuscito. Controlla spazio e connessione.' : 'Download failed. Check storage and connection.';
+                    }
+                });
+                document.getElementById('local-ai-consent-cancel')?.focus();
+            };
+
+            window.addEventListener(window.kodaLocalAI.statusEvent, event => {
+                if (event.detail?.reason === 'MODEL_DOWNLOAD_CONSENT_REQUIRED') showLocalAIConsentModal();
+            });
+
             // --- UI/UX: HAPTIC FEEDBACK ---
             const triggerHaptic = (type = 'light') => {
                 if (!navigator.vibrate) return;
@@ -12026,6 +12411,186 @@ window.mountChatbotApp = (container, props) => {
                 // Filtro per eliminare duplicati per id
                 const allTools = [...staticTools, ...localizedUserTools];
                 return allTools.filter((tool, idx, arr) => arr.findIndex(t => t.id === tool.id) === idx);
+            };
+
+            const normalizeCatalogMatchText = value => String(value ?? '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLocaleLowerCase()
+                .replace(/[^a-z0-9]+/g, ' ')
+                .trim();
+
+            const CATALOG_TOOL_ALIASES = Object.freeze({
+                'chat gpt': 'chatgpt',
+                'gpt': 'chatgpt',
+                'mid journey': 'midjourney',
+                'mid journey ai': 'midjourney',
+                'dall e': 'dall e',
+                'dalle': 'dall e'
+            });
+
+            const getLocalizedCatalogField = (item, field) => {
+                const value = item?.[field];
+                if (typeof value === 'string') return value;
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    return value[currentLanguage] || value.it || value.en || '';
+                }
+                return '';
+            };
+
+            const getContentSearchText = item => [
+                getLocalizedCatalogField(item, 'title'),
+                getLocalizedCatalogField(item, 'description'),
+                getLocalizedCatalogField(item, 'content'),
+                ...(Array.isArray(item?.hashtags) ? item.hashtags : [])
+            ].filter(Boolean).join(' ');
+
+            const getExplicitContentToolIds = item => {
+                const ids = [item?.mentionedToolId, item?.toolId, item?.relatedToolId];
+                for (const field of ['mentionedToolIds', 'toolIds', 'relatedToolIds']) {
+                    if (Array.isArray(item?.[field])) ids.push(...item[field]);
+                }
+                return [...new Set(ids.map(value => String(value || '')).filter(Boolean))];
+            };
+
+            const catalogTextContainsTerm = (normalizedText, normalizedTerm) => normalizedTerm.length >= 3
+                && ` ${normalizedText} `.includes(` ${normalizedTerm} `);
+
+            const contentMentionsTool = (item, tool, suppliedText = '') => {
+                if (!item || !tool) return false;
+                if (getExplicitContentToolIds(item).includes(String(tool.id))) return true;
+                const normalizedText = normalizeCatalogMatchText(suppliedText || getContentSearchText(item));
+                const normalizedName = normalizeCatalogMatchText(tool.name);
+                if (catalogTextContainsTerm(normalizedText, normalizedName)) return true;
+                return Object.entries(CATALOG_TOOL_ALIASES).some(([alias, canonical]) =>
+                    canonical === normalizedName && catalogTextContainsTerm(normalizedText, alias));
+            };
+
+            const getMentionedToolsForContent = (item, suppliedText = '', maxItems = 6) => {
+                const allTools = getAllToolsForCurrentUser();
+                const explicitIds = getExplicitContentToolIds(item);
+                const explicitTools = explicitIds.map(id => allTools.find(tool => String(tool.id) === id)).filter(Boolean);
+                const matchedTools = allTools
+                    .filter(tool => !explicitIds.includes(String(tool.id)) && contentMentionsTool(item, tool, suppliedText))
+                    .sort((left, right) => String(right.name || '').length - String(left.name || '').length);
+                return [...new Map([...explicitTools, ...matchedTools].map(tool => [String(tool.id), tool])).values()].slice(0, maxItems);
+            };
+
+            const getToolSpecializationTypes = tool => [...new Set((Array.isArray(tool?.specializations) ? tool.specializations : [])
+                .map(item => normalizeCatalogMatchText(typeof item === 'string' ? item : item?.type))
+                .filter(Boolean))];
+
+            const getToolCapabilityKeys = tool => [...new Set((Array.isArray(tool?.specializations) ? tool.specializations : []).flatMap(item => {
+                if (!item || typeof item !== 'object') return [];
+                return Object.entries(item.capabilities || {})
+                    .filter(([, enabled]) => enabled === true)
+                    .map(([operation]) => `${normalizeCatalogMatchText(item.type)}:${operation}`);
+            }))];
+
+            const getToolUsageSignals = tool => [tool?.platform, tool?.platforms, tool?.bestFor]
+                .flatMap(value => Array.isArray(value) ? value : [value])
+                .map(value => typeof value === 'object' ? (value[currentLanguage] || value.it || value.en || '') : value)
+                .map(normalizeCatalogMatchText)
+                .filter(Boolean);
+
+            const catalogSpecializationLabel = type => {
+                const labels = {
+                    audio: { it: 'audio', en: 'audio' }, automation: { it: 'automazione', en: 'automation' },
+                    data: { it: 'dati', en: 'data' }, images: { it: 'immagini', en: 'images' },
+                    video: { it: 'video', en: 'video' }, word: { it: 'testo', en: 'text' },
+                    code: { it: 'codice', en: 'code' }, presentation: { it: 'presentazioni', en: 'presentations' }
+                };
+                return labels[type]?.[currentLanguage] || type;
+            };
+
+            const getExplainableRecommendations = (sourceTool, maxItems = 3) => {
+                const explicitIds = new Set([
+                    sourceTool?.recommendationId,
+                    ...(Array.isArray(sourceTool?.recommendationIds) ? sourceTool.recommendationIds : [])
+                ].map(value => String(value || '')).filter(Boolean));
+                const sourceSpecializations = getToolSpecializationTypes(sourceTool);
+                const sourceCapabilities = getToolCapabilityKeys(sourceTool);
+                const sourceUsage = getToolUsageSignals(sourceTool);
+
+                return getAllToolsForCurrentUser()
+                    .filter(candidate => String(candidate.id) !== String(sourceTool.id))
+                    .map(candidate => {
+                        let score = 0;
+                        const reasons = [];
+                        if (explicitIds.has(String(candidate.id))) {
+                            score += 500;
+                            reasons.push(currentLanguage === 'it' ? 'selezione editoriale' : 'editorial selection');
+                        }
+                        if (candidate.category && candidate.category === sourceTool.category) {
+                            score += 60;
+                            reasons.push(currentLanguage === 'it'
+                                ? `stessa categoria: ${getTranslatedCategoryName(candidate.category)}`
+                                : `same category: ${getTranslatedCategoryName(candidate.category)}`);
+                        }
+                        const sharedSpecializations = getToolSpecializationTypes(candidate).filter(type => sourceSpecializations.includes(type));
+                        if (sharedSpecializations.length) {
+                            score += sharedSpecializations.length * 45;
+                            reasons.push(`${currentLanguage === 'it' ? 'specializzazioni in comune' : 'shared specializations'}: ${sharedSpecializations.map(catalogSpecializationLabel).join(', ')}`);
+                        }
+                        const sharedCapabilities = getToolCapabilityKeys(candidate).filter(key => sourceCapabilities.includes(key));
+                        if (sharedCapabilities.length) {
+                            score += Math.min(sharedCapabilities.length, 6) * 6;
+                            const operations = [...new Set(sharedCapabilities.map(key => key.split(':')[1]))];
+                            const operationLabels = currentLanguage === 'it'
+                                ? { create: 'creazione', read: 'lettura', edit: 'modifica' }
+                                : { create: 'creation', read: 'reading', edit: 'editing' };
+                            reasons.push(`${currentLanguage === 'it' ? 'capacità condivise' : 'shared capabilities'}: ${operations.map(operation => operationLabels[operation] || operation).join(', ')}`);
+                        }
+                        if (candidate.pricing && candidate.pricing === sourceTool.pricing) {
+                            score += 12;
+                            reasons.push(currentLanguage === 'it' ? 'stessa fascia di prezzo' : 'same pricing tier');
+                        }
+                        const sharedUsage = getToolUsageSignals(candidate).filter(signal => sourceUsage.includes(signal));
+                        if (sharedUsage.length) {
+                            score += 25;
+                            reasons.push(currentLanguage === 'it' ? 'uso o piattaforma compatibile' : 'compatible use or platform');
+                        }
+                        return { tool: candidate, score, reasons };
+                    })
+                    .filter(item => item.score >= 25)
+                    .sort((left, right) => right.score - left.score || String(left.tool.name).localeCompare(String(right.tool.name)))
+                    .slice(0, maxItems);
+            };
+
+            const getRelevantPromptsForTool = tool => {
+                const category = getTranslatedCategoryName(tool.category || 'AI');
+                return currentLanguage === 'it' ? [
+                    `Confronta ${tool.name} con le migliori alternative per ${category}, considerando capacità, prezzo, privacy e facilità d'uso.`,
+                    `Crea un flusso di lavoro pratico con ${tool.name} per [obiettivo]. Indica input, passaggi, controlli e risultato atteso.`,
+                    `Valuta se ${tool.name} è adatto a [caso d'uso]. Elenca requisiti, limiti, costi e una prova concreta da eseguire.`
+                ] : [
+                    `Compare ${tool.name} with the best alternatives for ${category}, considering capabilities, pricing, privacy, and ease of use.`,
+                    `Create a practical workflow with ${tool.name} for [goal]. Specify inputs, steps, checks, and the expected result.`,
+                    `Assess whether ${tool.name} fits [use case]. List requirements, limitations, costs, and one practical test to run.`
+                ];
+            };
+
+            const buildToolConnectionsHTML = (tool, recommendations = getExplainableRecommendations(tool)) => {
+                const relatedVideos = youtubeVideosData.filter(video => contentMentionsTool(video, tool)).slice(0, 3);
+                const relatedNews = newsData.filter(item => contentMentionsTool(item, tool)).slice(0, 3);
+                const prompts = getRelevantPromptsForTool(tool);
+                const section = (icon, title, content) => content
+                    ? `<section class="tool-connection-section"><h3 class="tool-connection-heading">${kodaIcon(icon, 18)} ${title}</h3><div class="tool-connection-grid">${content}</div></section>`
+                    : '';
+                const videosHTML = relatedVideos.map(video => {
+                    const youtubeId = getYouTubeVideoId(video.youtubeUrl);
+                    const thumbnail = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg` : safeImageSrc(video.thumbnailUrl || '');
+                    return `<button class="tool-connection-card" data-action="open-video-detail" data-video-id="${escapeHTML(video.id)}"><img class="tool-connection-thumb" src="${thumbnail}" alt=""><span class="tool-connection-copy"><span class="tool-connection-kicker">Video</span><span class="tool-connection-title">${escapeHTML(getLocalizedCatalogField(video, 'title'))}</span></span></button>`;
+                }).join('');
+                const newsHTML = relatedNews.map(item => `<button class="tool-connection-card" data-action="open-news-detail" data-id="${escapeHTML(item.id)}"><img class="tool-connection-thumb" src="${safeImageSrc(item.imageUrl || 'https://i.postimg.cc/bN4DrwdT/Sfondo-website-koda.png')}" alt=""><span class="tool-connection-copy"><span class="tool-connection-kicker">News</span><span class="tool-connection-title">${escapeHTML(getLocalizedCatalogField(item, 'title'))}</span></span></button>`).join('');
+                const comparisonsHTML = recommendations.map(item => `<button class="tool-connection-card" data-action="compare-related-tools" data-primary-id="${escapeHTML(tool.id)}" data-related-id="${escapeHTML(item.tool.id)}"><img class="tool-connection-thumb" src="${safeImageSrc(item.tool.logoUrl)}" alt=""><span class="tool-connection-copy"><span class="tool-connection-kicker">${currentLanguage === 'it' ? 'Confronta con' : 'Compare with'}</span><span class="tool-connection-title">${escapeHTML(item.tool.name)}</span><span class="recommendation-reason">${currentLanguage === 'it' ? 'Consigliato perché' : 'Recommended because'}: ${escapeHTML(item.reasons.join(' · '))}</span></span></button>`).join('');
+                const promptsHTML = prompts.map(prompt => `<button class="tool-connection-card tool-prompt-card" data-action="copy-related-prompt" data-prompt="${escapeHTML(prompt)}"><span class="tool-connection-copy"><span class="tool-connection-kicker">${currentLanguage === 'it' ? 'Copia prompt' : 'Copy prompt'}</span><span class="tool-connection-title">${escapeHTML(prompt)}</span></span>${kodaIcon('copy', 18)}</button>`).join('');
+                return `<div class="tool-connections">
+                    ${section('video', currentLanguage === 'it' ? 'Video pertinenti' : 'Related videos', videosHTML)}
+                    ${section('news', currentLanguage === 'it' ? 'News pertinenti' : 'Related news', newsHTML)}
+                    ${section('compare', currentLanguage === 'it' ? 'Confronti pertinenti' : 'Relevant comparisons', comparisonsHTML)}
+                    ${section('prompt', currentLanguage === 'it' ? 'Prompt pronti' : 'Ready-to-use prompts', promptsHTML)}
+                </div>`;
             };
 
             // ========================================
@@ -12796,7 +13361,12 @@ window.mountChatbotApp = (container, props) => {
                         <span class="uti-ic">${t.icon}</span>
                         <span class="uti-tx"><b>${t.label}</b><small>${t.desc}</small></span>
                     </button>`).join('');
-                container.innerHTML = `<div class="utility-tools-title">${kodaIcon('tools')} ${it ? 'Strumenti' : 'Tools'}</div>${items}`;
+                container.innerHTML = `
+                    <button class="side-menu-section-toggle" type="button" data-action="toggle-side-menu-section" data-section="tools" aria-expanded="${sideMenuSectionsExpanded.tools}" aria-controls="utility-tools-content">
+                        <span class="section-toggle-label">${kodaIcon('tools')} ${it ? 'Strumenti' : 'Tools'}</span>
+                        <svg class="section-toggle-chevron" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div id="utility-tools-content" class="side-menu-section-content" ${sideMenuSectionsExpanded.tools ? '' : 'hidden'}>${items}</div>`;
             };
 
             // Shell generico del modale Strumenti
@@ -13477,21 +14047,8 @@ window.mountChatbotApp = (container, props) => {
                         ${featuresContentHTML}
                     </details>`;
 
-                let recommendationHTML = '';
-                let recommendedTool = null;
-                const allToolsForRec = getAllToolsForCurrentUser(); // Usa la lista locale per le raccomandazioni
-                if (tool.recommendationId) {
-                    recommendedTool = allToolsForRec.find(t => t.id === tool.recommendationId);
-                } else {
-                    const sameCategory = allToolsForRec.filter(t => t.category === tool.category && t.id !== tool.id);
-                    if (sameCategory.length > 0) {
-                        recommendedTool = sameCategory[Math.floor(Math.random() * sameCategory.length)];
-                    }
-                }
-                if (recommendedTool) {
-                    const recommendedNameHTML = escapeHTML(recommendedTool.name);
-                    recommendationHTML = `<div class="recommendation-box" data-action="open-detail-modal" data-id="${escapeHTML(recommendedTool.id)}"><img src="${safeImageSrc(recommendedTool.logoUrl)}" alt="${recommendedNameHTML}" class="recommendation-logo" loading="lazy"><div class="recommendation-text">${t.alternativeSuggestion}<strong>${recommendedNameHTML}</strong></div></div>`;
-                }
+                const recommendations = getExplainableRecommendations(tool);
+                const connectionsHTML = buildToolConnectionsHTML(tool, recommendations);
 
                 let userToolActionsHTML = '';
                 // I pulsanti di modifica/evidenza appaiono solo se sono loggato e sto guardando una delle MIE app custom
@@ -13519,7 +14076,6 @@ window.mountChatbotApp = (container, props) => {
                             ${featuresHTML}
                             <div class="detail-actions">
                                 ${userToolActionsHTML}
-                                ${currentUser.uid ? `<button class="button" data-action="toggle-favorite" data-id="${toolIdAttr}">${isFavorited ? t.detailModalRemoveFavorite : t.detailModalAddFavorite}</button>` : ''}
                                 <button class="button" data-action="toggle-favorite" data-id="${toolIdAttr}">${isFavorited ? t.detailModalRemoveFavorite : t.detailModalAddFavorite}</button>
                                 <button class="button" data-action="add-to-collection" data-tool-id="${toolIdAttr}" style="background: white; color: #000;">${t.addToCollection}</button>
                                 <a href="${toolWebsiteHref}" target="_blank" rel="noopener noreferrer" class="button" style="text-decoration: none; display: flex; justify-content: center; align-items: center; background: #8b5cf6; color: white;">${t.visitWebsite}</a>
@@ -13528,7 +14084,7 @@ window.mountChatbotApp = (container, props) => {
                                     ${currentLanguage === 'it' ? 'Condividi' : 'Share'}
                                 </button>
                             </div>
-                            ${recommendationHTML}
+                            ${connectionsHTML}
                         </div>
                     </div>
                 </div>`;
@@ -14229,10 +14785,21 @@ window.mountChatbotApp = (container, props) => {
                 </button>
             `).join('');
                 const histTitle = document.getElementById('history-section-title');
-                if (histTitle) histTitle.style.display = sortedConversations.length ? '' : 'none';
+                const historyContent = document.getElementById('history-section-content');
+                if (histTitle) {
+                    histTitle.style.display = sortedConversations.length ? '' : 'none';
+                    histTitle.setAttribute('aria-expanded', String(sideMenuSectionsExpanded.history));
+                }
+                if (historyContent) historyContent.hidden = !sideMenuSectionsExpanded.history;
                 el.conversationListContainer.querySelector(`[data-id="${activeConversationId}"]`)?.classList.add('active');
                 renderUtilityToolsMenu(); // NUOVO: sezione Strumenti/Utility
                 applyTranslations(currentLanguage); // Apply translations to menu items
+            };
+
+            const toggleSideMenuSection = (section) => {
+                if (!Object.hasOwn(sideMenuSectionsExpanded, section)) return;
+                sideMenuSectionsExpanded[section] = !sideMenuSectionsExpanded[section];
+                renderSideMenu();
             };
 
             const toggleSideMenu = (show) => {
@@ -16021,10 +16588,15 @@ window.mountChatbotApp = (container, props) => {
                     </div>
                 </div>`;
 
-                    const createRankingItem = (toolId, rank) => {
+                    const createRankingItem = (toolId, rank, ranking) => {
                         // Find the tool in the static list first, then user tools if not found
                         const tool = staticTools.find(t => t.id === toolId) || (currentUser.userTools || []).find(t => t.id === toolId);
                         if (!tool) return '';
+                        const localizedReason = ranking?.reasons?.[toolId]?.[currentLanguage]
+                            || ranking?.reasons?.[toolId]
+                            || (currentLanguage === 'it'
+                                ? `Segnali della scheda: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`
+                                : `Profile signals: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`);
                         return `
                         <li class="ranking-item stagger-item" data-id="${tool.id}">
                             <span class="ranking-item-rank">${rank}</span>
@@ -16032,6 +16604,7 @@ window.mountChatbotApp = (container, props) => {
                             <div class="ranking-item-info">
                                 <div class="tool-name">${tool.name}</div>
                                 <div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div>
+                                <div class="ranking-item-reason">${escapeHTML(localizedReason)}</div>
                             </div>
                         </li>
                     `;
@@ -16044,8 +16617,9 @@ ${filtersHTML}
     ${aiRankingsData.map(ranking => `
         <div class="ranking-card" data-ranking-category="${ranking.category}">
             <h3>${currentLanguage === 'it' ? ranking.title_it : ranking.title_en}</h3>
+            <p class="ranking-methodology">${escapeHTML((currentLanguage === 'it' ? ranking.methodology_it : ranking.methodology_en) || (currentLanguage === 'it' ? 'Ordine editoriale. Le righe mostrano i dati strutturati disponibili per interpretare ogni posizione.' : 'Editorial order. Each row shows the available structured data used to interpret its position.'))}</p>
             <ol class="ranking-list">
-                ${ranking.toolIds.map((id, index) => createRankingItem(id, index + 1)).join('')}
+                ${ranking.toolIds.map((id, index) => createRankingItem(id, index + 1, ranking)).join('')}
             </ol>
         </div>
     `).join('')}
@@ -16950,6 +17524,8 @@ ${filtersHTML}
                             ${currentLanguage === 'it' ? 'Salva Profilo' : 'Save Profile'}
                         </button>
 
+                        <section id="local-ai-model-settings" style="width:100%;max-width:420px;margin:0 auto 40px;"></section>
+
                          <!-- Sezione Info Legali Centrata -->
                          <div style="margin-top: 40px; width: 100%; max-width: 350px; margin-left: auto; margin-right: auto;">
                              <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: left;">${currentLanguage === 'it' ? 'Informazioni' : 'About'}</h3>
@@ -16997,6 +17573,11 @@ ${filtersHTML}
                             ? 'Impossibile salvare il modello. Libera spazio nell’archivio del browser e riprova.'
                             : 'The model could not be saved. Free browser storage and try again.';
                     }
+                            if (code === 'MODEL_REMOVE_FAILED') {
+                            return currentLanguage === 'it'
+                                ? 'Impossibile rimuovere completamente il modello. Chiudi le altre schede di Koda e riprova.'
+                                : 'The model could not be fully removed. Close other Koda tabs and try again.';
+                            }
                     return currentLanguage === 'it' ? 'Download del modello non riuscito.' : 'Model download failed.';
                 };
 
@@ -17016,6 +17597,9 @@ ${filtersHTML}
                         return currentLanguage === 'it'
                             ? `${activeDownloadModel.name} è stato scaricato.`
                             : `${activeDownloadModel.name} has been downloaded.`;
+                    }
+                    if (aiStatus.operation === 'remove' && aiStatus.state === 'idle') {
+                        return currentLanguage === 'it' ? 'Modello rimosso dal dispositivo.' : 'Model removed from device.';
                     }
                     return currentLanguage === 'it'
                         ? 'I modelli scaricati restano nell’archivio locale di questo browser.'
@@ -17073,12 +17657,16 @@ ${filtersHTML}
                                 const isUnsupported = model.requiresWebGPU && !webGPUAvailable;
                                 const isThisDownload = isDownloading && aiStatus.modelKey === model.key;
                                 const borderColor = isSelected ? 'var(--Koda-accent)' : 'rgba(128,128,128,0.22)';
+                                const backendLabel = aiStatus.backend
+                                    ? `${currentLanguage === 'it' ? 'Backend attivo' : 'Active backend'}: ${String(aiStatus.backend).toUpperCase()}`
+                                    : `${currentLanguage === 'it' ? 'Backend previsto' : 'Expected backend'}: ${webGPUAvailable ? 'WebGPU / WASM' : 'WASM'}`;
                                 return `
                                     <div style="border:1px solid ${borderColor};border-radius:8px;padding:14px;background:rgba(128,128,128,0.06);">
                                         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;">
                                             <div style="min-width:0;">
                                                 <div style="font-size:16px;font-weight:800;color:var(--Koda-text);">${escapeHTML(model.name)}</div>
                                                 <div style="font-size:12px;color:var(--Koda-text-secondary);margin-top:3px;">${formatLocalAIModelSize(model.downloadBytes)}${model.requiresWebGPU ? ' · WebGPU' : ' · WebGPU / WASM'}</div>
+                                                <div style="font-size:12px;color:var(--Koda-text-secondary);margin-top:3px;">${backendLabel}</div>
                                             </div>
                                             <span style="flex:0 0 auto;font-size:11px;font-weight:800;color:${isDownloaded ? 'var(--Koda-accent)' : 'var(--Koda-text-secondary)'};text-transform:uppercase;">${isDownloaded ? (currentLanguage === 'it' ? 'Scaricato' : 'Downloaded') : (currentLanguage === 'it' ? 'Non scaricato' : 'Not downloaded')}</span>
                                         </div>
@@ -17087,10 +17675,11 @@ ${filtersHTML}
                                             <button type="button" data-local-ai-select="${escapeHTML(model.key)}" ${isSelected || isUnsupported || isDownloading ? 'disabled' : ''} style="min-height:42px;padding:9px 10px;border-radius:7px;border:1px solid ${isSelected ? 'var(--Koda-accent)' : 'rgba(128,128,128,0.28)'};background:${isSelected ? 'rgba(29,185,84,0.12)' : 'transparent'};color:var(--Koda-text);font-size:13px;font-weight:800;cursor:${isSelected || isUnsupported || isDownloading ? 'default' : 'pointer'};opacity:${isUnsupported ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:6px;">${isSelected ? `${kodaIcon('free', 16)} ${currentLanguage === 'it' ? 'Selezionato' : 'Selected'}` : (currentLanguage === 'it' ? 'Seleziona' : 'Select')}</button>
                                             <button type="button" data-local-ai-download="${escapeHTML(model.key)}" ${isDownloaded || isUnsupported || isDownloading ? 'disabled' : ''} style="min-height:42px;padding:9px 10px;border-radius:7px;border:none;background:${isDownloaded ? 'rgba(128,128,128,0.12)' : 'var(--Koda-accent)'};color:${isDownloaded ? 'var(--Koda-text-secondary)' : '#000'};font-size:13px;font-weight:800;cursor:${isDownloaded || isUnsupported || isDownloading ? 'default' : 'pointer'};opacity:${isUnsupported ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:6px;">${isDownloaded ? `${kodaIcon('free', 16)} ${currentLanguage === 'it' ? 'Scaricato' : 'Downloaded'}` : `${kodaIcon('download', 16)} ${isThisDownload ? (currentLanguage === 'it' ? 'Download…' : 'Downloading…') : (currentLanguage === 'it' ? 'Scarica' : 'Download')}`}</button>
                                         </div>
+                                        ${isDownloaded ? `<button type="button" data-local-ai-remove="${escapeHTML(model.key)}" ${isDownloading ? 'disabled' : ''} style="width:100%;min-height:42px;margin-top:8px;padding:9px 10px;border-radius:7px;border:1px solid #d45b68;background:transparent;color:#d45b68;font-size:13px;font-weight:800;cursor:pointer;">${currentLanguage === 'it' ? 'Rimuovi dal dispositivo' : 'Remove from device'}</button>` : ''}
                                     </div>`;
                             }).join('')}
                         </div>
-                        <button type="button" id="download-all-local-ai-models" ${allDownloaded || !webGPUAvailable || isDownloading ? 'disabled' : ''} style="width:100%;min-height:44px;margin-top:12px;padding:10px 14px;border-radius:7px;border:1px solid rgba(128,128,128,0.3);background:transparent;color:var(--Koda-text);font-size:14px;font-weight:800;cursor:${allDownloaded || !webGPUAvailable || isDownloading ? 'default' : 'pointer'};opacity:${allDownloaded || !webGPUAvailable ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:7px;">${kodaIcon(allDownloaded ? 'free' : 'download', 17)} ${allDownloaded ? (currentLanguage === 'it' ? 'Entrambi scaricati' : 'Both downloaded') : (currentLanguage === 'it' ? 'Scarica entrambi' : 'Download both')}</button>
+                        ${models.length > 1 ? `<button type="button" id="download-all-local-ai-models" ${allDownloaded || !webGPUAvailable || isDownloading ? 'disabled' : ''} style="width:100%;min-height:44px;margin-top:12px;padding:10px 14px;border-radius:7px;border:1px solid rgba(128,128,128,0.3);background:transparent;color:var(--Koda-text);font-size:14px;font-weight:800;cursor:${allDownloaded || !webGPUAvailable || isDownloading ? 'default' : 'pointer'};opacity:${allDownloaded || !webGPUAvailable ? '.5' : '1'};display:flex;align-items:center;justify-content:center;gap:7px;">${kodaIcon(allDownloaded ? 'free' : 'download', 17)} ${allDownloaded ? (currentLanguage === 'it' ? 'Tutti scaricati' : 'All downloaded') : (currentLanguage === 'it' ? 'Scarica tutti' : 'Download all')}</button>` : ''}
                         <div aria-live="polite" style="min-height:38px;margin-top:11px;font-size:12px;line-height:1.45;color:var(--Koda-text-secondary);">
                             <div id="local-ai-download-status">${escapeHTML(statusMessage)}</div>
                             <div id="local-ai-download-progress" class="local-ai-download-progress${progress === null ? ' is-indeterminate' : ''}" role="progressbar" aria-label="${currentLanguage === 'it' ? 'Avanzamento download modello' : 'Model download progress'}" aria-valuemin="0" aria-valuemax="100" ${progress === null ? '' : `aria-valuenow="${progress}"`} ${isDownloading ? '' : 'hidden'}>
@@ -17115,6 +17704,18 @@ ${filtersHTML}
                             try {
                                 const model = await localAIService.downloadModel(button.dataset.localAiDownload);
                                 showToast(currentLanguage === 'it' ? `${model.name} scaricato` : `${model.name} downloaded`);
+                            } catch (error) {
+                                showToast(localAIErrorMessage(error));
+                            }
+                            renderLocalAIModelSettings();
+                        });
+                    });
+                    container.querySelectorAll('[data-local-ai-remove]').forEach(button => {
+                        button.addEventListener('click', async () => {
+                            button.disabled = true;
+                            try {
+                                const model = await localAIService.removeModel(button.dataset.localAiRemove);
+                                showToast(currentLanguage === 'it' ? `${model.name} rimosso dal dispositivo` : `${model.name} removed from device`);
                             } catch (error) {
                                 showToast(localAIErrorMessage(error));
                             }
@@ -20375,54 +20976,29 @@ ${filtersHTML}
                                     ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;color:var(--Koda-accent);font-size:13px;font-weight:800;">${newsHashtags.map(tag => `<span>#${escapeHTML(tag)}</span>`).join('')}</div>`
                                     : '';
                                 
-                                // Cerca lo strumento menzionato nel testo (con Normalizzazione)
-                                let mentionedToolHTML = '';
+                                // Collega tutti gli strumenti citati tramite ID espliciti o testo normalizzato.
                                 const allTools = getAllToolsForCurrentUser();
                                 const fullNewsText = `${localizedNewsTitle} ${localizedNewsContent}`;
-                                
-                                let mentionedTool = null;
-                                if (newsItem.mentionedToolId) {
-                                    mentionedTool = allTools.find(t => t.id === newsItem.mentionedToolId);
-                                } else {
-                                    const aliases = {
-                                        'chat gpt': 'ChatGPT', 'gpt': 'ChatGPT',
-                                        'mid journey': 'Midjourney', 'mid-journey': 'Midjourney',
-                                        'claude 3': 'Claude', 'claude 3.5': 'Claude',
-                                        'dall e': 'DALL-E', 'dalle': 'DALL-E', 'dall-e': 'DALL-E'
-                                    };
-                                    
-                                    for (const [alias, realName] of Object.entries(aliases)) {
-                                        if (new RegExp('\\b' + alias + '\\b', 'i').test(fullNewsText)) {
-                                            mentionedTool = allTools.find(t => t.name.toLowerCase() === realName.toLowerCase());
-                                            if (mentionedTool) break;
-                                        }
-                                    }
-                                    
-                                    if (!mentionedTool) {
-                                        mentionedTool = allTools.find(t => {
-                                            if (!t.name) return false;
-                                            const safeName = t.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                            return new RegExp('\\b' + safeName + '\\b', 'i').test(fullNewsText);
-                                        });
-                                    }
-                                }
-                                
-                                if (mentionedTool) {
-                                    // Sostituito il div/bottone con un <a> che manda al sito. Aggiornato logoUrl
-                                    const mentionedToolNameHTML = escapeHTML(mentionedTool.name);
-                                    mentionedToolHTML = `
-                                        <a href="${safeHref(mentionedTool.website)}" target="_blank" rel="noopener noreferrer" class="news-mentioned-tool-btn" style="text-decoration: none;">
-                                            <img src="${safeImageSrc(mentionedTool.logoUrl)}" alt="${mentionedToolNameHTML}" class="news-mentioned-tool-logo">
-                                            <div class="news-mentioned-tool-info">
-                                                <div class="news-mentioned-tool-label">${currentLanguage === 'it' ? 'Visita sito web' : 'Visit Website'}</div>
-                                                <div class="news-mentioned-tool-name">${mentionedToolNameHTML}</div>
-                                            </div>
-                                            <div class="news-mentioned-tool-arrow">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                                            </div>
-                                        </a>
-                                    `;
-                                }
+                                const mentionedTools = getMentionedToolsForContent(newsItem, fullNewsText, 6);
+                                const mentionedToolsHTML = mentionedTools.length ? `
+                                    <section class="news-mentioned-tools">
+                                        <h2>${currentLanguage === 'it' ? 'Strumenti citati' : 'Mentioned tools'}</h2>
+                                        ${mentionedTools.map(mentionedTool => {
+                                            const mentionedToolNameHTML = escapeHTML(mentionedTool.name);
+                                            const isSaved = currentUser.favorites.includes(mentionedTool.id);
+                                            return `<article class="news-mentioned-tool-btn">
+                                                <img src="${safeImageSrc(mentionedTool.logoUrl)}" alt="${mentionedToolNameHTML}" class="news-mentioned-tool-logo">
+                                                <div class="news-mentioned-tool-info">
+                                                    <div class="news-mentioned-tool-label">${escapeHTML(getTranslatedCategoryName(mentionedTool.category))}</div>
+                                                    <div class="news-mentioned-tool-name">${mentionedToolNameHTML}</div>
+                                                </div>
+                                                <div class="news-mentioned-tool-actions">
+                                                    <button class="news-mentioned-tool-action primary" data-action="open-mentioned-tool" data-id="${escapeHTML(mentionedTool.id)}">${currentLanguage === 'it' ? 'Apri scheda' : 'Open details'}</button>
+                                                    <button class="news-mentioned-tool-action" data-action="save-mentioned-tool" data-id="${escapeHTML(mentionedTool.id)}" aria-pressed="${isSaved}">${isSaved ? (currentLanguage === 'it' ? 'Salvato' : 'Saved') : (currentLanguage === 'it' ? 'Salva' : 'Save')}</button>
+                                                </div>
+                                            </article>`;
+                                        }).join('')}
+                                    </section>` : '';
                                 
                                 const modalHTML = `
                                     <div class="news-detail-modal visible" id="news-detail-modal">
@@ -20439,6 +21015,7 @@ ${filtersHTML}
                                             <h1 class="news-detail-title">${newsTitleHTML}</h1>
                                             <div class="news-detail-text">${newsContentHTML}</div>
                                             ${newsHashtagsHTML}
+                                            ${mentionedToolsHTML}
                                         </div>
                                     </div>
                                 `;
@@ -20457,6 +21034,24 @@ ${filtersHTML}
                             if (history.state?.modal === 'news-detail') {
                                 history.back();
                             }
+                            break;
+                        case 'open-mentioned-tool':
+                            event.stopPropagation();
+                            document.getElementById('news-detail-modal')?.remove();
+                            if (history.state?.modal === 'news-detail') {
+                                history.replaceState({ page: currentView }, '', `#${currentView}`);
+                            }
+                            window.openDetailModal(actionTarget.dataset.id);
+                            break;
+                        case 'save-mentioned-tool':
+                            event.stopPropagation();
+                            const mentionedToolId = actionTarget.dataset.id;
+                            await toggleFavorite(mentionedToolId);
+                            const mentionedToolSaved = currentUser.favorites.includes(mentionedToolId);
+                            actionTarget.setAttribute('aria-pressed', String(mentionedToolSaved));
+                            actionTarget.textContent = mentionedToolSaved
+                                ? (currentLanguage === 'it' ? 'Salvato' : 'Saved')
+                                : (currentLanguage === 'it' ? 'Salva' : 'Save');
                             break;
 
                         // NUOVO: Torna al cinema dalla pagina video-detail
@@ -20669,6 +21264,33 @@ ${filtersHTML}
                             const detailVideoId = actionTarget.dataset.videoId;
                             if (detailVideoId) {
                                 window.openVideoDetailModal(detailVideoId);
+                            }
+                            break;
+                        case 'compare-related-tools':
+                            event.stopPropagation();
+                            exploreSelectedTools = [actionTarget.dataset.primaryId, actionTarget.dataset.relatedId].filter(Boolean);
+                            openCompareModal();
+                            break;
+                        case 'copy-related-prompt':
+                            event.stopPropagation();
+                            const relatedPrompt = actionTarget.dataset.prompt || '';
+                            if (!relatedPrompt) break;
+                            try {
+                                if (navigator.clipboard?.writeText) {
+                                    await navigator.clipboard.writeText(relatedPrompt);
+                                } else {
+                                    const promptTextarea = document.createElement('textarea');
+                                    promptTextarea.value = relatedPrompt;
+                                    promptTextarea.style.position = 'fixed';
+                                    promptTextarea.style.opacity = '0';
+                                    document.body.appendChild(promptTextarea);
+                                    promptTextarea.select();
+                                    document.execCommand('copy');
+                                    promptTextarea.remove();
+                                }
+                                showToast(currentLanguage === 'it' ? 'Prompt copiato' : 'Prompt copied');
+                            } catch (error) {
+                                showToast(currentLanguage === 'it' ? 'Impossibile copiare il prompt' : 'Unable to copy prompt');
                             }
                             break;
                         case 'watch-youtube-video':
@@ -20989,6 +21611,9 @@ ${filtersHTML}
                         case 'open-utility-tool':
                             toggleSideMenu(false);
                             openUtilityTool(actionTarget.dataset.utility);
+                            break;
+                        case 'toggle-side-menu-section':
+                            toggleSideMenuSection(actionTarget.dataset.section);
                             break;
                         case 'close-utility':
                             if (window.history.state && window.history.state.modal === 'utility') window.history.back();
@@ -21537,13 +22162,34 @@ ${filtersHTML}
                     history.replaceState({ page: 'home' }, '', '#home');
                 }
                 // --- END OF INSERTION ---
-                // Carica tutti i dati da Firestore PRIMA di inizializzare l'app
-                [aiToolsData, aiRankingsData, youtubeVideosData, newsData] = await Promise.all([
+                // Carica solo la prima pagina prima dell'avvio; il resto arriva durante i tempi idle.
+                const [toolsPage, rankings, videosPage, newsPage] = await Promise.all([
                     fetchToolsFromFirestore(),
                     fetchRankingsFromFirestore(),
                     fetchVideosFromFirestore(),
                     fetchNewsFromFirestore()
                 ]);
+                aiToolsData = toolsPage.items;
+                aiRankingsData = rankings;
+                youtubeVideosData = videosPage.items;
+                newsData = newsPage.items;
+                window.aiToolsData = aiToolsData;
+                updateCatalogPageState('tools', toolsPage, aiToolsData.length);
+                updateCatalogPageState('videos', videosPage, youtubeVideosData.length);
+                updateCatalogPageState('news', newsPage, newsData.length);
+
+                const requestedToolId = new URLSearchParams(window.location.search).get('tool');
+                if (requestedToolId && !aiToolsData.some(tool => String(tool.id) === requestedToolId)) {
+                    try {
+                        const requestedToolSnapshot = await getDoc(doc(db, 'tools', requestedToolId));
+                        if (requestedToolSnapshot.exists()) {
+                            aiToolsData = appendUniqueCatalogItems(aiToolsData, [{ ...requestedToolSnapshot.data(), id: requestedToolSnapshot.id }]);
+                            window.aiToolsData = aiToolsData;
+                        }
+                    } catch (error) {
+                        console.warn('Unable to preload requested tool:', error);
+                    }
+                }
 
                 // Aggiorna i badge di notifica dopo aver caricato i dati da Firebase
                 setTimeout(() => {
@@ -21572,6 +22218,7 @@ ${filtersHTML}
                 // L'app è usata esclusivamente da utenti ospiti (qualsiasi utente
                 // autenticato non viene utilizzato), quindi avviamo sempre l'app in modalità ospite.
                 initializeAppForGuest();
+                void loadRemainingCatalogData().catch(error => console.error('Progressive catalog loading error:', error));
             };
 
             initializeGuestApplication().catch((error) => {

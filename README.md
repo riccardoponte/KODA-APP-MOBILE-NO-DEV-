@@ -6,7 +6,9 @@ Koda AI is a static progressive web app for discovering and comparing AI tools a
 
 - Firestore-backed catalog search with deterministic ranking by specialization and declared create/read/edit capabilities.
 - Structured, logo-based tool comparisons with responsive capability matrices.
+- Cross-linked tool details with related videos, news, explainable comparisons, and ready-to-copy prompts. News articles expose cited tools with open and save actions.
 - Manually authored Italian and English news with exactly three hashtags per item.
+- Progressive Firestore loading for tools, videos, and news, with cursor-based pages completed during browser idle time.
 - Local text generation through WebGPU and a dedicated Web Worker.
 - A bilingual deterministic router for common knowledge, calculations, percentages, unit conversions, local date/time, text metrics, summaries, templates, safety boundaries, and structured writing tasks.
 - A guided, paged catalog of 22 AI concepts, including Projects, custom assistants, Connectors, Plugins, Skills, tool use, memory, Deep Research, grounding, and model fundamentals. Every concept has a deterministic bilingual explanation, a responsive animated diagram, and reduced-motion support.
@@ -88,7 +90,7 @@ Direct requests to generate a file return a deterministic unavailable response a
 
 Normal chat, catalog retrieval, prompt rewriting, and model inference run in the browser. Conversation history is stored in browser local storage.
 
-Network requests are still required for the application shell, Firestore catalog, runtime, and the first SmolLM2 download. Chat prompts are not sent with those requests. Koda does not include a private AI key in the static site.
+Network requests are still required for the application shell, Firestore catalog, runtime, and an explicitly approved SmolLM2 download. Chat prompts are not sent with those requests. Koda does not include a private AI key in the static site.
 
 ## Deployment
 
@@ -100,7 +102,7 @@ After changing a cached application module, increment `CACHE_VERSION` in `sw.js`
 
 - SmolLM2 135M is the sole local model and can run through WebGPU or WASM.
 - Generated text can be incomplete, inconsistent, or factually wrong. Important information must be checked independently.
-- The first generated response downloads approximately 118 MB and stores it through streaming OPFS where available.
+- Model-backed generation requires explicit approval of an approximately 118 MB download. Until approval, Koda returns the verified deterministic draft without starting a Worker download.
 - SmolLM2 is primarily English and has limited Italian and general-knowledge quality. Topic, language, and repetition validation can replace rejected output with a deterministic fallback.
 - Open-ended translation, rewriting, and conversation may return a verified draft when model output changes protected names or numbers, invents a URL, leaks prompt text, repeats itself, or switches language.
 - Catalog refresh and uncached model loading require a network connection. Previously cached app resources can work offline.

@@ -6,7 +6,7 @@
 | --- | --- | --- | --- | --- |
 | SmolLM2 135M | `HuggingFaceTB/SmolLM2-135M-Instruct` | WebGPU or WASM | `q4f16` on WebGPU, `q4` on WASM | 118 MB |
 
-Koda uses Transformers.js 4.2.0 and the text-generation pipeline in a dedicated Web Worker. SmolLM2 is the only selectable runtime internally; the application does not expose a model picker.
+Koda uses Transformers.js 4.2.0 and the text-generation pipeline in a dedicated Web Worker. SmolLM2 is the only selectable runtime. Settings expose its download state, expected or active backend, storage size, and removal control.
 
 Model card:
 
@@ -82,10 +82,11 @@ Explicit requests to generate files return a deterministic unavailable response.
 ## Loading, Caching, and Timeouts
 
 - No model download starts automatically when the application opens.
-- The first request that needs generation downloads SmolLM2 lazily. There is no model selector or download panel.
+- A request that could use generation keeps the verified deterministic result when SmolLM2 is absent and opens an explicit consent dialog. The dialog identifies the 118 MB download, current model storage, expected backend, and removal path.
+- Download starts only after confirmation. Once downloaded, subsequent eligible requests can invoke SmolLM2.
 - Transformers.js downloads model assets from Hugging Face and its runtime from jsDelivr.
 - Transformers.js uses a custom OPFS cache that streams weights to local browser storage. Existing Cache API entries remain readable as a compatibility fallback. The service worker caches application modules, not model weights.
-- The SmolLM2 cache uses a dedicated directory. On first migration it removes the retired Gemma OPFS directory, related Cache API entries, and the old dual-model marker.
+- The SmolLM2 cache uses a dedicated directory. The Settings removal command terminates the worker and deletes the OPFS directory, compatibility Cache Storage entry, and local download marker.
 - WebGPU is preferred. SmolLM2 falls back to single-threaded WASM when WebGPU is unavailable.
 - Normal model requests use a 120-second inactivity timeout. WASM requests use 240 seconds.
 - The worker aggregates downloaded bytes across concurrent files and emits monotonic progress at a limited rate.
@@ -100,7 +101,7 @@ Run the local suite from the application directory:
 node --test tests/local-ai.test.mjs
 ```
 
-The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers AI concept response types, multi-turn guided recommendations, comparisons, blocked file requests, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
+The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers explicit download consent, AI concept response types, multi-turn guided recommendations, comparisons, blocked file requests, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
 
 ## Limitations
 

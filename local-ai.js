@@ -2,6 +2,7 @@ const STATUS_EVENT = 'koda-local-ai-status';
 const WORKER_URL = new URL('./ai-worker.js', import.meta.url);
 const MODEL_STORAGE_KEY = 'koda-local-ai-model';
 const DOWNLOADED_MODELS_STORAGE_KEY = 'koda-local-ai-downloaded-models-smollm2-v1';
+const MODEL_CACHE_DIRECTORY = 'koda-transformers-cache-smollm2-v1';
 const DEFAULT_MODEL_KEY = 'smollm2-135m';
 const MODEL_CATALOG = Object.freeze({
     'smollm2-135m': Object.freeze({
@@ -287,6 +288,48 @@ const downloadAllLocalModels = async () => {
         downloaded.push(await downloadLocalModel(modelKey));
     }
     return downloaded;
+};
+
+const removeLocalModel = async modelKey => {
+    if (!isModelKey(modelKey)) throw new Error('UNKNOWN_LOCAL_MODEL');
+
+    if (worker) worker.terminate();
+    worker = null;
+    workerModelKey = null;
+    workerUnavailable = false;
+    for (const request of pendingRequests.values()) {
+        clearTimeout(request.timeoutId);
+        request.reject(new Error('LOCAL_MODEL_REMOVED'));
+    }
+    pendingRequests.clear();
+
+    try {
+        const storageRoot = await globalThis.navigator?.storage?.getDirectory?.();
+        if (storageRoot) {
+            await storageRoot.removeEntry(MODEL_CACHE_DIRECTORY, { recursive: true }).catch(error => {
+                if (error?.name !== 'NotFoundError') throw error;
+            });
+        }
+        if (globalThis.caches?.delete) await globalThis.caches.delete('transformers-cache');
+    } catch (error) {
+        updateStatus({ state: 'remove-error', operation: 'remove', progress: null, reason: 'MODEL_REMOVE_FAILED' });
+        throw new Error('MODEL_REMOVE_FAILED');
+    }
+
+    downloadedModelKeys.clear();
+    persistDownloadedModelKeys(downloadedModelKeys);
+    updateStatus({
+        state: 'idle',
+        operation: 'remove',
+        progress: null,
+        reason: '',
+        selectedModelKey,
+        modelKey: selectedModelKey,
+        model: MODEL_CATALOG[selectedModelKey].id,
+        backend: '',
+        supported: hasLocalInference()
+    });
+    return { ...MODEL_CATALOG[modelKey] };
 };
 
 const generateWithModel = (messages, { maxNewTokens = 120, idleTimeoutMs = MODEL_IDLE_TIMEOUT_MS } = {}) => new Promise((resolve, reject) => {
@@ -3033,7 +3076,8 @@ export async function* sendLocalMessageStream(chat, message) {
     };
 
     let answer = plan.text;
-    if (plan.useModel && hasLocalInference() && !workerUnavailable) {
+    const selectedModelDownloaded = downloadedModelKeys.has(selectedModelKey);
+    if (plan.useModel && hasLocalInference() && !workerUnavailable && selectedModelDownloaded) {
         try {
             const promptOptimization = plan.kind === PROMPT_REWRITE_MODE;
             const transformation = plan.kind === TRANSFORMATION_MODE;
@@ -3054,6 +3098,19 @@ export async function* sendLocalMessageStream(chat, message) {
         } catch (error) {
             updateStatus({ state: 'fallback', progress: null, reason: error instanceof Error ? error.message : String(error) });
         }
+    } else if (plan.useModel && hasLocalInference() && !selectedModelDownloaded) {
+        updateStatus({
+            state: 'consent-required',
+            operation: 'download-consent',
+            progress: null,
+            reason: 'MODEL_DOWNLOAD_CONSENT_REQUIRED',
+            selectedModelKey,
+            modelKey: selectedModelKey,
+            model: MODEL_CATALOG[selectedModelKey].id,
+            downloadBytes: MODEL_CATALOG[selectedModelKey].downloadBytes,
+            backend: globalThis.navigator?.gpu ? 'webgpu' : 'wasm',
+            supported: true
+        });
     } else if (plan.useModel && !hasLocalInference()) {
         updateStatus({ state: 'fallback', progress: null, supported: false, reason: 'LOCAL_INFERENCE_UNAVAILABLE' });
     }
@@ -3076,6 +3133,7 @@ export const localAI = Object.freeze({
     selectModel: selectLocalModel,
     downloadModel: downloadLocalModel,
     downloadAllModels: downloadAllLocalModels,
+    removeModel: removeLocalModel,
     preload: preloadLocalModel,
     takeResponseMetadata: takeLocalResponseMetadata,
     isModelSupported: hasLocalInference,

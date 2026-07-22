@@ -28,10 +28,13 @@ class FakeWorker {
     terminate() {}
 }
 
+const localStorageValues = new Map([
+    ['koda-local-ai-downloaded-models-smollm2-v1', JSON.stringify(['smollm2-135m'])]
+]);
 globalThis.localStorage = {
-    getItem: () => null,
-    setItem: () => {},
-    removeItem: () => {}
+    getItem: key => localStorageValues.get(key) ?? null,
+    setItem: (key, value) => localStorageValues.set(key, String(value)),
+    removeItem: key => localStorageValues.delete(key)
 };
 globalThis.Worker = FakeWorker;
 
@@ -609,4 +612,17 @@ test('handles typo greetings, identity, creators, and capabilities deterministic
     assert.equal(capabilities.metadata.intent, 'capabilities');
     assert.doesNotMatch(capabilities.text, /creare file|create files/i);
     assert.equal(workerRequests.length, 0);
+});
+
+test('requires explicit consent before a model-backed request can download files', async () => {
+    await localModule.localAI.removeModel('smollm2-135m');
+    queueModelOutput('The Apollo project costs 25 euros.');
+
+    const result = await ask('traduci in inglese: Il progetto Apollo costa 25 euro.');
+
+    assert.equal(result.metadata.strategy, 'verified-fallback');
+    assert.equal(workerRequests.length, 0);
+    assert.equal(localModule.localAI.getStatus().state, 'consent-required');
+    assert.equal(localModule.localAI.getStatus().reason, 'MODEL_DOWNLOAD_CONSENT_REQUIRED');
+    assert.equal(localModule.localAI.getStatus().downloadBytes, 118000000);
 });
