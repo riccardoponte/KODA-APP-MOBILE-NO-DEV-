@@ -47,6 +47,12 @@ Open-ended conversation is limited to AI, models, prompts, and the verified cata
 
 Arbitrary translation and rewriting use a transformation-only prompt. Accepted output must preserve source numbers, URLs, email addresses, placeholders, acronyms, and proper-name tokens. Translation also enforces the target language and rejects unchanged or excessively expanded text.
 
+## AI Concept Explanations
+
+Questions about Computer Use, Gems, AI agents, RAG, multimodal AI, MCP, embeddings, fine-tuning, and context windows use reviewed Italian or English definitions. These requests do not invoke SmolLM2. The router returns a stable `ai-concept-<id>` response type and related-concept quick replies.
+
+The React chat maps each response type to a dedicated diagram: device interaction, configurable hub, agent loop, retrieval or protocol pipeline, multimodal convergence, vector space, training pipeline, or token window. The diagrams use CSS animation, retain a textual accessible label, adapt to the rendered message width, and stop moving when `prefers-reduced-motion` is enabled. The full written explanation remains visible below each diagram.
+
 ## Guided Interaction
 
 Greetings and short or incomplete messages open a deterministic menu with two paths: find an AI tool or compare two AI tools. Each path is an explicit JavaScript state machine and exposes optional quick-reply buttons. Comparison suggestions are read from the full live catalog, ordered with featured records first and then alphabetically, and paged four at a time through `Show more`/`Mostra altri`. Suggestions that represent catalog tools include their live catalog logo, with initials as a loading or error fallback. The same choices also accept typed labels and numbered answers. Users can still type a freeform question about AI or the catalog without a dedicated menu button.
@@ -94,7 +100,7 @@ Run the local suite from the application directory:
 node --test tests/local-ai.test.mjs
 ```
 
-The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers multi-turn guided recommendations, comparisons, blocked file requests, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
+The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers AI concept response types, multi-turn guided recommendations, comparisons, blocked file requests, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
 
 ## Limitations
 

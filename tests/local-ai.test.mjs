@@ -117,6 +117,30 @@ test('routes common English requests deterministically', async () => {
     assert.equal(workerRequests.length, 0);
 });
 
+test('explains AI concepts deterministically with visual metadata', async () => {
+    const cases = [
+        ['spiegami il computer use', 'ai-concept-computer-use', /osservare.*pianificare.*agire.*verificare/is],
+        ['cosa sono i Gems?', 'ai-concept-gems', /assistenti personalizzati.*Gemini/is],
+        ['parlami di agenti AI', 'ai-concept-ai-agents', /pianifica.*strumenti.*osserva/is],
+        ['spiegami il RAG', 'ai-concept-rag', /recupero di fonti/is],
+        ['cos’è l’AI multimodale?', 'ai-concept-multimodal-ai', /testo.*immagini.*audio.*video/is],
+        ['che cos’è MCP?', 'ai-concept-mcp', /Model Context Protocol/is],
+        ['cosa sono gli embeddings?', 'ai-concept-embeddings', /vettori numerici/is],
+        ['spiegami il fine-tuning', 'ai-concept-fine-tuning', /parametri del modello/is],
+        ['spiegami la finestra di contesto', 'ai-concept-context-window', /quantità massima di token/is]
+    ];
+
+    for (const [message, responseType, expectedText] of cases) {
+        const result = await ask(message);
+        assert.equal(result.metadata.intent, 'known-knowledge', message);
+        assert.equal(result.metadata.responseType, responseType, message);
+        assert.equal(result.metadata.strategy, 'deterministic', message);
+        assert.match(result.text, expectedText, message);
+        assert.ok(result.metadata.quickReplies.length >= 3, message);
+    }
+    assert.equal(workerRequests.length, 0);
+});
+
 test('uses structured catalog capabilities for recommendations and comparisons', async () => {
     const tools = [
         {
