@@ -1565,9 +1565,58 @@ const STATIC_KNOWLEDGE = Object.freeze([
         en: 'A **prompt** is the instruction and context given to a model. An effective prompt states the objective, available data, audience, output format, constraints, and quality criteria without contradictory information.'
     },
     {
+        id: 'rag',
         aliases: ['rag', 'retrieval augmented generation'],
         it: 'Il **RAG** combina recupero di fonti e generazione: prima seleziona documenti pertinenti, poi li fornisce al modello come contesto. Riduce le risposte non fondate solo se recupero, dati e regole di citazione sono affidabili.',
         en: '**RAG** combines retrieval and generation: it first selects relevant documents and then supplies them to the model as context. It reduces unsupported answers only when retrieval, data, and citation rules are reliable.'
+    },
+    {
+        id: 'computer-use',
+        aliases: ['computer use', 'uso del computer', 'uso del computer con l ai', 'computer-using agent'],
+        it: 'Il **Computer Use** permette a un sistema AI di interagire con un’interfaccia grafica usando azioni simili a quelle umane: osserva schermate o elementi della pagina, decide il passaggio successivo, usa mouse e tastiera e controlla il risultato.\n\nIl ciclo tipico è **osservare → pianificare → agire → verificare**. È utile quando non esiste un’API, ma richiede limiti sui permessi, conferme per le azioni sensibili e controlli contro errori, contenuti ingannevoli e modifiche inattese dell’interfaccia.',
+        en: '**Computer Use** lets an AI system interact with a graphical interface through human-like actions: it observes screenshots or page elements, chooses the next step, uses the mouse and keyboard, and checks the result.\n\nThe typical loop is **observe → plan → act → verify**. It is useful when no API exists, but it requires permission boundaries, confirmation for sensitive actions, and safeguards against errors, deceptive content, and unexpected interface changes.'
+    },
+    {
+        id: 'gems',
+        aliases: ['gem', 'gems', 'gemini gems', 'gem di gemini', 'gems di gemini', 'google gems'],
+        it: 'I **Gems** sono assistenti personalizzati nell’ecosistema Gemini. Si configurano con un ruolo, istruzioni persistenti e, quando disponibile, materiali di riferimento, così lo stesso comportamento può essere riutilizzato per attività ricorrenti.\n\nUn Gem non è un modello separato: applica una configurazione al modello sottostante. Qualità, accesso ai dati, limiti e privacy dipendono quindi dal modello, dai materiali collegati e dalle impostazioni del servizio.',
+        en: '**Gems** are customized assistants in the Gemini ecosystem. They are configured with a role, persistent instructions, and, when available, reference material so the same behavior can be reused for recurring tasks.\n\nA Gem is not a separate model: it applies a configuration to the underlying model. Quality, data access, limitations, and privacy therefore depend on the model, connected materials, and service settings.'
+    },
+    {
+        id: 'ai-agents',
+        aliases: ['agente ai', 'agenti ai', 'ai agent', 'ai agents', 'agenti autonomi'],
+        it: 'Un **agente AI** persegue un obiettivo attraverso un ciclo: interpreta lo stato, pianifica, usa strumenti, osserva l’esito e decide il passo successivo. Può combinare un modello con memoria, API, ricerca o Computer Use.\n\nL’autonomia non equivale ad affidabilità. Un agente efficace ha obiettivi circoscritti, permessi minimi, limiti di tempo e costo, registri delle azioni e punti di conferma umana.',
+        en: 'An **AI agent** pursues a goal through a loop: it interprets the state, plans, uses tools, observes the outcome, and chooses the next step. It can combine a model with memory, APIs, search, or Computer Use.\n\nAutonomy does not imply reliability. An effective agent has a bounded objective, minimal permissions, time and cost limits, action logs, and human confirmation points.'
+    },
+    {
+        id: 'multimodal-ai',
+        aliases: ['ai multimodale', 'intelligenza artificiale multimodale', 'multimodal ai', 'multimodalita', 'multimodalità'],
+        it: 'Un sistema di **AI multimodale** elabora più tipi di informazione, per esempio testo, immagini, audio e video, rappresentandoli in uno spazio che consente di collegarli. Può descrivere un’immagine, rispondere su un documento o combinare voce e contenuto visivo.\n\nOgni modalità introduce errori specifici: qualità dell’acquisizione, sincronizzazione, ambiguità e perdita di dettagli devono essere valutate separatamente.',
+        en: 'A **multimodal AI** system processes several types of information, such as text, images, audio, and video, representing them in a space where they can be connected. It can describe an image, answer questions about a document, or combine speech with visual content.\n\nEach modality introduces specific errors: capture quality, synchronization, ambiguity, and detail loss must be evaluated separately.'
+    },
+    {
+        id: 'mcp',
+        aliases: ['mcp', 'model context protocol'],
+        it: 'Il **Model Context Protocol (MCP)** standardizza il modo in cui un’applicazione AI scopre e usa strumenti, risorse e prompt esposti da server compatibili. Il client mantiene la conversazione con il modello; i server MCP descrivono capacità e dati disponibili.\n\nMCP semplifica l’integrazione, ma non rende automaticamente sicuro uno strumento: autenticazione, autorizzazioni, validazione degli input e conferme restano responsabilità dell’applicazione e del server.',
+        en: 'The **Model Context Protocol (MCP)** standardizes how an AI application discovers and uses tools, resources, and prompts exposed by compatible servers. The client manages the model conversation; MCP servers describe available capabilities and data.\n\nMCP simplifies integration, but it does not automatically make a tool safe: authentication, authorization, input validation, and confirmations remain responsibilities of the application and server.'
+    },
+    {
+        id: 'embeddings',
+        aliases: ['embedding', 'embeddings', 'vettori semantici', 'semantic embeddings'],
+        it: 'Gli **embedding** trasformano contenuti come parole, immagini o documenti in vettori numerici. Elementi con significato o caratteristiche simili tendono a occupare zone vicine dello spazio vettoriale.\n\nSono usati per ricerca semantica, clustering, raccomandazioni e RAG. La vicinanza matematica non prova però equivalenza, verità o assenza di bias.',
+        en: '**Embeddings** transform content such as words, images, or documents into numeric vectors. Items with similar meaning or characteristics tend to occupy nearby regions of the vector space.\n\nThey are used for semantic search, clustering, recommendations, and RAG. Mathematical proximity does not prove equivalence, truth, or absence of bias.'
+    },
+    {
+        id: 'fine-tuning',
+        aliases: ['fine tuning', 'fine-tuning', 'messa a punto del modello'],
+        it: 'Il **fine-tuning** continua l’addestramento di un modello su esempi selezionati per modificarne comportamento, stile o prestazioni in un compito. A differenza del RAG, cambia i parametri del modello e non recupera automaticamente informazioni aggiornate.\n\nServono dati rappresentativi, una valutazione separata e controlli contro sovra-adattamento, regressioni e memorizzazione indesiderata.',
+        en: '**Fine-tuning** continues model training on selected examples to change its behavior, style, or task performance. Unlike RAG, it changes model parameters and does not automatically retrieve updated information.\n\nIt requires representative data, separate evaluation, and checks against overfitting, regressions, and unwanted memorization.'
+    },
+    {
+        id: 'context-window',
+        aliases: ['finestra di contesto', 'context window', 'contesto del modello'],
+        it: 'La **finestra di contesto** è la quantità massima di token che un modello può considerare insieme, includendo istruzioni, messaggi, documenti e risposta in corso. Se il limite viene superato, parte del contenuto deve essere rimossa, riassunta o recuperata in modo selettivo.\n\nUna finestra ampia non equivale a memoria permanente né garantisce che il modello usi ogni dettaglio con la stessa precisione.',
+        en: 'The **context window** is the maximum number of tokens a model can consider at once, including instructions, messages, documents, and the response being generated. When the limit is exceeded, some content must be removed, summarized, or selectively retrieved.\n\nA large window is not permanent memory and does not guarantee that every detail will be used with equal accuracy.'
     },
     {
         aliases: ['fotosintesi', 'photosynthesis'],
@@ -1591,14 +1640,26 @@ const STATIC_KNOWLEDGE = Object.freeze([
     }
 ]);
 
-const isDefinitionRequest = message => /^(?:cos e|cosa e|che cos e|definisci|spiega|spiegami|parlami di|dimmi di|what is|define|explain|tell me about)\b/.test(normalizeText(message));
+const isDefinitionRequest = message => /^(?:cos e|cosa e|cosa sono|che cos e|che cosa sono|definisci|spiega|spiegami|parlami di|dimmi di|what is|what are|define|explain|tell me about)\b/.test(normalizeText(message));
+
+const conceptQuickReplies = (conceptId, lang) => {
+    const labels = lang === 'it'
+        ? [['computer-use', 'Computer Use'], ['gems', 'Gems'], ['ai-agents', 'Agenti AI'], ['rag', 'RAG'], ['mcp', 'MCP']]
+        : [['computer-use', 'Computer Use'], ['gems', 'Gems'], ['ai-agents', 'AI agents'], ['rag', 'RAG'], ['mcp', 'MCP']];
+    return labels.filter(([id]) => id !== conceptId).slice(0, 4).map(([, label]) => label);
+};
 
 const staticKnowledgeResponse = (message, lang) => {
     const source = conversationSubject(message) || String(message).trim();
-    const normalized = normalizeText(source).replace(/^(?:il|lo|la|l|un|uno|una|the|a|an)\s+/, '');
-    if (!isDefinitionRequest(message) && normalized.split(' ').length > 4) return '';
+    const normalized = normalizeText(source).replace(/^(?:il|lo|la|l|i|gli|le|un|uno|una|the|a|an)\s+/, '');
+    if (!isDefinitionRequest(message) && normalized.split(' ').length > 4) return null;
     const entry = STATIC_KNOWLEDGE.find(item => item.aliases.some(alias => normalized === normalizeText(alias)));
-    return entry?.[lang] || '';
+    if (!entry) return null;
+    return {
+        text: entry[lang],
+        conceptId: entry.id || '',
+        quickReplies: entry.id ? conceptQuickReplies(entry.id, lang) : []
+    };
 };
 
 const staticComparisonResponse = (message, lang) => {
@@ -1868,7 +1929,7 @@ const conversationKeywords = message => queryTerms(message)
 
 const conversationSubject = message => {
     const input = String(message || '').trim();
-    const match = input.match(/^(?:parlami di|dimmi di|raccontami di|spiega(?:mi)?|cos(?:['’]|\s)?[eè]|cosa [eè]|che cos(?:['’]|\s)?[eè]|tell me about|describe|explain|what is)\s+(.+?)[?.!]*$/i);
+    const match = input.match(/^(?:parlami di|dimmi di|raccontami di|spiega(?:mi)?|cos(?:['’]|\s)?[eè]|cosa [eè]|cosa sono|che cos(?:['’]|\s)?[eè]|che cosa sono|tell me about|describe|explain|what is|what are)\s+(.+?)[?.!]*$/i);
     return (match?.[1] || '')
         .replace(/\s+(?:brevemente|in breve|in una frase|briefly|in one sentence)$/i, '')
         .trim();
@@ -1977,7 +2038,10 @@ const createResponsePlan = (chat, message, tools) => {
         );
     }
     if (knownComparison) return deterministicPlan('known-comparison', knownComparison);
-    if (knownAnswer) return deterministicPlan('known-knowledge', knownAnswer);
+    if (knownAnswer) return deterministicPlan('known-knowledge', knownAnswer.text, {
+        presentation: knownAnswer.conceptId ? `ai-concept-${knownAnswer.conceptId}` : '',
+        quickReplies: knownAnswer.quickReplies
+    });
     if (requestedStructure) {
         const topic = structuredTaskTopic(message, requestedStructure);
         return deterministicPlan(`structured-${requestedStructure}`, structuredTaskResponse(requestedStructure, topic, lang));

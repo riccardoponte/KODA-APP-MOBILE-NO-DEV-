@@ -9,6 +9,7 @@ Koda AI is a static progressive web app for discovering and comparing AI tools a
 - Manually authored Italian and English news with exactly three hashtags per item.
 - Local text generation through WebGPU and a dedicated Web Worker.
 - A bilingual deterministic router for common knowledge, calculations, percentages, unit conversions, local date/time, text metrics, summaries, templates, safety boundaries, and structured writing tasks.
+- Deterministic bilingual explanations for Computer Use, Gems, AI agents, RAG, multimodal AI, MCP, embeddings, fine-tuning, and context windows, with responsive animated diagrams and reduced-motion support.
 - An inline Prompt Optimizer mode that rewrites a prompt without leaving the current conversation.
 - Local conversation history, preferences, and PWA caching.
 - Italian and English interface.
@@ -33,7 +34,7 @@ The local AI regression suite uses Node's built-in test runner and a simulated W
 node --test tests/local-ai.test.mjs
 ```
 
-The suite covers Italian and English routing, catalog capabilities and comparisons, Prompt Optimizer, transformations, open conversation validation, blocked file requests, and rejected model output.
+The suite covers Italian and English routing, AI concept presentation metadata, catalog capabilities and comparisons, Prompt Optimizer, transformations, open conversation validation, blocked file requests, and rejected model output.
 
 ## Architecture
 
