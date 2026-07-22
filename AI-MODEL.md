@@ -25,20 +25,16 @@ flowchart LR
     R --> P[Prompt Optimizer]
     R --> T[Translation or rewrite]
     R --> G[Open conversation]
-    R --> F[File generation plan]
     S --> O
     D --> O[Rendered response]
     C --> O
     P --> O
     T --> W[Web Worker]
     G --> W
-    F --> W
     W --> V[Local validation]
     V -->|Accepted| O
     V -->|Invalid or unavailable| B[Verified fallback]
     B --> O
-    F --> A[Browser artifact builder]
-    A --> O
 ```
 
 `local-ai.js` creates a verified draft before model inference. Model output replaces that draft only when mode-specific validation succeeds.
@@ -53,11 +49,11 @@ Arbitrary translation and rewriting use a transformation-only prompt. Accepted o
 
 ## Guided Interaction
 
-Greetings and short or incomplete messages open a deterministic menu with four paths: find an AI tool, compare two AI tools, create a file, or ask about AI and the catalog. Each path is an explicit JavaScript state machine and exposes optional quick-reply buttons. Comparison suggestions are read from the full live catalog, ordered with featured records first and then alphabetically, and paged four at a time through `Show more`/`Mostra altri`. Suggestions that represent catalog tools include their live catalog logo, with initials as a loading or error fallback. The same choices also accept typed labels and numbered answers.
+Greetings and short or incomplete messages open a deterministic menu with two paths: find an AI tool or compare two AI tools. Each path is an explicit JavaScript state machine and exposes optional quick-reply buttons. Comparison suggestions are read from the full live catalog, ordered with featured records first and then alphabetically, and paged four at a time through `Show more`/`Mostra altri`. Suggestions that represent catalog tools include their live catalog logo, with initials as a loading or error fallback. The same choices also accept typed labels and numbered answers. Users can still type a freeform question about AI or the catalog without a dedicated menu button.
 
 An active path owns the next message. Invalid or unrelated replies repeat the current question and valid choices instead of falling through to open conversation. `back`/`indietro`, `menu`, and `cancel`/`annulla` provide deterministic navigation. Complete supported requests can still bypass the menu.
 
-Guided recommendations use only declared Firestore specializations and create/read/edit capabilities. All compatible records are available in pages of four through `Show more`/`Mostra altri`; each card preloads its catalog logo and keeps initials visible while loading or after an image error. Guided comparisons use verified catalog records, and guided file creation delegates to the existing artifact builder. No guided step invokes SmolLM2.
+Guided recommendations use only declared Firestore specializations and create/read/edit capabilities. All compatible records are available in pages of four through `Show more`/`Mostra altri`; each card preloads its catalog logo and keeps initials visible while loading or after an image error. Guided comparisons use verified catalog records. No guided step invokes SmolLM2.
 
 ## Retrieval and Grounding
 
@@ -73,15 +69,9 @@ Tool comparisons are deterministic and use only Firestore fields. They include l
 
 Prompt Optimizer is an inline mode in the existing conversation. Toggling it does not clear messages or open a separate chat. With SmolLM2 it uses the deterministic seven-section rewrite directly, avoiding a slower model attempt that is unlikely to pass validation.
 
-### File Generation
+### File Requests
 
-Explicit file requests use a separate prompt and validation rules. HTML must be a complete document without active or remote content, JSON must parse to an object or array, and tabular formats require a header, a data row, and a consistent column count. File requests use a 320-token target, transformations use 180 tokens, and all request values are clamped to 384 tokens. Regular chat uses 120 tokens. Prompt Optimizer is deterministic.
-
-When generation is rejected or unavailable, spreadsheet drafts infer columns for common business cases. Reports, memos, and letters use structured placeholders. These drafts are designed to remain useful without claiming that missing data exists.
-
-Generated content is converted locally into browser Blobs. The model does not create binary files directly.
-
-The compact PDF writer uses a built-in Helvetica font and transliterates accented and other non-ASCII characters to ASCII. XLSX output preserves UTF-8 text in OOXML inline strings.
+Explicit requests to generate files return a deterministic unavailable response. They do not invoke SmolLM2 and do not attach downloadable content. Requests to find catalog tools capable of creating or editing a format remain supported.
 
 ## Loading, Caching, and Timeouts
 
@@ -91,7 +81,7 @@ The compact PDF writer uses a built-in Helvetica font and transliterates accente
 - Transformers.js uses a custom OPFS cache that streams weights to local browser storage. Existing Cache API entries remain readable as a compatibility fallback. The service worker caches application modules, not model weights.
 - The SmolLM2 cache uses a dedicated directory. On first migration it removes the retired Gemma OPFS directory, related Cache API entries, and the old dual-model marker.
 - WebGPU is preferred. SmolLM2 falls back to single-threaded WASM when WebGPU is unavailable.
-- Normal model requests use a 120-second inactivity timeout. File generation and WASM requests use 240 seconds.
+- Normal model requests use a 120-second inactivity timeout. WASM requests use 240 seconds.
 - The worker aggregates downloaded bytes across concurrent files and emits monotonic progress at a limited rate.
 
 If WebGPU is unavailable or the worker fails, Koda switches to the verified deterministic result. A failed worker is not repeatedly recreated during the same page session.
@@ -104,7 +94,7 @@ Run the local suite from the application directory:
 node --test tests/local-ai.test.mjs
 ```
 
-The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers multi-turn guided recommendations, comparisons, file creation, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
+The suite uses a simulated Worker and controlled outputs, so it tests model acceptance and rejection without loading model weights. It also covers multi-turn guided recommendations, comparisons, blocked file requests, quick-reply metadata, and focus recovery. Intent and strategy metadata distinguish deterministic, accepted-model, and verified-fallback paths.
 
 ## Limitations
 

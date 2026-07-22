@@ -7,7 +7,7 @@
      app chiusa (best-effort, supportato principalmente su Chrome/Android)
    ===================================================================== */
 
-const CACHE_VERSION = 'koda-v34';
+const CACHE_VERSION = 'koda-v35';
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const PREFS_CACHE = 'koda-prefs'; // non versionato: conserva preferenze/stato tra gli aggiornamenti
@@ -19,7 +19,6 @@ const APP_SHELL = [
     './index.html',
     './local-ai.js',
     './ai-worker.js',
-    './browser-artifacts.js',
     './manifest.json',
     './icons/icon-144x144.png',
     './icons/icon-192x192.png',
@@ -101,7 +100,6 @@ self.addEventListener('fetch', (event) => {
         '/index.html',
         '/local-ai.js',
         '/ai-worker.js',
-        '/browser-artifacts.js',
         '/manifest.json'
     ].some(path => url.pathname.endsWith(path));
     if (isCoreModule) {

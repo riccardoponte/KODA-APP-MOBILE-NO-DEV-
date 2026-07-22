@@ -1,7 +1,7 @@
 {
   "name": "Koda AI",
   "short_name": "Koda AI",
-  "description": "Assistente AI locale per scoprire e confrontare strumenti, ottimizzare prompt e creare file.",
+  "description": "Assistente AI locale per scoprire e confrontare strumenti e ottimizzare prompt.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

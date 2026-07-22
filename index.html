@@ -2008,17 +2008,6 @@
             margin-bottom: 0;
         }
 
-        .chat-artifacts {
-            width: min(85%, 520px);
-            align-self: flex-start;
-            margin: -4px 0 2px 4px;
-        }
-
-        .chat-artifacts {
-            display: grid;
-            gap: 8px;
-        }
-
         .chat-quick-replies {
             width: min(85%, 560px);
             align-self: flex-start;
@@ -2087,165 +2076,6 @@
         .chat-quick-reply:disabled {
             cursor: default;
             opacity: 0.55;
-        }
-
-        .chat-artifact-card {
-            min-height: 64px;
-            display: grid;
-            grid-template-columns: 40px minmax(0, 1fr) auto;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border: 1px solid rgba(128, 128, 128, 0.22);
-            border-radius: 8px;
-            background: var(--Koda-card);
-        }
-
-        .chat-artifact-icon {
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            background: color-mix(in srgb, var(--Koda-accent) 16%, var(--Koda-bg-light));
-            color: var(--Koda-accent);
-        }
-
-        .chat-artifact-icon svg {
-            width: 21px;
-            height: 21px;
-        }
-
-        .chat-artifact-meta {
-            min-width: 0;
-        }
-
-        .chat-artifact-name {
-            display: block;
-            overflow: hidden;
-            color: var(--Koda-text);
-            font-size: 13px;
-            font-weight: 700;
-            line-height: 1.3;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .chat-artifact-type {
-            display: block;
-            margin-top: 2px;
-            color: var(--Koda-text-secondary);
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .chat-artifact-actions {
-            display: flex;
-            gap: 4px;
-        }
-
-        .chat-artifact-btn,
-        .artifact-preview-btn {
-            border: 0;
-            color: var(--Koda-text);
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        .chat-artifact-btn {
-            width: 34px;
-            height: 34px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--Koda-bg-light);
-        }
-
-        .chat-artifact-btn:hover {
-            color: var(--Koda-accent);
-        }
-
-        .chat-artifact-btn svg {
-            width: 17px;
-            height: 17px;
-        }
-
-        .artifact-preview-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 10050;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
-            background: rgba(0, 0, 0, 0.72);
-        }
-
-        .artifact-preview-dialog {
-            width: min(960px, 100%);
-            height: min(760px, 92dvh);
-            min-height: 320px;
-            display: grid;
-            grid-template-rows: 58px minmax(0, 1fr);
-            overflow: hidden;
-            border: 1px solid rgba(128, 128, 128, 0.28);
-            border-radius: 8px;
-            background: var(--Koda-card);
-            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
-        }
-
-        .artifact-preview-header {
-            min-width: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px 10px 16px;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.22);
-        }
-
-        .artifact-preview-name {
-            min-width: 0;
-            flex: 1;
-            overflow: hidden;
-            color: var(--Koda-text);
-            font-size: 13px;
-            font-weight: 700;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .artifact-preview-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .artifact-preview-btn {
-            width: 36px;
-            height: 36px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--Koda-bg-light);
-        }
-
-        .artifact-preview-btn:hover {
-            color: var(--Koda-accent);
-        }
-
-        .artifact-preview-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .artifact-preview-frame {
-            width: 100%;
-            height: 100%;
-            border: 0;
-            background: #171817;
         }
 
         .chat-tool-card-container {
@@ -2815,34 +2645,6 @@
         #chat-send-btn svg {
             width: 20px;
             height: 20px;
-        }
-
-        @media (max-width: 560px) {
-            .chat-artifacts {
-                width: calc(100% - 8px);
-            }
-
-            .chat-artifact-card {
-                grid-template-columns: 36px minmax(0, 1fr) auto;
-                gap: 8px;
-                padding: 8px;
-            }
-
-            .chat-artifact-icon {
-                width: 36px;
-                height: 36px;
-            }
-
-            .artifact-preview-overlay {
-                padding: 0;
-            }
-
-            .artifact-preview-dialog {
-                width: 100%;
-                height: 100dvh;
-                border: 0;
-                border-radius: 0;
-            }
         }
 
         /* NUOVI STILI PER IL MENU LATERALE */
@@ -7533,49 +7335,6 @@
            SISTEMA DI COLLEZIONI E LAYOUT A GRIGLIA
            ======================================== */
 
-        /* Selettore di visualizzazione Lista/Griglia */
-        .view-toggle-container {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            margin-left: auto;
-        }
-
-        .view-toggle-btn {
-            background: var(--Koda-card);
-            border: 1px solid rgba(128, 128, 128, 0.2);
-            border-radius: 8px;
-            padding: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .view-toggle-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--Koda-text-secondary);
-        }
-
-        .view-toggle-btn.active {
-            background: var(--Koda-text);
-            border-color: var(--Koda-text);
-        }
-
-        .view-toggle-btn.active svg {
-            fill: var(--Koda-bg);
-        }
-
-        body.light-mode .view-toggle-btn.active svg {
-            fill: #fff;
-        }
-
-        .view-toggle-btn:hover:not(.active) {
-            background: var(--Koda-bg-light);
-        }
-
         /* Filter buttons for cinema */
         .filter-btn {
             background: var(--Koda-card);
@@ -9558,7 +9317,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'https://esm.sh/react@18.3.1/es2022/react.mjs';
 import ReactDOMClient from 'https://esm.sh/react-dom@18.3.1/X-ZHJlYWN0QDE4LjMuMQ/es2022/client.bundle.mjs';
 import { createLocalChatSession, sendLocalMessageStream, localAI } from './local-ai.js';
-import { createArtifactPreview, downloadArtifact, revokeArtifactPreview } from './browser-artifacts.js';
 
 window.kodaLocalAI = localAI;
 
@@ -9589,173 +9347,6 @@ const formatMessageContent = text => {
   return formattedText;
 };
 // --- React Components ---
-
-const ArtifactTypeIcon = ({
-    type
-}) => {
-    const common = {
-        viewBox: '0 0 24 24',
-        fill: 'none',
-        stroke: 'currentColor',
-        strokeWidth: 1.8,
-        strokeLinecap: 'round',
-        strokeLinejoin: 'round',
-        'aria-hidden': true
-    };
-    if (type === 'csv' || type === 'xlsx') {
-        return /*#__PURE__*/React.createElement("svg", common, /*#__PURE__*/React.createElement("rect", {
-            x: "3",
-            y: "4",
-            width: "18",
-            height: "16",
-            rx: "2"
-        }), /*#__PURE__*/React.createElement("path", {
-            d: "M3 10h18M9 4v16M15 4v16"
-        }));
-    }
-    if (type === 'html' || type === 'json') {
-        return /*#__PURE__*/React.createElement("svg", common, /*#__PURE__*/React.createElement("path", {
-            d: "m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"
-        }));
-    }
-    return /*#__PURE__*/React.createElement("svg", common, /*#__PURE__*/React.createElement("path", {
-        d: "M6 2h9l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"
-    }), /*#__PURE__*/React.createElement("path", {
-        d: "M14 2v6h6M8 13h8M8 17h6"
-    }));
-};
-
-const GeneratedArtifacts = ({
-    artifacts,
-    lang,
-    onPreview
-}) => {
-    if (!Array.isArray(artifacts) || !artifacts.length) return null;
-    const runDownload = artifact => {
-        try {
-            downloadArtifact(artifact);
-            if (window.triggerHaptic) window.triggerHaptic('light');
-        } catch (error) {
-            console.error('Artifact download failed:', error);
-        }
-    };
-    return /*#__PURE__*/React.createElement("div", {
-        className: "chat-artifacts"
-    }, artifacts.map((artifact, index) => /*#__PURE__*/React.createElement("div", {
-        className: "chat-artifact-card",
-        key: artifact.id || `${artifact.name}-${index}`
-    }, /*#__PURE__*/React.createElement("span", {
-        className: "chat-artifact-icon"
-    }, /*#__PURE__*/React.createElement(ArtifactTypeIcon, {
-        type: artifact.type
-    })), /*#__PURE__*/React.createElement("span", {
-        className: "chat-artifact-meta"
-    }, /*#__PURE__*/React.createElement("span", {
-        className: "chat-artifact-name",
-        title: artifact.name
-    }, artifact.name), /*#__PURE__*/React.createElement("span", {
-        className: "chat-artifact-type"
-    }, artifact.type)), /*#__PURE__*/React.createElement("span", {
-        className: "chat-artifact-actions"
-    }, /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "chat-artifact-btn",
-        onClick: () => onPreview(artifact),
-        title: lang === 'it' ? 'Anteprima' : 'Preview',
-        "aria-label": lang === 'it' ? `Anteprima ${artifact.name}` : `Preview ${artifact.name}`
-    }, /*#__PURE__*/React.createElement("svg", {
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "1.8",
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        "aria-hidden": "true"
-    }, /*#__PURE__*/React.createElement("path", {
-        d: "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
-    }), /*#__PURE__*/React.createElement("circle", {
-        cx: "12",
-        cy: "12",
-        r: "3"
-    }))), /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "chat-artifact-btn",
-        onClick: () => runDownload(artifact),
-        title: lang === 'it' ? 'Scarica' : 'Download',
-        "aria-label": lang === 'it' ? `Scarica ${artifact.name}` : `Download ${artifact.name}`
-    }, /*#__PURE__*/React.createElement("svg", {
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "1.8",
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        "aria-hidden": "true"
-    }, /*#__PURE__*/React.createElement("path", {
-        d: "M12 3v12M7 11l5 5 5-5M5 21h14"
-    })))))));
-};
-
-const ArtifactPreviewDialog = ({
-    state,
-    lang,
-    onClose
-}) => {
-    if (!state) return null;
-    return /*#__PURE__*/React.createElement("div", {
-        className: "artifact-preview-overlay visible",
-        onMouseDown: event => event.target === event.currentTarget && onClose()
-    }, /*#__PURE__*/React.createElement("section", {
-        className: "artifact-preview-dialog",
-        role: "dialog",
-        "aria-modal": "true",
-        "aria-label": lang === 'it' ? `Anteprima ${state.preview.name}` : `Preview ${state.preview.name}`
-    }, /*#__PURE__*/React.createElement("header", {
-        className: "artifact-preview-header"
-    }, /*#__PURE__*/React.createElement("span", {
-        className: "artifact-preview-name",
-        title: state.preview.name
-    }, state.preview.name), /*#__PURE__*/React.createElement("span", {
-        className: "artifact-preview-actions"
-    }, /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "artifact-preview-btn",
-        onClick: () => downloadArtifact(state.artifact),
-        title: lang === 'it' ? 'Scarica' : 'Download',
-        "aria-label": lang === 'it' ? 'Scarica file' : 'Download file'
-    }, /*#__PURE__*/React.createElement("svg", {
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "1.8",
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        "aria-hidden": "true"
-    }, /*#__PURE__*/React.createElement("path", {
-        d: "M12 3v12M7 11l5 5 5-5M5 21h14"
-    }))), /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "artifact-preview-btn",
-        onClick: onClose,
-        autoFocus: true,
-        title: lang === 'it' ? 'Chiudi' : 'Close',
-        "aria-label": lang === 'it' ? 'Chiudi anteprima' : 'Close preview'
-    }, /*#__PURE__*/React.createElement("svg", {
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "2",
-        strokeLinecap: "round",
-        "aria-hidden": "true"
-    }, /*#__PURE__*/React.createElement("path", {
-        d: "M6 6l12 12M18 6 6 18"
-    }))))), /*#__PURE__*/React.createElement("iframe", {
-        className: "artifact-preview-frame",
-        src: state.preview.url,
-        sandbox: state.preview.type === 'pdf' ? undefined : "",
-        title: state.preview.name
-    })));
-};
 
 const CatalogToolLogo = ({
     tool,
@@ -10175,7 +9766,6 @@ const ChatMessageDisplay = ({
   message,
   tools,
   onOpenDetail,
-    onPreviewArtifact,
     onQuickReply,
   lang,
   onCopy,
@@ -10251,11 +9841,7 @@ const ChatMessageDisplay = ({
     }
         const quickReplies = isLastModel && Array.isArray(message.quickReplies) ? message.quickReplies.filter(Boolean) : [];
         const quickRepliesAreTools = message.intent === 'guided-compare-first-tool' || message.intent === 'guided-compare-second-tool';
-        return /*#__PURE__*/React.createElement(React.Fragment, null, inner, /*#__PURE__*/React.createElement(GeneratedArtifacts, {
-            artifacts: message.artifacts,
-            lang: lang,
-            onPreview: onPreviewArtifact
-        }), quickReplies.length > 0 && /*#__PURE__*/React.createElement("div", {
+        return /*#__PURE__*/React.createElement(React.Fragment, null, inner, quickReplies.length > 0 && /*#__PURE__*/React.createElement("div", {
             className: "chat-quick-replies",
             role: "group",
             "aria-label": lang === 'it' ? 'Risposte rapide' : 'Quick replies'
@@ -10406,29 +9992,12 @@ const App = ({
   const [isLoading, setIsLoading] = useState(false);
   const [chatSession, setChatSession] = useState(null);
     const [chatMode, setChatMode] = useState(() => initialConversations[initialActiveId]?.mode === 'prompt-rewrite' ? 'prompt-rewrite' : 'catalog');
-        const [artifactPreview, setArtifactPreview] = useState(null);
   const messagesEndRef = useRef(null);
-    const artifactPreviewRef = useRef(null);
   const activeConversation = conversations[activeConversationId] || {
     messages: []
   };
   const messages = activeConversation.messages;
     const latestMessageId = messages[messages.length - 1]?.id;
-    const closeArtifactPreview = useCallback(() => {
-        if (artifactPreviewRef.current) revokeArtifactPreview(artifactPreviewRef.current);
-        artifactPreviewRef.current = null;
-        setArtifactPreview(null);
-    }, []);
-    const openArtifactPreview = useCallback(artifact => {
-        try {
-            if (artifactPreviewRef.current) revokeArtifactPreview(artifactPreviewRef.current);
-            const preview = createArtifactPreview(artifact);
-            artifactPreviewRef.current = preview;
-            setArtifactPreview({ artifact, preview });
-        } catch (error) {
-            console.error('Artifact preview failed:', error);
-        }
-    }, []);
   useEffect(() => {
     onConversationsChange(conversations);
   }, [conversations, onConversationsChange]);
@@ -10438,17 +10007,6 @@ const App = ({
             block: "end"
     });
     }, [latestMessageId]);
-    useEffect(() => () => {
-        if (artifactPreviewRef.current) revokeArtifactPreview(artifactPreviewRef.current);
-    }, []);
-    useEffect(() => {
-        if (!artifactPreview) return undefined;
-        const handleEscape = event => {
-            if (event.key === 'Escape') closeArtifactPreview();
-        };
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [artifactPreview, closeArtifactPreview]);
     const initializeChat = useCallback(() => {
     try {
                 const savedConversation = initialConversations[initialActiveId];
@@ -10495,14 +10053,13 @@ const App = ({
         });
       }
 
-            const responseMetadata = window.kodaLocalAI?.takeResponseMetadata(chatSession) || { artifacts: [], responseType: '', toolIds: [], toolNames: [], quickReplies: [], guidedState: null, intent: '', strategy: '' };
+            const responseMetadata = window.kodaLocalAI?.takeResponseMetadata(chatSession) || { responseType: '', toolIds: [], toolNames: [], quickReplies: [], guidedState: null, intent: '', strategy: '' };
             setConversations(prev => ({
                 ...prev,
                 [activeConversationId]: {
                     ...prev[activeConversationId],
                     messages: prev[activeConversationId].messages.map(message => message.id === currentModelMessageId ? {
                         ...message,
-                        artifacts: responseMetadata.artifacts || [],
                         responseType: responseMetadata.responseType || '',
                         toolIds: responseMetadata.toolIds || [],
                         toolNames: responseMetadata.toolNames || [],
@@ -10670,7 +10227,6 @@ const App = ({
     message: msg,
     tools: tools,
     onOpenDetail: onOpenDetail,
-    onPreviewArtifact: openArtifactPreview,
     onQuickReply: handleSendMessage,
     lang: lang,
     onCopy: handleCopy,
@@ -10685,11 +10241,7 @@ const App = ({
     lang: lang,
                 mode: chatMode,
                 onTogglePromptRewrite: handleTogglePromptRewrite
-    }), /*#__PURE__*/React.createElement(ArtifactPreviewDialog, {
-        state: artifactPreview,
-        lang: lang,
-        onClose: closeArtifactPreview
-  }));
+        }));
 };
 
 // Funzione globale per montare l'app React
@@ -11098,21 +10650,21 @@ window.mountChatbotApp = (container, props) => {
                     privacyNavigationData: "Dati di navigazione:",
                     privacyNavigationDataDesc: "Durante il normale funzionamento, l'indirizzo IP viene trasmesso ai fornitori che distribuiscono l'app, il catalogo e i modelli locali quando l'utente sceglie di scaricarli. Queste richieste non contengono i messaggi della chat.",
                     privacyUserData: "Dati forniti volontariamente dall'utente:",
-                    privacyUserDataDesc: "I messaggi e i file generati vengono elaborati e salvati sul dispositivo dell'utente e non vengono inviati a servizi esterni.",
+                    privacyUserDataDesc: "I messaggi vengono elaborati e salvati sul dispositivo dell'utente e non vengono inviati a servizi esterni.",
                     privacyLocalStorageTitle: "Archiviazione locale dei dati (Local Storage)",
                     privacyLocalStorageIntro: "L'applicazione utilizza il local storage del browser per salvare alcune informazioni direttamente sul dispositivo dell'utente. Il local storage è una tecnologia che permette ai siti web di memorizzare dati nel browser, simile ai cookie ma con maggiore capacità di archiviazione.",
                     privacyLocalStorageWhatTitle: "Cosa viene salvato nel local storage:",
                     privacyLocalStoragePreferences: "• Preferenze dell'utente: come la lingua selezionata, il tema (modalità chiara/scura), e altre impostazioni di personalizzazione.",
-                    privacyLocalStorageHistory: "• Cronologia delle conversazioni: messaggi, fonti mostrate e contenuto dei file generati vengono salvati localmente per permetterti di ritrovare le conversazioni precedenti.",
+                    privacyLocalStorageHistory: "• Cronologia delle conversazioni: messaggi e fonti mostrate vengono salvati localmente per permetterti di ritrovare le conversazioni precedenti.",
                     privacyLocalStorageCollections: "• Collezioni e preferiti: le tue raccolte di strumenti AI e i tuoi preferiti vengono memorizzati sul tuo dispositivo.",
                     privacyLocalStorageState: "• Stato e cache dell'applicazione: informazioni tecniche, stato delle conversazioni e il modello locale SmolLM2 (circa 118 MB al primo utilizzo).",
                     privacyLocalStorageImportantTitle: "Importante da sapere:",
-                    privacyLocalStoragePoint1: "• Cronologia, risposte e file generati rimangono sul dispositivo e non vengono inviati ai nostri server o a servizi esterni.",
+                    privacyLocalStoragePoint1: "• Cronologia e risposte rimangono sul dispositivo e non vengono inviati ai nostri server o a servizi esterni.",
                     privacyLocalStoragePoint2: "• Puoi cancellare questi dati in qualsiasi momento attraverso le impostazioni del tuo browser (solitamente nella sezione \"Privacy\" o \"Cancella dati di navigazione\").",
                     privacyLocalStoragePoint3: "• Se cancelli i dati del local storage, perderai le tue preferenze, la cronologia delle chat e le collezioni salvate.",
                     privacyLocalStoragePoint4: "• Questi dati sono accessibili solo da questa applicazione e solo sul browser e dispositivo che stai utilizzando.",
                     privacyPurposeTitle: "Finalità del trattamento",
-                    privacyPurposeDesc: "I testi inseriti sono elaborati sul dispositivo per cercare nel catalogo, generare risposte e creare file.",
+                    privacyPurposeDesc: "I testi inseriti sono elaborati sul dispositivo per cercare nel catalogo e generare risposte.",
                     privacyPurposeNote: "Noi, in qualità di titolari, non riceviamo né archiviamo le conversazioni degli utenti. I fornitori esterni possono trattare il normale indirizzo IP secondo le proprie informative.",
                     privacyThirdPartiesTitle: "Destinatari dei dati (terze parti)",
                     privacyThirdPartiesIntro: "L'app usa servizi esterni per distribuire l'applicazione, il catalogo, il modello e il runtime:",
@@ -11305,21 +10857,21 @@ window.mountChatbotApp = (container, props) => {
                     privacyNavigationData: "Navigation data:",
                     privacyNavigationDataDesc: "During normal operation, the IP address is transmitted to providers that distribute the app, catalog, and local models when the user chooses to download them. These requests do not contain chat messages.",
                     privacyUserData: "Data voluntarily provided by the user:",
-                    privacyUserDataDesc: "Messages and generated files are processed and stored on the user's device and are not sent to external services.",
+                    privacyUserDataDesc: "Messages are processed and stored on the user's device and are not sent to external services.",
                     privacyLocalStorageTitle: "Local data storage (Local Storage)",
                     privacyLocalStorageIntro: "The application uses the browser's local storage to save some information directly on the user's device. Local storage is a technology that allows websites to store data in the browser, similar to cookies but with greater storage capacity.",
                     privacyLocalStorageWhatTitle: "What is saved in local storage:",
                     privacyLocalStoragePreferences: "• User preferences: such as selected language, theme (light/dark mode), and other customization settings.",
-                    privacyLocalStorageHistory: "• Conversation history: messages, displayed sources, and generated-file content are saved locally so previous conversations remain available.",
+                    privacyLocalStorageHistory: "• Conversation history: messages and displayed sources are saved locally so previous conversations remain available.",
                     privacyLocalStorageCollections: "• Collections and favorites: your AI tool collections and favorites are stored on your device.",
                     privacyLocalStorageState: "• Application state and cache: technical information, conversation state, and the local SmolLM2 model (about 118 MB on first use).",
                     privacyLocalStorageImportantTitle: "Important to know:",
-                    privacyLocalStoragePoint1: "• History, responses, and generated files remain on the device and are not sent to our servers or external services.",
+                    privacyLocalStoragePoint1: "• History and responses remain on the device and are not sent to our servers or external services.",
                     privacyLocalStoragePoint2: "• You can delete this data at any time through your browser settings (usually in the \"Privacy\" or \"Clear browsing data\" section).",
                     privacyLocalStoragePoint3: "• If you delete local storage data, you will lose your preferences, chat history, and saved collections.",
                     privacyLocalStoragePoint4: "• This data is accessible only by this application and only on the browser and device you are using.",
                     privacyPurposeTitle: "Purpose of processing",
-                    privacyPurposeDesc: "Entered text is processed on the device to search the catalog, generate responses, and create files.",
+                    privacyPurposeDesc: "Entered text is processed on the device to search the catalog and generate responses.",
                     privacyPurposeNote: "We, as data controllers, do not receive or archive users' conversations. External providers may process the normal IP address under their own privacy notices.",
                     privacyThirdPartiesTitle: "Data recipients (third parties)",
                     privacyThirdPartiesIntro: "The app uses external services to distribute the application, catalog, model, and runtime:",
@@ -11627,8 +11179,7 @@ window.mountChatbotApp = (container, props) => {
                 '.playlist-modal.visible',
                 '.category-modal.visible',
                 '.add-to-collection-modal.visible',
-                '.news-detail-modal.visible',
-                '.artifact-preview-overlay.visible'
+                '.news-detail-modal.visible'
             ].join(',');
             const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
             const modalFocusOrigins = new WeakMap();
@@ -17590,12 +17141,9 @@ ${filtersHTML}
                 const t = translations[currentLanguage];
                 const videoFavorites = readStoredJSON('video-favorites', []);
                 const videoPlaylists = readStoredJSON('video-playlists', []);
-                const videoViewMode = readStoredValue('videoViewMode', 'grid', value => ['grid', 'list'].includes(value));
+                const videoViewMode = 'grid';
                 const selectedCategories = readStoredJSON('video-selected-categories', []);
                 const filterMode = readStoredValue('video-filter-mode', 'all', value => ['all', 'categories'].includes(value)); // 'all' or 'categories'
-
-                // Aggiorna anche la variabile globale
-                window.currentVideoViewMode = videoViewMode;
 
                 // NUOVO: Aggiungi alla cronologia del browser
                 if (addToHistory) {
@@ -17707,14 +17255,6 @@ ${filtersHTML}
                                     ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
                                 </button>
                             </div>
-                            <div class="view-toggle-container">
-                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                </button>
-                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                </button>
-                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home" style="padding-bottom: 20px;">
                             ${allVideosHTML}
@@ -17779,14 +17319,6 @@ ${filtersHTML}
                                     ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
                                 </button>
                             </div>
-                            <div class="view-toggle-container">
-                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                </button>
-                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                </button>
-                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" style="padding-bottom: 20px;">
                             ${favoritesHTML}
@@ -17821,14 +17353,6 @@ ${filtersHTML}
                     contentArea.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap;">
                             <span style="color: var(--Koda-text-secondary); font-size: 14px; font-weight: 500;">${translations[currentLanguage].educationalPurpose}</span>
-                            <div class="view-toggle-container">
-                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                </button>
-                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                </button>
-                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" style="padding-bottom: 20px;">
                             ${uniHTML}
@@ -17919,16 +17443,6 @@ ${filtersHTML}
                         : '';
 
                     contentArea.innerHTML = `
-                        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-                            <div class="view-toggle-container">
-                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                </button>
-                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                </button>
-                            </div>
-                        </div>
                         <div class="${videoViewMode === 'grid' ? 'grid-container' : 'playlist-list'}" id="playlist-list-container" style="padding-bottom: 80px;">
                             ${playlistsHTML.length > 0 ? playlistsHTML : `<div id="empty-state">${translations[currentLanguage].emptyPlaylists}</div>`}
                         </div>
@@ -17965,8 +17479,7 @@ ${filtersHTML}
                 const videoFavorites = readStoredJSON('video-favorites', []);
                 const videoPlaylists = readStoredJSON('video-playlists', []);
 
-                // Stato per la visualizzazione (lista o griglia)
-                let videoViewMode = readStoredValue('videoViewMode', 'grid', value => ['grid', 'list'].includes(value));
+                const videoViewMode = 'grid';
 
                 // Sezione corrente (home, favorites, playlists)
                 let currentVideoSection = 'home';
@@ -18094,14 +17607,6 @@ ${filtersHTML}
                                     ${currentLanguage === 'it' ? 'Categorie' : 'Categories'}${categoryCountText}
                                 </button>
                             </div>
-                            <div class="view-toggle-container">
-                                <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                </button>
-                                <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                </button>
-                            </div>
                         </div>
                         <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home">
                             ${allVideosHTML.length > 0 ? allVideosHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video disponibile.' : 'No videos available.'}</div>`}
@@ -18141,8 +17646,6 @@ ${filtersHTML}
                     });
                 }, 100);
 
-                // Salva lo stato della modalità vista
-                window.currentVideoViewMode = videoViewMode;
             };
 
             // MODIFICA 1-4: Funzione completamente rinnovata per il catalogo video con nav dedicata
@@ -18158,8 +17661,7 @@ ${filtersHTML}
                 const favorites = readStoredJSON('video-favorites', []);
                 const playlists = readStoredJSON('video-playlists', []);
 
-                // Stato per la visualizzazione (lista o griglia)
-                let videoViewMode = readStoredValue('videoViewMode', 'grid', value => ['grid', 'list'].includes(value)); // 'list' o 'grid'
+                const videoViewMode = 'grid';
 
                 // MODIFICA 2: Genera i controlli globali senza l'icona video
                 const globalControls = getGlobalControlsHTML();
@@ -18302,14 +17804,6 @@ ${filtersHTML}
                                 <div class="video-search-bar">
                                     <input type="text" class="video-search-input" placeholder="${currentLanguage === 'it' ? 'Cerca video...' : 'Search videos...'}" id="video-search-input">
                                 </div>
-                                <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
-                                    <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                    </button>
-                                    <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                    </button>
-                                </div>
                                 <div class="${videoViewMode === 'grid' ? 'video-grid' : 'video-list-view'}" id="video-grid-home">
                                     ${allVideosHTML.length > 0 ? allVideosHTML : `<div id="empty-state">${currentLanguage === 'it' ? 'Nessun video disponibile.' : 'No videos available.'}</div>`}
                                 </div>
@@ -18324,14 +17818,6 @@ ${filtersHTML}
 
                             <!-- Sezione Playlist -->
                             <div class="video-section" id="video-section-playlists">
-                                <div class="view-toggle-container" style="margin-bottom: 16px; justify-content: flex-end;">
-                                    <button class="view-toggle-btn ${videoViewMode === 'list' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="list" title="${t.viewList || 'Vista lista'}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                                    </button>
-                                    <button class="view-toggle-btn ${videoViewMode === 'grid' ? 'active' : ''}" data-action="set-video-view-mode" data-mode="grid" title="${t.viewGrid || 'Vista griglia'}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/></svg>
-                                    </button>
-                                </div>
                                 <div class="${videoViewMode === 'grid' ? 'video-grid' : 'playlist-list'}" id="playlist-list">
                                     ${playlistsHTML}
                                 </div>
@@ -18385,8 +17871,6 @@ ${filtersHTML}
                     });
                 }
 
-                // MODIFICA: Gestione cambio visualizzazione lista/griglia
-                window.currentVideoViewMode = videoViewMode;
             };
 
             // NUOVO: Funzione per aprire il modale di selezione categorie AI
@@ -20769,20 +20253,6 @@ ${filtersHTML}
                             const confirmPlaylistId = actionTarget.dataset.playlistId;
                             const imageData = actionTarget.dataset.image;
                             if (confirmPlaylistId && imageData) confirmPlaylistCover(confirmPlaylistId, imageData);
-                            break;
-                        // MODIFICA: Cambio visualizzazione video (lista/griglia)
-                        case 'set-video-view-mode':
-                            const videoMode = actionTarget.dataset.mode;
-                            if (['grid', 'list'].includes(videoMode) && videoMode !== window.currentVideoViewMode) {
-                                writeStoredValue('videoViewMode', videoMode);
-                                window.currentVideoViewMode = videoMode;
-                                // Ricarica il tab corrente con la nuova visualizzazione
-                                const activeNavBtn = document.querySelector('.cinema-nav-btn.active');
-                                if (activeNavBtn) {
-                                    const currentTab = activeNavBtn.dataset.tab;
-                                    handleCinemaTabChange(currentTab);
-                                }
-                            }
                             break;
                         // NUOVO: Gestisce il filtro "Tutti"
                         case 'set-filter-mode':
