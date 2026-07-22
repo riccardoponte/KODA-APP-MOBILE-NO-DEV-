@@ -16617,7 +16617,7 @@ ${filtersHTML}
     ${aiRankingsData.map(ranking => `
         <div class="ranking-card" data-ranking-category="${ranking.category}">
             <h3>${currentLanguage === 'it' ? ranking.title_it : ranking.title_en}</h3>
-            <p class="ranking-methodology">${escapeHTML((currentLanguage === 'it' ? ranking.methodology_it : ranking.methodology_en) || (currentLanguage === 'it' ? 'Ordine editoriale. Le righe mostrano i dati strutturati disponibili per interpretare ogni posizione.' : 'Editorial order. Each row shows the available structured data used to interpret its position.'))}</p>
+            <p class="ranking-methodology">${escapeHTML((currentLanguage === 'it' ? ranking.methodology_it : ranking.methodology_en) || (currentLanguage === 'it' ? 'Gli strumenti sono valutati per capacità, costi e opinioni personali.' : 'Tools are evaluated based on capabilities, costs, and personal opinions.'))}</p>
             <ol class="ranking-list">
                 ${ranking.toolIds.map((id, index) => createRankingItem(id, index + 1, ranking)).join('')}
             </ol>
