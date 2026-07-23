@@ -3592,6 +3592,7 @@
             font-size: 12px;
             /* Reduced font size */
             color: var(--Koda-text-secondary);
+        }
 
         .ranking-methodology {
             margin: -2px 0 14px;
@@ -3605,7 +3606,6 @@
             color: var(--Koda-text-secondary);
             font-size: 11px;
             line-height: 1.35;
-        }
         }
 
         /* --- STILI PER MODALE IMPOSTAZIONI (AGGIUNTI) --- */
@@ -16594,16 +16594,20 @@ window.mountChatbotApp = (container, props) => {
                         if (!tool) return '';
                         const localizedReason = ranking?.reasons?.[toolId]?.[currentLanguage]
                             || ranking?.reasons?.[toolId]
-                            || (currentLanguage === 'it'
-                                ? `Caratteristiche: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`
-                                : `Features: ${getTranslatedCategoryName(tool.category)}${tool.pricing ? ` · ${tool.pricing}` : ''}${getToolSpecializationTypes(tool).length ? ` · ${getToolSpecializationTypes(tool).map(catalogSpecializationLabel).join(', ')}` : ''}`);
+                            || (() => {
+                                const details = [];
+                                if (tool.pricing) details.push(tool.pricing);
+                                const specs = getToolSpecializationTypes(tool).map(catalogSpecializationLabel);
+                                if (specs.length) details.push(specs.join(', '));
+                                if (!details.length) return '';
+                                return `${currentLanguage === 'it' ? 'Caratteristiche' : 'Features'}: ${details.join(' · ')}`;
+                            })();
                         return `
                         <li class="ranking-item stagger-item" data-id="${tool.id}">
                             <span class="ranking-item-rank">${rank}</span>
                             <img src="${tool.logoUrl}" alt="${tool.name}" class="ranking-item-logo" loading="lazy">
                             <div class="ranking-item-info">
                                 <div class="tool-name">${tool.name}</div>
-                                <div class="tool-subtext">${getTranslatedCategoryName(tool.category)}</div>
                                 <div class="ranking-item-reason">${escapeHTML(localizedReason)}</div>
                             </div>
                         </li>
